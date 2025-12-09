@@ -1,4 +1,4 @@
-﻿namespace Vivarium.Enums;
+﻿namespace Vivarium.World;
 
 public enum EntityType : byte
 {

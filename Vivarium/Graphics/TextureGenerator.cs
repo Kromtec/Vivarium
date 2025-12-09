@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace Vivarium;
+namespace Vivarium.Graphics;
 
 public static class TextureGenerator
 {

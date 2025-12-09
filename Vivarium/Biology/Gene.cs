@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Vivarium;
+namespace Vivarium.Biology;
 
 // A Gene is essentially a connection in the neural network.
 // It is encoded into a single 32-bit integer for maximum performance and easy mutation.

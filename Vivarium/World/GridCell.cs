@@ -1,7 +1,6 @@
 ﻿using System;
-using Vivarium.Enums;
 
-namespace Vivarium;
+namespace Vivarium.World;
 
 public struct GridCell(EntityType type, int index) : IEquatable<GridCell>
 {

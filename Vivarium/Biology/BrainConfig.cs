@@ -1,7 +1,6 @@
 ﻿using System;
-using Vivarium.Enums;
 
-namespace Vivarium;
+namespace Vivarium.Biology;
 
 public static class BrainConfig
 {

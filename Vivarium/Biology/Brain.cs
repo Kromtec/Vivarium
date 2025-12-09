@@ -1,7 +1,8 @@
 ﻿using System;
-using Vivarium.Enums;
+using Vivarium.Entities;
+using Vivarium.World;
 
-namespace Vivarium;
+namespace Vivarium.Biology;
 
 public static class Brain
 {

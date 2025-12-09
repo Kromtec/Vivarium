@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using Vivarium.Enums;
+using Vivarium.Entities;
 
-namespace Vivarium;
+namespace Vivarium.Biology;
 
 public static class Genetics
 {

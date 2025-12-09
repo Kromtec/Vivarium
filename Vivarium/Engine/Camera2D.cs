@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Vivarium;
+namespace Vivarium.Engine;
 
 public class Camera2D
 {

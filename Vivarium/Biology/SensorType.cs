@@ -1,4 +1,4 @@
-﻿namespace Vivarium.Enums;
+﻿namespace Vivarium.Biology;
 
 public enum SensorType
 {

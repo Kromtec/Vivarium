@@ -2,7 +2,11 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using Vivarium.Enums;
+using Vivarium.Biology;
+using Vivarium.Engine;
+using Vivarium.Entities;
+using Vivarium.Graphics;
+using Vivarium.World;
 
 namespace Vivarium;
 

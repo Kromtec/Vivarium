@@ -1,21 +1,24 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using Vivarium.Enums;
+using Vivarium.Biology;
+using Vivarium.World;
 
-namespace Vivarium;
+namespace Vivarium.Entities;
 
-public struct Plant
+// --- C# 14 / .NET 10 UPDATE ---
+// Using a struct for memory efficiency (Stack allocated / packed in arrays)
+public struct Agent
 {
-    public const float ShrivelRate = 0.5f; // Energy lost per frame
-    public const int MaturityAge = 60 * 2; // Frames until agent can reproduce after birth (2 seconds at 60 FPS)
+    public const float MetabolismRate = 0.2f; // Energy lost per frame
+    public const int MaturityAge = 60 * 4; // Frames until agent can reproduce after birth (4 seconds at 60 FPS)
+    private Color originalColor;
 
     public int Index { get; set; }
     public int X { get; set; }
     public int Y { get; set; }
-    public long Age { get; set; }
-    public bool IsAlive { get; set; }
 
-    private Color originalColor;
+    public int ParentIndex { get; set; }
+
     public Color OriginalColor
     {
         get => originalColor;
@@ -27,6 +30,12 @@ public struct Plant
     }
     public Color Color { get; private set; }
 
+    // Counts how many frames this agent has lived
+    public long Age { get; set; }
+
+    // Helps us track active slots in the population array
+    public bool IsAlive { get; set; }
+
     public float Energy
     {
         get;
@@ -35,7 +44,7 @@ public struct Plant
             // C# 14 field keyword
             field = Math.Clamp(value, 0f, 100f);
 
-            // If energy hits zero, the plant dies.
+            // If energy hits zero, the agent dies.
             if (field <= 0)
             {
                 IsAlive = false;
@@ -52,34 +61,34 @@ public struct Plant
         }
     }
 
+    public Gene[] Genome { get; set; }
+    public float[] NeuronActivations { get; set; }
+
     public void Update(GridCell[,] gridMap)
     {
         if (!IsAlive)
         {
             return;
         }
+
         // Age the agent
         Age++;
+        // Metabolize energy
+        ChangeEnergy(-MetabolismRate, gridMap);
 
-        if (Age > MaturityAge)
-        {
-            ChangeEnergy(-ShrivelRate, gridMap);
-        }
         // Color Update
-        Color = Color.Lerp(Color.Black, OriginalColor, Energy / 100f);
+        if (Energy <= 50)
+        {
+            Color = Color.Lerp(Color.Black, OriginalColor, Energy / 50f);
+        }
     }
 
-    public static Plant Create(int index, int x, int y)
-    {
-        return ConstructPlant(index, x, y);
-    }
-
-    public readonly void TryReproduce(Span<Plant> population, GridCell[,] gridMap, Random rng)
+    public readonly void TryReproduce(Span<Agent> population, GridCell[,] gridMap, Random rng)
     {
         int gridWidth = gridMap.GetLength(0);
         int gridHeight = gridMap.GetLength(1);
 
-        ref Plant parent = ref population[Index];
+        ref Agent parent = ref population[Index];
 
         // 1. Find an empty spot nearby in the WORLD
         int childX = -1;
@@ -134,15 +143,15 @@ public struct Plant
 
         // 3. CREATE BABY
         // Create the child using our Genetics helper
-        ref Plant childSlot = ref population[childIndex];
+        ref Agent childSlot = ref population[childIndex];
 
-        childSlot = ConstructPlant(childSlot.Index, childX, childY);
+        childSlot = Genetics.Replicate(ref parent, childIndex, childX, childY, rng);
 
         // 4. COST
         parent.ChangeEnergy(-2f, gridMap); // Giving birth is exhausting
 
         // Update map so nobody else claims this spot this frame
-        gridMap[childX, childY] = new(EntityType.Plant, childSlot.Index);
+        gridMap[childX, childY] = new(EntityType.Agent, childIndex);
     }
 
     public readonly bool CanReproduce()
@@ -150,17 +159,35 @@ public struct Plant
         return IsAlive && Age >= MaturityAge;
     }
 
-    private static Plant ConstructPlant(int index, int x, int y)
+    public static Agent Create(int index, int x, int y, Random rng)
     {
-        return new Plant()
+        Gene[] initialGenome = Genetics.CreateGenome(rng);
+
+        return ConstructAgent(index, x, y, initialGenome);
+    }
+
+    public static Agent CreateChild(int index, int x, int y, Random rng, Gene[] genome, int parentIndex)
+    {
+        // Apply Mutation to the genome of the parent to create the child's genome
+        Genetics.Mutate(ref genome, rng);
+
+        return ConstructAgent(index, x, y, genome, parentIndex);
+    }
+
+    private static Agent ConstructAgent(int index, int x, int y, Gene[] genome, int parentIndex = -1)
+    {
+        return new Agent()
         {
             Index = index,
             X = x,
             Y = y,
-            OriginalColor = Color.LimeGreen,
+            ParentIndex = parentIndex,
+            OriginalColor = Genetics.ComputePhenotypeColor(genome),
             IsAlive = true,
             Age = 0,
-            Energy = 100f
+            Energy = 100f,
+            Genome = genome,
+            NeuronActivations = new float[BrainConfig.NeuronCount]
         };
     }
 }
