@@ -32,17 +32,18 @@ public static class Brain
         // --- 2. SENSORS (Inputs) ---
         // Direct mapping since Sensors start at index 0
 
-        neurons[(int)SensorType.LocX] = (float)agent.X / gridWidth;
-        neurons[(int)SensorType.LocY] = (float)agent.Y / gridHeight;
+        neurons[(int)SensorType.LocationX] = (float)agent.X / gridWidth;
+        neurons[(int)SensorType.LocationY] = (float)agent.Y / gridHeight;
         neurons[(int)SensorType.Random] = (float)rng.NextDouble();
         neurons[(int)SensorType.Energy] = agent.Energy / 100f;
         neurons[(int)SensorType.Age] = Math.Min(agent.Age / 2000f, 1.0f);
         neurons[(int)SensorType.Oscillator] = MathF.Sin(agent.Age * 0.1f);
 
-        CalculateDensity(agent.X, agent.Y, gridMap, out float agentDensity, out float plantDensity, out float structureDensity);
-        neurons[(int)SensorType.AgentDensity] = agentDensity;
-        neurons[(int)SensorType.PlantDensity] = plantDensity;
-        neurons[(int)SensorType.StructureDensity] = structureDensity;
+        var density = WorldSensor.ScanLocalArea(gridMap, agent.X, agent.Y, radius: 2);
+
+        neurons[(int)SensorType.AgentDensity] = density.AgentDensity;
+        neurons[(int)SensorType.PlantDensity] = density.PlantDensity;
+        neurons[(int)SensorType.StructureDensity] = density.StructureDensity;
 
         // --- 3. PROCESS GENOME ---
         foreach (var gene in agent.Genome)
@@ -61,45 +62,6 @@ public static class Brain
         {
             neurons[i] = MathF.Tanh(neurons[i]);
         }
-    }
-
-    // Helper to scan the surroundings
-    private static void CalculateDensity(int cx, int cy, GridCell[,] gridMap, out float agentDensity, out float plantDensity, out float structureDensity)
-    {
-        int w = gridMap.GetLength(0);
-        int h = gridMap.GetLength(1);
-        int range = 2; // Check radius 2 (5x5 area)
-
-        int agentsFound = 0;
-        int plantsFound = 0;
-        int structuresFound = 0;
-        int cellsChecked = 0;
-
-        for (int dy = -range; dy <= range; dy++)
-        {
-            for (int dx = -range; dx <= range; dx++)
-            {
-                if (dx == 0 && dy == 0) continue; // Ignore self
-
-                int nx = cx + dx;
-                int ny = cy + dy;
-
-                if (nx >= 0 && nx < w && ny >= 0 && ny < h)
-                {
-                    cellsChecked++;
-                    var cell = gridMap[nx, ny];
-
-                    if (cell.Type == EntityType.Agent) agentsFound++;
-                    else if (cell.Type == EntityType.Plant) plantsFound++;
-                    else if (cell.Type == EntityType.Structure) structuresFound++;
-                }
-            }
-        }
-
-        // Normalize: 1.0 means "surrounded", 0.0 means "alone"
-        agentDensity = (float)agentsFound / cellsChecked;
-        plantDensity = (float)plantsFound / cellsChecked;
-        structureDensity = (float)structuresFound / cellsChecked;
     }
 
     // Executes the actions based on the brain's output

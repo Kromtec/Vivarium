@@ -2,13 +2,13 @@
 
 public enum SensorType
 {
-    LocX,
-    LocY,
+    LocationX,
+    LocationY,
     Random,
     Energy,
     Age,
+    Oscillator,
     AgentDensity,
     PlantDensity,
     StructureDensity,
-    Oscillator
 }
