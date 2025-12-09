@@ -1,0 +1,32 @@
+## Visual Studio & .NET Core
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+*.cache
+*.pdb
+
+## MonoGame Specifics
+# Ignore the compiled content assets, but keep the raw source assets (png, wav, etc.)
+*/Content/bin/
+*/Content/obj/
+
+## JetBrains Rider (if you switch IDEs later)
+.idea/
+*.sln.iml
+
+## Visual Studio Code
+.vscode/
+
+## OS Generated Files
+.DS_Store
+Thumbs.db
+
+## Test Results
+TestResults/
+
+## .NET 10 / Modern Build Output
+artifacts/
