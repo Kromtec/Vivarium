@@ -49,7 +49,7 @@ public static class Genetics
         Array.Copy(parent.Genome, genomeCopy, parent.Genome.Length);
 
         // Create new agent structure
-        return Agent.CreateChild(index, x, y, rng, genomeCopy, parent.Index);
+        return Agent.CreateChild(index, x, y, rng, genomeCopy, ref parent);
     }
 
     /// <summary>

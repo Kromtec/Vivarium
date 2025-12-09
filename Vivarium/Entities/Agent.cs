@@ -33,6 +33,8 @@ public struct Agent
     // Counts how many frames this agent has lived
     public long Age { get; set; }
 
+    public long Generation { get; set; }
+
     // Helps us track active slots in the population array
     public bool IsAlive { get; set; }
 
@@ -166,12 +168,14 @@ public struct Agent
         return ConstructAgent(index, x, y, initialGenome);
     }
 
-    public static Agent CreateChild(int index, int x, int y, Random rng, Gene[] genome, int parentIndex)
+    public static Agent CreateChild(int index, int x, int y, Random rng, Gene[] genome, ref Agent parent)
     {
         // Apply Mutation to the genome of the parent to create the child's genome
         Genetics.Mutate(ref genome, rng);
 
-        return ConstructAgent(index, x, y, genome, parentIndex);
+        Agent child = ConstructAgent(index, x, y, genome, parent.Index);
+        child.Generation = parent.Generation + 1;
+        return child;
     }
 
     private static Agent ConstructAgent(int index, int x, int y, Gene[] genome, int parentIndex = -1)
@@ -184,7 +188,6 @@ public struct Agent
             ParentIndex = parentIndex,
             OriginalColor = Genetics.ComputePhenotypeColor(genome),
             IsAlive = true,
-            Age = 0,
             Energy = 100f,
             Genome = genome,
             NeuronActivations = new float[BrainConfig.NeuronCount]

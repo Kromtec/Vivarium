@@ -6,6 +6,7 @@ using Vivarium.Biology;
 using Vivarium.Engine;
 using Vivarium.Entities;
 using Vivarium.Graphics;
+using Vivarium.UI;
 using Vivarium.World;
 
 namespace Vivarium;
@@ -23,6 +24,7 @@ public class VivariumGame : Game
     private const int GridHeight = 128;
     private const int GridWidth = (int)(GridHeight * 1.5);
     private const int CellSize = 1280 / GridHeight;
+    private const float HalfCellSize = (CellSize * 0.5f);
     private const int AgentCount = GridWidth * GridHeight / 8;
     private const int PlantCount = GridWidth * GridHeight / 32;
     private const int StructureCount = GridWidth * GridHeight / 64;
@@ -45,6 +47,10 @@ public class VivariumGame : Game
     private KeyboardState _previousKeyboardState;
 
     private Camera2D _camera;
+    private Inspector _inspector;
+    private SpriteFont _sysFont;
+
+    private bool _isPaused = false;
 
     public VivariumGame()
     {
@@ -259,6 +265,10 @@ public class VivariumGame : Game
         _starTexture = TextureGenerator.CreateStar(GraphicsDevice, 50, 5);
 
         _roundedRectTexture = TextureGenerator.CreateRoundedRect(GraphicsDevice, 50, 20, 5);
+
+        _sysFont = Content.Load<SpriteFont>("SystemFont");
+
+        _inspector = new Inspector(GraphicsDevice, _sysFont);
     }
 
     protected override void Update(GameTime gameTime)
@@ -268,61 +278,77 @@ public class VivariumGame : Game
 
         if (currentKeyboardState.IsKeyDown(Keys.Escape)) Exit();
 
-        // --- FULLSCREEN TOGGLE ---
-        // Check if F11 is down NOW but was up in the PREVIOUS frame
+
+        // --- 1. SYSTEM & INPUT
+
+        // Toggle FULLSCREEN (F11)
         if (currentKeyboardState.IsKeyDown(Keys.F11) && !_previousKeyboardState.IsKeyDown(Keys.F11))
         {
             ToggleFullscreen();
         }
+        // Toggle PAUSE (Space)
+        if (currentKeyboardState.IsKeyDown(Keys.Space) && !_previousKeyboardState.IsKeyDown(Keys.Space))
+        {
+            _isPaused = !_isPaused;
+        }
+        // SINGLE STEP (.)
+        bool singleStep = currentKeyboardState.IsKeyDown(Keys.OemPeriod) && !_previousKeyboardState.IsKeyDown(Keys.OemPeriod);
+
         // Save state for the next frame
         _previousKeyboardState = currentKeyboardState;
 
         // CAMERA UPDATE
         _camera.HandleInput(currentMouseState, currentKeyboardState);
 
-        Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
-        Span<Plant> plantPopulationSpan = _plantPopulation.AsSpan();
+        _inspector.UpdateInput(_camera, _gridMap);
 
-        // --- BIOLOGICAL LOOP ---
-
-        for (int i = 0; i < agentPopulationSpan.Length; i++)
+        // --- 2. SIMULATION
+        if (!_isPaused || singleStep)
         {
-            // Skip dead slots
-            if (!agentPopulationSpan[i].IsAlive) continue;
+            Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
+            Span<Plant> plantPopulationSpan = _plantPopulation.AsSpan();
 
-            // Use ref to modify directly
-            ref Agent currentAgent = ref agentPopulationSpan[i];
+            // --- BIOLOGICAL LOOP ---
 
-            // A. THINK & ACT
-            Brain.Think(ref currentAgent, _gridMap, _rng);
-            Brain.Act(ref currentAgent, _gridMap, agentPopulationSpan, plantPopulationSpan);
-
-            // B. AGING & METABOLISM
-            currentAgent.Update(_gridMap);
-
-            // C. REPRODUCTION
-            // If agent is mature, try to spawn a child
-            if (currentAgent.CanReproduce())
+            for (int i = 0; i < agentPopulationSpan.Length; i++)
             {
-                currentAgent.TryReproduce(agentPopulationSpan, _gridMap, _rng);
+                // Skip dead slots
+                if (!agentPopulationSpan[i].IsAlive) continue;
+
+                // Use ref to modify directly
+                ref Agent currentAgent = ref agentPopulationSpan[i];
+
+                // A. THINK & ACT
+                Brain.Think(ref currentAgent, _gridMap, _rng);
+                Brain.Act(ref currentAgent, _gridMap, agentPopulationSpan, plantPopulationSpan);
+
+                // B. AGING & METABOLISM
+                currentAgent.Update(_gridMap);
+
+                // C. REPRODUCTION
+                // If agent is mature, try to spawn a child
+                if (currentAgent.CanReproduce())
+                {
+                    currentAgent.TryReproduce(agentPopulationSpan, _gridMap, _rng);
+                }
             }
-        }
 
-        for (int i = 0; i < plantPopulationSpan.Length; i++)
-        {
-            // Skip dead slots
-            if (!plantPopulationSpan[i].IsAlive) continue;
-            // Use ref to modify directly
-            ref Plant currentPlant = ref plantPopulationSpan[i];
-
-            // A. AGING
-            currentPlant.Update(_gridMap);
-
-            // B. REPRODUCTION
-            // If plant is mature, try to spawn a child
-            if (currentPlant.CanReproduce())
+            for (int i = 0; i < plantPopulationSpan.Length; i++)
             {
-                currentPlant.TryReproduce(plantPopulationSpan, _gridMap, _rng);
+                // Skip dead slots
+                if (!plantPopulationSpan[i].IsAlive) continue;
+                // Use ref to modify directly
+                ref Plant currentPlant = ref plantPopulationSpan[i];
+
+                // A. AGING
+                currentPlant.Update(_gridMap);
+
+                // B. REPRODUCTION
+                // If plant is mature, try to spawn a child
+                if (currentPlant.CanReproduce())
+                {
+                    currentPlant.TryReproduce(plantPopulationSpan, _gridMap, _rng);
+                }
             }
         }
 
@@ -336,62 +362,110 @@ public class VivariumGame : Game
         _spriteBatch.Begin(
             SpriteSortMode.Deferred,
             BlendState.NonPremultiplied,
-            null,
+            SamplerState.LinearClamp,
             null,
             null,
             null,
             _camera.GetTransformation()
         );
 
-        // Calculate the center of our source texture (needed for pivot point)
-        var textureCenter = new Vector2(_circleTexture.Width / 2f, _circleTexture.Height / 2f);
+        DrawAgents(out int livingAgents);
+        DrawPlants(out int livingPlants);
+        DrawStructures(out int livingStructures);
 
-        float baseScale = (float)CellSize / _circleTexture.Width;
-        const float HalfCellSize = (CellSize / 2f);
-        const float agentAgeGrowthFactor = 1.0f / Agent.MaturityAge;
-        const float plantAgeGrowthFactor = 1.0f / Plant.MaturityAge;
+        // Draw the Selection Box inside the world
+        _inspector.DrawSelectionMarker(_spriteBatch, CellSize);
 
-        Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
-        int livingAgents = 0;
-        int livingPlants = 0;
-        for (int i = 0; i < agentPopulationSpan.Length; i++)
+        _spriteBatch.End();
+
+        // --- 2. SCREEN SPACE (Camera Off) ---
+        // This draws the UI fixed on top of everything
+        _spriteBatch.Begin(
+            SpriteSortMode.Deferred,
+            BlendState.AlphaBlend
+            // No Matrix here! 
+        );
+
+        // We pass the raw arrays so the inspector can look up the data by index
+        _inspector.DrawUI(_spriteBatch, _agentPopulation, _plantPopulation, _structurePopulation);
+
+        if (_isPaused)
         {
-            ref Agent agent = ref agentPopulationSpan[i];
-            if (!agent.IsAlive)
-            {
-                _gridMap[agent.X, agent.Y] = GridCell.Empty;
-                continue;
-            }
+            string pauseText = "PAUSED";
+            Vector2 textSize = _sysFont.MeasureString(pauseText);
 
-            livingAgents++;
-
-            // --- GROWTH LOGIC ---
-            // Babies start small (0.3 scale) and grow to full size (1.0 scale) over 200 frames.
-            // Math.Min ensures they stop growing at max size.
-            float ageRatio = Math.Min(agent.Age * agentAgeGrowthFactor, 1.0f);
-
-            // Linear interpolation: Start at 30% size, end at 100% size
-            float finalScale = baseScale * (0.3f + (0.7f * ageRatio));
-
-            // Calculate screen position
-            // Important: Add half CellSize to X and Y so we draw at the CENTER of the grid cell
-            Vector2 position = new Vector2(
-                agent.X * CellSize + HalfCellSize,
-                agent.Y * CellSize + HalfCellSize
+            Vector2 textPos = new Vector2(
+                GraphicsDevice.Viewport.Width - textSize.X - 20,
+                20
             );
 
+            _spriteBatch.DrawString(_sysFont, pauseText, textPos + new Vector2(2, 2), Color.Black);
+            _spriteBatch.DrawString(_sysFont, pauseText, textPos, Color.Red);
+        }
+
+        _spriteBatch.End();
+
+        UpdateWindowTitle(gameTime, livingAgents, livingPlants, livingStructures);
+
+        base.Draw(gameTime);
+    }
+
+    private void UpdateWindowTitle(GameTime gameTime, int livingAgents, int livingPlants, int livingStructures)
+    {
+        // --- FPS COUNTER ---
+        // Increment frame counter
+        _framesCounter++;
+
+        // Add elapsed time
+        _fpsTimer += gameTime.ElapsedGameTime.TotalSeconds;
+
+        // Once per second, update the window title
+        if (_fpsTimer >= 1.0d)
+        {
+            Window.Title = $"Vivarium - FPS: {_framesCounter} - Agents: {livingAgents} | Plants: {livingPlants} | Structures: {livingStructures}";
+            _framesCounter = 0;
+            _fpsTimer--;
+        }
+    }
+
+    private void DrawStructures(out int livingStructures)
+    {
+        var textureCenter = new Vector2(_circleTexture.Width / 2f, _circleTexture.Height / 2f);
+        float baseScale = (float)CellSize / _circleTexture.Width;
+        Span<Structure> structurePopulationSpan = _structurePopulation.AsSpan();
+        livingStructures = structurePopulationSpan.Length;
+        for (int i = 0; i < structurePopulationSpan.Length; i++)
+        {
+            ref Structure structure = ref structurePopulationSpan[i];
+
+            float structScale = ((float)CellSize / _roundedRectTexture.Width);
+
+            // Calculate screen position
+            Vector2 position = new Vector2(
+                structure.X * CellSize,
+                structure.Y * CellSize
+            );
             _spriteBatch.Draw(
-                _circleTexture,
+                _roundedRectTexture,
                 position,
                 null,
-                agent.Color,
+                structure.Color,
                 0f,
-                textureCenter, // Draw from the center of the texture!
-                finalScale,
+                textureCenter,
+                structScale,
                 SpriteEffects.None,
                 0f
             );
         }
+    }
+
+    private int DrawPlants(out int livingPlants)
+    {
+        livingPlants = 0;
+        var textureCenter = new Vector2(_circleTexture.Width / 2f, _circleTexture.Height / 2f);
+        float baseScale = (float)CellSize / _circleTexture.Width;
+
+        const float plantAgeGrowthFactor = 1.0f / Plant.MaturityAge;
 
         Span<Plant> plantPopulationSpan = _plantPopulation.AsSpan();
         for (int i = 0; i < plantPopulationSpan.Length; i++)
@@ -431,49 +505,57 @@ public class VivariumGame : Game
             );
         }
 
-        Span<Structure> structurePopulationSpan = _structurePopulation.AsSpan();
-        for (int i = 0; i < structurePopulationSpan.Length; i++)
-        {
-            ref Structure structure = ref structurePopulationSpan[i];
+        return livingPlants;
+    }
 
-            float structScale = ((float)CellSize / _roundedRectTexture.Width);
+    private void DrawAgents(out int livingAgents)
+    {
+        livingAgents = 0;
+
+        // Calculate the center of our source texture (needed for pivot point)
+        var textureCenter = new Vector2(_circleTexture.Width / 2f, _circleTexture.Height / 2f);
+        float baseScale = (float)CellSize / _circleTexture.Width;
+        const float agentAgeGrowthFactor = 1.0f / Agent.MaturityAge;
+
+        Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
+        for (int i = 0; i < agentPopulationSpan.Length; i++)
+        {
+            ref Agent agent = ref agentPopulationSpan[i];
+            if (!agent.IsAlive)
+            {
+                _gridMap[agent.X, agent.Y] = GridCell.Empty;
+                continue;
+            }
+
+            livingAgents++;
+
+            // --- GROWTH LOGIC ---
+            // Babies start small (0.3 scale) and grow to full size (1.0 scale) over 200 frames.
+            // Math.Min ensures they stop growing at max size.
+            float ageRatio = Math.Min(agent.Age * agentAgeGrowthFactor, 1.0f);
+
+            // Linear interpolation: Start at 30% size, end at 100% size
+            float finalScale = baseScale * (0.3f + (0.7f * ageRatio));
 
             // Calculate screen position
+            // Important: Add half CellSize to X and Y so we draw at the CENTER of the grid cell
             Vector2 position = new Vector2(
-                structure.X * CellSize,
-                structure.Y * CellSize
+                agent.X * CellSize + HalfCellSize,
+                agent.Y * CellSize + HalfCellSize
             );
+
             _spriteBatch.Draw(
-                _roundedRectTexture,
+                _circleTexture,
                 position,
                 null,
-                structure.Color,
+                agent.Color,
                 0f,
-                textureCenter,
-                structScale,
+                textureCenter, // Draw from the center of the texture!
+                finalScale,
                 SpriteEffects.None,
                 0f
             );
         }
-
-        _spriteBatch.End();
-
-        // --- FPS COUNTER ---
-        // Increment frame counter
-        _framesCounter++;
-
-        // Add elapsed time
-        _fpsTimer += gameTime.ElapsedGameTime.TotalSeconds;
-
-        // Once per second, update the window title
-        if (_fpsTimer >= 1.0d)
-        {
-            Window.Title = $"Vivarium - FPS: {_framesCounter} - Agents: {livingAgents} | Plants: {livingPlants} | Structures: {structurePopulationSpan.Length}";
-            _framesCounter = 0;
-            _fpsTimer--;
-        }
-
-        base.Draw(gameTime);
     }
 
     private void ToggleFullscreen()
