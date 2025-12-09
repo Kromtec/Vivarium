@@ -430,8 +430,7 @@ public class VivariumGame : Game
 
     private void DrawStructures(out int livingStructures)
     {
-        var textureCenter = new Vector2(_circleTexture.Width / 2f, _circleTexture.Height / 2f);
-        float baseScale = (float)CellSize / _circleTexture.Width;
+        var textureCenter = new Vector2(_roundedRectTexture.Width / 2f, _roundedRectTexture.Height / 2f);
         Span<Structure> structurePopulationSpan = _structurePopulation.AsSpan();
         livingStructures = structurePopulationSpan.Length;
         for (int i = 0; i < structurePopulationSpan.Length; i++)
@@ -442,8 +441,8 @@ public class VivariumGame : Game
 
             // Calculate screen position
             Vector2 position = new Vector2(
-                structure.X * CellSize,
-                structure.Y * CellSize
+                structure.X * CellSize + HalfCellSize,
+                structure.Y * CellSize + HalfCellSize
             );
             _spriteBatch.Draw(
                 _roundedRectTexture,
@@ -462,8 +461,8 @@ public class VivariumGame : Game
     private int DrawPlants(out int livingPlants)
     {
         livingPlants = 0;
-        var textureCenter = new Vector2(_circleTexture.Width / 2f, _circleTexture.Height / 2f);
-        float baseScale = (float)CellSize / _circleTexture.Width;
+        var textureCenter = new Vector2(_starTexture.Width / 2f, _starTexture.Height / 2f);
+        float baseScale = (float)CellSize / _starTexture.Width;
 
         const float plantAgeGrowthFactor = 1.0f / Plant.MaturityAge;
 

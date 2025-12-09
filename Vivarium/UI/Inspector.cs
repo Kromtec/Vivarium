@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Text;
+using System;
 using Vivarium.Entities;
 using Vivarium.World;
 using Vivarium.Engine;
@@ -18,56 +18,59 @@ public class Inspector
     public bool IsEntitySelected { get; private set; }
     public Point SelectedGridPos { get; private set; }
     public EntityType SelectedType { get; private set; }
-    private int _selectedIndex; // Index in the respective array
+    private int _selectedIndex;
 
-    // UI Layout
-    private Rectangle _uiBounds;
+    // Layout Settings
+    private Rectangle _panelRect;
+    private int _cursorY;
+    private const int Padding = 15;
+    private const int LineHeight = 22;
+    private const int HighlightBorderThickness = 1;
+
+    // Colors (Modern Palette)
+    private readonly Color _panelBgColor = new Color(30, 30, 35, 230); // Dark Slate, semi-transparent
+    private readonly Color _borderColor = new Color(60, 60, 70);
+    private readonly Color _labelColor = new Color(180, 180, 190);     // Light Grey
+    private readonly Color _valueColor = Color.White;
+    private readonly Color _headerColor = new Color(100, 200, 255);    // Soft Cyan
 
     public Inspector(GraphicsDevice graphics, SpriteFont font)
     {
         _font = font;
-
-        // Create a simple 1x1 white texture for drawing the UI background box
         _pixelTexture = new Texture2D(graphics, 1, 1);
         _pixelTexture.SetData(new[] { Color.White });
 
-        // Define UI Panel size (Top Left corner)
-        _uiBounds = new Rectangle(10, 10, 300, 400);
+        // Fixed panel position (Top Left)
+        _panelRect = new Rectangle(20, 20, 320, 0); // Height calculates dynamically
     }
 
     public void UpdateInput(Camera2D camera, GridCell[,] gridMap)
     {
         var mouseState = Mouse.GetState();
 
-        // Check for Left Click to Select
-        // Ensure we only click inside the game world, not on the UI (optional check)
+        // Left Click to Select
         if (mouseState.LeftButton == ButtonState.Pressed)
         {
-            // 1. Convert Screen Coordinates (Mouse) to World Coordinates (Grid)
-            Vector2 mouseScreen = new Vector2(mouseState.X, mouseState.Y);
-            Vector2 mouseWorld = camera.ScreenToWorld(mouseScreen);
+            // UI Blocking: Don't select world if clicking inside the panel area
+            // (Only works if panel is drawn, keeping height dynamic is tricky, 
+            // but we can assume a max height or store last frame height)
+            if (IsEntitySelected && _panelRect.Contains(mouseState.Position)) return;
 
-            // 2. Convert World Coordinates to Grid Index
-            // Assuming CellSize is global or passed in. Let's assume 10 for now, 
-            // but ideally pass 'cellSize' or calculate it.
-            // CAREFUL: You need access to CellSize here. Let's pass it or assume standard.
-            // Better: Pass calculated grid coordinates from Game class or calculate here if CellSize is known.
-            int cellSize = 10; // TODO: Pass this from outside or make it a const in a Config class
+            Vector2 mouseWorld = camera.ScreenToWorld(new Vector2(mouseState.X, mouseState.Y));
 
+            // Assume CellSize = 10 (should be passed in config ideally)
+            int cellSize = 10;
             int gx = (int)(mouseWorld.X / cellSize);
             int gy = (int)(mouseWorld.Y / cellSize);
 
             int w = gridMap.GetLength(0);
             int h = gridMap.GetLength(1);
 
-            // Check Bounds
             if (gx >= 0 && gx < w && gy >= 0 && gy < h)
             {
                 var cell = gridMap[gx, gy];
-
                 if (cell.Type != EntityType.Empty)
                 {
-                    // Select!
                     IsEntitySelected = true;
                     SelectedGridPos = new Point(gx, gy);
                     SelectedType = cell.Type;
@@ -75,7 +78,6 @@ public class Inspector
                 }
                 else
                 {
-                    // Deselect if clicking empty space
                     IsEntitySelected = false;
                 }
             }
@@ -86,15 +88,33 @@ public class Inspector
     {
         if (!IsEntitySelected) return;
 
-        // Draw Background Panel (Semi-transparent black)
-        spriteBatch.Draw(_pixelTexture, _uiBounds, Color.Black * 0.7f);
+        // 1. Calculate Content Height dynamically based on what we select
+        // This is a bit "hacky" in immediate mode, we just guess/resize or draw background first.
+        // Let's set a fixed decent height or make it huge.
+        // Better: Draw background AFTER knowing lines? Harder.
+        // Simple approach: Draw Background with fixed/large height or adjust per frame.
+        int contentHeight = 450;
+        _panelRect.Height = contentHeight;
 
-        // Prepare Info Text
-        StringBuilder text = new StringBuilder();
+        // Draw Panel Shadow & Background
+        spriteBatch.Draw(_pixelTexture, new Rectangle(_panelRect.X + 4, _panelRect.Y + 4, _panelRect.Width, _panelRect.Height), Color.Black * 0.5f);
+        spriteBatch.Draw(_pixelTexture, _panelRect, _panelBgColor);
 
-        text.AppendLine($"--- INSPECTOR ---");
-        text.AppendLine($"Pos: {SelectedGridPos.X}, {SelectedGridPos.Y}");
-        text.AppendLine($"Type: {SelectedType}");
+        // Draw Border
+        DrawBorder(spriteBatch, _panelRect, 1, _borderColor);
+
+        // Reset Cursor
+        _cursorY = _panelRect.Y + Padding;
+
+        // --- HEADER ---
+        DrawHeader(spriteBatch, $"{SelectedType.ToString().ToUpper()}");
+        DrawSeparator(spriteBatch);
+
+        // --- CONTENT ---
+        DrawRow(spriteBatch, "Grid Pos", $"{SelectedGridPos.X}/{SelectedGridPos.Y}");
+        DrawRow(spriteBatch, "Index ID", $"#{_selectedIndex}");
+
+        DrawSeparator(spriteBatch);
 
         switch (SelectedType)
         {
@@ -104,22 +124,22 @@ public class Inspector
                     ref Agent agent = ref agents[_selectedIndex];
                     if (agent.IsAlive)
                     {
-                        text.AppendLine($"ID: {_selectedIndex}");
-                        text.AppendLine($"Gen: {agent.Generation}");
-                        text.AppendLine($"Age: {agent.Age:F0}");
-                        text.AppendLine($"Energy: {agent.Energy:F1}");
+                        DrawRow(spriteBatch, "Generation", $"{agent.Generation}");
+                        DrawRow(spriteBatch, "Age", $"{agent.Age:F0} ticks");
+                        DrawProgressBar(spriteBatch, "Energy", agent.Energy, 100f, Color.Lerp(Color.Red, Color.Lime, agent.Energy / 100f));
 
-                        text.AppendLine("--- BRAIN ---");
-                        // Let's show the output neurons to see what it WANTS to do
-                        text.AppendLine($"Mv North: {GetActionVal(ref agent, ActionType.MoveNorth):F2}");
-                        text.AppendLine($"Mv South: {GetActionVal(ref agent, ActionType.MoveSouth):F2}");
-                        text.AppendLine($"Mv East:  {GetActionVal(ref agent, ActionType.MoveEast):F2}");
-                        text.AppendLine($"Mv West:  {GetActionVal(ref agent, ActionType.MoveWest):F2}");
-                        text.AppendLine($"Attack:   {GetActionVal(ref agent, ActionType.Attack):F2}");
+                        DrawSeparator(spriteBatch);
+                        DrawHeader(spriteBatch, "BRAIN ACTIVITY");
+
+                        // Outputs (Actions) - visualize with centered bars (-1 to 1)
+                        DrawBrainBar(spriteBatch, "Move N/S", GetActionVal(ref agent, ActionType.MoveNorth) - GetActionVal(ref agent, ActionType.MoveSouth));
+                        DrawBrainBar(spriteBatch, "Move W/E", GetActionVal(ref agent, ActionType.MoveEast) - GetActionVal(ref agent, ActionType.MoveWest));
+                        DrawBrainBar(spriteBatch, "Attack", GetActionVal(ref agent, ActionType.Attack), isPositiveOnly: true);
+                        DrawBrainBar(spriteBatch, "Suicide", GetActionVal(ref agent, ActionType.KillSelf), isPositiveOnly: true);
                     }
                     else
                     {
-                        text.AppendLine("(DEAD)");
+                        DrawHeader(spriteBatch, "STATUS: DECEASED", Color.Red);
                     }
                 }
                 break;
@@ -128,51 +148,158 @@ public class Inspector
                 if (_selectedIndex >= 0 && _selectedIndex < plants.Length)
                 {
                     ref Plant plant = ref plants[_selectedIndex];
-                    text.AppendLine($"Energy: {plant.Energy:F1}");
-                    text.AppendLine(plant.IsAlive ? "(Growing)" : "(Dead)");
+                    DrawProgressBar(spriteBatch, "Energy", plant.Energy, 100f, Color.Green);
+                    DrawRow(spriteBatch, "Status", plant.IsAlive ? "Growing" : "Withered");
                 }
                 break;
 
             case EntityType.Structure:
-                text.AppendLine($"ID: {_selectedIndex}");
-                text.AppendLine("Immovable Object.");
+                DrawRow(spriteBatch, "Material", "Stone");
+                DrawRow(spriteBatch, "Durability", "Infinite");
                 break;
         }
-
-        // Draw Text
-        spriteBatch.DrawString(_font, text, new Vector2(_uiBounds.X + 10, _uiBounds.Y + 10), Color.White);
     }
 
-    // Helper to peek into the brain
-    private float GetActionVal(ref Agent agent, ActionType type)
-    {
-        int idx = BrainConfig.GetActionIndex(type);
-        return agent.NeuronActivations[idx];
-    }
-
-    // Optional: Draw a marker in World Space around the selected entity
+    // --- SELECTION MARKER (World Space) ---
     public void DrawSelectionMarker(SpriteBatch spriteBatch, int cellSize)
     {
         if (!IsEntitySelected) return;
 
-        Vector2 pos = new Vector2(
-            SelectedGridPos.X * cellSize,
-            SelectedGridPos.Y * cellSize
+        // 1. Calculate the exact CENTER of the selected cell
+        Vector2 cellCenter = new Vector2(
+            (SelectedGridPos.X * cellSize) + (cellSize / 2.0f) + HighlightBorderThickness,
+            (SelectedGridPos.Y * cellSize) + (cellSize / 2.0f) + HighlightBorderThickness
         );
 
-        // Draw a hollow rectangle (4 lines) using the pixel texture
-        int size = cellSize;
-        int borderThickness = 2;
+        // 2. Calculate the pulsed size (current width/height)
+        // Sine wave from 0.8 to 1.2
+        float pulse = ((float)Math.Sin(DateTime.Now.TimeOfDay.TotalSeconds * 10) * 0.2f) + 1.0f;
+        float currentSize = cellSize * pulse + (HighlightBorderThickness * 2);
 
-        Color highlightColor = Color.LightGoldenrodYellow;
+        // 3. Calculate Top-Left position based on Center and Size
+        // This ensures it expands equally in all directions
+        float halfSize = currentSize / 2.0f;
 
-        // Top
-        spriteBatch.Draw(_pixelTexture, new Rectangle((int)pos.X, (int)pos.Y, size, borderThickness), highlightColor);
-        // Bottom
-        spriteBatch.Draw(_pixelTexture, new Rectangle((int)pos.X, (int)pos.Y + size - borderThickness, size, borderThickness), highlightColor);
-        // Left
-        spriteBatch.Draw(_pixelTexture, new Rectangle((int)pos.X, (int)pos.Y, borderThickness, size), highlightColor);
-        // Right
-        spriteBatch.Draw(_pixelTexture, new Rectangle((int)pos.X + size - borderThickness, (int)pos.Y, borderThickness, size), highlightColor);
+        Rectangle r = new Rectangle(
+            (int)(cellCenter.X - halfSize),
+            (int)(cellCenter.Y - halfSize),
+            (int)currentSize,
+            (int)currentSize
+        );
+
+        DrawBorder(spriteBatch, r, HighlightBorderThickness, Color.Cyan);
+    }
+
+    // --- UI HELPER METHODS ---
+
+    private void DrawHeader(SpriteBatch sb, string text, Color? color = null)
+    {
+        sb.DrawString(_font, text, new Vector2(_panelRect.X + Padding, _cursorY), color ?? _headerColor);
+        _cursorY += LineHeight + 5;
+    }
+
+    private void DrawRow(SpriteBatch sb, string label, string value)
+    {
+        int leftX = _panelRect.X + Padding;
+        int rightX = _panelRect.X + _panelRect.Width - Padding;
+
+        // Draw Label
+        sb.DrawString(_font, label, new Vector2(leftX, _cursorY), _labelColor);
+
+        // Measure Value to align right
+        Vector2 valSize = _font.MeasureString(value);
+        sb.DrawString(_font, value, new Vector2(rightX - valSize.X, _cursorY), _valueColor);
+
+        _cursorY += LineHeight;
+    }
+
+    private void DrawSeparator(SpriteBatch sb)
+    {
+        _cursorY += 5;
+        sb.Draw(_pixelTexture, new Rectangle(_panelRect.X + Padding, _cursorY, _panelRect.Width - (Padding * 2), 1), _borderColor);
+        _cursorY += 10;
+    }
+
+    private void DrawProgressBar(SpriteBatch sb, string label, float value, float max, Color barColor)
+    {
+        int leftX = _panelRect.X + Padding;
+        int rightX = _panelRect.X + _panelRect.Width - Padding;
+        int barWidth = 100;
+        int barHeight = 12;
+
+        // Draw Label
+        sb.DrawString(_font, label, new Vector2(leftX, _cursorY), _labelColor);
+
+        // Draw Bar Background
+        Rectangle barBg = new Rectangle(rightX - barWidth, _cursorY + 4, barWidth, barHeight);
+        sb.Draw(_pixelTexture, barBg, Color.Black * 0.5f);
+
+        // Draw Bar Fill
+        float pct = Math.Clamp(value / max, 0f, 1f);
+        Rectangle barFill = new Rectangle(rightX - barWidth, _cursorY + 4, (int)(barWidth * pct), barHeight);
+        sb.Draw(_pixelTexture, barFill, barColor);
+
+        _cursorY += LineHeight;
+    }
+
+    // Special bar for Neural Values (-1 to 1) or (0 to 1)
+    private void DrawBrainBar(SpriteBatch sb, string label, float value, bool isPositiveOnly = false)
+    {
+        int leftX = _panelRect.X + Padding;
+        int rightX = _panelRect.X + _panelRect.Width - Padding;
+        int barWidth = 100;
+        int barHeight = 10;
+        int barY = _cursorY + 5;
+
+        sb.DrawString(_font, label, new Vector2(leftX, _cursorY), _labelColor);
+
+        // Background
+        Rectangle bgRect = new Rectangle(rightX - barWidth, barY, barWidth, barHeight);
+        sb.Draw(_pixelTexture, bgRect, Color.Black * 0.5f);
+
+        // Center line
+        int centerX = bgRect.X + (barWidth / 2);
+
+        if (isPositiveOnly)
+        {
+            // 0 to 1 (Left to Right)
+            float pct = Math.Clamp(value, 0f, 1f);
+            sb.Draw(_pixelTexture, new Rectangle(bgRect.X, barY, (int)(barWidth * pct), barHeight), Color.OrangeRed);
+        }
+        else
+        {
+            // -1 to 1 (Center outward)
+            sb.Draw(_pixelTexture, new Rectangle(centerX, barY - 2, 1, barHeight + 4), Color.Gray); // Center notch
+
+            float valClamped = Math.Clamp(value, -1f, 1f);
+            int fillWidth = (int)((barWidth / 2) * Math.Abs(valClamped));
+
+            if (valClamped > 0)
+            {
+                // Right side (Greenish)
+                sb.Draw(_pixelTexture, new Rectangle(centerX, barY, fillWidth, barHeight), Color.Cyan);
+            }
+            else
+            {
+                // Left side (Reddish)
+                sb.Draw(_pixelTexture, new Rectangle(centerX - fillWidth, barY, fillWidth, barHeight), Color.Magenta);
+            }
+        }
+
+        _cursorY += LineHeight;
+    }
+
+    private void DrawBorder(SpriteBatch sb, Rectangle r, int thickness, Color c)
+    {
+        sb.Draw(_pixelTexture, new Rectangle(r.X, r.Y, r.Width, thickness), c); // Top
+        sb.Draw(_pixelTexture, new Rectangle(r.X, r.Y + r.Height - thickness, r.Width, thickness), c); // Bottom
+        sb.Draw(_pixelTexture, new Rectangle(r.X, r.Y, thickness, r.Height), c); // Left
+        sb.Draw(_pixelTexture, new Rectangle(r.X + r.Width - thickness, r.Y, thickness, r.Height), c); // Right
+    }
+
+    private static float GetActionVal(ref Agent agent, ActionType type)
+    {
+        int idx = BrainConfig.GetActionIndex(type);
+        return agent.NeuronActivations[idx];
     }
 }
