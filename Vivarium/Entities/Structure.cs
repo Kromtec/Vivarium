@@ -4,6 +4,7 @@ namespace Vivarium.Entities;
 
 public struct Structure
 {
+    public long Id { get; set; } // Unique identifier for tracking across generations
     public int Index { get; set; }
     public int X { get; set; }
     public int Y { get; set; }
@@ -30,6 +31,7 @@ public struct Structure
     {
         return new Structure()
         {
+            Id = VivariumGame.NextEntityId++,
             Index = index,
             X = x,
             Y = y,

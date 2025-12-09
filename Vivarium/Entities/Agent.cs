@@ -13,10 +13,12 @@ public struct Agent
     public const int MaturityAge = 60 * 4; // Frames until agent can reproduce after birth (4 seconds at 60 FPS)
     private Color originalColor;
 
+    public long Id { get; set; } // Unique identifier for tracking across generations
     public int Index { get; set; }
     public int X { get; set; }
     public int Y { get; set; }
 
+    public long ParentId { get; set; }
     public int ParentIndex { get; set; }
 
     public Color OriginalColor
@@ -173,19 +175,21 @@ public struct Agent
         // Apply Mutation to the genome of the parent to create the child's genome
         Genetics.Mutate(ref genome, rng);
 
-        Agent child = ConstructAgent(index, x, y, genome, parent.Index);
+        Agent child = ConstructAgent(index, x, y, genome, parent);
         child.Generation = parent.Generation + 1;
         return child;
     }
 
-    private static Agent ConstructAgent(int index, int x, int y, Gene[] genome, int parentIndex = -1)
+    private static Agent ConstructAgent(int index, int x, int y, Gene[] genome, Agent? parent = null)
     {
         return new Agent()
         {
+            Id = VivariumGame.NextEntityId++,
             Index = index,
             X = x,
             Y = y,
-            ParentIndex = parentIndex,
+            ParentId = parent?.Id ?? -1,
+            ParentIndex = parent?.Index ?? -1,
             OriginalColor = Genetics.ComputePhenotypeColor(genome),
             IsAlive = true,
             Energy = 100f,

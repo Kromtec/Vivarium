@@ -13,6 +13,8 @@ namespace Vivarium;
 
 public class VivariumGame : Game
 {
+    public static long NextEntityId { get; set; } = 1;
+
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private Texture2D _pixelTexture;
@@ -28,6 +30,7 @@ public class VivariumGame : Game
     private const int AgentCount = GridWidth * GridHeight / 8;
     private const int PlantCount = GridWidth * GridHeight / 32;
     private const int StructureCount = GridWidth * GridHeight / 64;
+    public const double FramesPerSecond = 60d;
 
     // Using .NET 10 specific array pooling optimizations if we wanted, 
     // but a simple array is fine for now.
@@ -58,7 +61,7 @@ public class VivariumGame : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
-        TargetElapsedTime = TimeSpan.FromSeconds(1d / 60d);
+        TargetElapsedTime = TimeSpan.FromSeconds(1d / FramesPerSecond);
 
         // VS 2026 / .NET 10 defaults to high-performance garbage collection settings
         // but we ensure we run at fixed time step for simulation stability.
@@ -300,7 +303,7 @@ public class VivariumGame : Game
         // CAMERA UPDATE
         _camera.HandleInput(currentMouseState, currentKeyboardState);
 
-        _inspector.UpdateInput(_camera, _gridMap);
+        _inspector.UpdateInput(_camera, _gridMap, _agentPopulation, _plantPopulation, _structurePopulation);
 
         // --- 2. SIMULATION
         if (!_isPaused || singleStep)

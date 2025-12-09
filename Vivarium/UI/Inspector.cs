@@ -18,6 +18,7 @@ public class Inspector
     public bool IsEntitySelected { get; private set; }
     public Point SelectedGridPos { get; private set; }
     public EntityType SelectedType { get; private set; }
+    private long _selectedEntityId = -1;
     private int _selectedIndex;
 
     // Layout Settings
@@ -44,7 +45,7 @@ public class Inspector
         _panelRect = new Rectangle(20, 20, 320, 0); // Height calculates dynamically
     }
 
-    public void UpdateInput(Camera2D camera, GridCell[,] gridMap)
+    public void UpdateInput(Camera2D camera, GridCell[,] gridMap, Agent[] agents, Plant[] plants, Structure[] structures)
     {
         var mouseState = Mouse.GetState();
 
@@ -75,10 +76,44 @@ public class Inspector
                     SelectedGridPos = new Point(gx, gy);
                     SelectedType = cell.Type;
                     _selectedIndex = cell.Index;
+                    if (SelectedType == EntityType.Agent)
+                    {
+                        _selectedEntityId = agents[_selectedIndex].Id;
+                    }
+                    else if (SelectedType == EntityType.Plant)
+                    {
+                        _selectedEntityId = plants[_selectedIndex].Id;
+                    }
+                    else if (SelectedType == EntityType.Structure)
+                    {
+                        _selectedEntityId = structures[_selectedIndex].Id;
+                    }
+                    else
+                    {
+                        _selectedEntityId = -1;
+                    }
                 }
                 else
                 {
                     IsEntitySelected = false;
+                }
+            }
+        }
+
+        // 2.AGENT TRACKING LOGIC
+        if (IsEntitySelected && SelectedType == EntityType.Agent)
+        {
+            if (_selectedIndex >= 0 && _selectedIndex < agents.Length)
+            {
+                ref Agent trackedAgent = ref agents[_selectedIndex];
+
+                if (trackedAgent.Id == _selectedEntityId && trackedAgent.IsAlive)
+                {
+                    SelectedGridPos = new Point(trackedAgent.X, trackedAgent.Y);
+                }
+                else
+                {
+                    // AGENT DIED OR CHANGED - CLEAR SELECTION
                 }
             }
         }
@@ -122,10 +157,11 @@ public class Inspector
                 if (_selectedIndex >= 0 && _selectedIndex < agents.Length)
                 {
                     ref Agent agent = ref agents[_selectedIndex];
-                    if (agent.IsAlive)
+                    bool isSameAgent = (agent.Id == _selectedEntityId);
+                    if (isSameAgent && agent.IsAlive)
                     {
                         DrawRow(spriteBatch, "Generation", $"{agent.Generation}");
-                        DrawRow(spriteBatch, "Age", $"{agent.Age:F0} ticks");
+                        DrawRow(spriteBatch, "Age", $"{agent.Age:F0} ticks | {agent.Age / VivariumGame.FramesPerSecond:F0} s");
                         DrawProgressBar(spriteBatch, "Energy", agent.Energy, 100f, Color.Lerp(Color.Red, Color.Lime, agent.Energy / 100f));
 
                         DrawSeparator(spriteBatch);
@@ -148,8 +184,17 @@ public class Inspector
                 if (_selectedIndex >= 0 && _selectedIndex < plants.Length)
                 {
                     ref Plant plant = ref plants[_selectedIndex];
-                    DrawProgressBar(spriteBatch, "Energy", plant.Energy, 100f, Color.Green);
-                    DrawRow(spriteBatch, "Status", plant.IsAlive ? "Growing" : "Withered");
+                    bool isSameAgent = (plant.Id == _selectedEntityId);
+                    if (isSameAgent && plant.IsAlive)
+                    {
+                        DrawRow(spriteBatch, "Age", $"{plant.Age:F0} ticks | {plant.Age / VivariumGame.FramesPerSecond:F0} s");
+                        DrawProgressBar(spriteBatch, "Energy", plant.Energy, 100f, Color.Green);
+                        DrawRow(spriteBatch, "Status", plant.Age < Plant.MaturityAge ? "Growing" : "Mature");
+                    }
+                    else
+                    {
+                        DrawHeader(spriteBatch, "STATUS: DECEASED", Color.Red);
+                    }
                 }
                 break;
 

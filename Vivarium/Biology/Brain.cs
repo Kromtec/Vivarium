@@ -154,7 +154,9 @@ public static class Brain
                 {
                     int victimIndex = gridMap[pendingX, pendingY].Index;
                     ref Agent victim = ref agentPopulationSpan[victimIndex];
-                    if (victim.Energy > 0 && victim.Index != agent.ParentIndex && victim.ParentIndex != agent.Index)
+                    if (victim.Energy > 0 &&
+                        victim.Index != agent.ParentIndex && victim.ParentIndex != agent.Index &&
+                        victim.Id != agent.ParentId && victim.ParentId != agent.Id)
                     {
                         const float damage = 15f;
                         // Victim loses energy

@@ -9,6 +9,7 @@ public struct Plant
     public const float ShrivelRate = 0.5f; // Energy lost per frame
     public const int MaturityAge = 60 * 2; // Frames until agent can reproduce after birth (2 seconds at 60 FPS)
 
+    public long Id { get; set; } // Unique identifier for tracking across generations
     public int Index { get; set; }
     public int X { get; set; }
     public int Y { get; set; }
@@ -154,6 +155,7 @@ public struct Plant
     {
         return new Plant()
         {
+            Id = VivariumGame.NextEntityId++,
             Index = index,
             X = x,
             Y = y,
