@@ -9,7 +9,16 @@ namespace Vivarium.Entities;
 // Using a struct for memory efficiency (Stack allocated / packed in arrays)
 public struct Agent
 {
-    public const float MetabolismRate = 0.2f; // Energy lost per frame
+    // Reproduction Thermodynamics
+    public const float ReproductionCost = 15.0f;       // Wasted energy (effort)
+    public const float ChildStartingEnergy = 75.0f;    // Transfer to child
+    // Buffer to ensure parent survives the process
+    public const float MinEnergyToReproduce = ReproductionCost + 5f;
+
+    // Driven by neural network output
+    public bool WantsToReproduce { get; set; }
+
+    public const float MetabolismRate = 0.05f; // Energy lost per frame
     public const int MaturityAge = 60 * 4; // Frames until agent can reproduce after birth (4 seconds at 60 FPS)
     private Color originalColor;
 
@@ -89,6 +98,13 @@ public struct Agent
 
     public readonly void TryReproduce(Span<Agent> population, GridCell[,] gridMap, Random rng)
     {
+        // 1. Biological Checks
+        // Must want to reproduce and have enough energy reserves
+        if (!WantsToReproduce || Energy < MinEnergyToReproduce)
+        {
+            return;
+        }
+
         int gridWidth = gridMap.GetLength(0);
         int gridHeight = gridMap.GetLength(1);
 
@@ -149,10 +165,11 @@ public struct Agent
         // Create the child using our Genetics helper
         ref Agent childSlot = ref population[childIndex];
 
-        childSlot = Genetics.Replicate(ref parent, childIndex, childX, childY, rng);
+        childSlot = Genetics.Replicate(ref parent, childIndex, childX, childY, rng, ChildStartingEnergy);
 
         // 4. COST
-        parent.ChangeEnergy(-2f, gridMap); // Giving birth is exhausting
+        float totalCost = ReproductionCost + ChildStartingEnergy;
+        parent.ChangeEnergy(-totalCost, gridMap); // Giving birth is exhausting
 
         // Update map so nobody else claims this spot this frame
         gridMap[childX, childY] = new(EntityType.Agent, childIndex);
@@ -170,17 +187,17 @@ public struct Agent
         return ConstructAgent(index, x, y, initialGenome);
     }
 
-    public static Agent CreateChild(int index, int x, int y, Random rng, Gene[] genome, ref Agent parent)
+    public static Agent CreateChild(int index, int x, int y, Random rng, Gene[] genome, ref Agent parent, float initialEnergy)
     {
         // Apply Mutation to the genome of the parent to create the child's genome
         Genetics.Mutate(ref genome, rng);
 
-        Agent child = ConstructAgent(index, x, y, genome, parent);
+        Agent child = ConstructAgent(index, x, y, genome, parent, initialEnergy);
         child.Generation = parent.Generation + 1;
         return child;
     }
 
-    private static Agent ConstructAgent(int index, int x, int y, Gene[] genome, Agent? parent = null)
+    private static Agent ConstructAgent(int index, int x, int y, Gene[] genome, Agent? parent = null, float? initialEnergy = null)
     {
         return new Agent()
         {
@@ -192,7 +209,7 @@ public struct Agent
             ParentIndex = parent?.Index ?? -1,
             OriginalColor = Genetics.ComputePhenotypeColor(genome),
             IsAlive = true,
-            Energy = 100f,
+            Energy = initialEnergy ?? 100f,
             Genome = genome,
             NeuronActivations = new float[BrainConfig.NeuronCount]
         };

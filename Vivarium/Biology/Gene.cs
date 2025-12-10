@@ -33,6 +33,21 @@ public readonly struct Gene
     // Neural networks work better with small float values.
     public float Weight => RawWeight / 8192.0f;
 
+    public static Gene CreateConnection(int source, int sink, float weight)
+    {
+        // Clamp weight to prevent overflow logic errors
+        float clampedWeight = Math.Clamp(weight, -4.0f, 4.0f);
+
+        // Encode float to 16-bit signed integer (short)
+        // Multiplier 8192.0f gives us precision of approx 0.0001
+        int weightInt = (int)(clampedWeight * 8192.0f);
+
+        // Pack bits: [Weight 16][Sink 8][Source 8]
+        uint dna = (uint)((weightInt << 16) | (sink << 8) | source);
+
+        return new Gene(dna);
+    }
+
     public override string ToString()
     {
         return $"In:{SourceId} -> Out:{SinkId} (W:{Weight:F2})";

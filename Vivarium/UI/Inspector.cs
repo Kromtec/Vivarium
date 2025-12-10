@@ -147,7 +147,7 @@ public class Inspector
 
         // --- CONTENT ---
         DrawRow(spriteBatch, "Grid Pos", $"{SelectedGridPos.X}/{SelectedGridPos.Y}");
-        DrawRow(spriteBatch, "Index ID", $"#{_selectedIndex}");
+        DrawRow(spriteBatch, "Index", $"{_selectedIndex}");
 
         DrawSeparator(spriteBatch);
 
@@ -160,6 +160,7 @@ public class Inspector
                     bool isSameAgent = (agent.Id == _selectedEntityId);
                     if (isSameAgent && agent.IsAlive)
                     {
+                        DrawRow(spriteBatch, "ID", $"#{agent.Id}");
                         DrawRow(spriteBatch, "Generation", $"{agent.Generation}");
                         DrawRow(spriteBatch, "Age", $"{agent.Age:F0} ticks | {agent.Age / VivariumGame.FramesPerSecond:F0} s");
                         DrawProgressBar(spriteBatch, "Energy", agent.Energy, 100f, Color.Lerp(Color.Red, Color.Lime, agent.Energy / 100f));
@@ -171,6 +172,7 @@ public class Inspector
                         DrawBrainBar(spriteBatch, "Move N/S", GetActionVal(ref agent, ActionType.MoveNorth) - GetActionVal(ref agent, ActionType.MoveSouth));
                         DrawBrainBar(spriteBatch, "Move W/E", GetActionVal(ref agent, ActionType.MoveEast) - GetActionVal(ref agent, ActionType.MoveWest));
                         DrawBrainBar(spriteBatch, "Attack", GetActionVal(ref agent, ActionType.Attack), isPositiveOnly: true);
+                        DrawBrainBar(spriteBatch, "Reproduce", GetActionVal(ref agent, ActionType.Reproduce), isPositiveOnly: true);
                         DrawBrainBar(spriteBatch, "Suicide", GetActionVal(ref agent, ActionType.KillSelf), isPositiveOnly: true);
                     }
                     else
@@ -184,29 +186,43 @@ public class Inspector
                 if (_selectedIndex >= 0 && _selectedIndex < plants.Length)
                 {
                     ref Plant plant = ref plants[_selectedIndex];
-                    bool isSameAgent = (plant.Id == _selectedEntityId);
-                    if (isSameAgent && plant.IsAlive)
+                    bool isSamePlant = (plant.Id == _selectedEntityId);
+                    if (isSamePlant && plant.IsAlive)
                     {
+                        DrawRow(spriteBatch, "ID", $"#{plant.Id}");
                         DrawRow(spriteBatch, "Age", $"{plant.Age:F0} ticks | {plant.Age / VivariumGame.FramesPerSecond:F0} s");
                         DrawProgressBar(spriteBatch, "Energy", plant.Energy, 100f, Color.Green);
                         DrawRow(spriteBatch, "Status", plant.Age < Plant.MaturityAge ? "Growing" : "Mature");
                     }
                     else
                     {
-                        DrawHeader(spriteBatch, "STATUS: DECEASED", Color.Red);
+                        DrawHeader(spriteBatch, "STATUS: WITHERED", Color.Red);
                     }
                 }
                 break;
 
             case EntityType.Structure:
-                DrawRow(spriteBatch, "Material", "Stone");
-                DrawRow(spriteBatch, "Durability", "Infinite");
+                if (_selectedIndex >= 0 && _selectedIndex < structures.Length)
+                {
+                    ref Structure structure = ref structures[_selectedIndex];
+                    bool isSameStructure = (structure.Id == _selectedEntityId);
+                    if (isSameStructure)
+                    {
+                        DrawRow(spriteBatch, "ID", $"#{structure.Id}");
+                        DrawRow(spriteBatch, "Material", "Stone");
+                        DrawRow(spriteBatch, "Durability", "Infinite");
+                    }
+                    else
+                    {
+                        DrawHeader(spriteBatch, "STATUS: ERROR", Color.Red);
+                    }
+                }
                 break;
         }
     }
 
     // --- SELECTION MARKER (World Space) ---
-    public void DrawSelectionMarker(SpriteBatch spriteBatch, int cellSize)
+    public void DrawSelectionMarker(SpriteBatch spriteBatch, int cellSize, float totalTime)
     {
         if (!IsEntitySelected) return;
 
@@ -218,8 +234,8 @@ public class Inspector
 
         // 2. Calculate the pulsed size (current width/height)
         // Sine wave from 0.8 to 1.2
-        float pulse = ((float)Math.Sin(DateTime.Now.TimeOfDay.TotalSeconds * 10) * 0.2f) + 1.0f;
-        float currentSize = cellSize * pulse + (HighlightBorderThickness * 2);
+        float pulse = ((float)Math.Sin(totalTime * 10f) * 0.2f) + 1.0f;
+        float currentSize = (cellSize * pulse) + (HighlightBorderThickness * 2);
 
         // 3. Calculate Top-Left position based on Center and Size
         // This ensures it expands equally in all directions

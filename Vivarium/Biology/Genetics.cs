@@ -7,7 +7,7 @@ namespace Vivarium.Biology;
 public static class Genetics
 {
     // The probability that a single gene will mutate.
-    private const double MutationRate = 0.001;
+    private const double MutationRate = 0.001d;
 
     /// <summary>
     /// Applies mutations to an agent's genome in place.
@@ -41,7 +41,7 @@ public static class Genetics
     /// Creates a deep copy of an agent (Replication).
     /// Used when a parent spawns a child.
     /// </summary>
-    public static Agent Replicate(ref Agent parent, int index, int x, int y, Random rng)
+    public static Agent Replicate(ref Agent parent, int index, int x, int y, Random rng, float initialEnergy)
     {
         // Copy Genome (Crucial: Arrays are reference types, so we need a manual copy)
         // In .NET 10, we can use Array.Clone() or copy manually.
@@ -49,102 +49,86 @@ public static class Genetics
         Array.Copy(parent.Genome, genomeCopy, parent.Genome.Length);
 
         // Create new agent structure
-        return Agent.CreateChild(index, x, y, rng, genomeCopy, ref parent);
+        return Agent.CreateChild(index, x, y, rng, genomeCopy, ref parent, initialEnergy);
     }
 
-    /// <summary>
-    /// Creates a new genome consisting of randomly generated genes using the specified random number generator.
-    /// </summary>
-    /// <remarks>Each gene in the returned genome is initialized with a random 32-bit value. The method always
-    /// returns an array of length 24.</remarks>
-    /// <param name="rng">The random number generator used to produce gene values. Cannot be null.</param>
-    /// <returns>An array of 24 randomly generated genes representing a new genome.</returns>
     public static Gene[] CreateGenome(Random rng)
     {
-        // Define how many genes/connections each brain has
         const int GenomeLength = 24;
-
         var initialGenome = new Gene[GenomeLength];
+
         for (int g = 0; g < GenomeLength; g++)
         {
-            // Create a completely random gene (random input, random output, random weight)
-            // We use (uint)_rng.Next() to get a full 32-bit random number.
-            // However, Random.Next() only returns non-negative Int32 (31 bits).
-            // Better full 32-bit random:
-            uint randomDna = (uint)(rng.Next(1 << 30)) << 2 | (uint)(rng.Next(1 << 2));
+            // 1. Random Topology (Any Sensor -> Any Neuron)
+            int source = rng.Next(BrainConfig.NeuronCount);
+            int sink = rng.Next(BrainConfig.NeuronCount);
 
-            initialGenome[g] = new Gene(randomDna);
+            // 2. "Peaceful Start" Weights
+            float weight = (float)(rng.NextDouble() * 2.0 - 1.0);
+
+            initialGenome[g] = Gene.CreateConnection(source, sink, weight);
         }
 
         return initialGenome;
     }
-
     public static Color ComputePhenotypeColor(Gene[] genome)
     {
-        float aggressionScore = 0f;
-        float movementScore = 0f;
-        float complexityScore = 0f; // Represents internal wiring/intelligence
+        float aggressionSum = 0f;
+        float movementSum = 0f;
+        float complexitySum = 0f;
 
         foreach (var gene in genome)
         {
-            float power = Math.Abs(gene.Weight);
+            // Use absolute values so negative weights also contribute to visibility
+            float weight = Math.Abs(gene.Weight);
             int sink = gene.SinkId;
 
-            // 1. CALCULATE SCORES
+            // 1. SUM UP WEIGHTS (Don't average yet)
             if (sink == BrainConfig.GetActionIndex(ActionType.Attack) ||
                 sink == BrainConfig.GetActionIndex(ActionType.KillSelf))
             {
-                aggressionScore += power;
+                aggressionSum += weight;
             }
-            else if (sink == BrainConfig.GetActionIndex(ActionType.MoveNorth) ||
-                     sink == BrainConfig.GetActionIndex(ActionType.MoveWest) ||
-                     sink == BrainConfig.GetActionIndex(ActionType.MoveSouth) ||
-                     sink == BrainConfig.GetActionIndex(ActionType.MoveEast))
+            else if (sink >= BrainConfig.GetActionIndex(ActionType.MoveNorth) &&
+                     sink <= BrainConfig.GetActionIndex(ActionType.MoveWest))
             {
-                movementScore += power;
+                movementSum += weight;
             }
             else
             {
-                // Internal connections contribute to "complexity" but NOT color tint
-                complexityScore += power;
+                complexitySum += weight;
             }
         }
 
-        // 2. NORMALIZE SCORES (Average per gene to be independent of genome size)
-        // We use a safe divisor to avoid /0
-        float count = Math.Max(1, genome.Length);
-        aggressionScore /= count;
-        movementScore /= count;
-        complexityScore /= count;
+        // 2. VISUALIZATION LOGIC
 
-        // 3. DETERMINE COLOR CHANNELS
-        // We amplify the scores to make them visible (genes often have small weights)
-        float r = aggressionScore * 5.0f;
-        float b = movementScore * 5.0f;
+        // A) Base Brightness (Body)
+        // Even with 0 weights, the agent should be visible (Dark Grey = 0.25f).
+        // Complexity adds to brightness up to a max of 0.6f.
+        float baseBrightness = 0.25f + (MathF.Tanh(complexitySum * 0.5f) * 0.35f);
 
-        // Base brightness from complexity (Grey/White)
-        // This ensures agents are visible even if they don't move or attack much.
-        float baseGrey = Math.Min(complexityScore * 0.5f, 0.3f);
+        // B) Tints (Red/Blue)
+        // We use Tanh to boost small values (0.1 -> 0.1) but cap high values (10.0 -> 1.0).
+        // We multiply by 2.0 inside Tanh to make the "Peaceful Start" genes more visible.
+        float r = MathF.Tanh(aggressionSum * 2.0f);
+        float b = MathF.Tanh(movementSum * 2.0f);
 
-        // 4. APPLY "WINNER TAKES ALL" CONTRAST
-        // If one trait is dominant, we suppress the other color to avoid Purple.
-        if (r > b)
-        {
-            b *= 0.3f; // Suppress Blue if Aggressive
-        }
-        else if (b > r)
-        {
-            r *= 0.3f; // Suppress Red if Mover
-        }
+        // 3. CONTRAST ("Winner takes all")
+        // If one trait dominates, suppress the other to prevent "Muddy Purple".
+        if (r > b * 1.2f) b *= 0.5f;
+        if (b > r * 1.2f) r *= 0.5f;
 
-        // 5. FINAL ASSEMBLY
-        // We add the baseGrey to all channels so "neutral" agents look Grey/White, not black.
-        float finalR = Math.Clamp(r + baseGrey, 0f, 1f);
-        float finalB = Math.Clamp(b + baseGrey, 0f, 1f);
+        // 4. COMPOSE FINAL COLOR
+        // We add the tint to the base brightness.
+        float finalR = Math.Clamp(baseBrightness + r, 0f, 1f);
+        float finalB = Math.Clamp(baseBrightness + b, 0f, 1f);
 
-        // Green channel is used ONLY for desaturation (making it whiter/greyer),
-        // but kept low to avoid looking like a plant.
-        float finalG = Math.Clamp(baseGrey, 0f, 0.5f);
+        // Green is used to desaturate (whiten) highly complex or balanced agents.
+        // It should never exceed R or B to avoid looking like a plant.
+        float finalG = Math.Clamp(baseBrightness, 0f, 0.8f);
+
+        // If both R and B are high (Hybrid), we boost G slightly to make it white/magenta
+        if (r > 0.5f && b > 0.5f) finalG += 0.2f;
 
         return new Color(finalR, finalG, finalB, 1.0f);
     }

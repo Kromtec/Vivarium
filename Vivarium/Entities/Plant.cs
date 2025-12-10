@@ -6,7 +6,7 @@ namespace Vivarium.Entities;
 
 public struct Plant
 {
-    public const float ShrivelRate = 0.5f; // Energy lost per frame
+    public const float ShrivelRate = 0.05f; // Energy lost per frame
     public const int MaturityAge = 60 * 2; // Frames until agent can reproduce after birth (2 seconds at 60 FPS)
 
     public long Id { get; set; } // Unique identifier for tracking across generations
@@ -53,7 +53,7 @@ public struct Plant
         }
     }
 
-    public void Update(GridCell[,] gridMap)
+    public void Update(GridCell[,] gridMap, Random rng)
     {
         if (!IsAlive)
         {
@@ -62,7 +62,7 @@ public struct Plant
         // Age the agent
         Age++;
 
-        if (Age > MaturityAge)
+        if (Age > MaturityAge && rng.Next(-1, 2) > 0)
         {
             ChangeEnergy(-ShrivelRate, gridMap);
         }
@@ -77,6 +77,10 @@ public struct Plant
 
     public readonly void TryReproduce(Span<Plant> population, GridCell[,] gridMap, Random rng)
     {
+        if (rng.NextDouble() > 0.05) // 5% chance to attempt reproduction each frame
+        {
+            return;
+        }
         int gridWidth = gridMap.GetLength(0);
         int gridHeight = gridMap.GetLength(1);
 

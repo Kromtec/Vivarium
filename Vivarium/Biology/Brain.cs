@@ -75,9 +75,13 @@ public static class Brain
         // Helper function for cleaner reading
         float GetAction(ActionType type) => neurons[BrainConfig.GetActionIndex(type)];
 
+        // --- 1. REPRODUCTION DECISION ---
+        // The agent decides if it wants to invest energy in offspring.
+        // We use a threshold (0.0 means "neutral", so > 0 is "yes").
+        agent.WantsToReproduce = GetAction(ActionType.Reproduce) > 0.0f;
 
-        // 1. SPECIAL ACTIONS
-        if (GetAction(ActionType.KillSelf) > 0.9f)
+        // 2. SPECIAL ACTIONS
+        if (GetAction(ActionType.KillSelf) > 0.9f && agent.Age > Agent.MaturityAge * 2)
         {
             agent.ChangeEnergy(-100f, gridMap);
             return;
@@ -90,22 +94,18 @@ public static class Brain
             agent.ChangeEnergy(-2.0f, gridMap);
         }
 
-        // 2. MOVEMENT
-        const float moveThreshold = 0.1f;
+        // 3. MOVEMENT
+        const float moveThreshold = 0.0f;
         int moveX = 0;
         int moveY = 0;
 
         if (GetAction(ActionType.MoveNorth) > moveThreshold) moveY--;
-        if (GetAction(ActionType.MoveNorth) < -moveThreshold) moveY++; // Bi-directional neuron support
 
         if (GetAction(ActionType.MoveSouth) > moveThreshold) moveY++;
-        if (GetAction(ActionType.MoveSouth) < -moveThreshold) moveY--;
 
         if (GetAction(ActionType.MoveWest) > moveThreshold) moveX--;
-        if (GetAction(ActionType.MoveWest) < -moveThreshold) moveX++;
 
         if (GetAction(ActionType.MoveEast) > moveThreshold) moveX++;
-        if (GetAction(ActionType.MoveEast) < -moveThreshold) moveX--;
 
         moveX = Math.Clamp(moveX, -1, 1);
         moveY = Math.Clamp(moveY, -1, 1);
@@ -134,13 +134,9 @@ public static class Brain
 
                     if (plant.Energy > 0)
                     {
-                        plant.ChangeEnergy(-10.0f, gridMap);
-
-                        // Eat the plant (Herbivory)
-                        if (GetAction(ActionType.Attack) < attackThreshold)
-                        {
-                            agent.ChangeEnergy(+10.0f, gridMap);
-                        }
+                        const float plantCalories = 40.0f;
+                        plant.ChangeEnergy(-10f, gridMap);
+                        agent.ChangeEnergy(+plantCalories, gridMap);
                     }
 
                     if (!plant.IsAlive)
@@ -183,7 +179,7 @@ public static class Brain
             }
         }
         // Resting recovers a tiny bit of energy
-        agent.ChangeEnergy(+0.01f, gridMap);
+        agent.ChangeEnergy(+(Agent.MetabolismRate * 0.2f), gridMap);
     }
 
     private static void PerformAreaAttack(ref Agent attacker, GridCell[,] gridMap, Span<Agent> agentPopulation, Span<Plant> plantPopulation)

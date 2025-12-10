@@ -77,7 +77,7 @@ public class VivariumGame : Game
         _graphics.SynchronizeWithVerticalRetrace = true;
         _graphics.ApplyChanges();
 
-        _rng = new Random();
+        _rng = new Random(42);
 
         // .NET 10 JIT optimizes array allocation significantly
         _agentPopulation = new Agent[AgentCount];
@@ -189,7 +189,6 @@ public class VivariumGame : Game
             if (TryGetRandomEmptySpot(_gridMap, out int x, out int y, _rng))
             {
                 var plant = Plant.Create(i, x, y);
-                plant.IsAlive = _rng.NextDouble() < 0.6; // 60% chance to start alive
                 plantPopulationSpan[i] = plant;
                 if (plant.IsAlive)
                 {
@@ -344,7 +343,7 @@ public class VivariumGame : Game
                 ref Plant currentPlant = ref plantPopulationSpan[i];
 
                 // A. AGING
-                currentPlant.Update(_gridMap);
+                currentPlant.Update(_gridMap, _rng);
 
                 // B. REPRODUCTION
                 // If plant is mature, try to spawn a child
@@ -377,7 +376,8 @@ public class VivariumGame : Game
         DrawStructures(out int livingStructures);
 
         // Draw the Selection Box inside the world
-        _inspector.DrawSelectionMarker(_spriteBatch, CellSize);
+        float totalSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
+        _inspector.DrawSelectionMarker(_spriteBatch, CellSize, totalSeconds);
 
         _spriteBatch.End();
 
