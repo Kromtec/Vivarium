@@ -89,8 +89,10 @@ public static class Genetics
             {
                 aggressionSum += weight;
             }
-            else if (sink >= BrainConfig.GetActionIndex(ActionType.MoveNorth) &&
-                     sink <= BrainConfig.GetActionIndex(ActionType.MoveWest))
+            else if (sink == BrainConfig.GetActionIndex(ActionType.MoveNorth) ||
+                     sink == BrainConfig.GetActionIndex(ActionType.MoveEast) ||
+                     sink == BrainConfig.GetActionIndex(ActionType.MoveSouth) ||
+                     sink == BrainConfig.GetActionIndex(ActionType.MoveWest))
             {
                 movementSum += weight;
             }

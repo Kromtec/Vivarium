@@ -32,10 +32,6 @@ public static class Brain
         // --- 2. SENSORS (Inputs) ---
         // Direct mapping since Sensors start at index 0
 
-        // Always 1.0. Allows genes to set a "base activation" level for neurons
-        // independent of sensory input.
-        neurons[(int)SensorType.Bias] = 1.0f;
-
         neurons[(int)SensorType.LocationX] = (float)agent.X / gridWidth;
         neurons[(int)SensorType.LocationY] = (float)agent.Y / gridHeight;
         neurons[(int)SensorType.Random] = (float)rng.NextDouble();

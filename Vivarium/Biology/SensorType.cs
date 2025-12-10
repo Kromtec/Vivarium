@@ -2,7 +2,6 @@
 
 public enum SensorType
 {
-    Bias,
     LocationX,
     LocationY,
     Random,
