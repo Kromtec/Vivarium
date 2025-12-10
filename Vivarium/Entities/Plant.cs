@@ -4,7 +4,7 @@ using Vivarium.World;
 
 namespace Vivarium.Entities;
 
-public struct Plant
+public struct Plant : IGridEntity
 {
     public const float ShrivelRate = 0.05f; // Energy lost per frame
     public const int MaturityAge = 60 * 2; // Frames until agent can reproduce after birth (2 seconds at 60 FPS)
@@ -46,10 +46,16 @@ public struct Plant
 
     public void ChangeEnergy(float amount, GridCell[,] gridMap)
     {
-        Energy += amount;
+        if (IsAlive)
+        {
+            Energy += amount;
+        }
         if (!IsAlive)
         {
-            gridMap[X, Y] = GridCell.Empty;
+            if (gridMap[X, Y].Type == EntityType.Plant && gridMap[X, Y].Index == Index)
+            {
+                gridMap[X, Y] = GridCell.Empty;
+            }
         }
     }
 
@@ -67,7 +73,7 @@ public struct Plant
             ChangeEnergy(-ShrivelRate, gridMap);
         }
         // Color Update
-        Color = Color.Lerp(Color.Black, OriginalColor, Energy / 100f);
+        Color = Color.Lerp(Color.Black, OriginalColor, Math.Clamp(Energy / 100f, .25f, 1f));
     }
 
     public static Plant Create(int index, int x, int y)
@@ -141,13 +147,13 @@ public struct Plant
         // Create the child using our Genetics helper
         ref Plant childSlot = ref population[childIndex];
 
-        childSlot = ConstructPlant(childSlot.Index, childX, childY);
+        childSlot = ConstructPlant(childIndex, childX, childY);
 
         // 4. COST
         parent.ChangeEnergy(-2f, gridMap); // Giving birth is exhausting
 
         // Update map so nobody else claims this spot this frame
-        gridMap[childX, childY] = new(EntityType.Plant, childSlot.Index);
+        gridMap[childX, childY] = new(EntityType.Plant, childIndex);
     }
 
     public readonly bool CanReproduce()

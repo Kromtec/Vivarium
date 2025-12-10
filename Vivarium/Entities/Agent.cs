@@ -7,7 +7,7 @@ namespace Vivarium.Entities;
 
 // --- C# 14 / .NET 10 UPDATE ---
 // Using a struct for memory efficiency (Stack allocated / packed in arrays)
-public struct Agent
+public struct Agent : IGridEntity
 {
     // Reproduction Thermodynamics
     public const float ReproductionCost = 15.0f;       // Wasted energy (effort)
@@ -70,10 +70,17 @@ public struct Agent
 
     public void ChangeEnergy(float amount, GridCell[,] gridMap)
     {
-        Energy += amount;
+        if(IsAlive)
+        {
+            Energy += amount;
+        }
+
         if (!IsAlive)
         {
-            gridMap[X, Y] = GridCell.Empty;
+            if (gridMap[X, Y].Type == EntityType.Agent && gridMap[X, Y].Index == Index)
+            {
+                gridMap[X, Y] = GridCell.Empty;
+            }
         }
     }
 
@@ -93,10 +100,7 @@ public struct Agent
         ChangeEnergy(-MetabolismRate, gridMap);
 
         // Color Update
-        if (Energy <= 50)
-        {
-            Color = Color.Lerp(Color.Black, OriginalColor, Energy / 50f);
-        }
+        Color = Color.Lerp(Color.Black, OriginalColor, Math.Clamp(Energy / 100f, .25f, 1f));
     }
 
     public readonly void TryReproduce(Span<Agent> population, GridCell[,] gridMap, Random rng)
@@ -171,8 +175,7 @@ public struct Agent
         childSlot = Genetics.Replicate(ref parent, childIndex, childX, childY, rng, ChildStartingEnergy);
 
         // 4. COST
-        float totalCost = ReproductionCost + ChildStartingEnergy;
-        parent.ChangeEnergy(-totalCost, gridMap); // Giving birth is exhausting
+        parent.ChangeEnergy(-ReproductionCost, gridMap); // Giving birth is exhausting
 
         // Update map so nobody else claims this spot this frame
         gridMap[childX, childY] = new(EntityType.Agent, childIndex);

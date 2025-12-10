@@ -2,7 +2,7 @@
 
 namespace Vivarium.Entities;
 
-public struct Structure
+public struct Structure : IGridEntity
 {
     public long Id { get; set; } // Unique identifier for tracking across generations
     public int Index { get; set; }

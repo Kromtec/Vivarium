@@ -92,10 +92,11 @@ public static class Brain
         }
 
         const float attackThreshold = 0.5f;
-        if (GetAction(ActionType.Attack) > attackThreshold)
+        if (GetAction(ActionType.Attack) > attackThreshold * 1.5f)
         {
             PerformAreaAttack(ref agent, gridMap, agentPopulationSpan, plantPopulationSpan);
             agent.ChangeEnergy(-2.0f, gridMap);
+            return;
         }
 
         // 3. MOVEMENT
@@ -137,8 +138,8 @@ public static class Brain
 
                 if (plant.Energy > 0)
                 {
-                    const float plantCalories = 40.0f;
-                    plant.ChangeEnergy(-10f, gridMap);
+                    const float plantCalories = 10.0f;
+                    plant.ChangeEnergy(-1f, gridMap);
                     agent.ChangeEnergy(+plantCalories, gridMap);
                 }
 
@@ -176,7 +177,9 @@ public static class Brain
             else if (gridMap[pendingX, pendingY].Type == EntityType.Structure)
             {
                 // Slamming into a structure costs energy
-                agent.ChangeEnergy(-1.0f, gridMap);
+                bool isDiagonal = (moveX != 0 && moveY != 0);
+                float cost = isDiagonal ? Agent.DiagonalMovementCost : Agent.OrthogonalMovementCost; // cost * sqrt(2) approx
+                agent.ChangeEnergy(-cost, gridMap);
                 return;
             }
 
@@ -211,7 +214,7 @@ public static class Brain
 
                         if (victim.IsAlive)
                         {
-                            const float damage = 25f;
+                            const float damage = 5f;
 
                             // Victim loses energy
                             // We use the ChangeEnergy helper to handle death logic inside agent if needed,
@@ -229,11 +232,11 @@ public static class Brain
                         ref Plant plant = ref plantPopulation[plantIndex];
                         if (plant.IsAlive)
                         {
-                            const float damage = 25f;
+                            const float damage = 10f;
                             // Plant loses energy
                             plant.ChangeEnergy(-damage, gridMap);
                             // Attacker gains energy (Herbivory!)
-                            attacker.ChangeEnergy(+damage * 0.5f, gridMap);
+                            attacker.ChangeEnergy(+damage * 1.2f, gridMap);
                         }
                     }
                 }
@@ -243,8 +246,39 @@ public static class Brain
 
     private static void MoveToLocation(ref Agent agent, GridCell[,] gridMap, int pendingX, int pendingY, int dx, int dy)
     {
+        if(!agent.IsAlive)
+        {
+            return;
+        }
+
         // clear old location
-        gridMap[agent.X, agent.Y] = GridCell.Empty;
+        if (gridMap[agent.X, agent.Y].Type == EntityType.Agent && gridMap[agent.X, agent.Y].Index == agent.Index)
+        {
+            gridMap[agent.X, agent.Y] = GridCell.Empty;
+        }
+
+        // 2. --- THE TRAP (Debug Trap) ---
+        // We check BEFORE writing whether we're about to kill someone.
+        GridCell target = gridMap[pendingX, pendingY];
+
+        // If the target is an agent (and not ourselves)...
+        if (target.Type == EntityType.Agent && target.Index != agent.Index)
+        {
+            // ... then we've found a bug in Act()!
+            // Act() told us "Go there" even though it's occupied.
+            throw new Exception($"FATAL ERROR: Agent #{agent.Index} is overwriting living Agent #{target.Index} at {pendingX},{pendingY}!\n" +
+                                $"This means 'gridMap[{pendingX},{pendingY}] == Empty' was TRUE even though an agent was there.");
+        }
+        else if (target.Type == EntityType.Plant)
+        {
+            throw new Exception($"FATAL ERROR: Agent #{agent.Index} is overwriting living Plant #{target.Index} at {pendingX},{pendingY}!\n" +
+                                $"This means 'gridMap[{pendingX},{pendingY}] == Empty' was TRUE even though an plant was there.");
+        }
+        else if (target.Type == EntityType.Structure)
+        {
+            throw new Exception($"FATAL ERROR: Agent #{agent.Index} is overwriting Structure #{target.Index} at {pendingX},{pendingY}!\n" +
+                                $"This means 'gridMap[{pendingX},{pendingY}] == Empty' was TRUE even though a structure was there.");
+        }
         // move to new location
         agent.X = pendingX;
         agent.Y = pendingY;

@@ -28,7 +28,7 @@ public class VivariumGame : Game
     private const int CellSize = 1280 / GridHeight;
     private const float HalfCellSize = (CellSize * 0.5f);
     private const int AgentCount = GridWidth * GridHeight / 8;
-    private const int PlantCount = GridWidth * GridHeight / 16;
+    private const int PlantCount = GridWidth * GridHeight / 8;
     private const int StructureCount = GridWidth * GridHeight / 64;
     public const double FramesPerSecond = 60d;
 
@@ -97,118 +97,113 @@ public class VivariumGame : Game
 
     private void SpawnPopulation()
     {
-        // Reset the map (-1 means empty)
-        // Array.Fill is very fast in .NET 10
-        // Since it's a 2D array, we treat it as a flat span or loop simply.
-        for (int x = 0; x < GridWidth; x++)
-        {
-            for (int y = 0; y < GridHeight; y++)
-            {
-                _gridMap[x, y] = GridCell.Empty;
-            }
-        }
-
         SpawnStructures();
         SpawnPlants();
         SpawnAgents();
     }
 
-    private void SpawnStructures()
+    private void SpawnClustered<T>(
+        Span<T> populationSpan,
+        EntityType type,
+        double newClusterChance,
+        Func<int, int, int, T> createFactory) where T : struct, IGridEntity
     {
-        Span<Structure> structurePopulationSpan = _structurePopulation.AsSpan();
+        const int GrowthAttempts = 10;
 
-        // Configuration for clustering
-        const double NewClusterChance = 0.05; // 5% chance to start a new cluster randomly
-        const int GrowthAttempts = 10;        // How hard we try to attach to an existing cluster before giving up
-
-        for (int i = 0; i < structurePopulationSpan.Length; i++)
+        for (int i = 0; i < populationSpan.Length; i++)
         {
             bool placed = false;
 
-            // 1. CLUSTER GROWTH LOGIC
-            // Unless it's the very first item, we try to grow from an existing structure.
-            // We also randomly force new clusters occasionally to spread them out.
-            if (i > 0 && _rng.NextDouble() > NewClusterChance)
+            // 1. CLUSTER GROWTH
+            // Versuche an einen existierenden Nachbarn anzudocken
+            if (i > 0 && _rng.NextDouble() > newClusterChance)
             {
-                // Try multiple times to find a valid spot next to an existing structure
                 for (int attempt = 0; attempt < GrowthAttempts; attempt++)
                 {
-                    // Pick a random "parent" from the structures we have already placed (indices 0 to i-1)
+                    // Zufälligen "Parent" aus den bereits platzierten wählen
                     int parentIndex = _rng.Next(0, i);
-                    var parent = structurePopulationSpan[parentIndex];
+                    T parent = populationSpan[parentIndex]; // Hier hilft das Interface/Generic
 
-                    // Pick a random neighbor position (including diagonals)
+                    // Zufälliger Nachbar
                     int dx = _rng.Next(-1, 2);
                     int dy = _rng.Next(-1, 2);
-
-                    // Skip if it's the same position (dx=0, dy=0)
                     if (dx == 0 && dy == 0) continue;
 
                     int tx = parent.X + dx;
                     int ty = parent.Y + dy;
 
-                    // Check boundaries
                     if (tx >= 0 && tx < GridWidth && ty >= 0 && ty < GridHeight)
                     {
-                        // Check if spot is empty (using your GridCell logic)
                         if (_gridMap[tx, ty] == GridCell.Empty)
                         {
-                            // Found a valid spot next to a parent!
-                            var structure = Structure.Create(i, tx, ty);
-                            structurePopulationSpan[i] = structure;
-                            _gridMap[structure.X, structure.Y] = new GridCell(EntityType.Structure, i);
+                            // Factory aufrufen um das konkrete Objekt zu bauen
+                            T newItem = createFactory(i, tx, ty);
+
+                            populationSpan[i] = newItem;
+                            _gridMap[tx, ty] = new GridCell(type, i);
 
                             placed = true;
-                            break; // Stop trying, we are done with this structure
+                            break;
                         }
                     }
                 }
             }
 
-            // 2. FALLBACK / NEW CLUSTER SEED
-            // If we decided to start a new cluster, OR if growth failed (e.g. parent was surrounded),
-            // we pick a completely random spot.
+            // 2. FALLBACK / NEW SEED
             if (!placed)
             {
                 if (TryGetRandomEmptySpot(_gridMap, out int x, out int y, _rng))
                 {
-                    var structure = Structure.Create(i, x, y);
-                    structurePopulationSpan[i] = structure;
-                    _gridMap[structure.X, structure.Y] = new GridCell(EntityType.Structure, i);
+                    T newItem = createFactory(i, x, y);
+
+                    populationSpan[i] = newItem;
+                    _gridMap[x, y] = new GridCell(type, i);
                 }
             }
         }
     }
 
+    private void SpawnStructures()
+    {
+        SpawnClustered(
+        _structurePopulation.AsSpan(),
+        EntityType.Structure,
+        newClusterChance: 0.2,
+        createFactory: (index, x, y) => Structure.Create(index, x, y)
+    );
+    }
+
     private void SpawnPlants()
     {
-        Span<Plant> plantPopulationSpan = _plantPopulation.AsSpan();
-
-        for (int i = 0; i < plantPopulationSpan.Length; i++)
-        {
-            if (TryGetRandomEmptySpot(_gridMap, out int x, out int y, _rng))
-            {
-                var plant = Plant.Create(i, x, y);
-                plantPopulationSpan[i] = plant;
-                if (plant.IsAlive)
-                {
-                    _gridMap[plant.X, plant.Y] = new GridCell(EntityType.Plant, i);
-                }
-            }
-        }
+        SpawnClustered(
+            _plantPopulation.AsSpan(),
+            EntityType.Plant,
+            newClusterChance: 0.1,
+            createFactory: (index, x, y) => Plant.Create(index, x, y)
+        );
     }
 
     private void SpawnAgents()
     {
         Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
 
-        for (int i = 0; i < agentPopulationSpan.Length; i++)
+        for (int index = 0; index < agentPopulationSpan.Length; index++)
         {
             if (TryGetRandomEmptySpot(_gridMap, out int x, out int y, _rng))
             {
-                var agent = Agent.Create(i, x, y, _rng);
-                agentPopulationSpan[i] = agent;
-                _gridMap[agent.X, agent.Y] = new GridCell(EntityType.Agent, i);
+                // --- DIAGNOSE START ---
+                // Wir prüfen manuell die "rohen" Werte der Zelle, ohne den == Operator zu nutzen.
+                GridCell occupiedCell = _gridMap[x, y];
+
+                // Wenn der Type NICHT 0 (Empty) ist, hat TryGetRandomEmptySpot gelogen!
+                if (occupiedCell.Type != EntityType.Empty)
+                {
+                    throw new Exception($"FATALER LOGIK-FEHLER: TryGetRandomEmptySpot sagt {x},{y} ist leer, aber dort steht: {occupiedCell.Type} #{occupiedCell.Index}. \n" +
+                                        $"Dies beweist, dass (Cell == GridCell.Empty) TRUE liefert, obwohl es FALSE sein sollte.");
+                }
+                var agent = Agent.Create(index, x, y, _rng);
+                agentPopulationSpan[index] = agent;
+                _gridMap[agent.X, agent.Y] = new GridCell(EntityType.Agent, index);
             }
         }
     }
@@ -312,17 +307,22 @@ public class VivariumGame : Game
 
             // --- BIOLOGICAL LOOP ---
 
-            for (int i = 0; i < agentPopulationSpan.Length; i++)
+            for (int index = 0; index < agentPopulationSpan.Length; index++)
             {
                 // Skip dead slots
-                if (!agentPopulationSpan[i].IsAlive) continue;
+                if (!agentPopulationSpan[index].IsAlive) continue;
 
                 // Use ref to modify directly
-                ref Agent currentAgent = ref agentPopulationSpan[i];
+                ref Agent currentAgent = ref agentPopulationSpan[index];
+
+                int oldX = currentAgent.X;
+                int oldY = currentAgent.Y;
 
                 // A. THINK & ACT
                 Brain.Think(ref currentAgent, _gridMap, _rng);
                 Brain.Act(ref currentAgent, _gridMap, agentPopulationSpan, plantPopulationSpan);
+
+                ValidateAgentIntegrity(index, currentAgent, oldX, oldY);
 
                 // B. AGING & METABOLISM
                 currentAgent.Update(_gridMap);
@@ -354,7 +354,82 @@ public class VivariumGame : Game
             }
         }
 
+        ValidateWorldIntegrity();
+
         base.Update(gameTime);
+    }
+
+    [System.Diagnostics.Conditional("DEBUG")]
+    private void ValidateAgentIntegrity(int index, Agent agent, int oldX, int oldY)
+    {
+        var cellAtPos = _gridMap[agent.X, agent.Y];
+        if (agent.IsAlive && (cellAtPos.Type != EntityType.Agent || cellAtPos.Index != index))
+        {
+            if (agent.X != oldX || agent.Y != oldY)
+            {
+                throw new Exception($"LOGIC ERROR FOR AGENT #{index}: It moved from {oldX},{oldY} to {agent.X},{agent.Y}, but the map shows: {cellAtPos.Type} #{cellAtPos.Index}");
+            }
+            else
+            {
+                throw new Exception($"LOGIC ERROR FOR AGENT #{index}: It is still at {agent.X},{agent.Y}, but the map shows: {cellAtPos.Type} #{cellAtPos.Index}");
+            }
+        }
+        else if(!agent.IsAlive && cellAtPos != GridCell.Empty)
+        {
+            throw new Exception($"LOGIC ERROR FOR AGENT #{index}: It is dead at {agent.X},{agent.Y}, but the map shows: {cellAtPos.Type} #{cellAtPos.Index}");
+        }
+    }
+
+    [System.Diagnostics.Conditional("DEBUG")]
+    private void ValidateWorldIntegrity()
+    {
+        // 1. Check: Does the map point to the correct entity?
+        for (int x = 0; x < GridWidth; x++)
+        {
+            for (int y = 0; y < GridHeight; y++)
+            {
+                var cell = _gridMap[x, y];
+                if (cell.Type == EntityType.Agent)
+                {
+                    ref var agent = ref _agentPopulation[cell.Index];
+                    if (!agent.IsAlive) throw new Exception($"Map error at {x},{y}: References dead agent #{cell.Index}");
+                    if (agent.X != x || agent.Y != y) throw new Exception($"Desync! Map says agent #{cell.Index} is at {x},{y}, but agent believes it's at {agent.X},{agent.Y}");
+                }
+                else if (cell.Type == EntityType.Plant)
+                {
+                    ref var plant = ref _plantPopulation[cell.Index];
+                    if (!plant.IsAlive) throw new Exception($"Map error at {x},{y}: References dead plant #{cell.Index}");
+                    if (plant.X != x || plant.Y != y) throw new Exception($"Desync! Map says plant #{cell.Index} is at {x},{y}, but plant believes it's at {plant.X},{plant.Y}");
+                }
+            }
+        }
+
+        // 2. Check: Is every living entity correctly placed in the map?
+        for (int i = 0; i < _agentPopulation.Length; i++)
+        {
+            if (_agentPopulation[i].IsAlive)
+            {
+                var a = _agentPopulation[i];
+                var cell = _gridMap[a.X, a.Y];
+                if (cell.Type != EntityType.Agent || cell.Index != i)
+                {
+                    throw new Exception($"Zombie alert! Agent #{i} thinks it's at {a.X},{a.Y}, but the map shows: {cell.Type} #{cell.Index}");
+                }
+            }
+        }
+        // (Same for plants loop...)
+        for (int i = 0; i < _plantPopulation.Length; i++)
+        {
+            if (_plantPopulation[i].IsAlive)
+            {
+                var p = _plantPopulation[i];
+                var cell = _gridMap[p.X, p.Y];
+                if (cell.Type != EntityType.Plant || cell.Index != i)
+                {
+                    throw new Exception($"Zombie alert! Plant #{i} thinks it's at {p.X},{p.Y}, but the map shows: {cell.Type} #{cell.Index}");
+                }
+            }
+        }
     }
 
     protected override void Draw(GameTime gameTime)
@@ -475,7 +550,6 @@ public class VivariumGame : Game
             ref Plant plant = ref plantPopulationSpan[i];
             if (!plant.IsAlive)
             {
-                _gridMap[plant.X, plant.Y] = GridCell.Empty;
                 continue;
             }
 
@@ -525,7 +599,6 @@ public class VivariumGame : Game
             ref Agent agent = ref agentPopulationSpan[i];
             if (!agent.IsAlive)
             {
-                _gridMap[agent.X, agent.Y] = GridCell.Empty;
                 continue;
             }
 
