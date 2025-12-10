@@ -19,6 +19,9 @@ public struct Agent
     public bool WantsToReproduce { get; set; }
 
     public const float MetabolismRate = 0.05f; // Energy lost per frame
+    public const float OrthogonalMovementCost = MetabolismRate; // Extra cost for non-cardinal moves
+    public const float DiagonalMovementCost = MetabolismRate * 1.414f; // Extra cost for diagonal moves
+
     public const int MaturityAge = 60 * 4; // Frames until agent can reproduce after birth (4 seconds at 60 FPS)
     private Color originalColor;
 

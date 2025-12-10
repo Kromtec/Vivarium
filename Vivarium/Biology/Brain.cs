@@ -32,6 +32,10 @@ public static class Brain
         // --- 2. SENSORS (Inputs) ---
         // Direct mapping since Sensors start at index 0
 
+        // Always 1.0. Allows genes to set a "base activation" level for neurons
+        // independent of sensory input.
+        neurons[(int)SensorType.Bias] = 1.0f;
+
         neurons[(int)SensorType.LocationX] = (float)agent.X / gridWidth;
         neurons[(int)SensorType.LocationY] = (float)agent.Y / gridHeight;
         neurons[(int)SensorType.Random] = (float)rng.NextDouble();
@@ -113,70 +117,69 @@ public static class Brain
         // Apply Movement
         if (moveX != 0 || moveY != 0)
         {
-            int pendingX = agent.X + moveX;
-            int pendingY = agent.Y + moveY;
+            // PAC-MAN LOGIC: Wrap around edges
+            // We add gridWidth before modulo to handle negative numbers correctly in C#
+            // -1 becomes (width - 1)
+            int pendingX = (agent.X + moveX + gridWidth) % gridWidth;
+            int pendingY = (agent.Y + moveY + gridHeight) % gridHeight;
+
 
             // is within grid and target cell is empty
-            if (pendingX >= 0 && pendingX < gridWidth &&
-                pendingY >= 0 && pendingY < gridHeight)
+            if (gridMap[pendingX, pendingY] == GridCell.Empty)
             {
+                MoveToLocation(ref agent, gridMap, pendingX, pendingY, moveX, moveY);
+                return;
+            }
+            // a plant occupies the target cell
+            else if (gridMap[pendingX, pendingY].Type == EntityType.Plant)
+            {
+                ref Plant plant = ref plantPopulationSpan[gridMap[pendingX, pendingY].Index];
 
-                // is within grid and target cell is empty
-                if (gridMap[pendingX, pendingY] == GridCell.Empty)
+                if (plant.Energy > 0)
+                {
+                    const float plantCalories = 40.0f;
+                    plant.ChangeEnergy(-10f, gridMap);
+                    agent.ChangeEnergy(+plantCalories, gridMap);
+                }
+
+                if (!plant.IsAlive)
                 {
                     MoveToLocation(ref agent, gridMap, pendingX, pendingY, moveX, moveY);
-                    return;
                 }
-                // a plant occupies the target cell
-                else if (gridMap[pendingX, pendingY].Type == EntityType.Plant)
-                {
-                    ref Plant plant = ref plantPopulationSpan[gridMap[pendingX, pendingY].Index];
-
-                    if (plant.Energy > 0)
-                    {
-                        const float plantCalories = 40.0f;
-                        plant.ChangeEnergy(-10f, gridMap);
-                        agent.ChangeEnergy(+plantCalories, gridMap);
-                    }
-
-                    if (!plant.IsAlive)
-                    {
-                        MoveToLocation(ref agent, gridMap, pendingX, pendingY, moveX, moveY);
-                    }
-                    return;
-                }
-                // cell occupied by another agent - attack
-                else if (gridMap[pendingX, pendingY].Type == EntityType.Agent)
-                {
-                    int victimIndex = gridMap[pendingX, pendingY].Index;
-                    ref Agent victim = ref agentPopulationSpan[victimIndex];
-                    if (victim.Energy > 0 &&
-                        victim.Index != agent.ParentIndex && victim.ParentIndex != agent.Index &&
-                        victim.Id != agent.ParentId && victim.ParentId != agent.Id)
-                    {
-                        const float damage = 15f;
-                        // Victim loses energy
-                        victim.ChangeEnergy(-damage, gridMap);
-
-                        // Attacker gains energy (Carnivory!)
-                        if (GetAction(ActionType.Attack) > attackThreshold)
-                        {
-                            agent.ChangeEnergy(+damage * 0.8f, gridMap);
-                        }
-                    }
-                    if (!victim.IsAlive)
-                    {
-                        MoveToLocation(ref agent, gridMap, pendingX, pendingY, moveX, moveY);
-                    }
-                    return;
-                }
-                else if (gridMap[pendingX, pendingY].Type == EntityType.Structure)
-                {
-                    // Slamming into a structure costs energy
-                    agent.ChangeEnergy(-1.0f, gridMap);
-                    return;
-                }
+                return;
             }
+            // cell occupied by another agent - attack
+            else if (gridMap[pendingX, pendingY].Type == EntityType.Agent)
+            {
+                int victimIndex = gridMap[pendingX, pendingY].Index;
+                ref Agent victim = ref agentPopulationSpan[victimIndex];
+                if (victim.Energy > 0 &&
+                    victim.Index != agent.ParentIndex && victim.ParentIndex != agent.Index &&
+                    victim.Id != agent.ParentId && victim.ParentId != agent.Id)
+                {
+                    const float damage = 15f;
+                    // Victim loses energy
+                    victim.ChangeEnergy(-damage, gridMap);
+
+                    // Attacker gains energy (Carnivory!)
+                    if (GetAction(ActionType.Attack) > attackThreshold)
+                    {
+                        agent.ChangeEnergy(+damage * 0.8f, gridMap);
+                    }
+                }
+                if (!victim.IsAlive)
+                {
+                    MoveToLocation(ref agent, gridMap, pendingX, pendingY, moveX, moveY);
+                }
+                return;
+            }
+            else if (gridMap[pendingX, pendingY].Type == EntityType.Structure)
+            {
+                // Slamming into a structure costs energy
+                agent.ChangeEnergy(-1.0f, gridMap);
+                return;
+            }
+
         }
         // Resting recovers a tiny bit of energy
         agent.ChangeEnergy(+(Agent.MetabolismRate * 0.2f), gridMap);
@@ -252,7 +255,7 @@ public static class Brain
         // Diagonal move (1,1) length is approx 1.414.
         // We penalize diagonal movement correctly to preserve physics.
         bool isDiagonal = (dx != 0 && dy != 0);
-        float cost = isDiagonal ? 0.25f : 0.2f; // cost * sqrt(2) approx
+        float cost = isDiagonal ? Agent.DiagonalMovementCost : Agent.OrthogonalMovementCost; // cost * sqrt(2) approx
 
         agent.ChangeEnergy(-cost, gridMap);
     }

@@ -54,7 +54,7 @@ public static class Genetics
 
     public static Gene[] CreateGenome(Random rng)
     {
-        const int GenomeLength = 24;
+        const int GenomeLength = 60;
         var initialGenome = new Gene[GenomeLength];
 
         for (int g = 0; g < GenomeLength; g++)

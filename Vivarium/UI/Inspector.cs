@@ -174,6 +174,12 @@ public class Inspector
                         DrawBrainBar(spriteBatch, "Attack", GetActionVal(ref agent, ActionType.Attack), isPositiveOnly: true);
                         DrawBrainBar(spriteBatch, "Reproduce", GetActionVal(ref agent, ActionType.Reproduce), isPositiveOnly: true);
                         DrawBrainBar(spriteBatch, "Suicide", GetActionVal(ref agent, ActionType.KillSelf), isPositiveOnly: true);
+
+                        DrawHeader(spriteBatch, "GENOME");
+                        foreach (var gene in agent.Genome)
+                        {
+                            DrawHeader(spriteBatch, gene.ToString(), Color.LightSeaGreen);
+                        }
                     }
                     else
                     {
