@@ -34,6 +34,8 @@ public struct Agent : IGridEntity
     public long ParentId { get; set; }
     public int ParentIndex { get; set; }
 
+    public DietType Diet { get; private set; }
+
     public Color OriginalColor
     {
         get => originalColor;
@@ -187,6 +189,29 @@ public struct Agent : IGridEntity
         return IsAlive && Age >= MaturityAge;
     }
 
+    public static DietType DetermineDiet(Gene[] genome)
+    {
+        float geneValue = genome[Genetics.DietGeneIndex].Weight;
+
+        return geneValue switch
+        {
+            < -0.3f => DietType.Carnivore,
+            > 0.3f => DietType.Herbivore,
+            _ => DietType.Omnivore,
+        };
+    }
+
+    public static Color GetColorBasedOnDietType(DietType dietType)
+    {
+        return dietType switch
+        {
+            DietType.Herbivore => Color.Turquoise,
+            DietType.Carnivore => Color.Crimson,
+            DietType.Omnivore => Color.Plum,
+            _ => Color.White
+        };
+    }
+
     public static Agent Create(int index, int x, int y, Random rng)
     {
         Gene[] initialGenome = Genetics.CreateGenome(rng);
@@ -206,6 +231,7 @@ public struct Agent : IGridEntity
 
     private static Agent ConstructAgent(int index, int x, int y, Gene[] genome, Agent? parent = null, float? initialEnergy = null)
     {
+        DietType dietType = DetermineDiet(genome);
         return new Agent()
         {
             Id = VivariumGame.NextEntityId++,
@@ -214,8 +240,9 @@ public struct Agent : IGridEntity
             Y = y,
             ParentId = parent?.Id ?? -1,
             ParentIndex = parent?.Index ?? -1,
-            OriginalColor = Genetics.ComputePhenotypeColor(genome),
+            OriginalColor = GetColorBasedOnDietType(dietType),
             IsAlive = true,
+            Diet = dietType,
             Energy = initialEnergy ?? 100f,
             Genome = genome,
             NeuronActivations = new float[BrainConfig.NeuronCount]

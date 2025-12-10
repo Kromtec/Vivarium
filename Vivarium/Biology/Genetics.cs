@@ -9,6 +9,8 @@ public static class Genetics
     // The probability that a single gene will mutate.
     private const double MutationRate = 0.001d;
 
+    public const int DietGeneIndex = 0;
+
     /// <summary>
     /// Applies mutations to an agent's genome in place.
     /// </summary>

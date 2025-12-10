@@ -459,7 +459,7 @@ public class VivariumGame : Game
             _camera.GetTransformation()
         );
 
-        DrawAgents(out int livingAgents);
+        DrawAgents(out int livingAgents, out int livingHerbivore, out int livingOmnivore, out int livingCarnivore);
         DrawPlants(out int livingPlants);
         DrawStructures(out int livingStructures);
 
@@ -479,8 +479,11 @@ public class VivariumGame : Game
 
         // We pass the raw arrays so the inspector can look up the data by index
         _simGraph.Draw(_spriteBatch);
-        _spriteBatch.DrawString(_sysFont, $"Agents: {livingAgents,20}", new Vector2(25, 130), Color.Plum);
-        _spriteBatch.DrawString(_sysFont, $"Plants: {livingPlants,20}", new Vector2(25, 150), Color.LimeGreen);
+        _spriteBatch.DrawString(_sysFont, $"Agents: {livingAgents,20}", new Vector2(25, 130), Color.Silver);
+        _spriteBatch.DrawString(_sysFont, $"-Herbivore: {livingHerbivore,16}", new Vector2(25, 150), Color.Turquoise);
+        _spriteBatch.DrawString(_sysFont, $"-Omnivore: {livingOmnivore,17}", new Vector2(25, 170), Color.Plum);
+        _spriteBatch.DrawString(_sysFont, $"-Carnivore: {livingCarnivore,16}", new Vector2(25, 190), Color.Crimson);
+        _spriteBatch.DrawString(_sysFont, $"Plants: {livingPlants,20}", new Vector2(25, 210), Color.LimeGreen);
 
         _inspector.DrawUI(_spriteBatch, _agentPopulation, _plantPopulation, _structurePopulation);
 
@@ -601,9 +604,12 @@ public class VivariumGame : Game
         return livingPlants;
     }
 
-    private void DrawAgents(out int livingAgents)
+    private void DrawAgents(out int livingAgents, out int livingHerbivore, out int livingOmnivore, out int livingCarnivore)
     {
         livingAgents = 0;
+        livingHerbivore = 0;
+        livingOmnivore = 0;
+        livingCarnivore = 0;
 
         // Calculate the center of our source texture (needed for pivot point)
         var textureCenter = new Vector2(_circleTexture.Width / 2f, _circleTexture.Height / 2f);
@@ -620,6 +626,18 @@ public class VivariumGame : Game
             }
 
             livingAgents++;
+            switch(agent.Diet)
+            {
+                case DietType.Herbivore:
+                    livingHerbivore++;
+                    break;
+                case DietType.Omnivore:
+                    livingOmnivore++;
+                    break;
+                case DietType.Carnivore:
+                    livingCarnivore++;
+                    break;
+            }
 
             // --- GROWTH LOGIC ---
             // Babies start small (0.3 scale) and grow to full size (1.0 scale) over 200 frames.

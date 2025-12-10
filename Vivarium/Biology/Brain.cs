@@ -1,6 +1,7 @@
 ﻿using System;
 using Vivarium.Entities;
 using Vivarium.World;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Vivarium.Biology;
 
@@ -134,9 +135,7 @@ public static class Brain
 
                 if (plant.Energy > 0)
                 {
-                    const float plantCalories = 10.0f;
-                    plant.ChangeEnergy(-plantCalories, gridMap);
-                    agent.ChangeEnergy(+plantCalories, gridMap);
+                    TryAttackPlant(ref agent, ref plant, gridMap);
                 }
 
                 if (!plant.IsAlive)
@@ -154,15 +153,7 @@ public static class Brain
                     victim.Index != agent.ParentIndex && victim.ParentIndex != agent.Index &&
                     victim.Id != agent.ParentId && victim.ParentId != agent.Id)
                 {
-                    const float damage = 15f;
-                    // Victim loses energy
-                    victim.ChangeEnergy(-damage, gridMap);
-
-                    // Attacker gains energy (Carnivory!)
-                    if (GetAction(ActionType.Attack) > attackThreshold)
-                    {
-                        agent.ChangeEnergy(+damage, gridMap);
-                    }
+                    TryAttackAgent(ref agent, ref victim, gridMap);
                 }
                 if (!victim.IsAlive)
                 {
@@ -207,36 +198,68 @@ public static class Brain
                     {
                         int victimIndex = gridMap[nx, ny].Index;
                         ref Agent victim = ref agentPopulation[victimIndex];
-
-                        if (victim.IsAlive)
-                        {
-                            const float damage = 5f;
-
-                            // Victim loses energy
-                            // We use the ChangeEnergy helper to handle death logic inside agent if needed,
-                            // but usually better to just reduce energy and let Update loop handle death.
-                            victim.ChangeEnergy(-damage, gridMap);
-
-                            // Attacker gains energy (Carnivory!)
-                            // Thermodynamics: Gain is less than damage (e.g., 80% efficiency)
-                            attacker.ChangeEnergy(+damage * 0.8f, gridMap);
-                        }
+                        TryAttackAgent(ref attacker, ref victim, gridMap);
                     }
                     else if (gridMap[nx, ny].Type == EntityType.Plant)
                     {
                         int plantIndex = gridMap[nx, ny].Index;
                         ref Plant plant = ref plantPopulation[plantIndex];
-                        if (plant.IsAlive)
-                        {
-                            const float damage = 10f;
-                            // Plant loses energy
-                            plant.ChangeEnergy(-damage, gridMap);
-                            // Attacker gains energy (Herbivory!)
-                            attacker.ChangeEnergy(+damage * 1.2f, gridMap);
-                        }
+                        TryAttackPlant(ref attacker, ref plant, gridMap);
                     }
                 }
             }
+        }
+    }
+
+    private static void TryAttackPlant(ref Agent attacker, ref Plant plant, GridCell[,] gridMap)
+    {
+        if (!plant.IsAlive || !attacker.IsAlive)
+        {
+            return;
+        }
+        const float damage = 15f;
+
+        // Plant loses energy
+        // Attacker gains energy (Herbivory!)
+        if (attacker.Diet == DietType.Herbivore)
+        {
+            plant.ChangeEnergy(-damage, gridMap);
+            attacker.ChangeEnergy(+damage * 0.8f, gridMap);
+        }
+        else if (attacker.Diet == DietType.Omnivore)
+        {
+            plant.ChangeEnergy(-damage * 0.25f, gridMap);
+            attacker.ChangeEnergy(+damage * 0.1f, gridMap);
+        }
+        else
+        {
+            plant.ChangeEnergy(-damage * 0.25f, gridMap);
+        }
+    }
+
+    private static void TryAttackAgent(ref Agent attacker, ref Agent victim, GridCell[,] gridMap)
+    {
+        if (!victim.IsAlive || !attacker.IsAlive)
+        {
+            return;
+        }
+        const float damage = 7.5f;
+
+        // Victim loses energy
+        // Attacker gains energy (Carnivory!)
+        if (attacker.Diet == DietType.Carnivore)
+        {
+            victim.ChangeEnergy(-damage, gridMap);
+            attacker.ChangeEnergy(+damage * 0.5f, gridMap);
+        }
+        else if (attacker.Diet == DietType.Omnivore)
+        {
+            victim.ChangeEnergy(-damage * 0.25f, gridMap);
+            attacker.ChangeEnergy(+damage * 0.1f, gridMap);
+        }
+        else
+        {
+            victim.ChangeEnergy(-damage * 0.25f, gridMap);
         }
     }
 
