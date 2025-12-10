@@ -8,6 +8,7 @@ using Vivarium.Entities;
 using Vivarium.Graphics;
 using Vivarium.UI;
 using Vivarium.World;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Vivarium;
 
@@ -52,6 +53,7 @@ public class VivariumGame : Game
     private Camera2D _camera;
     private Inspector _inspector;
     private SpriteFont _sysFont;
+    private SimulationGraph _simGraph;
 
     private bool _isPaused = false;
 
@@ -91,6 +93,8 @@ public class VivariumGame : Game
         _camera = new Camera2D(GraphicsDevice);
 
         _camera.CenterOnGrid(GridWidth, GridHeight, CellSize);
+
+        _simGraph = new SimulationGraph(new Rectangle(25, 25, 280, 100));
 
         base.Initialize();
     }
@@ -266,6 +270,7 @@ public class VivariumGame : Game
         _sysFont = Content.Load<SpriteFont>("SystemFont");
 
         _inspector = new Inspector(GraphicsDevice, _sysFont);
+        _simGraph.LoadContent(GraphicsDevice);
     }
 
     protected override void Update(GameTime gameTime)
@@ -306,11 +311,13 @@ public class VivariumGame : Game
             Span<Plant> plantPopulationSpan = _plantPopulation.AsSpan();
 
             // --- BIOLOGICAL LOOP ---
-
+            int aliveAgents = 0;
             for (int index = 0; index < agentPopulationSpan.Length; index++)
             {
                 // Skip dead slots
                 if (!agentPopulationSpan[index].IsAlive) continue;
+
+                aliveAgents++;
 
                 // Use ref to modify directly
                 ref Agent currentAgent = ref agentPopulationSpan[index];
@@ -335,10 +342,14 @@ public class VivariumGame : Game
                 }
             }
 
+            int alivePlants = 0;
             for (int i = 0; i < plantPopulationSpan.Length; i++)
             {
                 // Skip dead slots
                 if (!plantPopulationSpan[i].IsAlive) continue;
+
+                alivePlants++;
+
                 // Use ref to modify directly
                 ref Plant currentPlant = ref plantPopulationSpan[i];
 
@@ -352,6 +363,8 @@ public class VivariumGame : Game
                     currentPlant.TryReproduce(plantPopulationSpan, _gridMap, _rng);
                 }
             }
+
+            _simGraph.Update(gameTime, aliveAgents, alivePlants);
         }
 
         ValidateWorldIntegrity();
@@ -465,6 +478,10 @@ public class VivariumGame : Game
         );
 
         // We pass the raw arrays so the inspector can look up the data by index
+        _simGraph.Draw(_spriteBatch);
+        _spriteBatch.DrawString(_sysFont, $"Agents: {livingAgents,20}", new Vector2(25, 130), Color.Plum);
+        _spriteBatch.DrawString(_sysFont, $"Plants: {livingPlants,20}", new Vector2(25, 150), Color.LimeGreen);
+
         _inspector.DrawUI(_spriteBatch, _agentPopulation, _plantPopulation, _structurePopulation);
 
         if (_isPaused)

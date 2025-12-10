@@ -42,7 +42,7 @@ public class Inspector
         _pixelTexture.SetData(new[] { Color.White });
 
         // Fixed panel position (Top Left)
-        _panelRect = new Rectangle(20, 20, 320, 0); // Height calculates dynamically
+        _panelRect = new Rectangle(20, 20, 290, 0); // Height calculates dynamically
     }
 
     public void UpdateInput(Camera2D camera, GridCell[,] gridMap, Agent[] agents, Plant[] plants, Structure[] structures)
