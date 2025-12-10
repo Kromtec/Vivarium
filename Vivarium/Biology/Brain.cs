@@ -100,7 +100,7 @@ public static class Brain
         }
 
         // 3. MOVEMENT
-        const float moveThreshold = 0.0f;
+        const float moveThreshold = 0.1f;
         int moveX = 0;
         int moveY = 0;
 
@@ -139,7 +139,7 @@ public static class Brain
                 if (plant.Energy > 0)
                 {
                     const float plantCalories = 10.0f;
-                    plant.ChangeEnergy(-1f, gridMap);
+                    plant.ChangeEnergy(-plantCalories, gridMap);
                     agent.ChangeEnergy(+plantCalories, gridMap);
                 }
 
@@ -165,7 +165,7 @@ public static class Brain
                     // Attacker gains energy (Carnivory!)
                     if (GetAction(ActionType.Attack) > attackThreshold)
                     {
-                        agent.ChangeEnergy(+damage * 0.8f, gridMap);
+                        agent.ChangeEnergy(+damage, gridMap);
                     }
                 }
                 if (!victim.IsAlive)
@@ -185,7 +185,7 @@ public static class Brain
 
         }
         // Resting recovers a tiny bit of energy
-        agent.ChangeEnergy(+(Agent.MetabolismRate * 0.2f), gridMap);
+        agent.ChangeEnergy(+(Agent.MetabolismRate * 0.8f), gridMap);
     }
 
     private static void PerformAreaAttack(ref Agent attacker, GridCell[,] gridMap, Span<Agent> agentPopulation, Span<Plant> plantPopulation)
