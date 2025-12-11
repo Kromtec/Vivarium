@@ -18,7 +18,7 @@ public struct Agent : IGridEntity
     // Driven by neural network output
     public bool WantsToReproduce { get; set; }
 
-    public const float MetabolismRate = 0.1f; // Energy lost per frame
+    private const float BaseMetabolismRate = 0.1f; // Energy lost per frame
     public const float MovementCost = 1.0f;   // Base cost for moving
     public const float OrthogonalMovementCost = MovementCost; // Extra cost for non-cardinal moves
     public const float DiagonalMovementCost = MovementCost * 1.414f; // Extra cost for diagonal moves
@@ -32,7 +32,6 @@ public struct Agent : IGridEntity
     public int Y { get; set; }
 
     public long ParentId { get; set; }
-    public int ParentIndex { get; set; }
 
     public DietType Diet { get; private set; }
 
@@ -92,8 +91,14 @@ public struct Agent : IGridEntity
 
     // Traits derived from genome (normalized to [-1, +1])
     public float Strength { get; private set; }
+
+    public float Power { get; private set; }
+    public float Resilience { get; private set; }
+
     public float Bravery { get; private set; }
     public float MetabolicEfficiency { get; private set; }
+    public float MetabolismRate { get; private set; }
+
     public float Perception { get; private set; }
     public float Speed { get; private set; }
     public float TrophicBias { get; private set; } // continuous diet axis: -1 carnivore .. +1 herbivore
@@ -197,6 +202,11 @@ public struct Agent : IGridEntity
         return IsAlive && Age >= MaturityAge;
     }
 
+    public bool IsDirectlyRelatedTo(ref Agent other)
+    {
+        return ParentId == other.Id || Id == other.ParentId;
+    }
+
     public static DietType DetermineDiet(Gene[] genome)
     {
         // Use the extracted TrophicBias trait (continuous) to determine categorical diet.
@@ -257,7 +267,6 @@ public struct Agent : IGridEntity
             X = x,
             Y = y,
             ParentId = parent?.Id ?? -1,
-            ParentIndex = parent?.Index ?? -1,
             OriginalColor = GetColorBasedOnDietType(dietType),
             IsAlive = true,
             Diet = dietType,
@@ -265,8 +274,11 @@ public struct Agent : IGridEntity
             Genome = genome,
             NeuronActivations = new float[BrainConfig.NeuronCount],
             Strength = strength,
+            Power = 1.0f + (strength * 0.5f),
+            Resilience = 1.0f + (strength * 0.5f),
             Bravery = bravery,
             MetabolicEfficiency = metabolicEfficiency,
+            MetabolismRate = BaseMetabolismRate * (1f - (metabolicEfficiency * 0.5f)),
             Perception = perception,
             Speed = speed,
             TrophicBias = trophicBias

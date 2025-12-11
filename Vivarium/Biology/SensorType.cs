@@ -11,4 +11,11 @@ public enum SensorType
     AgentDensity,
     PlantDensity,
     StructureDensity,
+    // Trait sensors (derived from genome)
+    Strength,
+    Bravery,
+    MetabolicEfficiency,
+    Perception,
+    Speed,
+    TrophicBias,
 }

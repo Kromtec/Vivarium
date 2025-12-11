@@ -45,6 +45,14 @@ public static class Brain
         neurons[(int)SensorType.PlantDensity] = density.PlantDensity;
         neurons[(int)SensorType.StructureDensity] = density.StructureDensity;
 
+        // Trait sensors (derived from genome and precomputed on the Agent)
+        neurons[(int)SensorType.Strength] = agent.Strength; // -1 .. +1
+        neurons[(int)SensorType.Bravery] = agent.Bravery; // -1 .. +1
+        neurons[(int)SensorType.MetabolicEfficiency] = agent.MetabolicEfficiency; // -1 .. +1
+        neurons[(int)SensorType.Perception] = agent.Perception; // -1 .. +1
+        neurons[(int)SensorType.Speed] = agent.Speed; // -1 .. +1
+        neurons[(int)SensorType.TrophicBias] = agent.TrophicBias; // -1 .. +1 (carnivore->herbivore)
+
         // --- 3. PROCESS GENOME ---
         foreach (var gene in agent.Genome)
         {
@@ -131,11 +139,7 @@ public static class Brain
             else if (gridMap[pendingX, pendingY].Type == EntityType.Plant)
             {
                 ref Plant plant = ref plantPopulationSpan[gridMap[pendingX, pendingY].Index];
-
-                if (plant.Energy > 0)
-                {
-                    TryAttackPlant(ref agent, ref plant, gridMap);
-                }
+                TryAttackPlant(ref agent, ref plant, gridMap);
 
                 if (!plant.IsAlive)
                 {
@@ -148,12 +152,8 @@ public static class Brain
             {
                 int victimIndex = gridMap[pendingX, pendingY].Index;
                 ref Agent victim = ref agentPopulationSpan[victimIndex];
-                if (victim.Energy > 0 &&
-                    victim.Index != agent.ParentIndex && victim.ParentIndex != agent.Index &&
-                    victim.Id != agent.ParentId && victim.ParentId != agent.Id)
-                {
-                    TryAttackAgent(ref agent, ref victim, gridMap);
-                }
+                TryAttackAgent(ref agent, ref victim, gridMap);
+
                 if (!victim.IsAlive)
                 {
                     MoveToLocation(ref agent, gridMap, pendingX, pendingY, moveX, moveY);
@@ -171,7 +171,7 @@ public static class Brain
 
         }
         // Resting recovers a tiny bit of energy
-        agent.ChangeEnergy(+(Agent.MetabolismRate * 0.4f), gridMap);
+        agent.ChangeEnergy(+(agent.MetabolismRate * 0.4f), gridMap);
     }
 
     private static void PerformAreaAttack(ref Agent attacker, GridCell[,] gridMap, Span<Agent> agentPopulation, Span<Plant> plantPopulation)
@@ -216,7 +216,9 @@ public static class Brain
         {
             return;
         }
-        const float damage = 15f;
+        const float baseDamage = 15f;
+        var power = 1.0f + (attacker.Strength * 0.5f); // 0.5x to 1.5x damage based on Strength trait
+        var damage = baseDamage * power;
 
         // Plant loses energy
         // Attacker gains energy (Herbivory!)
@@ -242,7 +244,17 @@ public static class Brain
         {
             return;
         }
-        const float damage = 7.5f;
+        if (attacker.IsDirectlyRelatedTo(ref victim))
+        {
+            return; // No friendly fire
+        }
+        if (attacker.Bravery < victim.Bravery)
+        {
+            return; // Too craven to attack an opponent that looks braver
+        }
+
+        const float baseDamage = 7.5f;
+        var damage = baseDamage * attacker.Power / victim.Resilience;
 
         // Victim loses energy
         // Attacker gains energy (Carnivory!)
