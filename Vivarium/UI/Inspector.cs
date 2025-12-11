@@ -6,6 +6,7 @@ using Vivarium.Entities;
 using Vivarium.World;
 using Vivarium.Engine;
 using Vivarium.Biology;
+using static Vivarium.Biology.Genetics;
 
 namespace Vivarium.UI;
 
@@ -128,7 +129,7 @@ public class Inspector
         // Let's set a fixed decent height or make it huge.
         // Better: Draw background AFTER knowing lines? Harder.
         // Simple approach: Draw Background with fixed/large height or adjust per frame.
-        int contentHeight = 450;
+        int contentHeight = 600;
         _panelRect.Height = contentHeight;
 
         // Draw Panel Shadow & Background
@@ -164,22 +165,28 @@ public class Inspector
                         DrawRow(spriteBatch, "Generation", $"{agent.Generation}");
                         DrawRow(spriteBatch, "Age", $"{agent.Age:F0} ticks | {agent.Age / VivariumGame.FramesPerSecond:F0} s");
                         DrawProgressBar(spriteBatch, "Energy", agent.Energy, 100f, Color.Lerp(Color.Red, Color.Lime, agent.Energy / 100f));
+                        DrawProgressBar(spriteBatch, "Hunger", agent.Hunger, 100f, Color.Lerp(Color.Lime, Color.Red, agent.Hunger / 100f));
 
+                        // Traits
                         DrawSeparator(spriteBatch);
-                        DrawHeader(spriteBatch, "BRAIN ACTIVITY");
+                        DrawHeader(spriteBatch, "TRAITS");
+                        DrawBrainBar(spriteBatch, nameof(TraitType.Strength), agent.Strength);
+                        DrawBrainBar(spriteBatch, nameof(TraitType.Bravery), agent.Bravery);
+                        DrawBrainBar(spriteBatch, "Metabolism", agent.MetabolicEfficiency);
+                        DrawBrainBar(spriteBatch, nameof(TraitType.Perception), agent.Perception);
+                        DrawBrainBar(spriteBatch, nameof(TraitType.Speed), agent.Speed);
+                        DrawBrainBar(spriteBatch, "Carni <-> Herbi", agent.TrophicBias);
 
                         // Outputs (Actions) - visualize with centered bars (-1 to 1)
-                        DrawBrainBar(spriteBatch, "Move N/S", GetActionVal(ref agent, ActionType.MoveNorth) - GetActionVal(ref agent, ActionType.MoveSouth));
-                        DrawBrainBar(spriteBatch, "Move W/E", GetActionVal(ref agent, ActionType.MoveEast) - GetActionVal(ref agent, ActionType.MoveWest));
+                        DrawSeparator(spriteBatch);
+                        DrawHeader(spriteBatch, "BRAIN ACTIVITY");
+                        DrawBrainBar(spriteBatch, "Move N", GetActionVal(ref agent, ActionType.MoveNorth), isPositiveOnly: true);
+                        DrawBrainBar(spriteBatch, "Move E", GetActionVal(ref agent, ActionType.MoveEast), isPositiveOnly: true);
+                        DrawBrainBar(spriteBatch, "Move S", GetActionVal(ref agent, ActionType.MoveSouth), isPositiveOnly: true);
+                        DrawBrainBar(spriteBatch, "Move W", GetActionVal(ref agent, ActionType.MoveWest), isPositiveOnly: true);
                         DrawBrainBar(spriteBatch, "Attack", GetActionVal(ref agent, ActionType.Attack), isPositiveOnly: true);
                         DrawBrainBar(spriteBatch, "Reproduce", GetActionVal(ref agent, ActionType.Reproduce), isPositiveOnly: true);
                         DrawBrainBar(spriteBatch, "Suicide", GetActionVal(ref agent, ActionType.KillSelf), isPositiveOnly: true);
-                        //DrawSeparator(spriteBatch);
-                        //DrawHeader(spriteBatch, "GENOME");
-                        //foreach (var gene in agent.Genome)
-                        //{
-                        //    DrawHeader(spriteBatch, gene.ToString(), Color.LightSeaGreen);
-                        //}
                     }
                     else
                     {

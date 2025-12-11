@@ -10,7 +10,7 @@ namespace Vivarium.Entities;
 public struct Agent : IGridEntity
 {
     // Reproduction Thermodynamics
-    public const float ReproductionCost = 20.0f;       // Wasted energy (effort)
+    public const float ReproductionCost = 10.0f;       // Wasted energy (effort)
     public const float ChildStartingEnergy = 75.0f;    // Transfer to child
     // Buffer to ensure parent survives the process
     public const float MinEnergyToReproduce = ReproductionCost + 5f;
@@ -19,7 +19,7 @@ public struct Agent : IGridEntity
     private const float BaseMovementThreshold = 0.1f;
     private const float BaseMetabolismRate = 0.1f; // Energy lost per frame
 
-    public const float MovementCost = 1.0f;   // Base cost for moving
+    public const float MovementCost = 0.5f;   // Base cost for moving
     public const float OrthogonalMovementCost = MovementCost; // Extra cost for non-cardinal moves
     public const float DiagonalMovementCost = MovementCost * 1.414f; // Extra cost for diagonal moves
 
@@ -71,6 +71,16 @@ public struct Agent : IGridEntity
         }
     }
 
+
+    public float Hunger
+    {
+        get;
+        private set
+        {
+            field = Math.Clamp(value, 0f, 100f);
+        }
+    }
+
     public void ChangeEnergy(float amount, GridCell[,] gridMap)
     {
         if(IsAlive)
@@ -84,6 +94,15 @@ public struct Agent : IGridEntity
             {
                 gridMap[X, Y] = GridCell.Empty;
             }
+        }
+    }
+
+    public void Eat(float amount)
+    {
+        if (IsAlive)
+        {
+            Hunger -= amount;
+            Energy += amount + (amount * MetabolicEfficiency * 0.5f);
         }
     }
 
@@ -123,7 +142,8 @@ public struct Agent : IGridEntity
         }
 
         // Metabolize energy
-        ChangeEnergy(-MetabolismRate, gridMap);
+        Hunger += MetabolismRate * 2;
+        ChangeEnergy(-(MetabolismRate + (MetabolismRate * (Hunger / 100))), gridMap);
 
         // Color Update
         Color = Color.Lerp(Color.Black, OriginalColor, Math.Clamp(Energy / 100f, .25f, 1f));

@@ -36,6 +36,7 @@ public static class Brain
         neurons[(int)SensorType.LocationY] = (float)agent.Y / gridHeight;
         neurons[(int)SensorType.Random] = (float)rng.NextDouble();
         neurons[(int)SensorType.Energy] = agent.Energy / 100f;
+        neurons[(int)SensorType.Hunger] = agent.Hunger / 100f;
         neurons[(int)SensorType.Age] = Math.Min(agent.Age / 2000f, 1.0f);
         neurons[(int)SensorType.Oscillator] = MathF.Sin(agent.Age * 0.1f);
 
@@ -211,10 +212,12 @@ public static class Brain
                 agent.ChangeEnergy(-cost, gridMap);
                 return;
             }
-
         }
-        // Resting recovers a tiny bit of energy
-        agent.ChangeEnergy(+(agent.MetabolismRate * 0.4f), gridMap);
+        // Regenerate if no action taken and properly fed
+        if (agent.Hunger < 10f)
+        {
+            agent.ChangeEnergy(agent.MetabolismRate, gridMap);
+        }
     }
 
     private static bool TryPerformAreaAttack(ref Agent attacker, GridCell[,] gridMap, Span<Agent> agentPopulation, Span<Plant> plantPopulation)
@@ -276,12 +279,12 @@ public static class Brain
         if (attacker.Diet == DietType.Herbivore)
         {
             plant.ChangeEnergy(-damage, gridMap);
-            attacker.ChangeEnergy(+damage * 0.8f, gridMap);
+            attacker.Eat(damage * 0.8f);
         }
         else if (attacker.Diet == DietType.Omnivore)
         {
             plant.ChangeEnergy(-damage * 0.25f, gridMap);
-            attacker.ChangeEnergy(+damage * 0.1f, gridMap);
+            attacker.Eat(damage * 0.1f);
         }
         else
         {
@@ -313,12 +316,12 @@ public static class Brain
         if (attacker.Diet == DietType.Carnivore)
         {
             victim.ChangeEnergy(-damage, gridMap);
-            attacker.ChangeEnergy(+damage * 0.8f, gridMap);
+            attacker.Eat(damage * 0.8f);
         }
         else if (attacker.Diet == DietType.Omnivore)
         {
             victim.ChangeEnergy(-damage * 0.25f, gridMap);
-            attacker.ChangeEnergy(+damage * 0.1f, gridMap);
+            attacker.Eat(damage * 0.05f);
         }
         else
         {
@@ -333,7 +336,24 @@ public static class Brain
             {
                 var retaliationDamage = baseDamage * victim.Power / attacker.Resilience;
                 attacker.ChangeEnergy(-retaliationDamage * 0.2f, gridMap); // Retaliation is less effective
+
+                if(!attacker.IsAlive)
+                {
+                    // Attacker died from retaliation - victim gets bonus energy
+                    if (victim.Diet == DietType.Carnivore)
+                        victim.Eat(retaliationDamage * 0.8f);
+                    else if (victim.Diet == DietType.Omnivore)
+                        victim.Eat(retaliationDamage * 0.05f);
+                }
             }
+        }
+        else
+        {
+            // Victim died - attacker gets bonus energy
+            if (attacker.Diet == DietType.Carnivore)
+                attacker.Eat(damage * 0.8f);
+            else if (attacker.Diet == DietType.Omnivore)
+                attacker.Eat(damage * 0.05f);
         }
         return true;
     }

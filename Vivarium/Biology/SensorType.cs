@@ -6,6 +6,7 @@ public enum SensorType
     LocationY,
     Random,
     Energy,
+    Hunger,
     Age,
     Oscillator,
     AgentDensity,
