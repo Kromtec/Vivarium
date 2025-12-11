@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using Vivarium.Entities;
 
 namespace Vivarium.Biology;
@@ -56,7 +55,7 @@ public static class Genetics
 
     public static Gene[] CreateGenome(Random rng)
     {
-        const int GenomeLength = 60;
+        const int GenomeLength = 64;
         var initialGenome = new Gene[GenomeLength];
 
         for (int g = 0; g < GenomeLength; g++)
@@ -72,68 +71,5 @@ public static class Genetics
         }
 
         return initialGenome;
-    }
-    public static Color ComputePhenotypeColor(Gene[] genome)
-    {
-        float aggressionSum = 0f;
-        float movementSum = 0f;
-        float complexitySum = 0f;
-
-        foreach (var gene in genome)
-        {
-            // Use absolute values so negative weights also contribute to visibility
-            float weight = Math.Abs(gene.Weight);
-            int sink = gene.SinkId;
-
-            // 1. SUM UP WEIGHTS (Don't average yet)
-            if (sink == BrainConfig.GetActionIndex(ActionType.Attack) ||
-                sink == BrainConfig.GetActionIndex(ActionType.KillSelf))
-            {
-                aggressionSum += weight;
-            }
-            else if (sink == BrainConfig.GetActionIndex(ActionType.MoveNorth) ||
-                     sink == BrainConfig.GetActionIndex(ActionType.MoveEast) ||
-                     sink == BrainConfig.GetActionIndex(ActionType.MoveSouth) ||
-                     sink == BrainConfig.GetActionIndex(ActionType.MoveWest))
-            {
-                movementSum += weight;
-            }
-            else
-            {
-                complexitySum += weight;
-            }
-        }
-
-        // 2. VISUALIZATION LOGIC
-
-        // A) Base Brightness (Body)
-        // Even with 0 weights, the agent should be visible (Dark Grey = 0.25f).
-        // Complexity adds to brightness up to a max of 0.6f.
-        float baseBrightness = 0.25f + (MathF.Tanh(complexitySum * 0.5f) * 0.35f);
-
-        // B) Tints (Red/Blue)
-        // We use Tanh to boost small values (0.1 -> 0.1) but cap high values (10.0 -> 1.0).
-        // We multiply by 2.0 inside Tanh to make the "Peaceful Start" genes more visible.
-        float r = MathF.Tanh(aggressionSum * 2.0f);
-        float b = MathF.Tanh(movementSum * 2.0f);
-
-        // 3. CONTRAST ("Winner takes all")
-        // If one trait dominates, suppress the other to prevent "Muddy Purple".
-        if (r > b * 1.2f) b *= 0.5f;
-        if (b > r * 1.2f) r *= 0.5f;
-
-        // 4. COMPOSE FINAL COLOR
-        // We add the tint to the base brightness.
-        float finalR = Math.Clamp(baseBrightness + r, 0f, 1f);
-        float finalB = Math.Clamp(baseBrightness + b, 0f, 1f);
-
-        // Green is used to desaturate (whiten) highly complex or balanced agents.
-        // It should never exceed R or B to avoid looking like a plant.
-        float finalG = Math.Clamp(baseBrightness, 0f, 0.8f);
-
-        // If both R and B are high (Hybrid), we boost G slightly to make it white/magenta
-        if (r > 0.5f && b > 0.5f) finalG += 0.2f;
-
-        return new Color(finalR, finalG, finalB, 1.0f);
     }
 }

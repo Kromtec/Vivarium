@@ -23,7 +23,7 @@ public struct Agent : IGridEntity
     public const float OrthogonalMovementCost = MovementCost; // Extra cost for non-cardinal moves
     public const float DiagonalMovementCost = MovementCost * 1.414f; // Extra cost for diagonal moves
 
-    public const int MaturityAge = 60 * 4; // Frames until agent can reproduce after birth (4 seconds at 60 FPS)
+    public const int MaturityAge = 60 * 10; // Frames until agent can reproduce after birth (10 seconds at 60 FPS)
     private Color originalColor;
 
     public long Id { get; set; } // Unique identifier for tracking across generations

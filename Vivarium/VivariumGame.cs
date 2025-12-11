@@ -8,7 +8,6 @@ using Vivarium.Entities;
 using Vivarium.Graphics;
 using Vivarium.UI;
 using Vivarium.World;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Vivarium;
 
@@ -46,6 +45,7 @@ public class VivariumGame : Game
 
     private double _fpsTimer;
     private int _framesCounter;
+    private int _currentFps;
 
     // Store the keyboard state from the previous frame to detect key presses (edges)
     private KeyboardState _previousKeyboardState;
@@ -484,6 +484,7 @@ public class VivariumGame : Game
         _spriteBatch.DrawString(_sysFont, $"-Omnivore: {livingOmnivore,17}", new Vector2(25, 170), Color.Plum);
         _spriteBatch.DrawString(_sysFont, $"-Carnivore: {livingCarnivore,16}", new Vector2(25, 190), Color.Crimson);
         _spriteBatch.DrawString(_sysFont, $"Plants: {livingPlants,20}", new Vector2(25, 210), Color.LimeGreen);
+        _spriteBatch.DrawString(_sysFont, $"Structures: {livingStructures,16}", new Vector2(25, 230), Color.Beige);
 
         _inspector.DrawUI(_spriteBatch, _agentPopulation, _plantPopulation, _structurePopulation);
 
@@ -501,18 +502,32 @@ public class VivariumGame : Game
             _spriteBatch.DrawString(_sysFont, pauseText, textPos, Color.Red);
         }
 
-        _spriteBatch.End();
+        UpdateFPSAndWindowTitle(gameTime, livingAgents, livingPlants, livingStructures);
 
-        UpdateWindowTitle(gameTime, livingAgents, livingPlants, livingStructures);
+        _spriteBatch.End();
 
         base.Draw(gameTime);
     }
 
-    private void UpdateWindowTitle(GameTime gameTime, int livingAgents, int livingPlants, int livingStructures)
+    private void UpdateFPSAndWindowTitle(GameTime gameTime, int livingAgents, int livingPlants, int livingStructures)
     {
         // --- FPS COUNTER ---
         // Increment frame counter
         _framesCounter++;
+
+        if (_currentFps > 0)
+        {
+            string fpsText = $"{_currentFps} FPS";
+            Vector2 textSize = _sysFont.MeasureString(fpsText);
+
+            Vector2 textPos = new Vector2(
+                GraphicsDevice.Viewport.Width - textSize.X - 20,
+                GraphicsDevice.Viewport.Height - 20
+            );
+
+            _spriteBatch.DrawString(_sysFont, fpsText, textPos + new Vector2(2, 2), Color.Black);
+            _spriteBatch.DrawString(_sysFont, fpsText, textPos, Color.Turquoise);
+        }
 
         // Add elapsed time
         _fpsTimer += gameTime.ElapsedGameTime.TotalSeconds;
@@ -521,6 +536,7 @@ public class VivariumGame : Game
         if (_fpsTimer >= 1.0d)
         {
             Window.Title = $"Vivarium - FPS: {_framesCounter} - Agents: {livingAgents} | Plants: {livingPlants} | Structures: {livingStructures}";
+            _currentFps = _framesCounter;
             _framesCounter = 0;
             _fpsTimer--;
         }

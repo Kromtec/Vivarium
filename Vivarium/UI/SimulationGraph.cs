@@ -54,7 +54,7 @@ public class SimulationGraph
         if (maxVal < 10) maxVal = 10;
 
         DrawSeries(spriteBatch, _plantHistory, Color.LimeGreen, maxVal);
-        DrawSeries(spriteBatch, _agentHistory, Color.Plum, maxVal);
+        DrawSeries(spriteBatch, _agentHistory, Color.Silver, maxVal);
 
         DrawLine(spriteBatch, new Vector2(_bounds.Left, _bounds.Top), new Vector2(_bounds.Left, _bounds.Bottom), Color.White);
         DrawLine(spriteBatch, new Vector2(_bounds.Left, _bounds.Bottom), new Vector2(_bounds.Right, _bounds.Bottom), Color.White);

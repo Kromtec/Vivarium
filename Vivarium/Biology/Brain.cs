@@ -1,7 +1,6 @@
 ﻿using System;
 using Vivarium.Entities;
 using Vivarium.World;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Vivarium.Biology;
 
@@ -172,7 +171,7 @@ public static class Brain
 
         }
         // Resting recovers a tiny bit of energy
-        agent.ChangeEnergy(+(Agent.MetabolismRate * 0.8f), gridMap);
+        agent.ChangeEnergy(+(Agent.MetabolismRate * 0.4f), gridMap);
     }
 
     private static void PerformAreaAttack(ref Agent attacker, GridCell[,] gridMap, Span<Agent> agentPopulation, Span<Plant> plantPopulation)
@@ -233,7 +232,7 @@ public static class Brain
         }
         else
         {
-            plant.ChangeEnergy(-damage * 0.25f, gridMap);
+            plant.ChangeEnergy(-damage * 0.1f, gridMap);
         }
     }
 
@@ -250,7 +249,7 @@ public static class Brain
         if (attacker.Diet == DietType.Carnivore)
         {
             victim.ChangeEnergy(-damage, gridMap);
-            attacker.ChangeEnergy(+damage * 0.5f, gridMap);
+            attacker.ChangeEnergy(+damage * 0.8f, gridMap);
         }
         else if (attacker.Diet == DietType.Omnivore)
         {
@@ -259,7 +258,7 @@ public static class Brain
         }
         else
         {
-            victim.ChangeEnergy(-damage * 0.25f, gridMap);
+            victim.ChangeEnergy(-damage * 0.1f, gridMap);
         }
     }
 
