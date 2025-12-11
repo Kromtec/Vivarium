@@ -3,11 +3,20 @@ using Vivarium.Entities;
 
 namespace Vivarium.Biology;
 
-public static class Genetics
+public static partial class Genetics
 {
     // The probability that a single gene will mutate.
     private const double MutationRate = 0.001d;
 
+    // Genome layout constants
+    public const int GenomeLength = 64;
+
+    // Reserve a tail region of the genome for trait genes.
+    // We allocate 12 genes (6 traits * 2 genes per trait) by default.
+    public const int TraitGeneCount = 12;
+    public const int TraitStartIndex = GenomeLength - TraitGeneCount;
+
+    // Legacy index (kept for compatibility, but DetermineDiet now uses trait extraction)
     public const int DietGeneIndex = 0;
 
     /// <summary>
@@ -55,7 +64,6 @@ public static class Genetics
 
     public static Gene[] CreateGenome(Random rng)
     {
-        const int GenomeLength = 64;
         var initialGenome = new Gene[GenomeLength];
 
         for (int g = 0; g < GenomeLength; g++)
@@ -64,12 +72,47 @@ public static class Genetics
             int source = rng.Next(BrainConfig.NeuronCount);
             int sink = rng.Next(BrainConfig.NeuronCount);
 
-            // 2. "Peaceful Start" Weights
-            float weight = (float)(rng.NextDouble() * 2.0 - 1.0);
+            // 2. "Evenly Distributed" Weights
+            float weight = (float)(rng.NextDouble() * 8.0 - 4.0);
 
             initialGenome[g] = Gene.CreateConnection(source, sink, weight);
         }
 
         return initialGenome;
+    }
+
+    /// <summary>
+    /// Extract a single trait value from the genome using the reserved trait gene region.
+    /// traitIndex 0 corresponds to the last pair of genes, 1 to the previous pair, etc.
+    /// Returns a normalized float in approx range [-1, +1].
+    /// </summary>
+    public static float ExtractTrait(Gene[] genome, TraitType trait)
+    {
+        if (genome == null || genome.Length == 0)
+            return 0f;
+
+        const int pairs = TraitGeneCount / 2;
+        int traitIndex = (int)trait;
+
+        // Clamp traitIndex
+        traitIndex = Math.Clamp(traitIndex, 0, pairs - 1);
+
+        // Map traitIndex 0 -> last pair. Compute base index accordingly.
+        // Example: TraitStartIndex=52, pairs=6 => pairs cover indices 52..63
+        // traitIndex 0 => base = 52 + (pairs-1 - 0)*2 = 52 + 10 = 62
+        int baseIdx = TraitStartIndex + (pairs - 1 - traitIndex) * 2;
+
+        int idxA = Math.Clamp(baseIdx, 0, genome.Length - 1);
+        int idxB = Math.Clamp(baseIdx + 1, 0, genome.Length - 1);
+
+        float a = genome[idxA].Weight;
+        float b = genome[idxB].Weight;
+
+        float avg = (a + b) * 0.5f;
+
+        // Normalize (Gene.Weight ranges roughly in [-4, +4]) to approx [-1, +1]
+        const float normalizer = 4f;
+
+        return Math.Clamp(avg / normalizer, -1f, 1f);
     }
 }

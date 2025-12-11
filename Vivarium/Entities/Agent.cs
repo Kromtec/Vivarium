@@ -90,6 +90,14 @@ public struct Agent : IGridEntity
     public Gene[] Genome { get; set; }
     public float[] NeuronActivations { get; set; }
 
+    // Traits derived from genome (normalized to [-1, +1])
+    public float Strength { get; private set; }
+    public float Bravery { get; private set; }
+    public float MetabolicEfficiency { get; private set; }
+    public float Perception { get; private set; }
+    public float Speed { get; private set; }
+    public float TrophicBias { get; private set; } // continuous diet axis: -1 carnivore .. +1 herbivore
+
     public void Update(GridCell[,] gridMap)
     {
         if (!IsAlive)
@@ -191,9 +199,10 @@ public struct Agent : IGridEntity
 
     public static DietType DetermineDiet(Gene[] genome)
     {
-        float geneValue = genome[Genetics.DietGeneIndex].Weight;
+        // Use the extracted TrophicBias trait (continuous) to determine categorical diet.
+        float bias = Genetics.ExtractTrait(genome, Genetics.TraitType.TrophicBias);
 
-        return geneValue switch
+        return bias switch
         {
             < -0.3f => DietType.Carnivore,
             > 0.3f => DietType.Herbivore,
@@ -232,6 +241,15 @@ public struct Agent : IGridEntity
     private static Agent ConstructAgent(int index, int x, int y, Gene[] genome, Agent? parent = null, float? initialEnergy = null)
     {
         DietType dietType = DetermineDiet(genome);
+
+        // Extract traits and assign individually
+        float strength = Genetics.ExtractTrait(genome, Genetics.TraitType.Strength);
+        float bravery = Genetics.ExtractTrait(genome, Genetics.TraitType.Bravery);
+        float metabolicEfficiency = Genetics.ExtractTrait(genome, Genetics.TraitType.MetabolicEfficiency);
+        float perception = Genetics.ExtractTrait(genome, Genetics.TraitType.Perception);
+        float speed = Genetics.ExtractTrait(genome, Genetics.TraitType.Speed);
+        float trophicBias = Genetics.ExtractTrait(genome, Genetics.TraitType.TrophicBias);
+
         return new Agent()
         {
             Id = VivariumGame.NextEntityId++,
@@ -245,7 +263,13 @@ public struct Agent : IGridEntity
             Diet = dietType,
             Energy = initialEnergy ?? 100f,
             Genome = genome,
-            NeuronActivations = new float[BrainConfig.NeuronCount]
+            NeuronActivations = new float[BrainConfig.NeuronCount],
+            Strength = strength,
+            Bravery = bravery,
+            MetabolicEfficiency = metabolicEfficiency,
+            Perception = perception,
+            Speed = speed,
+            TrophicBias = trophicBias
         };
     }
 }
