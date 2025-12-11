@@ -10,20 +10,21 @@ namespace Vivarium.Entities;
 public struct Agent : IGridEntity
 {
     // Reproduction Thermodynamics
-    public const float ReproductionCost = 15.0f;       // Wasted energy (effort)
+    public const float ReproductionCost = 20.0f;       // Wasted energy (effort)
     public const float ChildStartingEnergy = 75.0f;    // Transfer to child
     // Buffer to ensure parent survives the process
     public const float MinEnergyToReproduce = ReproductionCost + 5f;
 
-    // Driven by neural network output
-    public bool WantsToReproduce { get; set; }
-
+    private const float BaseAttackThreshold = 0.5f;
+    private const float BaseMovementThreshold = 0.1f;
     private const float BaseMetabolismRate = 0.1f; // Energy lost per frame
+
     public const float MovementCost = 1.0f;   // Base cost for moving
     public const float OrthogonalMovementCost = MovementCost; // Extra cost for non-cardinal moves
     public const float DiagonalMovementCost = MovementCost * 1.414f; // Extra cost for diagonal moves
 
     public const int MaturityAge = 60 * 10; // Frames until agent can reproduce after birth (10 seconds at 60 FPS)
+    private int ReproductionCooldown;       // Frames until next possible reproduction
     private Color originalColor;
 
     public long Id { get; set; } // Unique identifier for tracking across generations
@@ -96,11 +97,13 @@ public struct Agent : IGridEntity
     public float Resilience { get; private set; }
 
     public float Bravery { get; private set; }
+    public float AttackThreshold { get; private set; }
     public float MetabolicEfficiency { get; private set; }
     public float MetabolismRate { get; private set; }
 
     public float Perception { get; private set; }
     public float Speed { get; private set; }
+    public float MovementThreshold {  get; private set; }
     public float TrophicBias { get; private set; } // continuous diet axis: -1 carnivore .. +1 herbivore
 
     public void Update(GridCell[,] gridMap)
@@ -112,6 +115,13 @@ public struct Agent : IGridEntity
 
         // Age the agent
         Age++;
+
+        // Cooldown reproduction timer
+        if (ReproductionCooldown > 0)
+        {
+            ReproductionCooldown--;
+        }
+
         // Metabolize energy
         ChangeEnergy(-MetabolismRate, gridMap);
 
@@ -119,13 +129,23 @@ public struct Agent : IGridEntity
         Color = Color.Lerp(Color.Black, OriginalColor, Math.Clamp(Energy / 100f, .25f, 1f));
     }
 
-    public readonly void TryReproduce(Span<Agent> population, GridCell[,] gridMap, Random rng)
+    public bool TryReproduce(Span<Agent> population, GridCell[,] gridMap, Random rng)
     {
         // 1. Biological Checks
-        // Must want to reproduce and have enough energy reserves
-        if (!WantsToReproduce || Energy < MinEnergyToReproduce)
+        // Must have enough energy reserves
+        if (Energy < MinEnergyToReproduce)
         {
-            return;
+            return false;
+        }
+        // Must be mature enough
+        if (Age < MaturityAge)
+        {
+            return false;
+        }
+        // Must not be on reproduction cooldown
+        if (ReproductionCooldown > 0)
+        {
+            return false;
         }
 
         int gridWidth = gridMap.GetLength(0);
@@ -133,7 +153,7 @@ public struct Agent : IGridEntity
 
         ref Agent parent = ref population[Index];
 
-        // 1. Find an empty spot nearby in the WORLD
+        // Find an empty spot nearby in the WORLD
         int childX = -1;
         int childY = -1;
 
@@ -167,7 +187,7 @@ public struct Agent : IGridEntity
         }
 
         // No space found? No baby.
-        if (childX == -1) return;
+        if (childX == -1) return false;
 
         // 2. Find an empty slot in the ARRAY (Dead agent memory slot)
         int childIndex = -1;
@@ -182,7 +202,7 @@ public struct Agent : IGridEntity
         }
 
         // No array memory left? Population cap reached.
-        if (childIndex == -1) return;
+        if (childIndex == -1) return false;
 
         // 3. CREATE BABY
         // Create the child using our Genetics helper
@@ -195,11 +215,10 @@ public struct Agent : IGridEntity
 
         // Update map so nobody else claims this spot this frame
         gridMap[childX, childY] = new(EntityType.Agent, childIndex);
-    }
 
-    public readonly bool CanReproduce()
-    {
-        return IsAlive && Age >= MaturityAge;
+        // Set reproduction cooldown (simple fixed cooldown for now)
+        ReproductionCooldown = 60; // 1 second at 60 FPS
+        return true;
     }
 
     public bool IsDirectlyRelatedTo(ref Agent other)
@@ -207,12 +226,9 @@ public struct Agent : IGridEntity
         return ParentId == other.Id || Id == other.ParentId;
     }
 
-    public static DietType DetermineDiet(Gene[] genome)
+    public static DietType DetermineDiet(float trophicBias)
     {
-        // Use the extracted TrophicBias trait (continuous) to determine categorical diet.
-        float bias = Genetics.ExtractTrait(genome, Genetics.TraitType.TrophicBias);
-
-        return bias switch
+        return trophicBias switch
         {
             < -0.3f => DietType.Carnivore,
             > 0.3f => DietType.Herbivore,
@@ -250,8 +266,6 @@ public struct Agent : IGridEntity
 
     private static Agent ConstructAgent(int index, int x, int y, Gene[] genome, Agent? parent = null, float? initialEnergy = null)
     {
-        DietType dietType = DetermineDiet(genome);
-
         // Extract traits and assign individually
         float strength = Genetics.ExtractTrait(genome, Genetics.TraitType.Strength);
         float bravery = Genetics.ExtractTrait(genome, Genetics.TraitType.Bravery);
@@ -260,6 +274,7 @@ public struct Agent : IGridEntity
         float speed = Genetics.ExtractTrait(genome, Genetics.TraitType.Speed);
         float trophicBias = Genetics.ExtractTrait(genome, Genetics.TraitType.TrophicBias);
 
+        DietType dietType = DetermineDiet(trophicBias);
         return new Agent()
         {
             Id = VivariumGame.NextEntityId++,
@@ -277,10 +292,12 @@ public struct Agent : IGridEntity
             Power = 1.0f + (strength * 0.5f),
             Resilience = 1.0f + (strength * 0.5f),
             Bravery = bravery,
+            AttackThreshold = BaseAttackThreshold * (1.0f + (bravery * 0.5f)),
             MetabolicEfficiency = metabolicEfficiency,
             MetabolismRate = BaseMetabolismRate * (1f - (metabolicEfficiency * 0.5f)),
             Perception = perception,
             Speed = speed,
+            MovementThreshold = BaseMovementThreshold - (speed * BaseMovementThreshold),
             TrophicBias = trophicBias
         };
     }

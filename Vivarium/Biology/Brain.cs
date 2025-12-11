@@ -53,6 +53,46 @@ public static class Brain
         neurons[(int)SensorType.Speed] = agent.Speed; // -1 .. +1
         neurons[(int)SensorType.TrophicBias] = agent.TrophicBias; // -1 .. +1 (carnivore->herbivore)
 
+        // Directional sensors (8-way). Perception influences effective radius.
+        const int baseRadius = 2;
+        const int extraRange = 2; // max additional radius from perception
+        int dirRadius = Math.Clamp(baseRadius + (int)MathF.Round(agent.Perception * extraRange), 1, 6);
+
+        var dir = WorldSensor.ScanDirectional(gridMap, agent.X, agent.Y, dirRadius);
+
+        // Slightly amplify signals for higher perception (but keep bounded)
+        float amp = (float)Math.Clamp(1f + agent.Perception * 0.5f, 0.5f, 2f);
+
+        // Agent densities N, NE, E, SE, S, SW, W, NW
+        neurons[(int)SensorType.AgentDensity_N] = dir.AgentByDir[0] * amp;
+        neurons[(int)SensorType.AgentDensity_NE] = dir.AgentByDir[1] * amp;
+        neurons[(int)SensorType.AgentDensity_E] = dir.AgentByDir[2] * amp;
+        neurons[(int)SensorType.AgentDensity_SE] = dir.AgentByDir[3] * amp;
+        neurons[(int)SensorType.AgentDensity_S] = dir.AgentByDir[4] * amp;
+        neurons[(int)SensorType.AgentDensity_SW] = dir.AgentByDir[5] * amp;
+        neurons[(int)SensorType.AgentDensity_W] = dir.AgentByDir[6] * amp;
+        neurons[(int)SensorType.AgentDensity_NW] = dir.AgentByDir[7] * amp;
+
+        // Plant densities
+        neurons[(int)SensorType.PlantDensity_N] = dir.PlantByDir[0] * amp;
+        neurons[(int)SensorType.PlantDensity_NE] = dir.PlantByDir[1] * amp;
+        neurons[(int)SensorType.PlantDensity_E] = dir.PlantByDir[2] * amp;
+        neurons[(int)SensorType.PlantDensity_SE] = dir.PlantByDir[3] * amp;
+        neurons[(int)SensorType.PlantDensity_S] = dir.PlantByDir[4] * amp;
+        neurons[(int)SensorType.PlantDensity_SW] = dir.PlantByDir[5] * amp;
+        neurons[(int)SensorType.PlantDensity_W] = dir.PlantByDir[6] * amp;
+        neurons[(int)SensorType.PlantDensity_NW] = dir.PlantByDir[7] * amp;
+
+        // Structure densities
+        neurons[(int)SensorType.StructureDensity_N] = dir.StructureByDir[0] * amp;
+        neurons[(int)SensorType.StructureDensity_NE] = dir.StructureByDir[1] * amp;
+        neurons[(int)SensorType.StructureDensity_E] = dir.StructureByDir[2] * amp;
+        neurons[(int)SensorType.StructureDensity_SE] = dir.StructureByDir[3] * amp;
+        neurons[(int)SensorType.StructureDensity_S] = dir.StructureByDir[4] * amp;
+        neurons[(int)SensorType.StructureDensity_SW] = dir.StructureByDir[5] * amp;
+        neurons[(int)SensorType.StructureDensity_W] = dir.StructureByDir[6] * amp;
+        neurons[(int)SensorType.StructureDensity_NW] = dir.StructureByDir[7] * amp;
+
         // --- 3. PROCESS GENOME ---
         foreach (var gene in agent.Genome)
         {
@@ -73,7 +113,9 @@ public static class Brain
     }
 
     // Executes the actions based on the brain's output
-    public static void Act(ref Agent agent, GridCell[,] gridMap, Span<Agent> agentPopulationSpan, Span<Plant> plantPopulationSpan)
+    public static void Act(ref Agent agent, GridCell[,] gridMap, Random rng,
+        Span<Agent> agentPopulationSpan,
+        Span<Plant> plantPopulationSpan)
     {
         var neurons = agent.NeuronActivations;
         int gridWidth = gridMap.GetLength(0);
@@ -86,7 +128,10 @@ public static class Brain
         // --- 1. REPRODUCTION DECISION ---
         // The agent decides if it wants to invest energy in offspring.
         // We use a threshold (0.0 means "neutral", so > 0 is "yes").
-        agent.WantsToReproduce = GetAction(ActionType.Reproduce) > 0.0f;
+        if(GetAction(ActionType.Reproduce) > 0.0f && agent.TryReproduce(agentPopulationSpan, gridMap, rng))
+        {
+            return;
+        }
 
         // 2. SPECIAL ACTIONS
         if (GetAction(ActionType.KillSelf) > 0.9f && agent.Age > Agent.MaturityAge * 2)
@@ -95,26 +140,24 @@ public static class Brain
             return;
         }
 
-        const float attackThreshold = 0.5f;
-        if (GetAction(ActionType.Attack) > attackThreshold * 1.5f)
+        if (GetAction(ActionType.Attack) > agent.AttackThreshold &&
+            TryPerformAreaAttack(ref agent, gridMap, agentPopulationSpan, plantPopulationSpan))
         {
-            PerformAreaAttack(ref agent, gridMap, agentPopulationSpan, plantPopulationSpan);
             agent.ChangeEnergy(-2.0f, gridMap);
             return;
         }
 
         // 3. MOVEMENT
-        const float moveThreshold = 0.1f;
         int moveX = 0;
         int moveY = 0;
 
-        if (GetAction(ActionType.MoveNorth) > moveThreshold) moveY--;
+        if (GetAction(ActionType.MoveNorth) > agent.MovementThreshold) moveY--;
 
-        if (GetAction(ActionType.MoveSouth) > moveThreshold) moveY++;
+        if (GetAction(ActionType.MoveSouth) > agent.MovementThreshold) moveY++;
 
-        if (GetAction(ActionType.MoveWest) > moveThreshold) moveX--;
+        if (GetAction(ActionType.MoveWest) > agent.MovementThreshold) moveX--;
 
-        if (GetAction(ActionType.MoveEast) > moveThreshold) moveX++;
+        if (GetAction(ActionType.MoveEast) > agent.MovementThreshold) moveX++;
 
         moveX = Math.Clamp(moveX, -1, 1);
         moveY = Math.Clamp(moveY, -1, 1);
@@ -174,11 +217,12 @@ public static class Brain
         agent.ChangeEnergy(+(agent.MetabolismRate * 0.4f), gridMap);
     }
 
-    private static void PerformAreaAttack(ref Agent attacker, GridCell[,] gridMap, Span<Agent> agentPopulation, Span<Plant> plantPopulation)
+    private static bool TryPerformAreaAttack(ref Agent attacker, GridCell[,] gridMap, Span<Agent> agentPopulation, Span<Plant> plantPopulation)
     {
         int gridWidth = gridMap.GetLength(0);
         int gridHeight = gridMap.GetLength(1);
 
+        bool attackedSomething = false;
         // Iterate over 3x3 grid centered on attacker
         for (int dy = -1; dy <= 1; dy++)
         {
@@ -197,24 +241,31 @@ public static class Brain
                     {
                         int victimIndex = gridMap[nx, ny].Index;
                         ref Agent victim = ref agentPopulation[victimIndex];
-                        TryAttackAgent(ref attacker, ref victim, gridMap);
+                        if (TryAttackAgent(ref attacker, ref victim, gridMap))
+                        {
+                            attackedSomething = true;
+                        }
                     }
                     else if (gridMap[nx, ny].Type == EntityType.Plant)
                     {
                         int plantIndex = gridMap[nx, ny].Index;
                         ref Plant plant = ref plantPopulation[plantIndex];
-                        TryAttackPlant(ref attacker, ref plant, gridMap);
+                        if (TryAttackPlant(ref attacker, ref plant, gridMap))
+                        {
+                            attackedSomething = true;
+                        }
                     }
                 }
             }
         }
+        return attackedSomething;
     }
 
-    private static void TryAttackPlant(ref Agent attacker, ref Plant plant, GridCell[,] gridMap)
+    private static bool TryAttackPlant(ref Agent attacker, ref Plant plant, GridCell[,] gridMap)
     {
         if (!plant.IsAlive || !attacker.IsAlive)
         {
-            return;
+            return false;
         }
         const float baseDamage = 15f;
         var power = 1.0f + (attacker.Strength * 0.5f); // 0.5x to 1.5x damage based on Strength trait
@@ -236,21 +287,22 @@ public static class Brain
         {
             plant.ChangeEnergy(-damage * 0.1f, gridMap);
         }
+        return true;
     }
 
-    private static void TryAttackAgent(ref Agent attacker, ref Agent victim, GridCell[,] gridMap)
+    private static bool TryAttackAgent(ref Agent attacker, ref Agent victim, GridCell[,] gridMap)
     {
         if (!victim.IsAlive || !attacker.IsAlive)
         {
-            return;
+            return false;
         }
         if (attacker.IsDirectlyRelatedTo(ref victim))
         {
-            return; // No friendly fire
+            return false; // No friendly fire
         }
         if (attacker.Bravery < victim.Bravery)
         {
-            return; // Too craven to attack an opponent that looks braver
+            return false; // Too craven to attack an opponent that looks braver
         }
 
         const float baseDamage = 7.5f;
@@ -272,11 +324,23 @@ public static class Brain
         {
             victim.ChangeEnergy(-damage * 0.1f, gridMap);
         }
+
+        if (victim.IsAlive)
+        {
+            // Retaliation chance
+            float retaliationChance = (victim.Bravery + victim.Perception) * 0.5f;
+            if (retaliationChance > 0.1f) // Minimum chance to retaliate
+            {
+                var retaliationDamage = baseDamage * victim.Power / attacker.Resilience;
+                attacker.ChangeEnergy(-retaliationDamage * 0.2f, gridMap); // Retaliation is less effective
+            }
+        }
+        return true;
     }
 
     private static void MoveToLocation(ref Agent agent, GridCell[,] gridMap, int pendingX, int pendingY, int dx, int dy)
     {
-        if(!agent.IsAlive)
+        if (!agent.IsAlive)
         {
             return;
         }

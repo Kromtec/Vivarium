@@ -327,19 +327,12 @@ public class VivariumGame : Game
 
                 // A. THINK & ACT
                 Brain.Think(ref currentAgent, _gridMap, _rng);
-                Brain.Act(ref currentAgent, _gridMap, agentPopulationSpan, plantPopulationSpan);
+                Brain.Act(ref currentAgent, _gridMap, _rng, agentPopulationSpan, plantPopulationSpan);
 
                 ValidateAgentIntegrity(index, currentAgent, oldX, oldY);
 
                 // B. AGING & METABOLISM
                 currentAgent.Update(_gridMap);
-
-                // C. REPRODUCTION
-                // If agent is mature, try to spawn a child
-                if (currentAgent.CanReproduce())
-                {
-                    currentAgent.TryReproduce(agentPopulationSpan, _gridMap, _rng);
-                }
             }
 
             int alivePlants = 0;
