@@ -18,6 +18,7 @@ public struct Agent : IGridEntity
     private const float BaseAttackThreshold = 0.5f;
     private const float BaseMovementThreshold = 0.1f;
     private const float BaseMetabolismRate = 0.1f; // Energy lost per frame
+    private const int BaseMovementCooldown = 3; // Base cooldown for moving
 
     public const float MovementCost = 0.5f;   // Base cost for moving
     public const float OrthogonalMovementCost = MovementCost; // Extra cost for non-cardinal moves
@@ -25,6 +26,7 @@ public struct Agent : IGridEntity
 
     public const int MaturityAge = 60 * 10; // Frames until agent can reproduce after birth (10 seconds at 60 FPS)
     private int ReproductionCooldown;       // Frames until next possible reproduction
+    private int MovementCooldown;           // Frames until next possible movement
     private Color originalColor;
 
     public long Id { get; set; } // Unique identifier for tracking across generations
@@ -106,6 +108,63 @@ public struct Agent : IGridEntity
         }
     }
 
+    public bool TryMoveToLocation(GridCell[,] gridMap, int pendingX, int pendingY, int dx, int dy)
+    {
+        if (!IsAlive)
+        {
+            return false;
+        }
+        // Movement Cooldown Check
+        if (MovementCooldown > 0)
+        {
+            return false;
+        }
+
+        // clear old location
+        if (gridMap[X, Y].Type == EntityType.Agent && gridMap[X, Y].Index == Index)
+        {
+            gridMap[X, Y] = GridCell.Empty;
+        }
+
+        // 2. --- THE TRAP (Debug Trap) ---
+        // We check BEFORE writing whether we're about to kill someone.
+        GridCell target = gridMap[pendingX, pendingY];
+
+        // If the target is an agent (and not ourselves)...
+        if (target.Type == EntityType.Agent && target.Index != Index)
+        {
+            // ... then we've found a bug in Act()!
+            // Act() told us "Go there" even though it's occupied.
+            throw new Exception($"FATAL ERROR: Agent #{Index} is overwriting living Agent #{target.Index} at {pendingX},{pendingY}!\n" +
+                                $"This means 'gridMap[{pendingX},{pendingY}] == Empty' was TRUE even though an agent was there.");
+        }
+        else if (target.Type == EntityType.Plant)
+        {
+            throw new Exception($"FATAL ERROR: Agent #{Index} is overwriting living Plant #{target.Index} at {pendingX},{pendingY}!\n" +
+                                $"This means 'gridMap[{pendingX},{pendingY}] == Empty' was TRUE even though an plant was there.");
+        }
+        else if (target.Type == EntityType.Structure)
+        {
+            throw new Exception($"FATAL ERROR: Agent #{Index} is overwriting Structure #{target.Index} at {pendingX},{pendingY}!\n" +
+                                $"This means 'gridMap[{pendingX},{pendingY}] == Empty' was TRUE even though a structure was there.");
+        }
+        // move to new location
+        X = pendingX;
+        Y = pendingY;
+        gridMap[pendingX, pendingY] = new(EntityType.Agent, Index);
+
+        // Calculate Movement Cost
+        // Orthogonal move (0,1) or (1,0) length is 1.
+        // Diagonal move (1,1) length is approx 1.414.
+        // We penalize diagonal movement correctly to preserve physics.
+        bool isDiagonal = (dx != 0 && dy != 0);
+        float cost = isDiagonal ? Agent.DiagonalMovementCost : Agent.OrthogonalMovementCost; // cost * sqrt(2) approx
+
+        ChangeEnergy(-cost, gridMap);
+        MovementCooldown = BaseMovementCooldown - (int)(Energy * 0.02 * Math.Clamp(Speed, 0d, 1d)); // - 0 to 2 frames
+        return true;
+    }
+
     public Gene[] Genome { get; set; }
     public float[] NeuronActivations { get; set; }
 
@@ -139,6 +198,11 @@ public struct Agent : IGridEntity
         if (ReproductionCooldown > 0)
         {
             ReproductionCooldown--;
+        }
+        // Cooldown movement timer
+        if (MovementCooldown > 0)
+        {
+            MovementCooldown--;
         }
 
         // Metabolize energy

@@ -145,7 +145,6 @@ public static class Brain
             TryPerformAreaAttack(ref agent, gridMap, agentPopulationSpan, plantPopulationSpan))
         {
             agent.ChangeEnergy(-2.0f, gridMap);
-            return;
         }
 
         // 3. MOVEMENT
@@ -176,8 +175,10 @@ public static class Brain
             // is within grid and target cell is empty
             if (gridMap[pendingX, pendingY] == GridCell.Empty)
             {
-                MoveToLocation(ref agent, gridMap, pendingX, pendingY, moveX, moveY);
-                return;
+                if(agent.TryMoveToLocation(gridMap, pendingX, pendingY, moveX, moveY))
+                {
+                    return;
+                }
             }
             // a plant occupies the target cell
             else if (gridMap[pendingX, pendingY].Type == EntityType.Plant)
@@ -187,9 +188,11 @@ public static class Brain
 
                 if (!plant.IsAlive)
                 {
-                    MoveToLocation(ref agent, gridMap, pendingX, pendingY, moveX, moveY);
+                    if (agent.TryMoveToLocation(gridMap, pendingX, pendingY, moveX, moveY))
+                    {
+                        return;
+                    }
                 }
-                return;
             }
             // cell occupied by another agent - attack
             else if (gridMap[pendingX, pendingY].Type == EntityType.Agent)
@@ -200,9 +203,11 @@ public static class Brain
 
                 if (!victim.IsAlive)
                 {
-                    MoveToLocation(ref agent, gridMap, pendingX, pendingY, moveX, moveY);
+                    if (agent.TryMoveToLocation(gridMap, pendingX, pendingY, moveX, moveY))
+                    {
+                        return;
+                    }
                 }
-                return;
             }
             else if (gridMap[pendingX, pendingY].Type == EntityType.Structure)
             {
@@ -336,15 +341,6 @@ public static class Brain
             {
                 var retaliationDamage = baseDamage * victim.Power / attacker.Resilience;
                 attacker.ChangeEnergy(-retaliationDamage * 0.2f, gridMap); // Retaliation is less effective
-
-                if(!attacker.IsAlive)
-                {
-                    // Attacker died from retaliation - victim gets bonus energy
-                    if (victim.Diet == DietType.Carnivore)
-                        victim.Eat(retaliationDamage * 0.8f);
-                    else if (victim.Diet == DietType.Omnivore)
-                        victim.Eat(retaliationDamage * 0.05f);
-                }
             }
         }
         else
@@ -358,53 +354,4 @@ public static class Brain
         return true;
     }
 
-    private static void MoveToLocation(ref Agent agent, GridCell[,] gridMap, int pendingX, int pendingY, int dx, int dy)
-    {
-        if (!agent.IsAlive)
-        {
-            return;
-        }
-
-        // clear old location
-        if (gridMap[agent.X, agent.Y].Type == EntityType.Agent && gridMap[agent.X, agent.Y].Index == agent.Index)
-        {
-            gridMap[agent.X, agent.Y] = GridCell.Empty;
-        }
-
-        // 2. --- THE TRAP (Debug Trap) ---
-        // We check BEFORE writing whether we're about to kill someone.
-        GridCell target = gridMap[pendingX, pendingY];
-
-        // If the target is an agent (and not ourselves)...
-        if (target.Type == EntityType.Agent && target.Index != agent.Index)
-        {
-            // ... then we've found a bug in Act()!
-            // Act() told us "Go there" even though it's occupied.
-            throw new Exception($"FATAL ERROR: Agent #{agent.Index} is overwriting living Agent #{target.Index} at {pendingX},{pendingY}!\n" +
-                                $"This means 'gridMap[{pendingX},{pendingY}] == Empty' was TRUE even though an agent was there.");
-        }
-        else if (target.Type == EntityType.Plant)
-        {
-            throw new Exception($"FATAL ERROR: Agent #{agent.Index} is overwriting living Plant #{target.Index} at {pendingX},{pendingY}!\n" +
-                                $"This means 'gridMap[{pendingX},{pendingY}] == Empty' was TRUE even though an plant was there.");
-        }
-        else if (target.Type == EntityType.Structure)
-        {
-            throw new Exception($"FATAL ERROR: Agent #{agent.Index} is overwriting Structure #{target.Index} at {pendingX},{pendingY}!\n" +
-                                $"This means 'gridMap[{pendingX},{pendingY}] == Empty' was TRUE even though a structure was there.");
-        }
-        // move to new location
-        agent.X = pendingX;
-        agent.Y = pendingY;
-        gridMap[pendingX, pendingY] = new(EntityType.Agent, agent.Index);
-
-        // Calculate Movement Cost
-        // Orthogonal move (0,1) or (1,0) length is 1.
-        // Diagonal move (1,1) length is approx 1.414.
-        // We penalize diagonal movement correctly to preserve physics.
-        bool isDiagonal = (dx != 0 && dy != 0);
-        float cost = isDiagonal ? Agent.DiagonalMovementCost : Agent.OrthogonalMovementCost; // cost * sqrt(2) approx
-
-        agent.ChangeEnergy(-cost, gridMap);
-    }
 }
