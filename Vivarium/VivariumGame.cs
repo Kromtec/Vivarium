@@ -512,7 +512,7 @@ public class VivariumGame : Game
             Vector2 textSize = _sysFont.MeasureString(pauseText);
 
             Vector2 textPos = new Vector2(
-                GraphicsDevice.Viewport.Width - textSize.X - 20,
+                GraphicsDevice.Viewport.Width / 2 - textSize.X / 2,
                 20
             );
 

@@ -216,7 +216,7 @@ public static class Brain
                     // Only move if empty (Don't attack while fleeing)
                     if (gridMap[pendingX, pendingY] == GridCell.Empty)
                     {
-                        agent.TryMoveToLocation(gridMap, pendingX, pendingY, fleeMoveX, fleeMoveY);
+                        agent.TryMoveToLocation(gridMap, pendingX, pendingY, fleeMoveX, fleeMoveY, Agent.FleeCost);
                     }
                 }
                 return;

@@ -11,7 +11,8 @@ public struct Agent : IGridEntity
 {
     // Reproduction Thermodynamics
     // Reproduction Thermodynamics
-    public const float ReproductionOverheadPct = 0.10f; // 10% of MaxEnergy wasted as effort
+    // Reproduction Thermodynamics
+    public const float ReproductionOverheadPct = 0.30f; // 30% of MaxEnergy wasted as effort (Harder to breed)
     // Buffer to ensure parent survives the process
     public const float MinEnergyBuffer = 5.0f;
 
@@ -23,6 +24,7 @@ public struct Agent : IGridEntity
     public const float MovementCost = 0.1f;   // Base cost for moving (Reduced 5x)
     public const float OrthogonalMovementCost = MovementCost; // Extra cost for non-cardinal moves
     public const float DiagonalMovementCost = MovementCost * 1.414f; // Extra cost for diagonal moves
+    public const float FleeCost = 0.5f; // High cost for panic running (5x normal)
 
     public const int MaturityAge = 60 * 10; // Frames until agent can reproduce after birth (10 seconds at 60 FPS)
     private int ReproductionCooldown;       // Frames until next possible reproduction
@@ -109,7 +111,7 @@ public struct Agent : IGridEntity
         }
     }
 
-    public bool TryMoveToLocation(GridCell[,] gridMap, int pendingX, int pendingY, int dx, int dy)
+    public bool TryMoveToLocation(GridCell[,] gridMap, int pendingX, int pendingY, int dx, int dy, float? overrideCost = null)
     {
         if (!IsAlive)
         {
@@ -142,7 +144,7 @@ public struct Agent : IGridEntity
         else if (target.Type == EntityType.Plant)
         {
             throw new Exception($"FATAL ERROR: Agent #{Index} is overwriting living Plant #{target.Index} at {pendingX},{pendingY}!\n" +
-                                $"This means 'gridMap[{pendingX},{pendingY}] == Empty' was TRUE even though an plant was there.");
+                                $"This means 'gridMap[{pendingX},{pendingY}] == Empty' was TRUE even though a plant was there.");
         }
         else if (target.Type == EntityType.Structure)
         {
@@ -155,11 +157,18 @@ public struct Agent : IGridEntity
         gridMap[pendingX, pendingY] = new(EntityType.Agent, Index);
 
         // Calculate Movement Cost
-        // Orthogonal move (0,1) or (1,0) length is 1.
-        // Diagonal move (1,1) length is approx 1.414.
-        // We penalize diagonal movement correctly to preserve physics.
-        bool isDiagonal = (dx != 0 && dy != 0);
-        float cost = isDiagonal ? Agent.DiagonalMovementCost : Agent.OrthogonalMovementCost; // cost * sqrt(2) approx
+        float cost;
+        if (overrideCost.HasValue)
+        {
+            cost = overrideCost.Value;
+        }
+        else
+        {
+            // Orthogonal move (0,1) or (1,0) length is 1.
+            // Diagonal move (1,1) length is approx 1.414.
+            bool isDiagonal = (dx != 0 && dy != 0);
+            cost = isDiagonal ? Agent.DiagonalMovementCost : Agent.OrthogonalMovementCost;
+        }
 
         ChangeEnergy(-cost, gridMap);
         MovementCooldown = BaseMovementCooldown - (int)(Energy * 0.02 * Math.Clamp(Speed, 0d, 1d)); // - 0 to 2 frames
@@ -302,8 +311,8 @@ public struct Agent : IGridEntity
         // Update map so nobody else claims this spot this frame
         gridMap[childX, childY] = new(EntityType.Agent, childIndex);
 
-        // Set reproduction cooldown (simple fixed cooldown for now)
-        ReproductionCooldown = 60; // 1 second at 60 FPS
+        // Set reproduction cooldown (Prevent rapid-fire breeding)
+        ReproductionCooldown = 600; // 10 seconds at 60 FPS
         return true;
     }
 

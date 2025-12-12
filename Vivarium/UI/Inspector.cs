@@ -13,6 +13,7 @@ namespace Vivarium.UI;
 
 public class Inspector
 {
+    private readonly GraphicsDevice _graphics;
     private readonly SpriteFont _font;
     private readonly Texture2D _pixelTexture;
 
@@ -42,12 +43,10 @@ public class Inspector
 
     public Inspector(GraphicsDevice graphics, SpriteFont font)
     {
+        _graphics = graphics;
         _font = font;
         _pixelTexture = new Texture2D(graphics, 1, 1);
         _pixelTexture.SetData(new[] { Color.White });
-
-        // Fixed panel position (Top Left), height is dynamic
-        _panelRect = new Rectangle(20, 20, 290, 0);
     }
 
     public void UpdateInput(Camera2D camera, GridCell[,] gridMap, Agent[] agents, Plant[] plants, Structure[] structures)
@@ -171,6 +170,7 @@ public class Inspector
                         AddBrainBar("Move W", GetActionVal(ref agent, ActionType.MoveW), true, ref contentHeight);
                         AddBrainBar("Attack", GetActionVal(ref agent, ActionType.Attack), true, ref contentHeight);
                         AddBrainBar("Reproduce", GetActionVal(ref agent, ActionType.Reproduce), true, ref contentHeight);
+                        AddBrainBar("Flee", GetActionVal(ref agent, ActionType.Flee), true, ref contentHeight);
                         AddBrainBar("Suicide", GetActionVal(ref agent, ActionType.Suicide), true, ref contentHeight);
                     }
                     else
@@ -188,7 +188,7 @@ public class Inspector
                     if (isSamePlant && plant.IsAlive)
                     {
                         AddRow("ID", $"#{plant.Id}", ref contentHeight);
-                        AddRow("Age", $"{plant.Age:F0} ticks | {plant.Age / VivariumGame.FramesPerSecond:F0} s", ref contentHeight);
+                        AddRow("Age", $"{plant.Age:F0} t | {plant.Age / VivariumGame.FramesPerSecond:F0} s", ref contentHeight);
                         AddProgressBar("Energy", plant.Energy, 100f, Color.Green, ref contentHeight);
                         AddRow("Status", plant.Age < Plant.MaturityAge ? "Growing" : "Mature", ref contentHeight);
                     }
@@ -219,9 +219,10 @@ public class Inspector
         }
 
         contentHeight += Padding;
-        
+
         // 2. Set Height & Draw Background
-        _panelRect.Height = contentHeight;
+        // Fixed panel position (Top Right), height is dynamic
+        _panelRect = new Rectangle(_graphics.Viewport.Width - 20 - 280, 20, 280, contentHeight);
 
         // Shadow & Bg
         spriteBatch.Draw(_pixelTexture, new Rectangle(_panelRect.X + 4, _panelRect.Y + 4, _panelRect.Width, _panelRect.Height), Color.Black * 0.5f);
