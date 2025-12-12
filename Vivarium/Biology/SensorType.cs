@@ -44,4 +44,5 @@ public enum SensorType
     Perception,
     Speed,
     TrophicBias,
+    Constitution,
 }

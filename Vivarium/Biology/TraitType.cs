@@ -13,6 +13,7 @@ public static partial class Genetics
         MetabolicEfficiency = 2,
         Perception = 3,
         Speed = 4,
-        TrophicBias = 5
+        TrophicBias = 5,
+        Constitution = 6
     }
 }

@@ -184,6 +184,7 @@ public struct Agent : IGridEntity
     public float Speed { get; private set; }
     public float MovementThreshold {  get; private set; }
     public float TrophicBias { get; private set; } // continuous diet axis: -1 carnivore .. +1 herbivore
+    public float Constitution { get; private set; }
 
     public void Update(GridCell[,] gridMap)
     {
@@ -362,6 +363,7 @@ public struct Agent : IGridEntity
         float perception = Genetics.ExtractTrait(genome, Genetics.TraitType.Perception);
         float speed = Genetics.ExtractTrait(genome, Genetics.TraitType.Speed);
         float trophicBias = Genetics.ExtractTrait(genome, Genetics.TraitType.TrophicBias);
+        float constitution = Genetics.ExtractTrait(genome, Genetics.TraitType.Constitution);
 
         DietType dietType = DetermineDiet(trophicBias);
         return new Agent()
@@ -379,7 +381,7 @@ public struct Agent : IGridEntity
             NeuronActivations = new float[BrainConfig.NeuronCount],
             Strength = strength,
             Power = 1.0f + (strength * 0.5f),
-            Resilience = 1.0f + (strength * 0.5f),
+            Resilience = 1.0f + (constitution * 0.5f),
             Bravery = bravery,
             AttackThreshold = BaseAttackThreshold * (1.0f + (bravery * 0.5f)),
             MetabolicEfficiency = metabolicEfficiency,
@@ -387,7 +389,8 @@ public struct Agent : IGridEntity
             Perception = perception,
             Speed = speed,
             MovementThreshold = BaseMovementThreshold - (speed * BaseMovementThreshold),
-            TrophicBias = trophicBias
+            TrophicBias = trophicBias,
+            Constitution = constitution
         };
     }
 

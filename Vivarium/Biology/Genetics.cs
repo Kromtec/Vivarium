@@ -12,8 +12,8 @@ public static partial class Genetics
     public const int GenomeLength = 64;
 
     // Reserve a tail region of the genome for trait genes.
-    // We allocate 12 genes (6 traits * 2 genes per trait) by default.
-    public const int TraitGeneCount = 12;
+    // We allocate 14 genes (7 traits * 2 genes per trait) by default.
+    public const int TraitGeneCount = 14;
     public const int TraitStartIndex = GenomeLength - TraitGeneCount;
 
     // Legacy index (kept for compatibility, but DetermineDiet now uses trait extraction)

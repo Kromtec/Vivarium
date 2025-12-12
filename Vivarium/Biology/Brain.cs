@@ -53,6 +53,7 @@ public static class Brain
         neurons[(int)SensorType.Perception] = agent.Perception; // -1 .. +1
         neurons[(int)SensorType.Speed] = agent.Speed; // -1 .. +1
         neurons[(int)SensorType.TrophicBias] = agent.TrophicBias; // -1 .. +1 (carnivore->herbivore)
+        neurons[(int)SensorType.Constitution] = agent.Constitution; // -1 .. +1
 
         // Directional sensors (8-way). Perception influences effective radius.
         const int baseRadius = 2;
