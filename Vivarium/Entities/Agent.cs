@@ -10,17 +10,17 @@ namespace Vivarium.Entities;
 public struct Agent : IGridEntity
 {
     // Reproduction Thermodynamics
-    public const float ReproductionCost = 10.0f;       // Wasted energy (effort)
-    public const float ChildStartingEnergy = 75.0f;    // Transfer to child
+    // Reproduction Thermodynamics
+    public const float ReproductionOverheadPct = 0.10f; // 10% of MaxEnergy wasted as effort
     // Buffer to ensure parent survives the process
-    public const float MinEnergyToReproduce = ReproductionCost + 5f;
+    public const float MinEnergyBuffer = 5.0f;
 
     private const float BaseAttackThreshold = 0.5f;
     private const float BaseMovementThreshold = 0.1f;
-    private const float BaseMetabolismRate = 0.1f; // Energy lost per frame
+    private const float BaseMetabolismRate = 0.01f; // Energy lost per frame (Reduced 10x)
     private const int BaseMovementCooldown = 3; // Base cooldown for moving
 
-    public const float MovementCost = 0.5f;   // Base cost for moving
+    public const float MovementCost = 0.1f;   // Base cost for moving (Reduced 5x)
     public const float OrthogonalMovementCost = MovementCost; // Extra cost for non-cardinal moves
     public const float DiagonalMovementCost = MovementCost * 1.414f; // Extra cost for diagonal moves
 
@@ -64,7 +64,7 @@ public struct Agent : IGridEntity
         private set
         {
             // C# 14 field keyword
-            field = Math.Clamp(value, 0f, 100f);
+            field = Math.Clamp(value, 0f, MaxEnergy);
 
             // If energy hits zero, the agent dies.
             if (field <= 0)
@@ -185,6 +185,7 @@ public struct Agent : IGridEntity
     public float MovementThreshold {  get; private set; }
     public float TrophicBias { get; private set; } // continuous diet axis: -1 carnivore .. +1 herbivore
     public float Constitution { get; private set; }
+    public float MaxEnergy { get; private set; }
 
     public void Update(GridCell[,] gridMap)
     {
@@ -222,8 +223,13 @@ public struct Agent : IGridEntity
     public bool TryReproduce(Span<Agent> population, GridCell[,] gridMap, Random rng)
     {
         // 1. Biological Checks
-        // Must have enough energy reserves
-        if (Energy < MinEnergyToReproduce)
+        // Calculate costs based on physiology
+        float childEnergy = MaxEnergy * 0.5f;
+        float overhead = MaxEnergy * ReproductionOverheadPct;
+        float totalCost = childEnergy + overhead;
+
+        // Must have enough energy reserves (Cost + Safety Buffer)
+        if (Energy < totalCost + MinEnergyBuffer)
         {
             return false;
         }
@@ -298,10 +304,10 @@ public struct Agent : IGridEntity
         // Create the child using our Genetics helper
         ref Agent childSlot = ref population[childIndex];
 
-        childSlot = Genetics.Replicate(ref parent, childIndex, childX, childY, rng, ChildStartingEnergy);
+        childSlot = Genetics.Replicate(ref parent, childIndex, childX, childY, rng, childEnergy);
 
         // 4. COST
-        parent.ChangeEnergy(-ReproductionCost, gridMap); // Giving birth is exhausting
+        parent.ChangeEnergy(-totalCost, gridMap); // Giving birth is exhausting!
 
         // Update map so nobody else claims this spot this frame
         gridMap[childX, childY] = new(EntityType.Agent, childIndex);
@@ -369,6 +375,8 @@ public struct Agent : IGridEntity
         return new Agent()
         {
             Id = VivariumGame.NextEntityId++,
+            // Initialize MaxEnergy FIRST so Energy clamp works correctly
+            MaxEnergy = 100f * (1.0f + (constitution * 0.5f)),
             Index = index,
             X = x,
             Y = y,

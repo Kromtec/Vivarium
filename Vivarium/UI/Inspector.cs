@@ -148,7 +148,7 @@ public class Inspector
                         AddRow("ID", $"#{agent.Id}", ref contentHeight);
                         AddRow("Generation", $"{agent.Generation}", ref contentHeight);
                         AddRow("Age", $"{agent.Age:F0} ticks | {agent.Age / VivariumGame.FramesPerSecond:F0} s", ref contentHeight);
-                        AddProgressBar("Energy", agent.Energy, 100f, Color.Lerp(Color.Red, Color.Lime, agent.Energy / 100f), ref contentHeight);
+                        AddProgressBar("Energy", agent.Energy, agent.MaxEnergy, Color.Lerp(Color.Red, Color.Lime, agent.Energy / agent.MaxEnergy), ref contentHeight);
                         AddProgressBar("Hunger", agent.Hunger, 100f, Color.Lerp(Color.Lime, Color.Red, agent.Hunger / 100f), ref contentHeight);
 
                         // Traits

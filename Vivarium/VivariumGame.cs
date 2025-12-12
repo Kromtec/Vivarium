@@ -56,6 +56,7 @@ public class VivariumGame : Game
     private SimulationGraph _simGraph;
 
     private bool _isPaused = false;
+    private long _tickCount = 0; // Deterministic time source
 
     public VivariumGame()
     {
@@ -307,6 +308,8 @@ public class VivariumGame : Game
         // --- 2. SIMULATION
         if (!_isPaused || singleStep)
         {
+            _tickCount++; // Increment deterministic clock
+
             Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
             Span<Plant> plantPopulationSpan = _plantPopulation.AsSpan();
 
@@ -472,6 +475,12 @@ public class VivariumGame : Game
 
         // We pass the raw arrays so the inspector can look up the data by index
         _simGraph.Draw(_spriteBatch);
+
+        // Deterministic Timer Display
+        TimeSpan simTime = TimeSpan.FromSeconds(_tickCount / FramesPerSecond);
+        string timeString = $"Time: {simTime:hh\\:mm\\:ss} | Ticks: {_tickCount}";
+        _spriteBatch.DrawString(_sysFont, timeString, new Vector2(25, 5), Color.White);
+
         _spriteBatch.DrawString(_sysFont, $"Agents: {livingAgents,20}", new Vector2(25, 130), Color.Silver);
         _spriteBatch.DrawString(_sysFont, $"-Herbivore: {livingHerbivore,16}", new Vector2(25, 150), Color.Turquoise);
         _spriteBatch.DrawString(_sysFont, $"-Omnivore: {livingOmnivore,17}", new Vector2(25, 170), Color.Plum);
