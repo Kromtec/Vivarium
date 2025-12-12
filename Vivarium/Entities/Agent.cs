@@ -475,17 +475,33 @@ public struct Agent : IGridEntity
         {
             return false;
         }
+
+        // Appetite Check
+        bool isFull = false;
+        if (Diet != DietType.Carnivore)
+        {
+            if (Energy >= MaxEnergy * 0.95f && Hunger <= 5f)
+            {
+                isFull = true;
+                // We USED to return false here, trapping agents.
+                // Now we allow them to destroy plants (Trample) but gain no energy.
+                // It effectively costs them energy to clear the path.
+            }
+        }
+
         const float baseDamage = 15f;
-        var power = 1.0f + (Strength * 0.5f); // 0.5x to 1.5x damage based on Strength trait
+        var power = 1.0f + (Strength * 0.5f);
         var damage = baseDamage * power;
 
         // Plant loses energy
         // Attacker gains energy (Herbivory!)
         if (Diet == DietType.Herbivore)
         {
-            damage = Math.Min(damage, plant.Energy); // Cap damage to available energy
+            damage = Math.Min(damage, plant.Energy);
             plant.ChangeEnergy(-damage, gridMap);
-            Eat(damage * 0.8f);
+            
+            // Only eat if not full
+            if (!isFull) Eat(damage * 0.8f);
         }
         else if (Diet == DietType.Omnivore)
         {

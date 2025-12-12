@@ -174,7 +174,7 @@ public static class Brain
                         if (!other.IsAlive) continue;
 
                         // Constraint 1: Kinship (Don't flee from family)
-                        if (other.Id == agent.ParentId || other.ParentId == agent.Id) continue;
+                        if (agent.IsDirectlyRelatedTo(ref other)) continue;
 
                         // Constraint 2: Diet (Herbivores don't flee from Herbivores)
                         if (agent.Diet == DietType.Herbivore && other.Diet == DietType.Herbivore) continue;
