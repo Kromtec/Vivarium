@@ -329,7 +329,15 @@ public class VivariumGame : Game
                 int oldY = currentAgent.Y;
 
                 // A. THINK & ACT
-                Brain.Think(ref currentAgent, _gridMap, _rng);
+                // OPTIMIZATION: Time-Slicing
+                // Update brains at 30Hz (every other frame) to reduce Debug CPU load by 50%.
+                // (index + tick) % 2 == 0 ensures we update even/odd agents on alternating frames.
+                if ((index + _tickCount) % 2 == 0)
+                {
+                    Brain.Think(ref currentAgent, _gridMap, _rng);
+                }
+                
+                // Act every frame (physics/movement) using the last cached neuron activations
                 Brain.Act(ref currentAgent, _gridMap, _rng, agentPopulationSpan, plantPopulationSpan);
 
                 // Validation Overhead: Only check once per second (every 60 ticks)

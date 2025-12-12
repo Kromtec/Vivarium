@@ -88,15 +88,12 @@ public struct Plant : IGridEntity
         Color = Color.Lerp(Color.Black, OriginalColor, Math.Clamp(Energy / 100f, .25f, 1f));
     }
 
-    public static Plant Create(int index, int x, int y, Random? rng = null)
+    public static Plant Create(int index, int x, int y, Random rng)
     {
         var plant = ConstructPlant(index, x, y);
-        if (rng != null)
-        {
-            // Randomize age for initial spawn to avoid synchronization
-            plant.Age = rng.Next(0, MaturityAge);
-            plant.Energy = rng.Next(50, 100);
-        }
+        // Randomize age for initial spawn to avoid synchronization
+        plant.Age = rng.Next(0, MaturityAge);
+        plant.Energy = rng.Next(50, 100);
         return plant;
     }
 

@@ -81,14 +81,23 @@ public static class Brain
         );
 
         // --- 3. PROCESS GENOME ---
+        // OPTIMIZATION: Manual Inlining
+        // We unpack the DNA manually to avoid Property Access overhead in Debug builds.
         foreach (var gene in agent.Genome)
         {
-            // Safety modulo ensures we stay within valid array bounds [0..NeuronCount-1]
-            int sourceIdx = gene.SourceId % BrainConfig.NeuronCount;
-            int sinkIdx = gene.SinkId % BrainConfig.NeuronCount;
+            uint dna = gene.Dna;
+
+            // Unpack directly (Matches Gene.cs logic)
+            // Source = Dna & 0xFF
+            // Sink = (Dna >> 8) & 0xFF
+            int sourceIdx = (int)(dna & 0xFF);
+            int sinkIdx = (int)((dna >> 8) & 0xFF);
+
+            // Weight = (short)(Dna >> 16) / 8192.0f
+            float weight = ((short)(dna >> 16)) / 8192.0f;
 
             // Feed Forward
-            neurons[sinkIdx] += neurons[sourceIdx] * gene.Weight;
+            neurons[sinkIdx] += neurons[sourceIdx] * weight;
         }
 
         // --- 4. ACTIVATION ---

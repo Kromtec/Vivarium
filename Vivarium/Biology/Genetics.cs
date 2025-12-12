@@ -9,7 +9,7 @@ public static partial class Genetics
     private const double MutationRate = 0.001d;
 
     // Genome layout constants
-    public const int GenomeLength = 64;
+    public const int GenomeLength = 512;
 
     // Reserve a tail region of the genome for trait genes.
     // We allocate 14 genes (7 traits * 2 genes per trait) by default.
