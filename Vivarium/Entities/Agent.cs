@@ -197,20 +197,10 @@ public struct Agent : IGridEntity
         // Age the agent
         Age++;
 
-        // Cooldown reproduction timer
-        if (ReproductionCooldown > 0)
-        {
-            ReproductionCooldown--;
-        }
-        // Cooldown movement timer
-        if (MovementCooldown > 0)
-        {
-            MovementCooldown--;
-        }
-        if (AttackCooldown > 0)
-        {
-            AttackCooldown--;
-        }
+        // Cooldown timers
+        if (ReproductionCooldown > 0) ReproductionCooldown--;
+        if (MovementCooldown > 0) MovementCooldown--;
+        if (AttackCooldown > 0) AttackCooldown--;
 
         // Metabolize energy
         Hunger += MetabolismRate * 2;

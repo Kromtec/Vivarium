@@ -142,6 +142,87 @@ public static class Brain
             return;
         }
 
+        // 3. SPECIAL DECISION: FLEE
+        // If Flee neuron fires strongly, we override normal movement to evade threats.
+        // Rules:
+        // - Ignore Parents/Children (Kinship)
+        // - Ignore Herbivores if I am a Herbivore (Diet)
+        // - Ignore PREY if I am a Predator (Don't run from food!)
+        if (GetAction(ActionType.Flee) > agent.MovementThreshold) 
+        {
+            int vecX = 0;
+            int vecY = 0;
+            bool fleeing = false;
+
+            // Scan neighborhood (radius 2 for hysteresis)
+            // Radius 2 ensures we keep running until we have a 1-tile buffer
+            for (int dy = -2; dy <= 2; dy++)
+            {
+                for (int dx = -2; dx <= 2; dx++)
+                {
+                    if (dx == 0 && dy == 0) continue;
+
+                    int nx = agent.X + dx;
+                    int ny = agent.Y + dy;
+
+                    if (nx < 0 || ny < 0 || nx >= gridWidth || ny >= gridHeight) continue;
+
+                    GridCell cell = gridMap[nx, ny];
+                    if (cell.Type == EntityType.Agent)
+                    {
+                        ref Agent other = ref agentPopulationSpan[cell.Index];
+                        if (!other.IsAlive) continue;
+
+                        // Constraint 1: Kinship (Don't flee from family)
+                        if (other.Id == agent.ParentId || other.ParentId == agent.Id) continue;
+
+                        // Constraint 2: Diet (Herbivores don't flee from Herbivores)
+                        if (agent.Diet == DietType.Herbivore && other.Diet == DietType.Herbivore) continue;
+
+                        // Constraint 3: Predation (Carnivores && Omnivores don't flee from Herbivores)
+                        if ((agent.Diet == DietType.Carnivore || agent.Diet == DietType.Omnivore) && other.Diet == DietType.Herbivore) continue;
+
+                        // Constraint 4: Bravery Check (Braver than threat, don't flee)
+                        if (agent.Bravery > other.Bravery)  continue;
+
+                        // EVADE!
+                        // Add vector pointing AWAY from neighbor.
+                        // We use Sign() so distance doesn't increase repulsion (which would be backwards).
+                        // A threat at dist 1 and dist 2 both contribute "1 unit" of fear direction.
+                        vecX -= Math.Sign(dx);
+                        vecY -= Math.Sign(dy);
+                        fleeing = true;
+                    }
+                }
+            }
+
+            if (fleeing)
+            {
+                // Add "Panic Jitter" (RNG) to prevent predictable loops
+                // This converts strict orthogonal fleeing into potential diagonal fleeing
+                vecX += rng.Next(-1, 2);
+                vecY += rng.Next(-1, 2);
+
+                // Normalize and Execute
+                int fleeMoveX = Math.Clamp(vecX, -1, 1);
+                int fleeMoveY = Math.Clamp(vecY, -1, 1);
+                
+                if (fleeMoveX != 0 || fleeMoveY != 0)
+                {
+                    // Calculate target position (Pac-Man Wrap)
+                    int pendingX = (agent.X + fleeMoveX + gridWidth) % gridWidth;
+                    int pendingY = (agent.Y + fleeMoveY + gridHeight) % gridHeight;
+
+                    // Only move if empty (Don't attack while fleeing)
+                    if (gridMap[pendingX, pendingY] == GridCell.Empty)
+                    {
+                        agent.TryMoveToLocation(gridMap, pendingX, pendingY, fleeMoveX, fleeMoveY);
+                    }
+                }
+                return;
+            }
+        }
+
         // 3. MOVEMENT
         int moveX = 0;
         int moveY = 0;
