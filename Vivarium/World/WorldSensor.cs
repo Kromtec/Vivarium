@@ -122,17 +122,20 @@ public static class WorldSensor
     private static int GetDirectionIndex(int dx, int dy)
     {
         // Map to angle with 0 = North, clockwise
-        // Precomputed lookup for small radi? No, math is fast enough compared to memory access.
-        float angle = MathF.Atan2(dy, dx); // -PI..PI, 0 = +X (east)
-        float rotated = angle + MathF.PI / 2f; // rotate so 0 points to north
+        // Atan2 returns angle from X axis (East). North (-Y) is -PI/2.
+        float angle = MathF.Atan2(dy, dx); 
         
-        // Wrap angle
-        if (rotated <= -MathF.PI) rotated += 2f * MathF.PI;
-        if (rotated > MathF.PI) rotated -= 2f * MathF.PI;
+        // Rotate so North (-PI/2) becomes 0.
+        float rotated = angle + MathF.PI / 2f; 
         
-        float sector = (rotated + MathF.PI) / (2f * MathF.PI); // 0..1
-        int idx = (int)MathF.Floor(sector * 8f) % 8;
-        if (idx < 0) idx += 8;
-        return idx;
+        // Wrap to 0..2PI range
+        if (rotated < 0) rotated += 2f * MathF.PI;
+        
+        // Map 0..2PI to 0..8
+        // We use Round to center the sectors on the cardinal directions
+        int idx = (int)MathF.Round((rotated / (2f * MathF.PI)) * 8f);
+        
+        // Wrap index 8 back to 0 (North)
+        return idx % 8;
     }
 }
