@@ -142,9 +142,9 @@ public static class Brain
         }
 
         if (GetAction(ActionType.Attack) > agent.AttackThreshold &&
-            TryPerformAreaAttack(ref agent, gridMap, agentPopulationSpan, plantPopulationSpan))
+            agent.TryPerformAreaAttack(gridMap, agentPopulationSpan, plantPopulationSpan, rng))
         {
-            agent.ChangeEnergy(-2.0f, gridMap);
+            return;
         }
 
         // 3. MOVEMENT
@@ -184,7 +184,7 @@ public static class Brain
             else if (gridMap[pendingX, pendingY].Type == EntityType.Plant)
             {
                 ref Plant plant = ref plantPopulationSpan[gridMap[pendingX, pendingY].Index];
-                TryAttackPlant(ref agent, ref plant, gridMap);
+                agent.TryAttackPlant(ref plant, gridMap);
 
                 if (!plant.IsAlive)
                 {
@@ -199,7 +199,7 @@ public static class Brain
             {
                 int victimIndex = gridMap[pendingX, pendingY].Index;
                 ref Agent victim = ref agentPopulationSpan[victimIndex];
-                TryAttackAgent(ref agent, ref victim, gridMap);
+                agent.TryAttackAgent(ref victim, gridMap);
 
                 if (!victim.IsAlive)
                 {
@@ -225,133 +225,5 @@ public static class Brain
         }
     }
 
-    private static bool TryPerformAreaAttack(ref Agent attacker, GridCell[,] gridMap, Span<Agent> agentPopulation, Span<Plant> plantPopulation)
-    {
-        int gridWidth = gridMap.GetLength(0);
-        int gridHeight = gridMap.GetLength(1);
-
-        bool attackedSomething = false;
-        // Iterate over 3x3 grid centered on attacker
-        for (int dy = -1; dy <= 1; dy++)
-        {
-            for (int dx = -1; dx <= 1; dx++)
-            {
-                if (dx == 0 && dy == 0) continue; // Don't attack self
-
-                int nx = attacker.X + dx;
-                int ny = attacker.Y + dy;
-
-                // Bounds check
-                if (nx >= 0 && nx < gridWidth && ny >= 0 && ny < gridHeight)
-                {
-                    // Is there a victim?
-                    if (gridMap[nx, ny].Type == EntityType.Agent)
-                    {
-                        int victimIndex = gridMap[nx, ny].Index;
-                        ref Agent victim = ref agentPopulation[victimIndex];
-                        if (TryAttackAgent(ref attacker, ref victim, gridMap))
-                        {
-                            attackedSomething = true;
-                        }
-                    }
-                    else if (gridMap[nx, ny].Type == EntityType.Plant)
-                    {
-                        int plantIndex = gridMap[nx, ny].Index;
-                        ref Plant plant = ref plantPopulation[plantIndex];
-                        if (TryAttackPlant(ref attacker, ref plant, gridMap))
-                        {
-                            attackedSomething = true;
-                        }
-                    }
-                }
-            }
-        }
-        return attackedSomething;
-    }
-
-    private static bool TryAttackPlant(ref Agent attacker, ref Plant plant, GridCell[,] gridMap)
-    {
-        if (!plant.IsAlive || !attacker.IsAlive)
-        {
-            return false;
-        }
-        const float baseDamage = 15f;
-        var power = 1.0f + (attacker.Strength * 0.5f); // 0.5x to 1.5x damage based on Strength trait
-        var damage = baseDamage * power;
-
-        // Plant loses energy
-        // Attacker gains energy (Herbivory!)
-        if (attacker.Diet == DietType.Herbivore)
-        {
-            plant.ChangeEnergy(-damage, gridMap);
-            attacker.Eat(damage * 0.8f);
-        }
-        else if (attacker.Diet == DietType.Omnivore)
-        {
-            plant.ChangeEnergy(-damage * 0.25f, gridMap);
-            attacker.Eat(damage * 0.1f);
-        }
-        else
-        {
-            plant.ChangeEnergy(-damage * 0.1f, gridMap);
-        }
-        return true;
-    }
-
-    private static bool TryAttackAgent(ref Agent attacker, ref Agent victim, GridCell[,] gridMap)
-    {
-        if (!victim.IsAlive || !attacker.IsAlive)
-        {
-            return false;
-        }
-        if (attacker.IsDirectlyRelatedTo(ref victim))
-        {
-            return false; // No friendly fire
-        }
-        if (attacker.Bravery < victim.Bravery)
-        {
-            return false; // Too craven to attack an opponent that looks braver
-        }
-
-        const float baseDamage = 7.5f;
-        var damage = baseDamage * attacker.Power / victim.Resilience;
-
-        // Victim loses energy
-        // Attacker gains energy (Carnivory!)
-        if (attacker.Diet == DietType.Carnivore)
-        {
-            victim.ChangeEnergy(-damage, gridMap);
-            attacker.Eat(damage * 0.8f);
-        }
-        else if (attacker.Diet == DietType.Omnivore)
-        {
-            victim.ChangeEnergy(-damage * 0.25f, gridMap);
-            attacker.Eat(damage * 0.05f);
-        }
-        else
-        {
-            victim.ChangeEnergy(-damage * 0.1f, gridMap);
-        }
-
-        if (victim.IsAlive)
-        {
-            // Retaliation chance
-            float retaliationChance = (victim.Bravery + victim.Perception) * 0.5f;
-            if (retaliationChance > 0.1f) // Minimum chance to retaliate
-            {
-                var retaliationDamage = baseDamage * victim.Power / attacker.Resilience;
-                attacker.ChangeEnergy(-retaliationDamage * 0.2f, gridMap); // Retaliation is less effective
-            }
-        }
-        else
-        {
-            // Victim died - attacker gets bonus energy
-            if (attacker.Diet == DietType.Carnivore)
-                attacker.Eat(damage * 0.8f);
-            else if (attacker.Diet == DietType.Omnivore)
-                attacker.Eat(damage * 0.05f);
-        }
-        return true;
-    }
 
 }

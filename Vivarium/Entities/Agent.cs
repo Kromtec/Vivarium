@@ -27,6 +27,7 @@ public struct Agent : IGridEntity
     public const int MaturityAge = 60 * 10; // Frames until agent can reproduce after birth (10 seconds at 60 FPS)
     private int ReproductionCooldown;       // Frames until next possible reproduction
     private int MovementCooldown;           // Frames until next possible movement
+    public int AttackCooldown { get; set; } // Frames until next possible attack
     private Color originalColor;
 
     public long Id { get; set; } // Unique identifier for tracking across generations
@@ -203,6 +204,10 @@ public struct Agent : IGridEntity
         if (MovementCooldown > 0)
         {
             MovementCooldown--;
+        }
+        if (AttackCooldown > 0)
+        {
+            AttackCooldown--;
         }
 
         // Metabolize energy
@@ -384,5 +389,162 @@ public struct Agent : IGridEntity
             MovementThreshold = BaseMovementThreshold - (speed * BaseMovementThreshold),
             TrophicBias = trophicBias
         };
+    }
+
+    public bool TryPerformAreaAttack(GridCell[,] gridMap, Span<Agent> agentPopulation, Span<Plant> plantPopulation, Random rng)
+    {
+        if (AttackCooldown > 0) return false;
+
+        int gridWidth = gridMap.GetLength(0);
+        int gridHeight = gridMap.GetLength(1);
+
+        // Single Target Attack instead of Area (Spin to Win)
+        // Check 3x3 grid around attacker
+        // 8 Neighbors. Pick one random valid target.
+
+        int startDir = rng.Next(0, 8); // Random offset
+
+        for (int i = 0; i < 8; i++)
+        {
+            int dirIndex = (startDir + i) % 8;
+            
+            // Map index 0..7 to dx,dy
+            // 0: -1,-1 | 1: 0,-1 | 2: 1,-1
+            // 3: -1, 0 |          | 4: 1, 0
+            // 5: -1, 1 | 6: 0, 1 | 7: 1, 1
+            
+            int dx = 0, dy = 0;
+            switch(dirIndex) {
+                case 0: dx=-1; dy=-1; break;
+                case 1: dx= 0; dy=-1; break;
+                case 2: dx= 1; dy=-1; break;
+                case 3: dx=-1; dy= 0; break;
+                case 4: dx= 1; dy= 0; break;
+                case 5: dx=-1; dy= 1; break;
+                case 6: dx= 0; dy= 1; break;
+                case 7: dx= 1; dy= 1; break;
+            }
+
+            int nx = X + dx;
+            int ny = Y + dy;
+
+            // Bounds check
+            if (nx >= 0 && nx < gridWidth && ny >= 0 && ny < gridHeight)
+            {
+                // Is there a victim?
+                if (gridMap[nx, ny].Type == EntityType.Agent)
+                {
+                    int victimIndex = gridMap[nx, ny].Index;
+                    ref Agent victim = ref agentPopulation[victimIndex];
+                    if (TryAttackAgent(ref victim, gridMap))
+                    {
+                        ChangeEnergy(-2.0f, gridMap);
+                        AttackCooldown = 60;
+                        return true; // Hit one target and stop
+                    }
+                }
+                else if (gridMap[nx, ny].Type == EntityType.Plant)
+                {
+                    int plantIndex = gridMap[nx, ny].Index;
+                    ref Plant plant = ref plantPopulation[plantIndex];
+                    if (TryAttackPlant(ref plant, gridMap))
+                    {
+                        ChangeEnergy(-2.0f, gridMap);
+                        AttackCooldown = 60;
+                        return true; // Hit one target and stop
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public bool TryAttackPlant(ref Plant plant, GridCell[,] gridMap)
+    {
+        if (!plant.IsAlive || !IsAlive)
+        {
+            return false;
+        }
+        const float baseDamage = 15f;
+        var power = 1.0f + (Strength * 0.5f); // 0.5x to 1.5x damage based on Strength trait
+        var damage = baseDamage * power;
+
+        // Plant loses energy
+        // Attacker gains energy (Herbivory!)
+        if (Diet == DietType.Herbivore)
+        {
+            damage = Math.Min(damage, plant.Energy); // Cap damage to available energy
+            plant.ChangeEnergy(-damage, gridMap);
+            Eat(damage * 0.8f);
+        }
+        else if (Diet == DietType.Omnivore)
+        {
+            plant.ChangeEnergy(-damage * 0.25f, gridMap);
+            Eat(damage * 0.1f);
+        }
+        else
+        {
+            plant.ChangeEnergy(-damage * 0.1f, gridMap);
+        }
+        return true;
+    }
+
+    public bool TryAttackAgent(ref Agent victim, GridCell[,] gridMap)
+    {
+        if (!victim.IsAlive || !IsAlive)
+        {
+            return false;
+        }
+        // Since we are inside the struct, 'this' is passed by value (read-only) unless we are careful.
+        // But wait, we are modifying 'this' (Hunger, Energy).
+        // C# instance methods on structs can modify state.
+        
+        // HOWEVER, IsDirectlyRelatedTo takes 'ref Agent'. We need to be careful.
+        // 'this' is available. 
+        if (IsDirectlyRelatedTo(ref victim))
+        {
+            return false; // No friendly fire
+        }
+        if (Bravery < victim.Bravery)
+        {
+            return false; // Too craven to attack an opponent that looks braver
+        }
+
+        const float baseDamage = 7.5f;
+        var damage = baseDamage * Power / victim.Resilience;
+
+        // Victim loses energy
+        // Attacker gains energy (Carnivory!)
+        if (Diet == DietType.Carnivore)
+        {
+            // Law of Thermodynamics: You cannot eat 20 energy if the victim only has 1.
+            damage = Math.Min(damage, victim.Energy);
+
+            victim.ChangeEnergy(-damage, gridMap);
+            Eat(damage * 0.8f);
+        }
+        else if (Diet == DietType.Omnivore)
+        {
+            victim.ChangeEnergy(-damage * 0.25f, gridMap);
+            Eat(damage * 0.05f);
+        }
+        else
+        {
+            victim.ChangeEnergy(-damage * 0.1f, gridMap);
+        }
+
+        if (victim.IsAlive)
+        {
+            // Retaliation chance
+            float retaliationChance = (victim.Bravery + victim.Perception) * 0.5f;
+            if (retaliationChance > 0.1f) // Minimum chance to retaliate
+            {
+                var retaliationDamage = baseDamage * victim.Power / Resilience;
+                ChangeEnergy(-retaliationDamage * 0.2f, gridMap); // Retaliation is less effective
+            }
+        }
+        // Removed Death Bonus (Double Dipping Loop). You eat what you kill via the damage dealt above.
+        // If they die, they die. No extra candy.
+        return true;
     }
 }
