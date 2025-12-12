@@ -184,7 +184,7 @@ public class VivariumGame : Game
             _plantPopulation.AsSpan(),
             EntityType.Plant,
             newClusterChance: 0.1,
-            createFactory: (index, x, y) => Plant.Create(index, x, y)
+            createFactory: (index, x, y) => Plant.Create(index, x, y, _rng)
         );
     }
 
@@ -332,7 +332,11 @@ public class VivariumGame : Game
                 Brain.Think(ref currentAgent, _gridMap, _rng);
                 Brain.Act(ref currentAgent, _gridMap, _rng, agentPopulationSpan, plantPopulationSpan);
 
-                ValidateAgentIntegrity(index, currentAgent, oldX, oldY);
+                // Validation Overhead: Only check once per second (every 60 ticks)
+                if (_tickCount % 60 == 0)
+                {
+                    ValidateAgentIntegrity(index, currentAgent, oldX, oldY);
+                }
 
                 // B. AGING & METABOLISM
                 currentAgent.Update(_gridMap);
@@ -363,7 +367,11 @@ public class VivariumGame : Game
             _simGraph.Update(gameTime, aliveAgents, alivePlants);
         }
 
-        ValidateWorldIntegrity();
+        // World Integrity Check: O(Width*Height). Only run periodically.
+        if (_tickCount % 60 == 0)
+        {
+            ValidateWorldIntegrity();
+        }
 
         base.Update(gameTime);
     }

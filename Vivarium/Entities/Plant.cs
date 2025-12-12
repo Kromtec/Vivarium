@@ -6,8 +6,12 @@ namespace Vivarium.Entities;
 
 public struct Plant : IGridEntity
 {
-    public const float ShrivelRate = 0.05f; // Energy lost per frame
-    public const int MaturityAge = 60 * 2; // Frames until agent can reproduce after birth (2 seconds at 60 FPS)
+    public const float ShrivelRate = 0.02f; // Energy lost per frame (Aging)
+    public const float PhotosynthesisRate = 0.1f; // Energy gained per frame from sun
+    public const int MaturityAge = 60 * 10; // 10 Seconds to mature
+
+    public const float ReproductionCost = 30.0f; // Significant effort to spawn
+    public const float MinEnergyToReproduce = 50.0f;
 
     public long Id { get; set; } // Unique identifier for tracking across generations
     public int Index { get; set; }
@@ -72,13 +76,28 @@ public struct Plant : IGridEntity
         {
             ChangeEnergy(-ShrivelRate, gridMap);
         }
+
+        // Photosynthesis
+        // Grow if not full
+        if (Energy < 100f)
+        {
+            ChangeEnergy(PhotosynthesisRate, gridMap);
+        }
+
         // Color Update
         Color = Color.Lerp(Color.Black, OriginalColor, Math.Clamp(Energy / 100f, .25f, 1f));
     }
 
-    public static Plant Create(int index, int x, int y)
+    public static Plant Create(int index, int x, int y, Random? rng = null)
     {
-        return ConstructPlant(index, x, y);
+        var plant = ConstructPlant(index, x, y);
+        if (rng != null)
+        {
+            // Randomize age for initial spawn to avoid synchronization
+            plant.Age = rng.Next(0, MaturityAge);
+            plant.Energy = rng.Next(50, 100);
+        }
+        return plant;
     }
 
     public readonly void TryReproduce(Span<Plant> population, GridCell[,] gridMap, Random rng)
@@ -92,9 +111,13 @@ public struct Plant : IGridEntity
 
         ref Plant parent = ref population[Index];
 
+        // 0. CHECK: Am I strong enough?
+        if (parent.Energy < MinEnergyToReproduce) return;
+
         // 1. Find an empty spot nearby in the WORLD
         int childX = -1;
         int childY = -1;
+        int neighborCount = 0; // Check for overcrowding
 
         // Check 3x3 grid around parent
         // We shuffle checking order to avoid bias (always breeding North-West), 
@@ -115,15 +138,25 @@ public struct Plant : IGridEntity
             // Bounds check
             if (tx >= 0 && tx < gridWidth && ty >= 0 && ty < gridHeight)
             {
+                // Count neighbors (Plants only) for density check
+                if (gridMap[tx, ty].Type == EntityType.Plant)
+                {
+                    neighborCount++;
+                }
+
                 // Check if empty using our GridMap
-                if (gridMap[tx, ty] == GridCell.Empty)
+                if (childX == -1 && gridMap[tx, ty] == GridCell.Empty)
                 {
                     childX = tx;
                     childY = ty;
-                    break; // Found a spot!
+                    // Don't break, we need to count neighbors!
                 }
             }
         }
+
+        // Overcrowding Check: If too many neighbors, do not reproduce.
+        // This encourages spreading to edges rather than filling blocks.
+        if (neighborCount >= 5) return;
 
         // No space found? No baby.
         if (childX == -1) return;
@@ -150,7 +183,7 @@ public struct Plant : IGridEntity
         childSlot = ConstructPlant(childIndex, childX, childY);
 
         // 4. COST
-        parent.ChangeEnergy(-2f, gridMap); // Giving birth is exhausting
+        parent.ChangeEnergy(-ReproductionCost, gridMap); // Giving birth is exhausting dramatically
 
         // Update map so nobody else claims this spot this frame
         gridMap[childX, childY] = new(EntityType.Plant, childIndex);

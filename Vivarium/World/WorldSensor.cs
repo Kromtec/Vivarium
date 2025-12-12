@@ -46,22 +46,35 @@ public static class WorldSensor
         return new DensityResult((float)agentsFound / cellsChecked, (float)plantsFound / cellsChecked, (float)structuresFound / cellsChecked);
     }
 
-    public readonly record struct DirectionalDensityResult(float[] AgentByDir, float[] PlantByDir, float[] StructureByDir);
-
     /// <summary>
-    /// Scans a square area and buckets entities into 8 directional sectors around the center.
-    /// Directions order: N, NE, E, SE, S, SW, W, NW
-    /// Values are normalized 0..1 per bucket (fraction of occupied cells in that sector).
+    /// Scans a square area and populates the neuron input outputs directly.
+    /// Uses stackalloc to avoid heap allocations.
     /// </summary>
-    public static DirectionalDensityResult ScanDirectional(GridCell[,] gridMap, int centerX, int centerY, int radius)
+    public static void PopulateDirectionalSensors(
+        GridCell[,] gridMap, 
+        int centerX, 
+        int centerY, 
+        int radius,
+        Span<float> neuronOutput,
+        int agentOffset,
+        int plantOffset,
+        int structOffset,
+        float amplification)
     {
         int gridWidth = gridMap.GetLength(0);
         int gridHeight = gridMap.GetLength(1);
 
-        int[] agentCounts = new int[8];
-        int[] plantCounts = new int[8];
-        int[] structureCounts = new int[8];
-        int[] cellsPerBucket = new int[8];
+        // StackAlloc for zero GC pressure
+        Span<int> agentCounts = stackalloc int[8];
+        Span<int> plantCounts = stackalloc int[8];
+        Span<int> structureCounts = stackalloc int[8];
+        Span<int> cellsPerBucket = stackalloc int[8];
+
+        // Clear stack memory (safety, though stackalloc usually zeroed in recent .NET)
+        agentCounts.Clear();
+        plantCounts.Clear();
+        structureCounts.Clear();
+        cellsPerBucket.Clear();
 
         for (int dy = -radius; dy <= radius; dy++)
         {
@@ -70,9 +83,13 @@ public static class WorldSensor
                 if (dx == 0 && dy == 0) continue;
                 int nx = centerX + dx;
                 int ny = centerY + dy;
+                
+                // Bounds check
                 if (nx < 0 || nx >= gridWidth || ny < 0 || ny >= gridHeight) continue;
+
                 int dir = GetDirectionIndex(dx, dy);
                 cellsPerBucket[dir]++;
+                
                 var cell = gridMap[nx, ny];
                 switch (cell.Type)
                 {
@@ -83,36 +100,36 @@ public static class WorldSensor
             }
         }
 
-        float[] agentByDir = new float[8];
-        float[] plantByDir = new float[8];
-        float[] structureByDir = new float[8];
-
+        // Write directly to the brain's neuron inputs
         for (int i = 0; i < 8; i++)
         {
-            if (cellsPerBucket[i] == 0)
+            if (cellsPerBucket[i] > 0)
             {
-                agentByDir[i] = 0f;
-                plantByDir[i] = 0f;
-                structureByDir[i] = 0f;
+                float count = (float)cellsPerBucket[i];
+                neuronOutput[agentOffset + i] = (agentCounts[i] / count) * amplification;
+                neuronOutput[plantOffset + i] = (plantCounts[i] / count) * amplification;
+                neuronOutput[structOffset + i] = (structureCounts[i] / count) * amplification;
             }
             else
             {
-                agentByDir[i] = (float)agentCounts[i] / cellsPerBucket[i];
-                plantByDir[i] = (float)plantCounts[i] / cellsPerBucket[i];
-                structureByDir[i] = (float)structureCounts[i] / cellsPerBucket[i];
+                neuronOutput[agentOffset + i] = 0f;
+                neuronOutput[plantOffset + i] = 0f;
+                neuronOutput[structOffset + i] = 0f;
             }
         }
-
-        return new DirectionalDensityResult(agentByDir, plantByDir, structureByDir);
     }
 
     private static int GetDirectionIndex(int dx, int dy)
     {
         // Map to angle with 0 = North, clockwise
+        // Precomputed lookup for small radi? No, math is fast enough compared to memory access.
         float angle = MathF.Atan2(dy, dx); // -PI..PI, 0 = +X (east)
         float rotated = angle + MathF.PI / 2f; // rotate so 0 points to north
+        
+        // Wrap angle
         if (rotated <= -MathF.PI) rotated += 2f * MathF.PI;
         if (rotated > MathF.PI) rotated -= 2f * MathF.PI;
+        
         float sector = (rotated + MathF.PI) / (2f * MathF.PI); // 0..1
         int idx = (int)MathF.Floor(sector * 8f) % 8;
         if (idx < 0) idx += 8;

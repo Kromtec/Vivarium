@@ -60,40 +60,25 @@ public static class Brain
         const int extraRange = 2; // max additional radius from perception
         int dirRadius = Math.Clamp(baseRadius + (int)MathF.Round(agent.Perception * extraRange), 1, 6);
 
-        var dir = WorldSensor.ScanDirectional(gridMap, agent.X, agent.Y, dirRadius);
-
         // Slightly amplify signals for higher perception (but keep bounded)
         float amp = (float)Math.Clamp(1f + agent.Perception * 0.5f, 0.5f, 2f);
 
-        // Agent densities N, NE, E, SE, S, SW, W, NW
-        neurons[(int)SensorType.AgentDensity_N] = dir.AgentByDir[0] * amp;
-        neurons[(int)SensorType.AgentDensity_NE] = dir.AgentByDir[1] * amp;
-        neurons[(int)SensorType.AgentDensity_E] = dir.AgentByDir[2] * amp;
-        neurons[(int)SensorType.AgentDensity_SE] = dir.AgentByDir[3] * amp;
-        neurons[(int)SensorType.AgentDensity_S] = dir.AgentByDir[4] * amp;
-        neurons[(int)SensorType.AgentDensity_SW] = dir.AgentByDir[5] * amp;
-        neurons[(int)SensorType.AgentDensity_W] = dir.AgentByDir[6] * amp;
-        neurons[(int)SensorType.AgentDensity_NW] = dir.AgentByDir[7] * amp;
-
-        // Plant densities
-        neurons[(int)SensorType.PlantDensity_N] = dir.PlantByDir[0] * amp;
-        neurons[(int)SensorType.PlantDensity_NE] = dir.PlantByDir[1] * amp;
-        neurons[(int)SensorType.PlantDensity_E] = dir.PlantByDir[2] * amp;
-        neurons[(int)SensorType.PlantDensity_SE] = dir.PlantByDir[3] * amp;
-        neurons[(int)SensorType.PlantDensity_S] = dir.PlantByDir[4] * amp;
-        neurons[(int)SensorType.PlantDensity_SW] = dir.PlantByDir[5] * amp;
-        neurons[(int)SensorType.PlantDensity_W] = dir.PlantByDir[6] * amp;
-        neurons[(int)SensorType.PlantDensity_NW] = dir.PlantByDir[7] * amp;
-
-        // Structure densities
-        neurons[(int)SensorType.StructureDensity_N] = dir.StructureByDir[0] * amp;
-        neurons[(int)SensorType.StructureDensity_NE] = dir.StructureByDir[1] * amp;
-        neurons[(int)SensorType.StructureDensity_E] = dir.StructureByDir[2] * amp;
-        neurons[(int)SensorType.StructureDensity_SE] = dir.StructureByDir[3] * amp;
-        neurons[(int)SensorType.StructureDensity_S] = dir.StructureByDir[4] * amp;
-        neurons[(int)SensorType.StructureDensity_SW] = dir.StructureByDir[5] * amp;
-        neurons[(int)SensorType.StructureDensity_W] = dir.StructureByDir[6] * amp;
-        neurons[(int)SensorType.StructureDensity_NW] = dir.StructureByDir[7] * amp;
+        // --- OPTIMIZATION: Zero-Alloc Direct Write ---
+        // We pass the offsets for the N (North) sensor. The function assumes N, NE, E... follow mainly.
+        // Based on SensorType enum, the directions are sequential:
+        // AgentDensity_N, AgentDensity_NE...
+        
+        WorldSensor.PopulateDirectionalSensors(
+            gridMap, 
+            agent.X, 
+            agent.Y, 
+            dirRadius, 
+            neurons, 
+            (int)SensorType.AgentDensity_N,
+            (int)SensorType.PlantDensity_N,
+            (int)SensorType.StructureDensity_N,
+            amp
+        );
 
         // --- 3. PROCESS GENOME ---
         foreach (var gene in agent.Genome)
