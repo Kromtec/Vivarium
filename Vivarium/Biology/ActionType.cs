@@ -8,5 +8,5 @@ public enum ActionType
     MoveW,
     Attack,
     Reproduce,
-    Suizide
+    Suicide
 }

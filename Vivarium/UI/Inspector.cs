@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 using Vivarium.Entities;
 using Vivarium.World;
 using Vivarium.Engine;
@@ -36,14 +37,17 @@ public class Inspector
     private readonly Color _valueColor = Color.White;
     private readonly Color _headerColor = new Color(100, 200, 255);    // Soft Cyan
 
+    // Deferred Layout List
+    private readonly List<IInspectorElement> _elements = new List<IInspectorElement>();
+
     public Inspector(GraphicsDevice graphics, SpriteFont font)
     {
         _font = font;
         _pixelTexture = new Texture2D(graphics, 1, 1);
         _pixelTexture.SetData(new[] { Color.White });
 
-        // Fixed panel position (Top Left)
-        _panelRect = new Rectangle(20, 20, 290, 0); // Height calculates dynamically
+        // Fixed panel position (Top Left), height is dynamic
+        _panelRect = new Rectangle(20, 20, 290, 0);
     }
 
     public void UpdateInput(Camera2D camera, GridCell[,] gridMap, Agent[] agents, Plant[] plants, Structure[] structures)
@@ -54,8 +58,6 @@ public class Inspector
         if (mouseState.LeftButton == ButtonState.Pressed)
         {
             // UI Blocking: Don't select world if clicking inside the panel area
-            // (Only works if panel is drawn, keeping height dynamic is tricky, 
-            // but we can assume a max height or store last frame height)
             if (IsEntitySelected && _panelRect.Contains(mouseState.Position)) return;
 
             Vector2 mouseWorld = camera.ScreenToWorld(new Vector2(mouseState.X, mouseState.Y));
@@ -112,10 +114,6 @@ public class Inspector
                 {
                     SelectedGridPos = new Point(trackedAgent.X, trackedAgent.Y);
                 }
-                else
-                {
-                    // AGENT DIED OR CHANGED - CLEAR SELECTION
-                }
             }
         }
     }
@@ -124,33 +122,19 @@ public class Inspector
     {
         if (!IsEntitySelected) return;
 
-        // 1. Calculate Content Height dynamically based on what we select
-        // This is a bit "hacky" in immediate mode, we just guess/resize or draw background first.
-        // Let's set a fixed decent height or make it huge.
-        // Better: Draw background AFTER knowing lines? Harder.
-        // Simple approach: Draw Background with fixed/large height or adjust per frame.
-        int contentHeight = 600;
-        _panelRect.Height = contentHeight;
-
-        // Draw Panel Shadow & Background
-        spriteBatch.Draw(_pixelTexture, new Rectangle(_panelRect.X + 4, _panelRect.Y + 4, _panelRect.Width, _panelRect.Height), Color.Black * 0.5f);
-        spriteBatch.Draw(_pixelTexture, _panelRect, _panelBgColor);
-
-        // Draw Border
-        DrawBorder(spriteBatch, _panelRect, 1, _borderColor);
-
-        // Reset Cursor
-        _cursorY = _panelRect.Y + Padding;
+        // 1. Build Command List & Calculate Height
+        _elements.Clear();
+        int contentHeight = Padding;
 
         // --- HEADER ---
-        DrawHeader(spriteBatch, $"{SelectedType.ToString().ToUpper()}");
-        DrawSeparator(spriteBatch);
+        AddHeader($"{SelectedType.ToString().ToUpper()}", ref contentHeight);
+        AddSeparator(ref contentHeight);
 
         // --- CONTENT ---
-        DrawRow(spriteBatch, "Grid Pos", $"{SelectedGridPos.X}/{SelectedGridPos.Y}");
-        DrawRow(spriteBatch, "Index", $"{_selectedIndex}");
+        AddRow("Grid Pos", $"{SelectedGridPos.X}/{SelectedGridPos.Y}", ref contentHeight);
+        AddRow("Index", $"{_selectedIndex}", ref contentHeight);
 
-        DrawSeparator(spriteBatch);
+        AddSeparator(ref contentHeight);
 
         switch (SelectedType)
         {
@@ -161,36 +145,37 @@ public class Inspector
                     bool isSameAgent = (agent.Id == _selectedEntityId);
                     if (isSameAgent && agent.IsAlive)
                     {
-                        DrawRow(spriteBatch, "ID", $"#{agent.Id}");
-                        DrawRow(spriteBatch, "Generation", $"{agent.Generation}");
-                        DrawRow(spriteBatch, "Age", $"{agent.Age:F0} ticks | {agent.Age / VivariumGame.FramesPerSecond:F0} s");
-                        DrawProgressBar(spriteBatch, "Energy", agent.Energy, 100f, Color.Lerp(Color.Red, Color.Lime, agent.Energy / 100f));
-                        DrawProgressBar(spriteBatch, "Hunger", agent.Hunger, 100f, Color.Lerp(Color.Lime, Color.Red, agent.Hunger / 100f));
+                        AddRow("ID", $"#{agent.Id}", ref contentHeight);
+                        AddRow("Generation", $"{agent.Generation}", ref contentHeight);
+                        AddRow("Age", $"{agent.Age:F0} ticks | {agent.Age / VivariumGame.FramesPerSecond:F0} s", ref contentHeight);
+                        AddProgressBar("Energy", agent.Energy, 100f, Color.Lerp(Color.Red, Color.Lime, agent.Energy / 100f), ref contentHeight);
+                        AddProgressBar("Hunger", agent.Hunger, 100f, Color.Lerp(Color.Lime, Color.Red, agent.Hunger / 100f), ref contentHeight);
 
                         // Traits
-                        DrawSeparator(spriteBatch);
-                        DrawHeader(spriteBatch, "TRAITS");
-                        DrawBrainBar(spriteBatch, nameof(TraitType.Strength), agent.Strength);
-                        DrawBrainBar(spriteBatch, nameof(TraitType.Bravery), agent.Bravery);
-                        DrawBrainBar(spriteBatch, "Metabolism", agent.MetabolicEfficiency);
-                        DrawBrainBar(spriteBatch, nameof(TraitType.Perception), agent.Perception);
-                        DrawBrainBar(spriteBatch, nameof(TraitType.Speed), agent.Speed);
-                        DrawBrainBar(spriteBatch, "Carni <-> Herbi", agent.TrophicBias);
+                        AddSeparator(ref contentHeight);
+                        AddHeader("TRAITS", ref contentHeight);
+                        AddBrainBar(nameof(TraitType.Strength), agent.Strength, false, ref contentHeight);
+                        AddBrainBar(nameof(TraitType.Constitution), agent.Constitution, false, ref contentHeight);
+                        AddBrainBar(nameof(TraitType.Bravery), agent.Bravery, false, ref contentHeight);
+                        AddBrainBar("Metabolism", agent.MetabolicEfficiency, false, ref contentHeight);
+                        AddBrainBar(nameof(TraitType.Perception), agent.Perception, false, ref contentHeight);
+                        AddBrainBar(nameof(TraitType.Speed), agent.Speed, false, ref contentHeight);
+                        AddBrainBar("Carni <-> Herbi", agent.TrophicBias, false, ref contentHeight);
 
-                        // Outputs (Actions) - visualize with centered bars (-1 to 1)
-                        DrawSeparator(spriteBatch);
-                        DrawHeader(spriteBatch, "BRAIN ACTIVITY");
-                        DrawBrainBar(spriteBatch, "Move N", GetActionVal(ref agent, ActionType.MoveN), isPositiveOnly: true);
-                        DrawBrainBar(spriteBatch, "Move E", GetActionVal(ref agent, ActionType.MoveE), isPositiveOnly: true);
-                        DrawBrainBar(spriteBatch, "Move S", GetActionVal(ref agent, ActionType.MoveS), isPositiveOnly: true);
-                        DrawBrainBar(spriteBatch, "Move W", GetActionVal(ref agent, ActionType.MoveW), isPositiveOnly: true);
-                        DrawBrainBar(spriteBatch, "Attack", GetActionVal(ref agent, ActionType.Attack), isPositiveOnly: true);
-                        DrawBrainBar(spriteBatch, "Reproduce", GetActionVal(ref agent, ActionType.Reproduce), isPositiveOnly: true);
-                        DrawBrainBar(spriteBatch, "Suicide", GetActionVal(ref agent, ActionType.Suizide), isPositiveOnly: true);
+                        // Outputs (Actions)
+                        AddSeparator(ref contentHeight);
+                        AddHeader("BRAIN ACTIVITY", ref contentHeight);
+                        AddBrainBar("Move N", GetActionVal(ref agent, ActionType.MoveN), true, ref contentHeight);
+                        AddBrainBar("Move E", GetActionVal(ref agent, ActionType.MoveE), true, ref contentHeight);
+                        AddBrainBar("Move S", GetActionVal(ref agent, ActionType.MoveS), true, ref contentHeight);
+                        AddBrainBar("Move W", GetActionVal(ref agent, ActionType.MoveW), true, ref contentHeight);
+                        AddBrainBar("Attack", GetActionVal(ref agent, ActionType.Attack), true, ref contentHeight);
+                        AddBrainBar("Reproduce", GetActionVal(ref agent, ActionType.Reproduce), true, ref contentHeight);
+                        AddBrainBar("Suicide", GetActionVal(ref agent, ActionType.Suicide), true, ref contentHeight);
                     }
                     else
                     {
-                        DrawHeader(spriteBatch, "STATUS: DECEASED", Color.Red);
+                        AddHeader("STATUS: DECEASED", ref contentHeight, Color.Red);
                     }
                 }
                 break;
@@ -202,14 +187,14 @@ public class Inspector
                     bool isSamePlant = (plant.Id == _selectedEntityId);
                     if (isSamePlant && plant.IsAlive)
                     {
-                        DrawRow(spriteBatch, "ID", $"#{plant.Id}");
-                        DrawRow(spriteBatch, "Age", $"{plant.Age:F0} ticks | {plant.Age / VivariumGame.FramesPerSecond:F0} s");
-                        DrawProgressBar(spriteBatch, "Energy", plant.Energy, 100f, Color.Green);
-                        DrawRow(spriteBatch, "Status", plant.Age < Plant.MaturityAge ? "Growing" : "Mature");
+                        AddRow("ID", $"#{plant.Id}", ref contentHeight);
+                        AddRow("Age", $"{plant.Age:F0} ticks | {plant.Age / VivariumGame.FramesPerSecond:F0} s", ref contentHeight);
+                        AddProgressBar("Energy", plant.Energy, 100f, Color.Green, ref contentHeight);
+                        AddRow("Status", plant.Age < Plant.MaturityAge ? "Growing" : "Mature", ref contentHeight);
                     }
                     else
                     {
-                        DrawHeader(spriteBatch, "STATUS: WITHERED", Color.Red);
+                        AddHeader("STATUS: WITHERED", ref contentHeight, Color.Red);
                     }
                 }
                 break;
@@ -221,37 +206,89 @@ public class Inspector
                     bool isSameStructure = (structure.Id == _selectedEntityId);
                     if (isSameStructure)
                     {
-                        DrawRow(spriteBatch, "ID", $"#{structure.Id}");
-                        DrawRow(spriteBatch, "Material", "Stone");
-                        DrawRow(spriteBatch, "Durability", "Infinite");
+                        AddRow("ID", $"#{structure.Id}", ref contentHeight);
+                        AddRow("Material", "Stone", ref contentHeight);
+                        AddRow("Durability", "Infinite", ref contentHeight);
                     }
                     else
                     {
-                        DrawHeader(spriteBatch, "STATUS: ERROR", Color.Red);
+                        AddHeader("STATUS: ERROR", ref contentHeight, Color.Red);
                     }
                 }
                 break;
         }
+
+        contentHeight += Padding;
+        
+        // 2. Set Height & Draw Background
+        _panelRect.Height = contentHeight;
+
+        // Shadow & Bg
+        spriteBatch.Draw(_pixelTexture, new Rectangle(_panelRect.X + 4, _panelRect.Y + 4, _panelRect.Width, _panelRect.Height), Color.Black * 0.5f);
+        spriteBatch.Draw(_pixelTexture, _panelRect, _panelBgColor);
+
+        // Border
+        DrawBorder(spriteBatch, _panelRect, 1, _borderColor);
+
+        // 3. Execute Commands
+        _cursorY = _panelRect.Y + Padding; // Reset cursor for drawing
+        foreach (var cmd in _elements)
+        {
+            cmd.Draw(this, spriteBatch);
+            _cursorY += cmd.Height; // Advance cursor by the element's height
+        }
     }
+
+    // --- BUILDER METHODS ---
+
+    private void AddHeader(string text, ref int currentHeight, Color? color = null)
+    {
+        var e = new HeaderElement(text, color ?? _headerColor);
+        _elements.Add(e);
+        currentHeight += e.Height;
+    }
+
+    private void AddRow(string label, string value, ref int currentHeight)
+    {
+        var e = new RowElement(label, value);
+        _elements.Add(e);
+        currentHeight += e.Height;
+    }
+
+    private void AddSeparator(ref int currentHeight)
+    {
+        var e = new SeparatorElement();
+        _elements.Add(e);
+        currentHeight += e.Height;
+    }
+
+    private void AddProgressBar(string label, float value, float max, Color color, ref int currentHeight)
+    {
+        var e = new ProgressBarElement(label, value, max, color);
+        _elements.Add(e);
+        currentHeight += e.Height;
+    }
+
+    private void AddBrainBar(string label, float value, bool positiveOnly, ref int currentHeight)
+    {
+        var e = new BrainBarElement(label, value, positiveOnly);
+        _elements.Add(e);
+        currentHeight += e.Height;
+    }
+
 
     // --- SELECTION MARKER (World Space) ---
     public void DrawSelectionMarker(SpriteBatch spriteBatch, int cellSize, float totalTime)
     {
         if (!IsEntitySelected) return;
 
-        // 1. Calculate the exact CENTER of the selected cell
         Vector2 cellCenter = new Vector2(
             (SelectedGridPos.X * cellSize) + (cellSize / 2.0f) + HighlightBorderThickness,
             (SelectedGridPos.Y * cellSize) + (cellSize / 2.0f) + HighlightBorderThickness
         );
 
-        // 2. Calculate the pulsed size (current width/height)
-        // Sine wave from 0.8 to 1.2
         float pulse = ((float)Math.Sin(totalTime * 10f) * 0.2f) + 1.0f;
         float currentSize = (cellSize * pulse) + (HighlightBorderThickness * 2);
-
-        // 3. Calculate Top-Left position based on Center and Size
-        // This ensures it expands equally in all directions
         float halfSize = currentSize / 2.0f;
 
         Rectangle r = new Rectangle(
@@ -262,105 +299,6 @@ public class Inspector
         );
 
         DrawBorder(spriteBatch, r, HighlightBorderThickness, Color.Cyan);
-    }
-
-    // --- UI HELPER METHODS ---
-
-    private void DrawHeader(SpriteBatch sb, string text, Color? color = null)
-    {
-        sb.DrawString(_font, text, new Vector2(_panelRect.X + Padding, _cursorY), color ?? _headerColor);
-        _cursorY += LineHeight + 5;
-    }
-
-    private void DrawRow(SpriteBatch sb, string label, string value)
-    {
-        int leftX = _panelRect.X + Padding;
-        int rightX = _panelRect.X + _panelRect.Width - Padding;
-
-        // Draw Label
-        sb.DrawString(_font, label, new Vector2(leftX, _cursorY), _labelColor);
-
-        // Measure Value to align right
-        Vector2 valSize = _font.MeasureString(value);
-        sb.DrawString(_font, value, new Vector2(rightX - valSize.X, _cursorY), _valueColor);
-
-        _cursorY += LineHeight;
-    }
-
-    private void DrawSeparator(SpriteBatch sb)
-    {
-        _cursorY += 5;
-        sb.Draw(_pixelTexture, new Rectangle(_panelRect.X + Padding, _cursorY, _panelRect.Width - (Padding * 2), 1), _borderColor);
-        _cursorY += 10;
-    }
-
-    private void DrawProgressBar(SpriteBatch sb, string label, float value, float max, Color barColor)
-    {
-        int leftX = _panelRect.X + Padding;
-        int rightX = _panelRect.X + _panelRect.Width - Padding;
-        int barWidth = 100;
-        int barHeight = 12;
-
-        // Draw Label
-        sb.DrawString(_font, label, new Vector2(leftX, _cursorY), _labelColor);
-
-        // Draw Bar Background
-        Rectangle barBg = new Rectangle(rightX - barWidth, _cursorY + 4, barWidth, barHeight);
-        sb.Draw(_pixelTexture, barBg, Color.Black * 0.5f);
-
-        // Draw Bar Fill
-        float pct = Math.Clamp(value / max, 0f, 1f);
-        Rectangle barFill = new Rectangle(rightX - barWidth, _cursorY + 4, (int)(barWidth * pct), barHeight);
-        sb.Draw(_pixelTexture, barFill, barColor);
-
-        _cursorY += LineHeight;
-    }
-
-    // Special bar for Neural Values (-1 to 1) or (0 to 1)
-    private void DrawBrainBar(SpriteBatch sb, string label, float value, bool isPositiveOnly = false)
-    {
-        int leftX = _panelRect.X + Padding;
-        int rightX = _panelRect.X + _panelRect.Width - Padding;
-        int barWidth = 100;
-        int barHeight = 10;
-        int barY = _cursorY + 5;
-
-        sb.DrawString(_font, label, new Vector2(leftX, _cursorY), _labelColor);
-
-        // Background
-        Rectangle bgRect = new Rectangle(rightX - barWidth, barY, barWidth, barHeight);
-        sb.Draw(_pixelTexture, bgRect, Color.Black * 0.5f);
-
-        // Center line
-        int centerX = bgRect.X + (barWidth / 2);
-
-        if (isPositiveOnly)
-        {
-            // 0 to 1 (Left to Right)
-            float pct = Math.Clamp(value, 0f, 1f);
-            sb.Draw(_pixelTexture, new Rectangle(bgRect.X, barY, (int)(barWidth * pct), barHeight), Color.OrangeRed);
-        }
-        else
-        {
-            // -1 to 1 (Center outward)
-            sb.Draw(_pixelTexture, new Rectangle(centerX, barY - 2, 1, barHeight + 4), Color.Gray); // Center notch
-
-            float valClamped = Math.Clamp(value, -1f, 1f);
-            int fillWidth = (int)((barWidth / 2) * Math.Abs(valClamped));
-
-            if (valClamped > 0)
-            {
-                // Right side (Greenish)
-                sb.Draw(_pixelTexture, new Rectangle(centerX, barY, fillWidth, barHeight), Color.Cyan);
-            }
-            else
-            {
-                // Left side (Reddish)
-                sb.Draw(_pixelTexture, new Rectangle(centerX - fillWidth, barY, fillWidth, barHeight), Color.Magenta);
-            }
-        }
-
-        _cursorY += LineHeight;
     }
 
     private void DrawBorder(SpriteBatch sb, Rectangle r, int thickness, Color c)
@@ -375,5 +313,107 @@ public class Inspector
     {
         int idx = BrainConfig.GetActionIndex(type);
         return agent.NeuronActivations[idx];
+    }
+
+    // --- ELEMENT INTERFACES & STRUCTS (Internal) ---
+
+    private interface IInspectorElement
+    {
+        int Height { get; }
+        void Draw(Inspector context, SpriteBatch sb);
+    }
+
+    private readonly struct HeaderElement(string text, Color color) : IInspectorElement
+    {
+        public int Height => 27; // LineHeight + 5
+        public void Draw(Inspector ctx, SpriteBatch sb)
+        {
+            sb.DrawString(ctx._font, text, new Vector2(ctx._panelRect.X + Padding, ctx._cursorY), color);
+        }
+    }
+
+    private readonly struct RowElement(string label, string value) : IInspectorElement
+    {
+        public int Height => LineHeight;
+        public void Draw(Inspector ctx, SpriteBatch sb)
+        {
+            int leftX = ctx._panelRect.X + Padding;
+            int rightX = ctx._panelRect.X + ctx._panelRect.Width - Padding;
+            sb.DrawString(ctx._font, label, new Vector2(leftX, ctx._cursorY), ctx._labelColor);
+            Vector2 valSize = ctx._font.MeasureString(value);
+            sb.DrawString(ctx._font, value, new Vector2(rightX - valSize.X, ctx._cursorY), ctx._valueColor);
+        }
+    }
+
+    private readonly struct SeparatorElement : IInspectorElement
+    {
+        public int Height => 15; // 5 + 10
+        public void Draw(Inspector ctx, SpriteBatch sb)
+        {
+            // Center roughly
+            int y = ctx._cursorY + 5;
+            sb.Draw(ctx._pixelTexture, new Rectangle(ctx._panelRect.X + Padding, y, ctx._panelRect.Width - (Padding * 2), 1), ctx._borderColor);
+        }
+    }
+
+    private readonly struct ProgressBarElement(string label, float value, float max, Color color) : IInspectorElement
+    {
+        public int Height => LineHeight;
+        public void Draw(Inspector ctx, SpriteBatch sb)
+        {
+            int leftX = ctx._panelRect.X + Padding;
+            int rightX = ctx._panelRect.X + ctx._panelRect.Width - Padding;
+            int barWidth = 100;
+            int barHeight = 12;
+
+            sb.DrawString(ctx._font, label, new Vector2(leftX, ctx._cursorY), ctx._labelColor);
+            
+            Rectangle barBg = new Rectangle(rightX - barWidth, ctx._cursorY + 4, barWidth, barHeight);
+            sb.Draw(ctx._pixelTexture, barBg, Color.Black * 0.5f);
+
+            float pct = Math.Clamp(value / max, 0f, 1f);
+            Rectangle barFill = new Rectangle(rightX - barWidth, ctx._cursorY + 4, (int)(barWidth * pct), barHeight);
+            sb.Draw(ctx._pixelTexture, barFill, color);
+        }
+    }
+
+    private readonly struct BrainBarElement(string label, float value, bool positiveOnly) : IInspectorElement
+    {
+        public int Height => LineHeight;
+        public void Draw(Inspector ctx, SpriteBatch sb)
+        {
+            int leftX = ctx._panelRect.X + Padding;
+            int rightX = ctx._panelRect.X + ctx._panelRect.Width - Padding;
+            int barWidth = 100;
+            int barHeight = 10;
+            int barY = ctx._cursorY + 5;
+
+            sb.DrawString(ctx._font, label, new Vector2(leftX, ctx._cursorY), ctx._labelColor);
+
+            Rectangle bgRect = new Rectangle(rightX - barWidth, barY, barWidth, barHeight);
+            sb.Draw(ctx._pixelTexture, bgRect, Color.Black * 0.5f);
+
+            if (positiveOnly)
+            {
+                float pct = Math.Clamp(value, 0f, 1f);
+                sb.Draw(ctx._pixelTexture, new Rectangle(bgRect.X, barY, (int)(barWidth * pct), barHeight), Color.OrangeRed);
+            }
+            else
+            {
+                int centerX = bgRect.X + (barWidth / 2);
+                sb.Draw(ctx._pixelTexture, new Rectangle(centerX, barY - 2, 1, barHeight + 4), Color.Gray);
+
+                float valClamped = Math.Clamp(value, -1f, 1f);
+                int fillWidth = (int)((barWidth / 2) * Math.Abs(valClamped));
+                if (valClamped > 0)
+                {
+                    sb.Draw(ctx._pixelTexture, new Rectangle(centerX, barY, fillWidth, barHeight), Color.Cyan);
+                }
+                else
+                {
+                    sb.Draw(ctx._pixelTexture, new Rectangle(centerX - fillWidth, barY, fillWidth, barHeight), Color.Magenta);
+                }
+            }
+        }
     }
 }

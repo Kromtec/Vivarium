@@ -136,7 +136,7 @@ public static class Brain
         }
 
         // 2. SPECIAL ACTIONS
-        if (GetAction(ActionType.Suizide) > 0.9f && agent.Age > Agent.MaturityAge * 2)
+        if (GetAction(ActionType.Suicide) > 0.9f && agent.Age > Agent.MaturityAge * 2)
         {
             agent.ChangeEnergy(-100f, gridMap);
             return;
