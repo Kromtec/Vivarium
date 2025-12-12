@@ -2,11 +2,11 @@
 
 public enum ActionType
 {
-    MoveNorth,
-    MoveSouth,
-    MoveEast,
-    MoveWest,
+    MoveN,
+    MoveS,
+    MoveE,
+    MoveW,
     Attack,
     Reproduce,
-    KillSelf
+    Suizide
 }

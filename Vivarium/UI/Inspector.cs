@@ -180,13 +180,13 @@ public class Inspector
                         // Outputs (Actions) - visualize with centered bars (-1 to 1)
                         DrawSeparator(spriteBatch);
                         DrawHeader(spriteBatch, "BRAIN ACTIVITY");
-                        DrawBrainBar(spriteBatch, "Move N", GetActionVal(ref agent, ActionType.MoveNorth), isPositiveOnly: true);
-                        DrawBrainBar(spriteBatch, "Move E", GetActionVal(ref agent, ActionType.MoveEast), isPositiveOnly: true);
-                        DrawBrainBar(spriteBatch, "Move S", GetActionVal(ref agent, ActionType.MoveSouth), isPositiveOnly: true);
-                        DrawBrainBar(spriteBatch, "Move W", GetActionVal(ref agent, ActionType.MoveWest), isPositiveOnly: true);
+                        DrawBrainBar(spriteBatch, "Move N", GetActionVal(ref agent, ActionType.MoveN), isPositiveOnly: true);
+                        DrawBrainBar(spriteBatch, "Move E", GetActionVal(ref agent, ActionType.MoveE), isPositiveOnly: true);
+                        DrawBrainBar(spriteBatch, "Move S", GetActionVal(ref agent, ActionType.MoveS), isPositiveOnly: true);
+                        DrawBrainBar(spriteBatch, "Move W", GetActionVal(ref agent, ActionType.MoveW), isPositiveOnly: true);
                         DrawBrainBar(spriteBatch, "Attack", GetActionVal(ref agent, ActionType.Attack), isPositiveOnly: true);
                         DrawBrainBar(spriteBatch, "Reproduce", GetActionVal(ref agent, ActionType.Reproduce), isPositiveOnly: true);
-                        DrawBrainBar(spriteBatch, "Suicide", GetActionVal(ref agent, ActionType.KillSelf), isPositiveOnly: true);
+                        DrawBrainBar(spriteBatch, "Suicide", GetActionVal(ref agent, ActionType.Suizide), isPositiveOnly: true);
                     }
                     else
                     {

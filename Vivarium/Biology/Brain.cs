@@ -135,7 +135,7 @@ public static class Brain
         }
 
         // 2. SPECIAL ACTIONS
-        if (GetAction(ActionType.KillSelf) > 0.9f && agent.Age > Agent.MaturityAge * 2)
+        if (GetAction(ActionType.Suizide) > 0.9f && agent.Age > Agent.MaturityAge * 2)
         {
             agent.ChangeEnergy(-100f, gridMap);
             return;
@@ -151,13 +151,13 @@ public static class Brain
         int moveX = 0;
         int moveY = 0;
 
-        if (GetAction(ActionType.MoveNorth) > agent.MovementThreshold) moveY--;
+        if (GetAction(ActionType.MoveN) > agent.MovementThreshold) moveY--;
 
-        if (GetAction(ActionType.MoveSouth) > agent.MovementThreshold) moveY++;
+        if (GetAction(ActionType.MoveS) > agent.MovementThreshold) moveY++;
 
-        if (GetAction(ActionType.MoveWest) > agent.MovementThreshold) moveX--;
+        if (GetAction(ActionType.MoveW) > agent.MovementThreshold) moveX--;
 
-        if (GetAction(ActionType.MoveEast) > agent.MovementThreshold) moveX++;
+        if (GetAction(ActionType.MoveE) > agent.MovementThreshold) moveX++;
 
         moveX = Math.Clamp(moveX, -1, 1);
         moveY = Math.Clamp(moveY, -1, 1);
