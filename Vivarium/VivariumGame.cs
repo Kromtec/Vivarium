@@ -478,7 +478,7 @@ public class VivariumGame : Game
 
         // Deterministic Timer Display
         TimeSpan simTime = TimeSpan.FromSeconds(_tickCount / FramesPerSecond);
-        string timeString = $"Time: {simTime:hh\\:mm\\:ss} | Ticks: {_tickCount}";
+        string timeString = $"Time: {simTime:hh\\:mm\\:ss} | T: {_tickCount, 8}";
         _spriteBatch.DrawString(_sysFont, timeString, new Vector2(25, 5), Color.White);
 
         _spriteBatch.DrawString(_sysFont, $"Agents: {livingAgents,20}", new Vector2(25, 130), Color.Silver);
