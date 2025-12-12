@@ -469,6 +469,80 @@ public struct Agent : IGridEntity
         return false;
     }
 
+    public bool TryToFlee(GridCell[,] gridMap, Span<Agent> agentPopulationSpan, Random rng)
+    {
+        int gridWidth = gridMap.GetLength(0);
+        int gridHeight = gridMap.GetLength(1);
+
+        int vecX = 0;
+        int vecY = 0;
+        bool fleeing = false;
+
+        // Scan neighborhood (radius 2 for hysteresis)
+        for (int dy = -2; dy <= 2; dy++)
+        {
+            for (int dx = -2; dx <= 2; dx++)
+            {
+                if (dx == 0 && dy == 0) continue;
+
+                int nx = X + dx;
+                int ny = Y + dy;
+
+                if (nx < 0 || ny < 0 || nx >= gridWidth || ny >= gridHeight) continue;
+
+                GridCell cell = gridMap[nx, ny];
+                if (cell.Type == EntityType.Agent)
+                {
+                    ref Agent other = ref agentPopulationSpan[cell.Index];
+                    if (!other.IsAlive) continue;
+
+                    // Constraint 1: Kinship (Don't flee from family)
+                    if (IsDirectlyRelatedTo(ref other)) continue;
+
+                    // Constraint 2: Diet (Herbivores don't flee from Herbivores)
+                    if (Diet == DietType.Herbivore && other.Diet == DietType.Herbivore) continue;
+
+                    // Constraint 3: Predation (Carnivores && Omnivores don't flee from Herbivores)
+                    if ((Diet == DietType.Carnivore || Diet == DietType.Omnivore) && other.Diet == DietType.Herbivore) continue;
+
+                    // Constraint 4: Bravery Check (Braver than threat, don't flee)
+                    if (Bravery > other.Bravery) continue;
+
+                    // EVADE!
+                    vecX -= Math.Sign(dx);
+                    vecY -= Math.Sign(dy);
+                    fleeing = true;
+                }
+            }
+        }
+
+        if (fleeing)
+        {
+            // Add "Panic Jitter" (RNG) to prevent predictable loops
+            vecX += rng.Next(-1, 2);
+            vecY += rng.Next(-1, 2);
+
+            // Normalize and Execute
+            int fleeMoveX = Math.Clamp(vecX, -1, 1);
+            int fleeMoveY = Math.Clamp(vecY, -1, 1);
+            
+            if (fleeMoveX != 0 || fleeMoveY != 0)
+            {
+                // Calculate target position (Pac-Man Wrap)
+                int pendingX = (X + fleeMoveX + gridWidth) % gridWidth;
+                int pendingY = (Y + fleeMoveY + gridHeight) % gridHeight;
+
+                // Only move if empty (Don't attack while fleeing)
+                if (gridMap[pendingX, pendingY] == GridCell.Empty)
+                {
+                    TryMoveToLocation(gridMap, pendingX, pendingY, fleeMoveX, fleeMoveY, FleeCost);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public bool TryAttackPlant(ref Plant plant, GridCell[,] gridMap)
     {
         if (!plant.IsAlive || !IsAlive)
@@ -489,7 +563,7 @@ public struct Agent : IGridEntity
             }
         }
 
-        const float baseDamage = 15f;
+        const float baseDamage = 7.5f;
         var power = 1.0f + (Strength * 0.5f);
         var damage = baseDamage * power;
 
