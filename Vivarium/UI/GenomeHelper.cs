@@ -100,35 +100,31 @@ public static class GenomeHelper
             if (x < 0 || x >= width) continue;
 
             float val = traits[i];
-            Color bondColor = Color.LightGray;
-            if (val > 0.3f) bondColor = Color.LimeGreen;
-            else if (val < -0.3f) bondColor = Color.Red;
+            
+            // Desaturated colors
+            Color bondColor = new Color(200, 200, 200);
+            if (val > 0.3f) bondColor = new Color(110, 190, 110); // Muted Green
+            else if (val < -0.3f) bondColor = new Color(210, 90, 90); // Muted Red
 
             float angle = (x * frequency) + phaseShift;
             float y1 = centerY + MathF.Sin(angle) * amplitude;
             float y2 = centerY + MathF.Sin(angle + MathF.PI) * amplitude;
 
             // We attach to Strand 1 (y1)
-            // Calculate end point (65% of the way to y2) to create depth/gap
-            float bondLengthPct = 0.65f;
-            float yEnd = y1 + (y2 - y1) * bondLengthPct;
+            // Consistent gap calculation
+            float gapSize = 14f; // Fixed gap in pixels
+            float dist = Math.Abs(y2 - y1);
+            
+            // Ensure we have enough space
+            if (dist <= gapSize) continue;
 
-            int startY = (int)Math.Min(y1, yEnd);
-            int endY = (int)Math.Max(y1, yEnd);
+            float dir = Math.Sign(y2 - y1);
+            // End point is gapSize away from the opposing strand
+            float yEnd = y2 - (dir * gapSize);
 
-            startY = Math.Clamp(startY, 0, height - 1);
-            endY = Math.Clamp(endY, 0, height - 1);
-
-            // Draw thicker bond (6px width)
-            int bondWidth = 6;
-            for (int bx = x - bondWidth/2; bx <= x + bondWidth/2; bx++)
-            {
-                if (bx < 0 || bx >= width) continue;
-                for (int y = startY; y <= endY; y++)
-                {
-                    colors[y * width + bx] = bondColor;
-                }
-            }
+            // Draw rounded bond (Capsule)
+            int bondRadius = 3; // 6px width
+            DrawVerticalCapsule(colors, width, height, x, (int)y1, (int)yEnd, bondColor, bondRadius);
         }
 
         // 2. Draw Strands (Sine Waves) - Thicker
@@ -148,6 +144,29 @@ public static class GenomeHelper
 
         texture.SetData(colors);
         return texture;
+    }
+
+    private static void DrawVerticalCapsule(Color[] colors, int w, int h, int cx, int yStart, int yEnd, Color c, int radius)
+    {
+        int yMin = Math.Min(yStart, yEnd);
+        int yMax = Math.Max(yStart, yEnd);
+
+        // Draw rect
+        for (int y = yMin; y <= yMax; y++)
+        {
+            for (int dx = -radius; dx <= radius; dx++)
+            {
+                int px = cx + dx;
+                if (px >= 0 && px < w && y >= 0 && y < h)
+                {
+                    colors[y * w + px] = c;
+                }
+            }
+        }
+        
+        // Draw caps
+        DrawCircle(colors, w, h, cx, yMin, c, radius);
+        DrawCircle(colors, w, h, cx, yMax, c, radius);
     }
 
     private static void DrawCircle(Color[] colors, int w, int h, int cx, int cy, Color c, int radius)
