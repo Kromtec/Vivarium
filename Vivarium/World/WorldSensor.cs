@@ -46,6 +46,47 @@ public static class WorldSensor
         return new DensityResult((float)agentsFound / cellsChecked, (float)plantsFound / cellsChecked, (float)structuresFound / cellsChecked);
     }
 
+    public static bool TryGetRandomEmptySpot(GridCell[,] gridMap, out int x, out int y, Random rng)
+    {
+        int gridWidth = gridMap.GetLength(0);
+        int gridHeight = gridMap.GetLength(1);
+
+        for (int i = 0; i < 5; i++)
+        {
+            int rx = rng.Next(0, gridWidth);
+            int ry = rng.Next(0, gridHeight);
+
+            if (gridMap[rx, ry] == GridCell.Empty)
+            {
+                x = rx;
+                y = ry;
+                return true;
+            }
+        }
+
+        int totalCells = gridWidth * gridHeight;
+        int startIndex = rng.Next(totalCells);
+
+        for (int i = 0; i < totalCells; i++)
+        {
+            int currentIndex = (startIndex + i) % totalCells;
+
+            int cx = currentIndex % gridWidth;
+            int cy = currentIndex / gridWidth;
+
+            if (gridMap[cx, cy] == GridCell.Empty)
+            {
+                x = cx;
+                y = cy;
+                return true;
+            }
+        }
+
+        x = -1;
+        y = -1;
+        return false;
+    }
+
     /// <summary>
     /// Scans a square area and populates the neuron input outputs directly.
     /// Uses stackalloc to avoid heap allocations.

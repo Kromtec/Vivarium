@@ -160,7 +160,7 @@ public class VivariumGame : Game
             // 2. FALLBACK / NEW SEED
             if (!placed)
             {
-                if (TryGetRandomEmptySpot(_gridMap, out int x, out int y, _rng))
+                if (WorldSensor.TryGetRandomEmptySpot(_gridMap, out int x, out int y, _rng))
                 {
                     T newItem = createFactory(i, x, y);
 
@@ -197,7 +197,7 @@ public class VivariumGame : Game
 
         for (int index = 0; index < agentPopulationSpan.Length; index++)
         {
-            if (TryGetRandomEmptySpot(_gridMap, out int x, out int y, _rng))
+            if (WorldSensor.TryGetRandomEmptySpot(_gridMap, out int x, out int y, _rng))
             {
                 // --- DIAGNOSE START ---
                 // Wir prüfen manuell die "rohen" Werte der Zelle, ohne den == Operator zu nutzen.
@@ -214,47 +214,6 @@ public class VivariumGame : Game
                 _gridMap[agent.X, agent.Y] = new GridCell(EntityType.Agent, index);
             }
         }
-    }
-
-    public static bool TryGetRandomEmptySpot(GridCell[,] gridMap, out int x, out int y, Random rng)
-    {
-        int gridWidth = gridMap.GetLength(0);
-        int gridHeight = gridMap.GetLength(1);
-
-        for (int i = 0; i < 5; i++)
-        {
-            int rx = rng.Next(0, gridWidth);
-            int ry = rng.Next(0, gridHeight);
-
-            if (gridMap[rx, ry] == GridCell.Empty)
-            {
-                x = rx;
-                y = ry;
-                return true;
-            }
-        }
-
-        int totalCells = gridWidth * gridHeight;
-        int startIndex = rng.Next(totalCells);
-
-        for (int i = 0; i < totalCells; i++)
-        {
-            int currentIndex = (startIndex + i) % totalCells;
-
-            int cx = currentIndex % gridWidth;
-            int cy = currentIndex / gridWidth;
-
-            if (gridMap[cx, cy] == GridCell.Empty)
-            {
-                x = cx;
-                y = cy;
-                return true;
-            }
-        }
-
-        x = -1;
-        y = -1;
-        return false;
     }
 
     protected override void LoadContent()
