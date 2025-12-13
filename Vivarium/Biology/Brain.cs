@@ -225,7 +225,7 @@ public static class Brain
         // --- 1. REPRODUCTION DECISION ---
         // The agent decides if it wants to invest energy in offspring.
         // We use a threshold (0.0 means "neutral", so > 0 is "yes").
-        if(GetAction(ActionType.Reproduce) > 0.0f && agent.TryReproduce(agentPopulationSpan, gridMap, rng))
+        if (GetAction(ActionType.Reproduce) > 0.0f && agent.TryReproduce(agentPopulationSpan, gridMap, rng))
         {
             return;
         }
@@ -285,7 +285,7 @@ public static class Brain
             // is within grid and target cell is empty
             if (gridMap[pendingX, pendingY] == GridCell.Empty)
             {
-                if(agent.TryMoveToLocation(gridMap, pendingX, pendingY, moveX, moveY))
+                if (agent.TryMoveToLocation(gridMap, pendingX, pendingY, moveX, moveY))
                 {
                     return;
                 }

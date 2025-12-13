@@ -25,7 +25,7 @@ public class HUD
         _font = font;
         _simGraph = simGraph;
         _genePoolWindow = genePoolWindow;
-        
+
         _pixelTexture = new Texture2D(graphics, 1, 1);
         _pixelTexture.SetData(new[] { Color.White });
     }
@@ -64,22 +64,22 @@ public class HUD
         // Let's just draw the background last? No, background needs to be behind.
         // We can calculate height easily:
         // Header (27) + Timer (24) + Graph (120) + Stats Header (27) + 6 lines (24*6) + Padding
-        
+
         // Let's do a dynamic approach where we draw the panel background based on a fixed or calculated size.
         // Since the graph is fixed size, we can estimate.
-        
+
         int graphHeight = 100;
         int graphPadding = 10;
-        
+
         // Header + Time
         contentHeight += 30; // Title
         contentHeight += UITheme.LineHeight; // Time
-        
+
         // Graph Area
         contentHeight += graphPadding;
         contentHeight += graphHeight;
         contentHeight += graphPadding;
-        
+
         // Stats
         contentHeight += 30; // "Population"
         contentHeight += UITheme.LineHeight * 6; // 6 stat lines
@@ -108,7 +108,7 @@ public class HUD
         System.TimeSpan simTime = System.TimeSpan.FromSeconds(tickCount / VivariumGame.FramesPerSecond);
         string timeString = $"{simTime:hh\\:mm\\:ss}";
         string tickString = $"T: {tickCount}";
-        
+
         spriteBatch.DrawString(_font, "Time Elapsed", new Vector2(leftX, _cursorY), UITheme.TextColorSecondary);
         Vector2 timeSize = _font.MeasureString(timeString);
         spriteBatch.DrawString(_font, timeString, new Vector2(rightX - timeSize.X, _cursorY), UITheme.TextColorPrimary);
@@ -126,21 +126,21 @@ public class HUD
         _cursorY += 5; // Added padding
         // Move header text down by 3 pixels to align with button text
         spriteBatch.DrawString(_font, "POPULATION", new Vector2(leftX, _cursorY + 3), UITheme.HeaderColor);
-        
+
         // Draw Gene Button right aligned
         int buttonWidth = 60;
         int buttonHeight = 24; // Increased height (was 20)
-        
+
         Vector2 headerSize = _font.MeasureString("POPULATION");
         // Align vertically with text center (using original cursorY)
         int buttonY = _cursorY + (int)((headerSize.Y - buttonHeight) / 2);
-        
+
         _geneButtonRect = new Rectangle(rightX - buttonWidth, buttonY, buttonWidth, buttonHeight);
-        
+
         // Button Visuals
         spriteBatch.Draw(_pixelTexture, _geneButtonRect, UITheme.ButtonColor);
         DrawBorder(spriteBatch, _geneButtonRect, 1, UITheme.BorderColor);
-        
+
         // Center text in button
         Vector2 btnTextSize = _font.MeasureString("GENES");
         // Add +3 to Y to visually center the text better (pushed down from top)

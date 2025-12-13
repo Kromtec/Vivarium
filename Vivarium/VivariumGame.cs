@@ -255,7 +255,7 @@ public class VivariumGame : Game
         {
             _isPaused = !_isPaused;
         }
-        
+
         // Single Step (Right Arrow)
         bool singleStep = false;
         if (_isPaused && keyboardState.IsKeyDown(Keys.Right) && !_previousKeyboardState.IsKeyDown(Keys.Right))
@@ -387,7 +387,7 @@ public class VivariumGame : Game
         {
             _inspector.UpdateInput(_camera, _gridMap, _agentPopulation, _plantPopulation, _structurePopulation, CellSize);
         }
-        
+
         // Camera always updates so we can look around even when paused
         // We pass !uiCapturesMouse to allow the camera to sync its scroll state even if blocked
         _camera.HandleInput(Mouse.GetState(), Keyboard.GetState(), !uiCapturesMouse);
@@ -421,7 +421,7 @@ public class VivariumGame : Game
 
         // Draw HUD (Graph, Stats, Timer)
         _hud.Draw(_spriteBatch, _tickCount, stats.LivingAgents, stats.LivingHerbivores, stats.LivingOmnivores, stats.LivingCarnivores, stats.LivingPlants, stats.LivingStructures);
-        
+
         // Draw Inspector
         _inspector.DrawUI(_spriteBatch, _agentPopulation, _plantPopulation, _structurePopulation);
 
@@ -438,7 +438,7 @@ public class VivariumGame : Game
                 (GraphicsDevice.Viewport.Width - textSize.X) / 2,
                 30 // Top center, slightly down
             );
-            
+
             // Draw text with shadow for visibility
             _spriteBatch.DrawString(_sysFont, pausedText, pos + new Vector2(2, 2), Color.Black);
             _spriteBatch.DrawString(_sysFont, pausedText, pos, Color.White);

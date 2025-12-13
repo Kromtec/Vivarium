@@ -85,7 +85,7 @@ public struct Agent : IGridEntity
 
     public void ChangeEnergy(float amount, GridCell[,] gridMap)
     {
-        if(IsAlive)
+        if (IsAlive)
         {
             Energy += amount;
         }
@@ -124,7 +124,7 @@ public struct Agent : IGridEntity
 
     public float Perception { get; private set; }
     public float Speed { get; private set; }
-    public float MovementThreshold {  get; private set; }
+    public float MovementThreshold { get; private set; }
     public float TrophicBias { get; private set; } // continuous diet axis: -1 carnivore .. +1 herbivore
     public float Constitution { get; private set; }
     public float MaxEnergy { get; private set; }
@@ -470,15 +470,16 @@ public struct Agent : IGridEntity
             // 5: -1, 1 | 6: 0, 1 | 7: 1, 1
 
             int dx = 0, dy = 0;
-            switch(dirIndex) {
-                case 0: dx=-1; dy=-1; break;
-                case 1: dx= 0; dy=-1; break;
-                case 2: dx= 1; dy=-1; break;
-                case 3: dx=-1; dy= 0; break;
-                case 4: dx= 1; dy= 0; break;
-                case 5: dx=-1; dy= 1; break;
-                case 6: dx= 0; dy= 1; break;
-                case 7: dx= 1; dy= 1; break;
+            switch (dirIndex)
+            {
+                case 0: dx = -1; dy = -1; break;
+                case 1: dx = 0; dy = -1; break;
+                case 2: dx = 1; dy = -1; break;
+                case 3: dx = -1; dy = 0; break;
+                case 4: dx = 1; dy = 0; break;
+                case 5: dx = -1; dy = 1; break;
+                case 6: dx = 0; dy = 1; break;
+                case 7: dx = 1; dy = 1; break;
             }
 
             int nx = X + dx;
@@ -572,7 +573,7 @@ public struct Agent : IGridEntity
                 if (gridMap[pendingX, pendingY] == GridCell.Empty)
                 {
                     TryMoveToLocation(gridMap, pendingX, pendingY, fleeMoveX, fleeMoveY, FleeCost);
-                    
+
                     // Visual Feedback for Fleeing
                     // We want to show where we are fleeing FROM.
                     // If we move (1, 0), we are fleeing from (-1, 0).

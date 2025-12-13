@@ -27,7 +27,7 @@ public class Inspector
     // Layout Settings
     private Rectangle _panelRect;
     private int _cursorY;
-    
+
     // Deferred Layout List
     private readonly List<IInspectorElement> _elements = new List<IInspectorElement>();
 
@@ -149,7 +149,7 @@ public class Inspector
                         AddRow("Generation", $"{agent.Generation}", ref contentHeight);
                         AddRow("Diet", $"{agent.Diet}", ref contentHeight);
                         AddRow("Age", $"{agent.Age:F0} t | {agent.Age / VivariumGame.FramesPerSecond:F0} s", ref contentHeight);
-                        
+
                         // Genome Visualization
                         UpdateCachedGenomeTexture(agent);
                         if (_cachedGenomeTexture != null)
@@ -275,7 +275,7 @@ public class Inspector
         {
             // Dispose old texture if it exists
             _cachedGenomeTexture?.Dispose();
-            
+
             // Generate new texture
             _cachedGenomeTexture = GenomeHelper.GenerateHelixTexture(_graphics, agent);
             _cachedGenomeAgentId = agent.Id;
@@ -376,9 +376,9 @@ public class Inspector
             // Use PointClamp for pixel art scaling
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
-            
+
             sb.Draw(_texture, new Rectangle(x, y, _width, _height), Color.White);
-            
+
             sb.End();
             sb.Begin(); // Restart default batch
         }
@@ -465,7 +465,7 @@ public class Inspector
 
             // Bg
             sb.Draw(inspector._pixelTexture, new Rectangle(barX, inspector._cursorY + 5, barWidth, 10), Color.Black * 0.5f);
-            
+
             // Fill
             float ratio = Math.Clamp(_value / _max, 0f, 1f);
             sb.Draw(inspector._pixelTexture, new Rectangle(barX, inspector._cursorY + 5, (int)(barWidth * ratio), 10), _color);
@@ -500,7 +500,7 @@ public class Inspector
             sb.Draw(inspector._pixelTexture, new Rectangle(barX, inspector._cursorY + 5, barWidth, 10), Color.Black * 0.5f);
 
             int centerX = barX + (barWidth / 2);
-            
+
             if (_positiveOnly)
             {
                 // 0 to 1
@@ -512,7 +512,7 @@ public class Inspector
                 // -1 to 1
                 float valClamped = Math.Clamp(_value, -1f, 1f);
                 int fillWidth = (int)((barWidth / 2) * Math.Abs(valClamped));
-                
+
                 if (valClamped > 0)
                     sb.Draw(inspector._pixelTexture, new Rectangle(centerX, inspector._cursorY + 5, fillWidth, 10), UITheme.GoodColor);
                 else

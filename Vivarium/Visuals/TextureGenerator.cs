@@ -216,7 +216,7 @@ public static class TextureGenerator
         var colorData = new Color[diameter * diameter];
 
         float center = radius;
-        
+
         for (int i = 0; i < diameter; i++)
         {
             for (int j = 0; j < diameter; j++)

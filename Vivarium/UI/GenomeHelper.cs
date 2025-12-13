@@ -23,17 +23,17 @@ public static class GenomeHelper
         for (int i = 0; i < genome.Length; i++)
         {
             uint dna = genome[i].Dna;
-            
+
             // Process 4 bytes of the uint
             hash ^= (dna & 0xFF);
             hash *= fnvPrime;
-            
+
             hash ^= ((dna >> 8) & 0xFF);
             hash *= fnvPrime;
-            
+
             hash ^= ((dna >> 16) & 0xFF);
             hash *= fnvPrime;
-            
+
             hash ^= ((dna >> 24) & 0xFF);
             hash *= fnvPrime;
         }
@@ -70,11 +70,11 @@ public static class GenomeHelper
 
         float amplitude = (height / 2f) - 16; // More padding
         float centerY = height / 2f;
-        
+
         // Range: PI/2 to 5PI/2 (2 PI total width)
         // This gives: Open Start -> Twist -> Bubble -> Twist -> Open End
         float totalPhase = 2f * MathF.PI;
-        float frequency = totalPhase / width; 
+        float frequency = totalPhase / width;
         float phaseShift = MathF.PI / 2;
 
         // 1. Draw Bonds (Rungs)
@@ -96,11 +96,11 @@ public static class GenomeHelper
         {
             float targetPhase = bondPhases[i];
             int x = (int)((targetPhase - phaseShift) / frequency);
-            
+
             if (x < 0 || x >= width) continue;
 
             float val = traits[i];
-            
+
             // Desaturated colors
             Color bondColor = new Color(200, 200, 200);
             if (val > 0.3f) bondColor = new Color(110, 190, 110); // Muted Green
@@ -114,7 +114,7 @@ public static class GenomeHelper
             // Consistent gap calculation
             float gapSize = 14f; // Fixed gap in pixels
             float dist = Math.Abs(y2 - y1);
-            
+
             // Ensure we have enough space
             if (dist <= gapSize) continue;
 
@@ -163,7 +163,7 @@ public static class GenomeHelper
                 }
             }
         }
-        
+
         // Draw caps
         DrawCircle(colors, w, h, cx, yMin, c, radius);
         DrawCircle(colors, w, h, cx, yMax, c, radius);
@@ -175,7 +175,7 @@ public static class GenomeHelper
         {
             for (int dx = -radius; dx <= radius; dx++)
             {
-                if (dx*dx + dy*dy <= radius*radius)
+                if (dx * dx + dy * dy <= radius * radius)
                 {
                     int x = cx + dx;
                     int y = cy + dy;
