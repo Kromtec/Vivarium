@@ -217,6 +217,25 @@ public class GenePoolWindow
         _graphics.ScissorRectangle = currentScissor;
         spriteBatch.Begin();
 
+        // Scrollbar
+        int totalContentHeight = _topGenomes.Count * ItemHeight;
+        if (totalContentHeight > listHeight)
+        {
+            int scrollbarWidth = 6;
+            int scrollbarX = listX + ListWidth - scrollbarWidth;
+            
+            // Track
+            spriteBatch.Draw(_pixelTexture, new Rectangle(scrollbarX, listY, scrollbarWidth, listHeight), Color.Black * 0.3f);
+            
+            // Thumb
+            float viewRatio = (float)listHeight / totalContentHeight;
+            int thumbHeight = Math.Max(20, (int)(listHeight * viewRatio));
+            float scrollRatio = (float)_scrollOffset / (totalContentHeight - listHeight);
+            int thumbY = listY + (int)(scrollRatio * (listHeight - thumbHeight));
+            
+            spriteBatch.Draw(_pixelTexture, new Rectangle(scrollbarX, thumbY, scrollbarWidth, thumbHeight), Color.Gray * 0.8f);
+        }
+
         // Separator
         spriteBatch.Draw(_pixelTexture, new Rectangle(listX + ListWidth + 10, listY, 2, height - 70), UITheme.BorderColor);
 
@@ -271,7 +290,14 @@ public class GenePoolWindow
         
         int barWidth = 150;
         int barHeight = 10;
-        int barX = x + 100;
+        // Align bar to the right side of the details panel
+        // The details panel starts at x. Let's assume a fixed width for the details area or calculate it.
+        // The window width is 700. ListWidth is 250. Padding is 15.
+        // Details area width = 700 - 250 - 30 - 15 = ~405.
+        // Let's align the bar to the right edge of the window minus padding.
+        
+        int windowRight = _windowRect.Right - UITheme.Padding;
+        int barX = windowRight - barWidth;
         
         // Background
         sb.Draw(_pixelTexture, new Rectangle(barX, y + 5, barWidth, barHeight), Color.Black * 0.5f);

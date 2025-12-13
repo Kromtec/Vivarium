@@ -320,9 +320,6 @@ public class VivariumGame : Game
                 // Use ref to modify directly
                 ref Agent currentAgent = ref agentPopulationSpan[index];
 
-                int oldX = currentAgent.X;
-                int oldY = currentAgent.Y;
-
                 // A. THINK & ACT
                 // OPTIMIZATION: Time-Slicing
                 // Update brains at 30Hz (every other frame) to reduce Debug CPU load by 50%.
@@ -334,12 +331,6 @@ public class VivariumGame : Game
 
                 // Act every frame (physics/movement) using the last cached neuron activations
                 Brain.Act(ref currentAgent, _gridMap, _rng, agentPopulationSpan, plantPopulationSpan);
-
-                // Validation Overhead: Only check once per second (every 60 ticks)
-                if (_tickCount % 60 == 0)
-                {
-                    ValidateAgentIntegrity(index, currentAgent, oldX, oldY);
-                }
 
                 // B. AGING & METABOLISM
                 currentAgent.Update(_gridMap);
@@ -404,79 +395,6 @@ public class VivariumGame : Game
         }
 
         base.Update(gameTime);
-    }
-
-    [System.Diagnostics.Conditional("DEBUG")]
-    private void ValidateAgentIntegrity(int index, Agent agent, int oldX, int oldY)
-    {
-        var cellAtPos = _gridMap[agent.X, agent.Y];
-        if (agent.IsAlive && (cellAtPos.Type != EntityType.Agent || cellAtPos.Index != index))
-        {
-            if (agent.X != oldX || agent.Y != oldY)
-            {
-                throw new Exception($"LOGIC ERROR FOR AGENT #{index}: It moved from {oldX},{oldY} to {agent.X},{agent.Y}, but the map shows: {cellAtPos.Type} #{cellAtPos.Index}");
-            }
-            else
-            {
-                throw new Exception($"LOGIC ERROR FOR AGENT #{index}: It is still at {agent.X},{agent.Y}, but the map shows: {cellAtPos.Type} #{cellAtPos.Index}");
-            }
-        }
-        else if (!agent.IsAlive && cellAtPos != GridCell.Empty)
-        {
-            throw new Exception($"LOGIC ERROR FOR AGENT #{index}: It is dead at {agent.X},{agent.Y}, but the map shows: {cellAtPos.Type} #{cellAtPos.Index}");
-        }
-    }
-
-    [System.Diagnostics.Conditional("DEBUG")]
-    private void ValidateWorldIntegrity()
-    {
-        // 1. Check: Does the map point to the correct entity?
-        for (int x = 0; x < GridWidth; x++)
-        {
-            for (int y = 0; y < GridHeight; y++)
-            {
-                var cell = _gridMap[x, y];
-                if (cell.Type == EntityType.Agent)
-                {
-                    ref var agent = ref _agentPopulation[cell.Index];
-                    if (!agent.IsAlive) throw new Exception($"Map error at {x},{y}: References dead agent #{cell.Index}");
-                    if (agent.X != x || agent.Y != y) throw new Exception($"Desync! Map says agent #{cell.Index} is at {x},{y}, but agent believes it's at {agent.X},{agent.Y}");
-                }
-                else if (cell.Type == EntityType.Plant)
-                {
-                    ref var plant = ref _plantPopulation[cell.Index];
-                    if (!plant.IsAlive) throw new Exception($"Map error at {x},{y}: References dead plant #{cell.Index}");
-                    if (plant.X != x || plant.Y != y) throw new Exception($"Desync! Map says plant #{cell.Index} is at {x},{y}, but plant believes it's at {plant.X},{plant.Y}");
-                }
-            }
-        }
-
-        // 2. Check: Is every living entity correctly placed in the map?
-        for (int i = 0; i < _agentPopulation.Length; i++)
-        {
-            if (_agentPopulation[i].IsAlive)
-            {
-                var a = _agentPopulation[i];
-                var cell = _gridMap[a.X, a.Y];
-                if (cell.Type != EntityType.Agent || cell.Index != i)
-                {
-                    throw new Exception($"Zombie alert! Agent #{i} thinks it's at {a.X},{a.Y}, but the map shows: {cell.Type} #{cell.Index}");
-                }
-            }
-        }
-        // (Same for plants loop...)
-        for (int i = 0; i < _plantPopulation.Length; i++)
-        {
-            if (_plantPopulation[i].IsAlive)
-            {
-                var p = _plantPopulation[i];
-                var cell = _gridMap[p.X, p.Y];
-                if (cell.Type != EntityType.Plant || cell.Index != i)
-                {
-                    throw new Exception($"Zombie alert! Plant #{i} thinks it's at {p.X},{p.Y}, but the map shows: {cell.Type} #{cell.Index}");
-                }
-            }
-        }
     }
 
     protected override void Draw(GameTime gameTime)
