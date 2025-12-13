@@ -295,10 +295,16 @@ public class VivariumGame : Game
                 _isPaused = !_isPaused;
             }
 
-            // Single Step (Right Arrow)
-            if (_isPaused && keyboardState.IsKeyDown(Keys.Right) && !_previousKeyboardState.IsKeyDown(Keys.Right))
+            // Single Step (.)
+            if (_isPaused && !_genePoolWindow.IsVisible && keyboardState.IsKeyDown(Keys.OemPeriod) && !_previousKeyboardState.IsKeyDown(Keys.OemPeriod))
             {
                 singleStep = true;
+            }
+
+            // Toggle Fullscreen (F11)
+            if (keyboardState.IsKeyDown(Keys.F11) && !_previousKeyboardState.IsKeyDown(Keys.F11))
+            {
+                ToggleFullscreen();
             }
         }
 
@@ -331,7 +337,7 @@ public class VivariumGame : Game
         // If Gene Window is visible, it captures mouse globally (Modal)
         bool uiCapturesMouse = _hud.IsMouseOver(mouseState.Position) || _genePoolWindow.IsVisible;
 
-        if (!effectivePause)
+        if (!effectivePause || singleStep)
         {
             // Simulation Logic
             _tickCount++; // Increment deterministic clock
@@ -470,8 +476,7 @@ public class VivariumGame : Game
         // Draw Gene Pool Window (on top)
         _genePoolWindow.Draw(_spriteBatch);
 
-        // Draw "PAUSED" text if paused (and not covered by Gene Window, or maybe on top of everything?
-        // User requested PAUSED text to be visible even when Gene Window is open
+        // Draw "PAUSED" text if paused
         if (_isPaused || _genePoolWindow.IsVisible)
         {
             string pausedText = "PAUSED";
@@ -491,6 +496,8 @@ public class VivariumGame : Game
         {
             DrawExitConfirmation();
         }
+
+        UpdateFPSAndWindowTitle(gameTime, stats.LivingAgents, stats.LivingPlants, stats.LivingStructures);
 
         _spriteBatch.End();
 

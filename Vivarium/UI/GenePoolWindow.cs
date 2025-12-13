@@ -39,15 +39,15 @@ public class GenePoolWindow
 
     public void RefreshData(Agent[] agents)
     {
-        // 1. Group agents by Genome Hash
+        // 1. Group ALL agents by Genome Hash
         var groups = new Dictionary<ulong, GenomeEntry>();
 
         foreach (var agent in agents)
         {
             if (!agent.IsAlive) continue;
 
-            // Apply Filter
-            if (_filterDiet.HasValue && agent.Diet != _filterDiet.Value) continue;
+            // Note: We do NOT filter here anymore, because we need global ranks.
+            // Filter is applied later.
 
             ulong hash = GenomeHelper.CalculateGenomeHash(agent.Genome);
 
@@ -67,13 +67,27 @@ public class GenePoolWindow
             groups[hash] = entry;
         }
 
-        // 2. Sort by Count and take Top 20
-        _topGenomes = groups.Values
+        // 2. Sort ALL by Count to establish Rank
+        var allSorted = groups.Values
             .OrderByDescending(g => g.Count)
-            .Take(20)
             .ToList();
 
-        // 3. Generate Identicons
+        // Assign Ranks
+        for (int i = 0; i < allSorted.Count; i++)
+        {
+            allSorted[i].Rank = i + 1;
+        }
+
+        // 3. Apply Filter and Take Top 20
+        IEnumerable<GenomeEntry> filtered = allSorted;
+        if (_filterDiet.HasValue)
+        {
+            filtered = filtered.Where(g => g.Diet == _filterDiet.Value);
+        }
+
+        _topGenomes = filtered.Take(20).ToList();
+
+        // 4. Generate Identicons
         foreach (var entry in _topGenomes)
         {
             // Dispose old texture if needed? (For now we just create new ones, might need pooling later)
@@ -81,10 +95,17 @@ public class GenePoolWindow
             entry.GenomeGrid = GenomeHelper.GenerateGenomeGridTexture(_graphics, entry.Representative);
         }
 
-        // Reset selection if it's no longer in the list
-        if (_selectedGenome != null && !_topGenomes.Any(g => g.Hash == _selectedGenome.Hash))
+        // Update selection reference to the new object if it exists
+        if (_selectedGenome != null)
         {
-            _selectedGenome = null;
+            var newRef = _topGenomes.FirstOrDefault(g => g.Hash == _selectedGenome.Hash);
+            _selectedGenome = newRef; // Will be null if not found
+        }
+
+        // If nothing selected (or selection lost), select the first one
+        if (_selectedGenome == null && _topGenomes.Count > 0)
+        {
+            _selectedGenome = _topGenomes[0];
         }
     }
 
@@ -264,7 +285,7 @@ public class GenePoolWindow
 
             // Text
             // Left align Rank
-            string rankText = $"#{i + 1}";
+            string rankText = $"#{entry.Rank}";
             spriteBatch.DrawString(_font, rankText, new Vector2(listX + 70, itemY + 8), UITheme.TextColorPrimary);
 
             // Right align Count
@@ -408,13 +429,20 @@ public class GenePoolWindow
         // Fill (Normalized -1 to 1 -> 0 to 1 for display simplicity or split?)
         // Let's do split like Inspector
         int centerX = barX + (barWidth / 2);
-        float valClamped = Math.Clamp(value, -1f, 1f);
-        int fillWidth = (int)((barWidth / 2) * Math.Abs(valClamped));
+        float valClamped = Math.Clamp(value, -4f, 4f); // Traits can be up to +/- 4 roughly? Or normalized?
+        // Actually traits are usually small floats. Let's assume range -4 to 4 for color mapping consistency with genes.
+        // But for bar width, we might want to clamp to -1..1 or -2..2?
+        // The original code clamped -1 to 1. Let's stick to that for width, but use color from weight.
+        
+        float displayVal = Math.Clamp(value, -1f, 1f);
+        int fillWidth = (int)((barWidth / 2) * Math.Abs(displayVal));
+        
+        Color barColor = UITheme.GetColorForWeight(value); // Use actual value for color
 
-        if (valClamped > 0)
-            sb.Draw(_pixelTexture, new Rectangle(centerX, y + 5, fillWidth, barHeight), UITheme.GoodColor);
+        if (displayVal > 0)
+            sb.Draw(_pixelTexture, new Rectangle(centerX, y + 5, fillWidth, barHeight), barColor);
         else
-            sb.Draw(_pixelTexture, new Rectangle(centerX - fillWidth, y + 5, fillWidth, barHeight), Color.Magenta);
+            sb.Draw(_pixelTexture, new Rectangle(centerX - fillWidth, y + 5, fillWidth, barHeight), barColor);
 
         y += 25;
     }
@@ -431,6 +459,7 @@ public class GenePoolWindow
     {
         public ulong Hash;
         public int Count;
+        public int Rank; // New property
         public Agent Representative; // A copy or ref to one agent to read traits
         public DietType Diet;
         public Texture2D Identicon;

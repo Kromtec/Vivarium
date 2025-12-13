@@ -170,57 +170,19 @@ public static class GenomeHelper
         Gene[] genome = agent.Genome;
 
         // GitHub-like colors
-        Color colorNeutral = new Color(22, 27, 34); // Dark background
+        // Now using UITheme colors
         
-        // Greens (Low to High) - Positive Weights
-        Color[] greens = new Color[] {
-            new Color(14, 68, 41),
-            new Color(0, 109, 50),
-            new Color(38, 166, 65),
-            new Color(57, 211, 83)
-        };
-
-        // Reds (Low to High) - Negative Weights
-        Color[] reds = new Color[] {
-            new Color(68, 14, 14),
-            new Color(109, 0, 0),
-            new Color(166, 38, 38),
-            new Color(211, 57, 57)
-        };
-
         for (int y = 0; y < rows; y++)
         {
             for (int x = 0; x < cols; x++)
             {
                 int geneIndex = y * cols + x;
-                Color cellColor = colorNeutral;
+                Color cellColor = UITheme.WeightNeutral;
 
                 if (geneIndex < genome.Length)
                 {
                     Gene gene = genome[geneIndex];
-                    float w = gene.Weight; // Range approx -4.0 to 4.0
-
-                    if (Math.Abs(w) < 0.2f)
-                    {
-                        cellColor = colorNeutral;
-                    }
-                    else if (w > 0)
-                    {
-                        // Positive -> Green
-                        if (w < 1.0f) cellColor = greens[0];
-                        else if (w < 2.0f) cellColor = greens[1];
-                        else if (w < 3.0f) cellColor = greens[2];
-                        else cellColor = greens[3];
-                    }
-                    else
-                    {
-                        // Negative -> Red
-                        float absW = Math.Abs(w);
-                        if (absW < 1.0f) cellColor = reds[0];
-                        else if (absW < 2.0f) cellColor = reds[1];
-                        else if (absW < 3.0f) cellColor = reds[2];
-                        else cellColor = reds[3];
-                    }
+                    cellColor = UITheme.GetColorForWeight(gene.Weight);
                 }
 
                 // Draw Cell Rect

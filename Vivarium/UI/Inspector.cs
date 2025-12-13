@@ -183,9 +183,9 @@ public class Inspector
                         AddHeader("SENSORY INPUTS", ref contentHeight);
                         AddBrainBar("Oscillator", GetSensorVal(ref agent, SensorType.Oscillator), false, ref contentHeight);
                         AddBrainBar("Rand", GetSensorVal(ref agent, SensorType.Random), true, ref contentHeight);
-                        AddBrainBar("Agnt Dens", GetSensorVal(ref agent, SensorType.AgentDensity), true, ref contentHeight);
-                        AddBrainBar("Plnt Dens", GetSensorVal(ref agent, SensorType.PlantDensity), true, ref contentHeight);
-                        AddBrainBar("Strt Dens", GetSensorVal(ref agent, SensorType.StructureDensity), true, ref contentHeight);
+                        AddBrainBar("Agent Density", GetSensorVal(ref agent, SensorType.AgentDensity), true, ref contentHeight);
+                        AddBrainBar("Plant Density", GetSensorVal(ref agent, SensorType.PlantDensity), true, ref contentHeight);
+                        AddBrainBar("Structure Density", GetSensorVal(ref agent, SensorType.StructureDensity), true, ref contentHeight);
 
                         // Outputs (Actions)
                         AddSeparator(ref contentHeight);
@@ -511,18 +511,22 @@ public class Inspector
             {
                 // 0 to 1
                 float ratio = Math.Clamp(_value, 0f, 1f);
-                sb.Draw(inspector._pixelTexture, new Rectangle(barX, inspector._cursorY + 5, (int)(barWidth * ratio), 10), UITheme.GoodColor);
+                // Use GetColorForWeight for consistency (assuming 0..1 maps to positive range)
+                Color c = UITheme.GetColorForWeight(_value);
+                sb.Draw(inspector._pixelTexture, new Rectangle(barX, inspector._cursorY + 5, (int)(barWidth * ratio), 10), c);
             }
             else
             {
                 // -1 to 1
                 float valClamped = Math.Clamp(_value, -1f, 1f);
                 int fillWidth = (int)((barWidth / 2) * Math.Abs(valClamped));
+                
+                Color c = UITheme.GetColorForWeight(_value);
 
                 if (valClamped > 0)
-                    sb.Draw(inspector._pixelTexture, new Rectangle(centerX, inspector._cursorY + 5, fillWidth, 10), UITheme.GoodColor);
+                    sb.Draw(inspector._pixelTexture, new Rectangle(centerX, inspector._cursorY + 5, fillWidth, 10), c);
                 else
-                    sb.Draw(inspector._pixelTexture, new Rectangle(centerX - fillWidth, inspector._cursorY + 5, fillWidth, 10), Color.Magenta);
+                    sb.Draw(inspector._pixelTexture, new Rectangle(centerX - fillWidth, inspector._cursorY + 5, fillWidth, 10), c);
             }
         }
     }
