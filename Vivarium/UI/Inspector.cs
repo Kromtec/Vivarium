@@ -58,11 +58,19 @@ public class Inspector
 
             Vector2 mouseWorld = camera.ScreenToWorld(new Vector2(mouseState.X, mouseState.Y));
 
-            int gx = (int)(mouseWorld.X / cellSize);
-            int gy = (int)(mouseWorld.Y / cellSize);
+            // Use Floor to handle negative coordinates correctly
+            int gx = (int)Math.Floor(mouseWorld.X / cellSize);
+            int gy = (int)Math.Floor(mouseWorld.Y / cellSize);
 
             int w = gridMap.GetLength(0);
             int h = gridMap.GetLength(1);
+
+            // Wrap coordinates for infinite world
+            gx %= w;
+            if (gx < 0) gx += w;
+
+            gy %= h;
+            if (gy < 0) gy += h;
 
             if (gx >= 0 && gx < w && gy >= 0 && gy < h)
             {
