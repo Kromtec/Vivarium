@@ -22,6 +22,7 @@ public class WorldRenderer
     private Texture2D _arrowTexture;
     private Texture2D _dotTexture;
     private Texture2D _ringTexture;
+    private Texture2D _selectionRingTexture;
 
     public WorldRenderer(GraphicsDevice graphicsDevice)
     {
@@ -40,6 +41,7 @@ public class WorldRenderer
         _arrowTexture = TextureGenerator.CreateTriangle(_graphicsDevice, 32);
         _dotTexture = TextureGenerator.CreateCircle(_graphicsDevice, 16);
         _ringTexture = TextureGenerator.CreateRing(_graphicsDevice, 64, 8);
+        _selectionRingTexture = TextureGenerator.CreateRing(_graphicsDevice, 64, 16); // Thicker ring for selection
     }
 
     public RenderStats Draw(
@@ -111,7 +113,7 @@ public class WorldRenderer
 
                     // Draw the Selection Box inside the world
                     float totalSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
-                    inspector.DrawSelectionMarker(_spriteBatch, cellSize, totalSeconds);
+                    DrawSelectionMarker(_spriteBatch, inspector, cellSize, totalSeconds);
 
                     _spriteBatch.End();
                 }
@@ -119,6 +121,43 @@ public class WorldRenderer
         }
 
         return stats;
+    }
+
+    private void DrawSelectionMarker(SpriteBatch spriteBatch, Inspector inspector, int cellSize, float totalTime)
+    {
+        if (!inspector.IsEntitySelected) return;
+
+        var gridPos = inspector.SelectedGridPos;
+
+        // Calculate center of the selected cell
+        Vector2 cellCenter = new Vector2(
+            (gridPos.X * cellSize) + (cellSize / 2.0f),
+            (gridPos.Y * cellSize) + (cellSize / 2.0f)
+        );
+
+        // Pulsating effect similar to ReproductionVisual
+        // Use a sine wave to oscillate between 0 and 1
+        float pulse = (MathF.Sin(totalTime * 5f) + 1.0f) * 0.5f;
+
+        // Scale: Grows from 2x to 4x the cell size (Bigger)
+        float scale = ((float)cellSize / _selectionRingTexture.Width) * (2f + (pulse * 2f));
+
+        // Alpha: Fades out as it grows (1.0 -> 0.2)
+        float alpha = 1.0f - (pulse * 0.8f);
+
+        var ringCenter = new Vector2(_selectionRingTexture.Width / 2f, _selectionRingTexture.Height / 2f);
+
+        spriteBatch.Draw(
+            _selectionRingTexture,
+            cellCenter,
+            null,
+            Color.Gold * alpha,
+            0f,
+            ringCenter,
+            scale,
+            SpriteEffects.None,
+            0f
+        );
     }
 
     private void DrawStructures(Structure[] structures, int cellSize, out int livingStructures)

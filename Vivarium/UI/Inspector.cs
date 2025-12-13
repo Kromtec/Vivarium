@@ -28,13 +28,6 @@ public class Inspector
     private Rectangle _panelRect;
     private int _cursorY;
     
-    // Colors (Modern Palette) - Now using UITheme
-    // private readonly Color _panelBgColor = new Color(30, 30, 35, 230); 
-    // private readonly Color _borderColor = new Color(60, 60, 70);
-    private readonly Color _labelColor = new Color(180, 180, 190);     // Light Grey
-    private readonly Color _valueColor = Color.White;
-    private readonly Color _headerColor = new Color(100, 200, 255);    // Soft Cyan
-
     // Deferred Layout List
     private readonly List<IInspectorElement> _elements = new List<IInspectorElement>();
 
@@ -296,31 +289,6 @@ public class Inspector
         var e = new BrainBarElement(label, value, positiveOnly);
         _elements.Add(e);
         currentHeight += e.Height;
-    }
-
-
-    // --- SELECTION MARKER (World Space) ---
-    public void DrawSelectionMarker(SpriteBatch spriteBatch, int cellSize, float totalTime)
-    {
-        if (!IsEntitySelected) return;
-
-        Vector2 cellCenter = new Vector2(
-            (SelectedGridPos.X * cellSize) + (cellSize / 2.0f) + 1,
-            (SelectedGridPos.Y * cellSize) + (cellSize / 2.0f) + 1
-        );
-
-        float pulse = ((float)Math.Sin(totalTime * 10f) * 0.2f) + 1.0f;
-        float currentSize = (cellSize * pulse) + (1 * 2);
-        float halfSize = currentSize / 2.0f;
-
-        Rectangle r = new Rectangle(
-            (int)(cellCenter.X - halfSize),
-            (int)(cellCenter.Y - halfSize),
-            (int)currentSize,
-            (int)currentSize
-        );
-
-        DrawBorder(spriteBatch, r, 1, Color.Gold);
     }
 
     private void DrawBorder(SpriteBatch sb, Rectangle r, int thickness, Color c)
