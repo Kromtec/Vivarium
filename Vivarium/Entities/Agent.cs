@@ -25,8 +25,8 @@ public struct Agent : IGridEntity
     public const float FleeCost = MovementCost * 2f; // High cost for panic running
 
     public const int MaturityAge = 60 * 10; // Frames until agent can reproduce after birth (10 seconds at 60 FPS)
-    public int ReproductionCooldown;       // Frames until next possible reproduction
-    public int MovementCooldown;           // Frames until next possible movement
+    public int ReproductionCooldown;        // Frames until next possible reproduction
+    public int MovementCooldown;            // Frames until next possible movement
     public int AttackCooldown { get; set; } // Frames until next possible attack
     private Color originalColor;
 

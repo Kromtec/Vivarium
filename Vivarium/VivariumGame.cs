@@ -82,7 +82,7 @@ public class VivariumGame : Game
         _graphics.SynchronizeWithVerticalRetrace = true;
         _graphics.ApplyChanges();
 
-        _rng = new Random(42);
+        _rng = new Random(64);
 
         // .NET 10 JIT optimizes array allocation significantly
         _agentPopulation = new Agent[AgentCount];
@@ -319,7 +319,7 @@ public class VivariumGame : Game
                 // (index + tick) % 2 == 0 ensures we update even/odd agents on alternating frames.
                 if ((index + _tickCount) % 2 == 0)
                 {
-                    Brain.Think(ref currentAgent, _gridMap, _rng);
+                    Brain.Think(ref currentAgent, _gridMap, _rng, _agentPopulation);
                 }
 
                 // Act every frame (physics/movement) using the last cached neuron activations

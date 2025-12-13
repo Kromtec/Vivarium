@@ -6,7 +6,7 @@ namespace Vivarium.Biology;
 
 public static class Brain
 {
-    public static void Think(ref Agent agent, GridCell[,] gridMap, Random rng)
+    public static void Think(ref Agent agent, GridCell[,] gridMap, Random rng, Agent[] agentPopulation)
     {
         int gridWidth = gridMap.GetLength(0);
         int gridHeight = gridMap.GetLength(1);
@@ -88,11 +88,98 @@ public static class Brain
             neurons[sinkIdx] += neurons[sourceIdx] * gene.Weight;
         }
 
+        // --- 3.5 INSTINCTS (Biological Overrides) ---
+        // We apply strong biases based on critical survival needs.
+        // These are applied BEFORE activation, so they can be modulated by the network but provide a strong baseline.
+        ApplyInstincts(ref agent, gridMap, neurons, agentPopulation);
+
         // --- 4. ACTIVATION ---
         // Apply Tanh to everything AFTER the sensors (Actions + Hidden)
         for (int i = BrainConfig.ActionsStart; i < neurons.Length; i++)
         {
             neurons[i] = MathF.Tanh(neurons[i]);
+        }
+    }
+
+    private static void ApplyInstincts(ref Agent agent, GridCell[,] gridMap, float[] neurons, Agent[] agentPopulation)
+    {
+        // Helper to add bias
+        void AddBias(ActionType type, float amount) => neurons[BrainConfig.GetActionIndex(type)] += amount;
+
+        // 1. SURVIVAL INSTINCT (Panic)
+        // If threats are nearby, run away!
+        // We do a quick scan for threats.
+        if (WorldSensor.DetectThreats(gridMap, agentPopulation, agent.X, agent.Y, 2, ref agent))
+        {
+            AddBias(ActionType.Flee, 2.0f);
+        }
+
+        // 2. FEEDING INSTINCT (Hunger)
+        // If hungry or low energy, seek food.
+        if (agent.Hunger > 50f || agent.Energy < agent.MaxEnergy * 0.3f)
+        {
+            if (agent.Diet == DietType.Herbivore)
+            {
+                // Move towards plants
+                // We check the directional sensors we just populated.
+                // Note: This assumes the sensors are populated in the standard order (N, NE, E...)
+                // We find the direction with the highest plant density.
+                
+                int bestDir = -1;
+                float maxDensity = 0f;
+
+                // Check cardinal directions first for simple movement
+                // N=0, E=2, S=4, W=6 in the 8-way array
+                float n = neurons[(int)SensorType.PlantDensity_N];
+                float e = neurons[(int)SensorType.PlantDensity_E];
+                float s = neurons[(int)SensorType.PlantDensity_S];
+                float w = neurons[(int)SensorType.PlantDensity_W];
+
+                if (n > maxDensity) { maxDensity = n; bestDir = 0; }
+                if (e > maxDensity) { maxDensity = e; bestDir = 1; }
+                if (s > maxDensity) { maxDensity = s; bestDir = 2; }
+                if (w > maxDensity) { maxDensity = w; bestDir = 3; }
+
+                if (bestDir == 0) AddBias(ActionType.MoveN, 2.0f);
+                else if (bestDir == 1) AddBias(ActionType.MoveE, 2.0f);
+                else if (bestDir == 2) AddBias(ActionType.MoveS, 2.0f);
+                else if (bestDir == 3) AddBias(ActionType.MoveW, 2.0f);
+            }
+            else if (agent.Diet == DietType.Carnivore)
+            {
+                // Move towards prey (Agents)
+                // Similar logic but for AgentDensity
+                float n = neurons[(int)SensorType.AgentDensity_N];
+                float e = neurons[(int)SensorType.AgentDensity_E];
+                float s = neurons[(int)SensorType.AgentDensity_S];
+                float w = neurons[(int)SensorType.AgentDensity_W];
+
+                int bestDir = -1;
+                float maxDensity = 0f;
+
+                if (n > maxDensity) { maxDensity = n; bestDir = 0; }
+                if (e > maxDensity) { maxDensity = e; bestDir = 1; }
+                if (s > maxDensity) { maxDensity = s; bestDir = 2; }
+                if (w > maxDensity) { maxDensity = w; bestDir = 3; }
+
+                if (bestDir != -1)
+                {
+                    if (bestDir == 0) AddBias(ActionType.MoveN, 2.0f);
+                    else if (bestDir == 1) AddBias(ActionType.MoveE, 2.0f);
+                    else if (bestDir == 2) AddBias(ActionType.MoveS, 2.0f);
+                    else if (bestDir == 3) AddBias(ActionType.MoveW, 2.0f);
+                    
+                    // Also encourage attacking if we smell food
+                    AddBias(ActionType.Attack, 2.0f);
+                }
+            }
+        }
+
+        // 3. REPRODUCTION INSTINCT (Libido)
+        // If healthy and mature, try to reproduce.
+        if (agent.Energy > agent.MaxEnergy * 0.9f && agent.Age > Agent.MaturityAge)
+        {
+            AddBias(ActionType.Reproduce, 2.0f);
         }
     }
 

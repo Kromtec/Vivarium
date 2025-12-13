@@ -87,6 +87,44 @@ public static class WorldSensor
         return false;
     }
 
+    public static bool DetectThreats(GridCell[,] gridMap, Entities.Agent[] agentPopulation, int centerX, int centerY, int radius, ref Entities.Agent self)
+    {
+        int gridWidth = gridMap.GetLength(0);
+        int gridHeight = gridMap.GetLength(1);
+
+        // Safety check
+        if (agentPopulation == null) return false;
+
+        for (int dy = -radius; dy <= radius; dy++)
+        {
+            for (int dx = -radius; dx <= radius; dx++)
+            {
+                if (dx == 0 && dy == 0) continue;
+
+                int nx = centerX + dx;
+                int ny = centerY + dy;
+
+                if (nx >= 0 && nx < gridWidth && ny >= 0 && ny < gridHeight)
+                {
+                    var cell = gridMap[nx, ny];
+                    if (cell.Type == EntityType.Agent)
+                    {
+                        // Bounds check to prevent crashes if the map is desynced
+                        if (cell.Index >= 0 && cell.Index < agentPopulation.Length)
+                        {
+                            ref Entities.Agent other = ref agentPopulation[cell.Index];
+                            if (other.IsAlive && self.IsThreat(ref other))
+                            {
+                                return true; // Found at least one threat
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     /// <summary>
     /// Scans a square area and populates the neuron input outputs directly.
     /// Uses stackalloc to avoid heap allocations.
