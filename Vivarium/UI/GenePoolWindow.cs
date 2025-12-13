@@ -75,7 +75,7 @@ public class GenePoolWindow
         foreach (var entry in _topGenomes)
         {
             // Dispose old texture if needed? (For now we just create new ones, might need pooling later)
-            entry.Identicon = GenomeHelper.GenerateIdenticon(_graphics, entry.Hash, Agent.GetColorBasedOnDietType(entry.Diet));
+            entry.Identicon = GenomeHelper.GenerateHelixTexture(_graphics, entry.Representative);
         }
 
         // Reset selection if it's no longer in the list
@@ -201,17 +201,17 @@ public class GenePoolWindow
                 spriteBatch.Draw(_pixelTexture, new Rectangle(listX, itemY, ListWidth, ItemHeight), Color.White * 0.1f);
             }
 
-            // Identicon
-            Rectangle iconRect = new Rectangle(listX + 5, itemY + 5, 30, 30);
+            // Identicon (Helix)
+            // List item height is 40. We want to fit a 64x32 texture.
+            // Let's scale it to fit nicely. 60x30 fits well.
+            Rectangle iconRect = new Rectangle(listX + 5, itemY + 5, 60, 30);
             spriteBatch.Draw(entry.Identicon, iconRect, Color.White);
             
-            // Border based on Diet
-            DrawBorder(spriteBatch, iconRect, 1, Agent.GetColorBasedOnDietType(entry.Diet));
 
             // Text
             // Left align Rank
             string rankText = $"#{i + 1}";
-            spriteBatch.DrawString(_font, rankText, new Vector2(listX + 45, itemY + 8), UITheme.TextColorPrimary);
+            spriteBatch.DrawString(_font, rankText, new Vector2(listX + 70, itemY + 8), UITheme.TextColorPrimary);
 
             // Right align Count
             // ListWidth is 250. Padding is 15.
@@ -266,8 +266,9 @@ public class GenePoolWindow
             spriteBatch.DrawString(_font, "GENOME DETAILS", new Vector2(detailsX, detailsY), UITheme.HeaderColor);
             detailsY += 30;
 
-            // Big Identicon
-            Rectangle bigIconRect = new Rectangle(detailsX, detailsY, 64, 64);
+            // Big Identicon (Helix)
+            // Original texture is 64x32. Let's scale it up 2x -> 128x64.
+            Rectangle bigIconRect = new Rectangle(detailsX, detailsY, 128, 64);
             // Use PointClamp sampler state for pixel art scaling
             // We need to end the current batch and start a new one with PointClamp
             spriteBatch.End();
@@ -278,11 +279,10 @@ public class GenePoolWindow
             spriteBatch.End();
             spriteBatch.Begin(); // Restart default batch
 
-            DrawBorder(spriteBatch, bigIconRect, 2, Agent.GetColorBasedOnDietType(g.Diet));
             
             // Hash ID
-            spriteBatch.DrawString(_font, $"ID: {g.Hash:X}", new Vector2(detailsX + 80, detailsY), UITheme.TextColorSecondary);
-            spriteBatch.DrawString(_font, $"Diet: {g.Diet}", new Vector2(detailsX + 80, detailsY + 20), UITheme.TextColorPrimary);
+            spriteBatch.DrawString(_font, $"ID: {g.Hash:X}", new Vector2(detailsX + 140, detailsY), UITheme.TextColorSecondary);
+            spriteBatch.DrawString(_font, $"Diet: {g.Diet}", new Vector2(detailsX + 140, detailsY + 20), UITheme.TextColorPrimary);
             
             detailsY += 80;
 
