@@ -165,11 +165,11 @@ public static class TextureGenerator
         var texture = new Texture2D(graphicsDevice, size, size);
         var colorData = new Color[size * size];
 
-        // Triangle points: (0,0), (0, size), (size, size/2) -> Pointing Right
-        // Actually, let's make it an isosceles triangle pointing RIGHT.
-        // Base at x=0, Tip at x=size.
-
         float centerY = size / 2f;
+        // Precompute sine of the angle for distance correction
+        // Slope is 0.5. Angle is Atan(0.5). Sin(Atan(0.5)) = 0.4472136
+        float sinAngle = 0.4472136f;
+        float borderThickness = size * 0.15f; // 15% of size
 
         for (int y = 0; y < size; y++)
         {
@@ -177,20 +177,26 @@ public static class TextureGenerator
             {
                 int index = (y * size) + x;
 
-                // Normalized coordinates 0..1
-                float u = x / (float)size;
                 float v = Math.Abs((y - centerY) / centerY); // 0 at center, 1 at edges
+                float limitX = size * (1.0f - v);
 
-                // Shape definition: x goes from 0 to size.
-                // At x=0, width is full (v goes 0..1).
-                // At x=size, width is 0.
-                // Wait, we want it pointing RIGHT.
-                // So at x=size, width is 0. At x=0, width is full.
-                // Condition: x < size * (1 - v)
-                
-                if (x < size * (1.0f - v))
+                if (x < limitX)
                 {
-                    colorData[index] = Color.White;
+                    // Inside the triangle
+                    float distBase = x;
+                    float distSlant = (limitX - x) * sinAngle;
+
+                    float minDist = Math.Min(distBase, distSlant);
+
+                    if (minDist < borderThickness)
+                    {
+                        colorData[index] = Color.White;
+                    }
+                    else
+                    {
+                        // Inner part - semi-transparent (darker) look
+                        colorData[index] = Color.Lerp(Color.White, Color.Black, 0.5f);
+                    }
                 }
                 else
                 {

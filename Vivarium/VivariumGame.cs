@@ -720,7 +720,7 @@ public class VivariumGame : Game
                     _arrowTexture,
                     position + offset,
                     null,
-                    Color.Yellow * alpha,
+                    agent.Color * alpha,
                     rotation,
                     arrowCenter,
                     arrowScale,
