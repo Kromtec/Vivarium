@@ -21,6 +21,7 @@ public class VivariumGame : Game
     private Texture2D _circleTexture;
     private Texture2D _starTexture;
     private Texture2D _roundedRectTexture;
+    private Texture2D _arrowTexture;
 
     // Simulation Constants
     private const int GridHeight = 128;
@@ -267,6 +268,7 @@ public class VivariumGame : Game
         _starTexture = TextureGenerator.CreateStar(GraphicsDevice, 50, 5);
 
         _roundedRectTexture = TextureGenerator.CreateRoundedRect(GraphicsDevice, 50, 20, 5);
+        _arrowTexture = TextureGenerator.CreateTriangle(GraphicsDevice, 32);
 
         _sysFont = Content.Load<SpriteFont>("SystemFont");
 
@@ -647,7 +649,11 @@ public class VivariumGame : Game
 
         // Calculate the center of our source texture (needed for pivot point)
         var textureCenter = new Vector2(_circleTexture.Width / 2f, _circleTexture.Height / 2f);
+        var arrowCenter = new Vector2(_arrowTexture.Width / 2f, _arrowTexture.Height / 2f);
+
         float baseScale = (float)CellSize / _circleTexture.Width;
+        float arrowScale = ((float)CellSize / _arrowTexture.Width) * 0.6f; // Slightly smaller than cell
+
         const float agentAgeGrowthFactor = 1.0f / Agent.MaturityAge;
 
         Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
@@ -699,6 +705,29 @@ public class VivariumGame : Game
                 SpriteEffects.None,
                 0f
             );
+
+            // --- ATTACK VISUALIZATION ---
+            if (agent.AttackVisualTimer > 0)
+            {
+                float alpha = agent.AttackVisualTimer / 15f; // Fade out
+                float rotation = MathF.Atan2(agent.LastAttackDirY, agent.LastAttackDirX);
+                
+                // Offset the arrow so it appears on the edge of the agent
+                // Radius is roughly CellSize/2.
+                Vector2 offset = new Vector2(agent.LastAttackDirX, agent.LastAttackDirY) * (CellSize * 0.6f);
+
+                _spriteBatch.Draw(
+                    _arrowTexture,
+                    position + offset,
+                    null,
+                    Color.Yellow * alpha,
+                    rotation,
+                    arrowCenter,
+                    arrowScale,
+                    SpriteEffects.None,
+                    0f
+                );
+            }
         }
     }
 

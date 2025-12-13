@@ -179,7 +179,7 @@ public static class Brain
             else if (gridMap[pendingX, pendingY].Type == EntityType.Plant)
             {
                 ref Plant plant = ref plantPopulationSpan[gridMap[pendingX, pendingY].Index];
-                agent.TryAttackPlant(ref plant, gridMap);
+                agent.TryAttackPlant(ref plant, gridMap, moveX, moveY);
 
                 if (!plant.IsAlive)
                 {
@@ -194,7 +194,7 @@ public static class Brain
             {
                 int victimIndex = gridMap[pendingX, pendingY].Index;
                 ref Agent victim = ref agentPopulationSpan[victimIndex];
-                agent.TryAttackAgent(ref victim, gridMap);
+                agent.TryAttackAgent(ref victim, gridMap, moveX, moveY);
 
                 if (!victim.IsAlive)
                 {

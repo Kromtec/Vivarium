@@ -159,4 +159,47 @@ public static class TextureGenerator
         texture.SetData(colorData);
         return texture;
     }
+
+    public static Texture2D CreateTriangle(GraphicsDevice graphicsDevice, int size)
+    {
+        var texture = new Texture2D(graphicsDevice, size, size);
+        var colorData = new Color[size * size];
+
+        // Triangle points: (0,0), (0, size), (size, size/2) -> Pointing Right
+        // Actually, let's make it an isosceles triangle pointing RIGHT.
+        // Base at x=0, Tip at x=size.
+
+        float centerY = size / 2f;
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                int index = (y * size) + x;
+
+                // Normalized coordinates 0..1
+                float u = x / (float)size;
+                float v = Math.Abs((y - centerY) / centerY); // 0 at center, 1 at edges
+
+                // Shape definition: x goes from 0 to size.
+                // At x=0, width is full (v goes 0..1).
+                // At x=size, width is 0.
+                // Wait, we want it pointing RIGHT.
+                // So at x=size, width is 0. At x=0, width is full.
+                // Condition: x < size * (1 - v)
+                
+                if (x < size * (1.0f - v))
+                {
+                    colorData[index] = Color.White;
+                }
+                else
+                {
+                    colorData[index] = Color.Transparent;
+                }
+            }
+        }
+
+        texture.SetData(colorData);
+        return texture;
+    }
 }

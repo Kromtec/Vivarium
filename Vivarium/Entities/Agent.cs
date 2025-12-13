@@ -22,7 +22,7 @@ public struct Agent : IGridEntity
     public const float MovementCost = 0.25f;   // Base cost for moving
     public const float OrthogonalMovementCost = MovementCost; // Extra cost for non-cardinal moves
     public const float DiagonalMovementCost = MovementCost * 1.414f; // Extra cost for diagonal moves
-    public const float FleeCost = 0.5f; // High cost for panic running (5x normal)
+    public const float FleeCost = MovementCost * 2f; // High cost for panic running
 
     public const int MaturityAge = 60 * 10; // Frames until agent can reproduce after birth (10 seconds at 60 FPS)
     private int ReproductionCooldown;       // Frames until next possible reproduction
@@ -129,6 +129,11 @@ public struct Agent : IGridEntity
     public float Constitution { get; private set; }
     public float MaxEnergy { get; private set; }
 
+    // --- VISUAL FEEDBACK STATE ---
+    public sbyte LastAttackDirX;
+    public sbyte LastAttackDirY;
+    public byte AttackVisualTimer;
+
     public void Update(GridCell[,] gridMap)
     {
         if (!IsAlive)
@@ -143,6 +148,7 @@ public struct Agent : IGridEntity
         if (ReproductionCooldown > 0) ReproductionCooldown--;
         if (MovementCooldown > 0) MovementCooldown--;
         if (AttackCooldown > 0) AttackCooldown--;
+        if (AttackVisualTimer > 0) AttackVisualTimer--;
 
         // Metabolize energy
         Hunger += MetabolismRate * 2;
@@ -446,7 +452,7 @@ public struct Agent : IGridEntity
                 {
                     int victimIndex = gridMap[nx, ny].Index;
                     ref Agent victim = ref agentPopulation[victimIndex];
-                    if (TryAttackAgent(ref victim, gridMap))
+                    if (TryAttackAgent(ref victim, gridMap, dx, dy))
                     {
                         ChangeEnergy(-2.0f, gridMap);
                         AttackCooldown = 60;
@@ -457,7 +463,7 @@ public struct Agent : IGridEntity
                 {
                     int plantIndex = gridMap[nx, ny].Index;
                     ref Plant plant = ref plantPopulation[plantIndex];
-                    if (TryAttackPlant(ref plant, gridMap))
+                    if (TryAttackPlant(ref plant, gridMap, dx, dy))
                     {
                         ChangeEnergy(-2.0f, gridMap);
                         AttackCooldown = 60;
@@ -543,7 +549,7 @@ public struct Agent : IGridEntity
         return false;
     }
 
-    public bool TryAttackPlant(ref Plant plant, GridCell[,] gridMap)
+    public bool TryAttackPlant(ref Plant plant, GridCell[,] gridMap, int dx = 0, int dy = 0)
     {
         if (!plant.IsAlive || !IsAlive)
         {
@@ -586,10 +592,16 @@ public struct Agent : IGridEntity
         {
             plant.ChangeEnergy(-damage * 0.1f, gridMap);
         }
+
+        // Visual Feedback
+        LastAttackDirX = (sbyte)dx;
+        LastAttackDirY = (sbyte)dy;
+        AttackVisualTimer = 15; // Show for 1/4th of a second
+
         return true;
     }
 
-    public bool TryAttackAgent(ref Agent victim, GridCell[,] gridMap)
+    public bool TryAttackAgent(ref Agent victim, GridCell[,] gridMap, int dx = 0, int dy = 0)
     {
         if (!victim.IsAlive || !IsAlive)
         {
@@ -641,10 +653,23 @@ public struct Agent : IGridEntity
             {
                 var retaliationDamage = baseDamage * victim.Power / Resilience;
                 ChangeEnergy(-retaliationDamage * 0.2f, gridMap); // Retaliation is less effective
+                
+                // Visual Feedback for Retaliation (Victim hits back!)
+                // The victim is attacking US (the attacker).
+                // Direction is -dx, -dy relative to the victim.
+                victim.LastAttackDirX = (sbyte)-dx;
+                victim.LastAttackDirY = (sbyte)-dy;
+                victim.AttackVisualTimer = 15;
             }
         }
         // Removed Death Bonus (Double Dipping Loop). You eat what you kill via the damage dealt above.
         // If they die, they die. No extra candy.
+
+        // Visual Feedback for Attacker
+        LastAttackDirX = (sbyte)dx;
+        LastAttackDirY = (sbyte)dy;
+        AttackVisualTimer = 15;
+
         return true;
     }
 }
