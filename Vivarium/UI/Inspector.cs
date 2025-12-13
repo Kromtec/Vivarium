@@ -27,13 +27,10 @@ public class Inspector
     // Layout Settings
     private Rectangle _panelRect;
     private int _cursorY;
-    private const int Padding = 15;
-    private const int LineHeight = 22;
-    private const int HighlightBorderThickness = 1;
-
-    // Colors (Modern Palette)
-    private readonly Color _panelBgColor = new Color(30, 30, 35, 230); // Dark Slate, semi-transparent
-    private readonly Color _borderColor = new Color(60, 60, 70);
+    
+    // Colors (Modern Palette) - Now using UITheme
+    // private readonly Color _panelBgColor = new Color(30, 30, 35, 230); 
+    // private readonly Color _borderColor = new Color(60, 60, 70);
     private readonly Color _labelColor = new Color(180, 180, 190);     // Light Grey
     private readonly Color _valueColor = Color.White;
     private readonly Color _headerColor = new Color(100, 200, 255);    // Soft Cyan
@@ -123,7 +120,7 @@ public class Inspector
 
         // 1. Build Command List & Calculate Height
         _elements.Clear();
-        int contentHeight = Padding;
+        int contentHeight = UITheme.Padding;
 
         // --- HEADER ---
         AddHeader($"{SelectedType.ToString().ToUpper()}", ref contentHeight);
@@ -149,13 +146,13 @@ public class Inspector
                         AddRow("Generation", $"{agent.Generation}", ref contentHeight);
                         AddRow("Diet", $"{agent.Diet}", ref contentHeight);
                         AddRow("Age", $"{agent.Age:F0} t | {agent.Age / VivariumGame.FramesPerSecond:F0} s", ref contentHeight);
-                        AddProgressBar("Energy", agent.Energy, agent.MaxEnergy, Color.Lerp(Color.Red, Color.Lime, agent.Energy / agent.MaxEnergy), ref contentHeight);
-                        AddProgressBar("Hunger", agent.Hunger, 100f, Color.Lerp(Color.Lime, Color.Red, agent.Hunger / 100f), ref contentHeight);
+                        AddProgressBar("Energy", agent.Energy, agent.MaxEnergy, Color.Lerp(UITheme.BadColor, UITheme.GoodColor, agent.Energy / agent.MaxEnergy), ref contentHeight);
+                        AddProgressBar("Hunger", agent.Hunger, 100f, Color.Lerp(UITheme.GoodColor, UITheme.BadColor, agent.Hunger / 100f), ref contentHeight);
 
                         // Cooldowns
                         AddSeparator(ref contentHeight);
                         AddHeader("COOLDOWNS", ref contentHeight);
-                        AddProgressBar("Attack", agent.AttackCooldown, 60f, Color.Orange, ref contentHeight);
+                        AddProgressBar("Attack", agent.AttackCooldown, 60f, UITheme.WarningColor, ref contentHeight);
                         AddProgressBar("Move", agent.MovementCooldown, 5f, Color.LightBlue, ref contentHeight);
                         AddProgressBar("Breed", agent.ReproductionCooldown, 600f, Color.Pink, ref contentHeight);
 
@@ -193,7 +190,7 @@ public class Inspector
                     }
                     else
                     {
-                        AddHeader("STATUS: DECEASED", ref contentHeight, Color.Red);
+                        AddHeader("STATUS: DECEASED", ref contentHeight, UITheme.BadColor);
                     }
                 }
                 break;
@@ -207,12 +204,12 @@ public class Inspector
                     {
                         AddRow("ID", $"#{plant.Id}", ref contentHeight);
                         AddRow("Age", $"{plant.Age:F0} t | {plant.Age / VivariumGame.FramesPerSecond:F0} s", ref contentHeight);
-                        AddProgressBar("Energy", plant.Energy, 100f, Color.Green, ref contentHeight);
+                        AddProgressBar("Energy", plant.Energy, 100f, UITheme.GoodColor, ref contentHeight);
                         AddRow("Status", plant.Age < Plant.MaturityAge ? "Growing" : "Mature", ref contentHeight);
                     }
                     else
                     {
-                        AddHeader("STATUS: WITHERED", ref contentHeight, Color.Red);
+                        AddHeader("STATUS: WITHERED", ref contentHeight, UITheme.BadColor);
                     }
                 }
                 break;
@@ -230,27 +227,27 @@ public class Inspector
                     }
                     else
                     {
-                        AddHeader("STATUS: ERROR", ref contentHeight, Color.Red);
+                        AddHeader("STATUS: ERROR", ref contentHeight, UITheme.BadColor);
                     }
                 }
                 break;
         }
 
-        contentHeight += Padding;
+        contentHeight += UITheme.Padding;
 
         // 2. Set Height & Draw Background
         // Fixed panel position (Top Right), height is dynamic
         _panelRect = new Rectangle(_graphics.Viewport.Width - 20 - 280, 20, 280, contentHeight);
 
         // Shadow & Bg
-        spriteBatch.Draw(_pixelTexture, new Rectangle(_panelRect.X + 4, _panelRect.Y + 4, _panelRect.Width, _panelRect.Height), Color.Black * 0.5f);
-        spriteBatch.Draw(_pixelTexture, _panelRect, _panelBgColor);
+        spriteBatch.Draw(_pixelTexture, new Rectangle(_panelRect.X + UITheme.ShadowOffset, _panelRect.Y + UITheme.ShadowOffset, _panelRect.Width, _panelRect.Height), UITheme.ShadowColor);
+        spriteBatch.Draw(_pixelTexture, _panelRect, UITheme.PanelBgColor);
 
         // Border
-        DrawBorder(spriteBatch, _panelRect, 1, _borderColor);
+        DrawBorder(spriteBatch, _panelRect, UITheme.BorderThickness, UITheme.BorderColor);
 
         // 3. Execute Commands
-        _cursorY = _panelRect.Y + Padding; // Reset cursor for drawing
+        _cursorY = _panelRect.Y + UITheme.Padding; // Reset cursor for drawing
         foreach (var cmd in _elements)
         {
             cmd.Draw(this, spriteBatch);
@@ -262,7 +259,7 @@ public class Inspector
 
     private void AddHeader(string text, ref int currentHeight, Color? color = null)
     {
-        var e = new HeaderElement(text, color ?? _headerColor);
+        var e = new HeaderElement(text, color ?? UITheme.HeaderColor);
         _elements.Add(e);
         currentHeight += e.Height;
     }
@@ -302,12 +299,12 @@ public class Inspector
         if (!IsEntitySelected) return;
 
         Vector2 cellCenter = new Vector2(
-            (SelectedGridPos.X * cellSize) + (cellSize / 2.0f) + HighlightBorderThickness,
-            (SelectedGridPos.Y * cellSize) + (cellSize / 2.0f) + HighlightBorderThickness
+            (SelectedGridPos.X * cellSize) + (cellSize / 2.0f) + 1,
+            (SelectedGridPos.Y * cellSize) + (cellSize / 2.0f) + 1
         );
 
         float pulse = ((float)Math.Sin(totalTime * 10f) * 0.2f) + 1.0f;
-        float currentSize = (cellSize * pulse) + (HighlightBorderThickness * 2);
+        float currentSize = (cellSize * pulse) + (1 * 2);
         float halfSize = currentSize / 2.0f;
 
         Rectangle r = new Rectangle(
@@ -317,7 +314,7 @@ public class Inspector
             (int)currentSize
         );
 
-        DrawBorder(spriteBatch, r, HighlightBorderThickness, Color.Gold);
+        DrawBorder(spriteBatch, r, 1, Color.Gold);
     }
 
     private void DrawBorder(SpriteBatch sb, Rectangle r, int thickness, Color c)
@@ -353,20 +350,20 @@ public class Inspector
         public int Height => 27; // LineHeight + 5
         public void Draw(Inspector ctx, SpriteBatch sb)
         {
-            sb.DrawString(ctx._font, text, new Vector2(ctx._panelRect.X + Padding, ctx._cursorY), color);
+            sb.DrawString(ctx._font, text, new Vector2(ctx._panelRect.X + UITheme.Padding, ctx._cursorY), color);
         }
     }
 
     private readonly struct RowElement(string label, string value) : IInspectorElement
     {
-        public int Height => LineHeight;
+        public int Height => UITheme.LineHeight;
         public void Draw(Inspector ctx, SpriteBatch sb)
         {
-            int leftX = ctx._panelRect.X + Padding;
-            int rightX = ctx._panelRect.X + ctx._panelRect.Width - Padding;
-            sb.DrawString(ctx._font, label, new Vector2(leftX, ctx._cursorY), ctx._labelColor);
+            int leftX = ctx._panelRect.X + UITheme.Padding;
+            int rightX = ctx._panelRect.X + ctx._panelRect.Width - UITheme.Padding;
+            sb.DrawString(ctx._font, label, new Vector2(leftX, ctx._cursorY), UITheme.TextColorSecondary);
             Vector2 valSize = ctx._font.MeasureString(value);
-            sb.DrawString(ctx._font, value, new Vector2(rightX - valSize.X, ctx._cursorY), ctx._valueColor);
+            sb.DrawString(ctx._font, value, new Vector2(rightX - valSize.X, ctx._cursorY), UITheme.TextColorPrimary);
         }
     }
 
@@ -377,21 +374,21 @@ public class Inspector
         {
             // Center roughly
             int y = ctx._cursorY + 5;
-            sb.Draw(ctx._pixelTexture, new Rectangle(ctx._panelRect.X + Padding, y, ctx._panelRect.Width - (Padding * 2), 1), ctx._borderColor);
+            sb.Draw(ctx._pixelTexture, new Rectangle(ctx._panelRect.X + UITheme.Padding, y, ctx._panelRect.Width - (UITheme.Padding * 2), 1), UITheme.BorderColor);
         }
     }
 
     private readonly struct ProgressBarElement(string label, float value, float max, Color color) : IInspectorElement
     {
-        public int Height => LineHeight;
+        public int Height => UITheme.LineHeight;
         public void Draw(Inspector ctx, SpriteBatch sb)
         {
-            int leftX = ctx._panelRect.X + Padding;
-            int rightX = ctx._panelRect.X + ctx._panelRect.Width - Padding;
+            int leftX = ctx._panelRect.X + UITheme.Padding;
+            int rightX = ctx._panelRect.X + ctx._panelRect.Width - UITheme.Padding;
             int barWidth = 100;
             int barHeight = 12;
 
-            sb.DrawString(ctx._font, label, new Vector2(leftX, ctx._cursorY), ctx._labelColor);
+            sb.DrawString(ctx._font, label, new Vector2(leftX, ctx._cursorY), UITheme.TextColorSecondary);
 
             Rectangle barBg = new Rectangle(rightX - barWidth, ctx._cursorY + 4, barWidth, barHeight);
             sb.Draw(ctx._pixelTexture, barBg, Color.Black * 0.5f);
@@ -404,16 +401,16 @@ public class Inspector
 
     private readonly struct BrainBarElement(string label, float value, bool positiveOnly) : IInspectorElement
     {
-        public int Height => LineHeight;
+        public int Height => UITheme.LineHeight;
         public void Draw(Inspector ctx, SpriteBatch sb)
         {
-            int leftX = ctx._panelRect.X + Padding;
-            int rightX = ctx._panelRect.X + ctx._panelRect.Width - Padding;
+            int leftX = ctx._panelRect.X + UITheme.Padding;
+            int rightX = ctx._panelRect.X + ctx._panelRect.Width - UITheme.Padding;
             int barWidth = 100;
             int barHeight = 10;
             int barY = ctx._cursorY + 5;
 
-            sb.DrawString(ctx._font, label, new Vector2(leftX, ctx._cursorY), ctx._labelColor);
+            sb.DrawString(ctx._font, label, new Vector2(leftX, ctx._cursorY), UITheme.TextColorSecondary);
 
             Rectangle bgRect = new Rectangle(rightX - barWidth, barY, barWidth, barHeight);
             sb.Draw(ctx._pixelTexture, bgRect, Color.Black * 0.5f);
@@ -421,7 +418,7 @@ public class Inspector
             if (positiveOnly)
             {
                 float pct = Math.Clamp(value, 0f, 1f);
-                sb.Draw(ctx._pixelTexture, new Rectangle(bgRect.X, barY, (int)(barWidth * pct), barHeight), Color.YellowGreen);
+                sb.Draw(ctx._pixelTexture, new Rectangle(bgRect.X, barY, (int)(barWidth * pct), barHeight), UITheme.GoodColor);
             }
             else
             {

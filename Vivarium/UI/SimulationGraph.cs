@@ -22,6 +22,11 @@ public class SimulationGraph
         _bounds = bounds;
     }
 
+    public void SetBounds(Rectangle bounds)
+    {
+        _bounds = bounds;
+    }
+
     public void LoadContent(GraphicsDevice graphicsDevice)
     {
         _pixelTexture = new Texture2D(graphicsDevice, 1, 1);
@@ -46,18 +51,20 @@ public class SimulationGraph
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        if (_agentHistory.Count < 2) return;
+        // Draw Graph Background (Darker slot)
+        spriteBatch.Draw(_pixelTexture, _bounds, Color.Black * 0.3f);
 
-        spriteBatch.Draw(_pixelTexture, _bounds, Color.Black * 0.5f);
+        if (_agentHistory.Count < 2) return;
 
         float maxVal = Math.Max(_agentHistory.Max(), _plantHistory.Max());
         if (maxVal < 10) maxVal = 10;
 
-        DrawSeries(spriteBatch, _plantHistory, Color.LimeGreen, maxVal);
-        DrawSeries(spriteBatch, _agentHistory, Color.Silver, maxVal);
+        DrawSeries(spriteBatch, _plantHistory, Vivarium.Visuals.VivariumColors.Plant, maxVal);
+        DrawSeries(spriteBatch, _agentHistory, Vivarium.Visuals.VivariumColors.Agent, maxVal);
 
-        DrawLine(spriteBatch, new Vector2(_bounds.Left, _bounds.Top), new Vector2(_bounds.Left, _bounds.Bottom), Color.White);
-        DrawLine(spriteBatch, new Vector2(_bounds.Left, _bounds.Bottom), new Vector2(_bounds.Right, _bounds.Bottom), Color.White);
+        // Draw Axes
+        DrawLine(spriteBatch, new Vector2(_bounds.Left, _bounds.Top), new Vector2(_bounds.Left, _bounds.Bottom), UITheme.BorderColor);
+        DrawLine(spriteBatch, new Vector2(_bounds.Left, _bounds.Bottom), new Vector2(_bounds.Right, _bounds.Bottom), UITheme.BorderColor);
     }
 
     private void DrawSeries(SpriteBatch spriteBatch, Queue<float> data, Color color, float maxValue)

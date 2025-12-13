@@ -55,6 +55,7 @@ public class VivariumGame : Game
 
     private Camera2D _camera;
     private Inspector _inspector;
+    private HUD _hud;
     private SpriteFont _sysFont;
     private SimulationGraph _simGraph;
 
@@ -237,6 +238,7 @@ public class VivariumGame : Game
 
         _inspector = new Inspector(GraphicsDevice, _sysFont);
         _simGraph.LoadContent(GraphicsDevice);
+        _hud = new HUD(GraphicsDevice, _sysFont, _simGraph);
     }
 
     protected override void Update(GameTime gameTime)
@@ -486,20 +488,8 @@ public class VivariumGame : Game
             // No Matrix here! 
         );
 
-        // We pass the raw arrays so the inspector can look up the data by index
-        _simGraph.Draw(_spriteBatch);
-
-        // Deterministic Timer Display
-        TimeSpan simTime = TimeSpan.FromSeconds(_tickCount / FramesPerSecond);
-        string timeString = $"Time: {simTime:hh\\:mm\\:ss} | T: {_tickCount, 8}";
-        _spriteBatch.DrawString(_sysFont, timeString, new Vector2(25, 5), Color.White);
-
-        _spriteBatch.DrawString(_sysFont, $"Agents: {livingAgents,20}", new Vector2(25, 130), VivariumColors.Agent);
-        _spriteBatch.DrawString(_sysFont, $"-Herbivore: {livingHerbivore,16}", new Vector2(25, 150), VivariumColors.Herbivore);
-        _spriteBatch.DrawString(_sysFont, $"-Omnivore: {livingOmnivore,17}", new Vector2(25, 170), VivariumColors.Omnivore);
-        _spriteBatch.DrawString(_sysFont, $"-Carnivore: {livingCarnivore,16}", new Vector2(25, 190), VivariumColors.Carnivore);
-        _spriteBatch.DrawString(_sysFont, $"Plants: {livingPlants,20}", new Vector2(25, 210), VivariumColors.Plant);
-        _spriteBatch.DrawString(_sysFont, $"Structures: {livingStructures,16}", new Vector2(25, 230), VivariumColors.Structure);
+        // Draw HUD (Graph, Stats, Timer)
+        _hud.Draw(_spriteBatch, _tickCount, livingAgents, livingHerbivore, livingOmnivore, livingCarnivore, livingPlants, livingStructures);
 
         _inspector.DrawUI(_spriteBatch, _agentPopulation, _plantPopulation, _structurePopulation);
 

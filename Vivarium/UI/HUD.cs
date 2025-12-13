@@ -1,0 +1,125 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Vivarium.Visuals;
+
+namespace Vivarium.UI;
+
+public class HUD
+{
+    private readonly GraphicsDevice _graphics;
+    private readonly SpriteFont _font;
+    private readonly Texture2D _pixelTexture;
+    private readonly SimulationGraph _simGraph;
+
+    private Rectangle _panelRect;
+    private int _cursorY;
+
+    public HUD(GraphicsDevice graphics, SpriteFont font, SimulationGraph simGraph)
+    {
+        _graphics = graphics;
+        _font = font;
+        _simGraph = simGraph;
+        
+        _pixelTexture = new Texture2D(graphics, 1, 1);
+        _pixelTexture.SetData(new[] { Color.White });
+    }
+
+    public void Draw(SpriteBatch spriteBatch, long tickCount, int agents, int herbs, int omnis, int carnis, int plants, int structures)
+    {
+        // 1. Calculate Layout
+        int width = 300;
+        int startX = 20;
+        int startY = 20;
+        int contentHeight = UITheme.Padding;
+
+        // We simulate the drawing pass first to get height? 
+        // Or just hardcode/calculate it dynamically. 
+        // Let's just draw the background last? No, background needs to be behind.
+        // We can calculate height easily:
+        // Header (27) + Timer (24) + Graph (120) + Stats Header (27) + 6 lines (24*6) + Padding
+        
+        // Let's do a dynamic approach where we draw the panel background based on a fixed or calculated size.
+        // Since the graph is fixed size, we can estimate.
+        
+        int graphHeight = 100;
+        int graphPadding = 10;
+        
+        // Header + Time
+        contentHeight += 30; // Title
+        contentHeight += UITheme.LineHeight; // Time
+        
+        // Graph Area
+        contentHeight += graphPadding;
+        contentHeight += graphHeight;
+        contentHeight += graphPadding;
+        
+        // Stats
+        contentHeight += 30; // "Population"
+        contentHeight += UITheme.LineHeight * 6; // 6 stat lines
+        contentHeight += UITheme.Padding;
+
+        _panelRect = new Rectangle(startX, startY, width, contentHeight);
+
+        // 2. Draw Panel Background
+        // Shadow
+        spriteBatch.Draw(_pixelTexture, new Rectangle(_panelRect.X + UITheme.ShadowOffset, _panelRect.Y + UITheme.ShadowOffset, _panelRect.Width, _panelRect.Height), UITheme.ShadowColor);
+        // Bg
+        spriteBatch.Draw(_pixelTexture, _panelRect, UITheme.PanelBgColor);
+        // Border
+        DrawBorder(spriteBatch, _panelRect, UITheme.BorderThickness, UITheme.BorderColor);
+
+        // 3. Draw Content
+        _cursorY = _panelRect.Y + UITheme.Padding;
+        int leftX = _panelRect.X + UITheme.Padding;
+        int rightX = _panelRect.X + _panelRect.Width - UITheme.Padding;
+
+        // -- TITLE --
+        spriteBatch.DrawString(_font, "SIMULATION STATUS", new Vector2(leftX, _cursorY), UITheme.HeaderColor);
+        _cursorY += 30;
+
+        // -- TIME --
+        System.TimeSpan simTime = System.TimeSpan.FromSeconds(tickCount / VivariumGame.FramesPerSecond);
+        string timeString = $"{simTime:hh\\:mm\\:ss}";
+        string tickString = $"T: {tickCount}";
+        
+        spriteBatch.DrawString(_font, "Time Elapsed", new Vector2(leftX, _cursorY), UITheme.TextColorSecondary);
+        Vector2 timeSize = _font.MeasureString(timeString);
+        spriteBatch.DrawString(_font, timeString, new Vector2(rightX - timeSize.X, _cursorY), UITheme.TextColorPrimary);
+        _cursorY += UITheme.LineHeight;
+
+        // -- GRAPH --
+        _cursorY += graphPadding;
+        // Update graph bounds to fit inside our panel
+        Rectangle graphBounds = new Rectangle(leftX, _cursorY, _panelRect.Width - (UITheme.Padding * 2), graphHeight);
+        _simGraph.SetBounds(graphBounds);
+        _simGraph.Draw(spriteBatch);
+        _cursorY += graphHeight + graphPadding;
+
+        // -- POPULATION STATS --
+        spriteBatch.DrawString(_font, "POPULATION", new Vector2(leftX, _cursorY), UITheme.HeaderColor);
+        _cursorY += 30;
+
+        DrawStatRow(spriteBatch, "Total Agents", agents.ToString(), VivariumColors.Agent, leftX, rightX);
+        DrawStatRow(spriteBatch, "  Herbivores", herbs.ToString(), VivariumColors.Herbivore, leftX, rightX);
+        DrawStatRow(spriteBatch, "  Omnivores", omnis.ToString(), VivariumColors.Omnivore, leftX, rightX);
+        DrawStatRow(spriteBatch, "  Carnivores", carnis.ToString(), VivariumColors.Carnivore, leftX, rightX);
+        DrawStatRow(spriteBatch, "Plants", plants.ToString(), VivariumColors.Plant, leftX, rightX);
+        DrawStatRow(spriteBatch, "Structures", structures.ToString(), VivariumColors.Structure, leftX, rightX);
+    }
+
+    private void DrawStatRow(SpriteBatch sb, string label, string value, Color valueColor, int leftX, int rightX)
+    {
+        sb.DrawString(_font, label, new Vector2(leftX, _cursorY), UITheme.TextColorSecondary);
+        Vector2 valSize = _font.MeasureString(value);
+        sb.DrawString(_font, value, new Vector2(rightX - valSize.X, _cursorY), valueColor);
+        _cursorY += UITheme.LineHeight;
+    }
+
+    private void DrawBorder(SpriteBatch sb, Rectangle r, int thickness, Color c)
+    {
+        sb.Draw(_pixelTexture, new Rectangle(r.X, r.Y, r.Width, thickness), c); // Top
+        sb.Draw(_pixelTexture, new Rectangle(r.X, r.Y + r.Height - thickness, r.Width, thickness), c); // Bottom
+        sb.Draw(_pixelTexture, new Rectangle(r.X, r.Y, thickness, r.Height), c); // Left
+        sb.Draw(_pixelTexture, new Rectangle(r.X + r.Width - thickness, r.Y, thickness, r.Height), c); // Right
+    }
+}
