@@ -60,12 +60,12 @@ public static class GenomeHelper
         // Added TrophicBias back to have 7 traits for the new layout
         float[] traits = new float[] {
             agent.Strength,
-            agent.Speed,
-            agent.Perception,
-            agent.MetabolicEfficiency,
             agent.Bravery,
-            agent.Constitution,
-            agent.TrophicBias
+            agent.MetabolicEfficiency,
+            agent.Perception,
+            agent.Speed,
+            agent.TrophicBias,
+            agent.Constitution
         };
 
         float amplitude = (height / 2f) - 16; // More padding
@@ -123,7 +123,7 @@ public static class GenomeHelper
             float yEnd = y2 - (dir * gapSize);
 
             // Draw rounded bond (Capsule)
-            int bondRadius = 3; // 6px width
+            int bondRadius = 4; // Increased width to ensure consistent rendering
             DrawVerticalCapsule(colors, width, height, x, (int)y1, (int)yEnd, bondColor, bondRadius);
         }
 

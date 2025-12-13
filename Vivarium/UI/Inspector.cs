@@ -31,6 +31,10 @@ public class Inspector
     // Deferred Layout List
     private readonly List<IInspectorElement> _elements = new List<IInspectorElement>();
 
+    // Cached Genome Texture
+    private Texture2D _cachedGenomeTexture;
+    private long _cachedGenomeAgentId = -1;
+
     public Inspector(GraphicsDevice graphics, SpriteFont font)
     {
         _graphics = graphics;
@@ -145,26 +149,28 @@ public class Inspector
                         AddRow("Generation", $"{agent.Generation}", ref contentHeight);
                         AddRow("Diet", $"{agent.Diet}", ref contentHeight);
                         AddRow("Age", $"{agent.Age:F0} t | {agent.Age / VivariumGame.FramesPerSecond:F0} s", ref contentHeight);
+                        
+                        // Genome Visualization
+                        UpdateCachedGenomeTexture(agent);
+                        if (_cachedGenomeTexture != null)
+                        {
+                            // Draw at native resolution (256x128) to avoid scaling artifacts
+                            AddTexture(_cachedGenomeTexture, 256, 128, ref contentHeight);
+                        }
+
                         AddProgressBar("Energy", agent.Energy, agent.MaxEnergy, Color.Lerp(UITheme.BadColor, UITheme.GoodColor, agent.Energy / agent.MaxEnergy), ref contentHeight);
                         AddProgressBar("Hunger", agent.Hunger, 100f, Color.Lerp(UITheme.GoodColor, UITheme.BadColor, agent.Hunger / 100f), ref contentHeight);
-
-                        // Cooldowns
-                        AddSeparator(ref contentHeight);
-                        AddHeader("COOLDOWNS", ref contentHeight);
-                        AddProgressBar("Attack", agent.AttackCooldown, 60f, UITheme.WarningColor, ref contentHeight);
-                        AddProgressBar("Move", agent.MovementCooldown, 5f, Color.LightBlue, ref contentHeight);
-                        AddProgressBar("Breed", agent.ReproductionCooldown, 600f, Color.Pink, ref contentHeight);
 
                         // Traits
                         AddSeparator(ref contentHeight);
                         AddHeader("TRAITS", ref contentHeight);
                         AddBrainBar(nameof(TraitType.Strength), agent.Strength, false, ref contentHeight);
-                        AddBrainBar(nameof(TraitType.Constitution), agent.Constitution, false, ref contentHeight);
                         AddBrainBar(nameof(TraitType.Bravery), agent.Bravery, false, ref contentHeight);
                         AddBrainBar("Metabolism", agent.MetabolicEfficiency, false, ref contentHeight);
                         AddBrainBar(nameof(TraitType.Perception), agent.Perception, false, ref contentHeight);
                         AddBrainBar(nameof(TraitType.Speed), agent.Speed, false, ref contentHeight);
-                        AddBrainBar("Carni <-> Herbi", agent.TrophicBias, false, ref contentHeight);
+                        AddBrainBar("Trophic Bias", agent.TrophicBias, false, ref contentHeight);
+                        AddBrainBar(nameof(TraitType.Constitution), agent.Constitution, false, ref contentHeight);
 
                         // Inputs (Sensors)
                         AddSeparator(ref contentHeight);
@@ -186,6 +192,13 @@ public class Inspector
                         AddBrainBar("Reproduce", GetActionVal(ref agent, ActionType.Reproduce), true, ref contentHeight);
                         AddBrainBar("Flee", GetActionVal(ref agent, ActionType.Flee), true, ref contentHeight);
                         AddBrainBar("Suicide", GetActionVal(ref agent, ActionType.Suicide), true, ref contentHeight);
+
+                        // Cooldowns
+                        AddSeparator(ref contentHeight);
+                        AddHeader("COOLDOWNS", ref contentHeight);
+                        AddProgressBar("Attack", agent.AttackCooldown, 60f, UITheme.WarningColor, ref contentHeight);
+                        AddProgressBar("Move", agent.MovementCooldown, 5f, Color.LightBlue, ref contentHeight);
+                        AddProgressBar("Breed", agent.ReproductionCooldown, 600f, Color.Pink, ref contentHeight);
                     }
                     else
                     {
@@ -236,7 +249,7 @@ public class Inspector
 
         // 2. Set Height & Draw Background
         // Fixed panel position (Top Right), height is dynamic
-        _panelRect = new Rectangle(_graphics.Viewport.Width - 20 - 280, 20, 280, contentHeight);
+        _panelRect = new Rectangle(_graphics.Viewport.Width - 20 - 300, 20, 300, contentHeight);
 
         // Shadow & Bg
         spriteBatch.Draw(_pixelTexture, new Rectangle(_panelRect.X + UITheme.ShadowOffset, _panelRect.Y + UITheme.ShadowOffset, _panelRect.Width, _panelRect.Height), UITheme.ShadowColor);
@@ -256,11 +269,30 @@ public class Inspector
 
     // --- BUILDER METHODS ---
 
-    private void AddHeader(string text, ref int currentHeight, Color? color = null)
+    private void UpdateCachedGenomeTexture(Agent agent)
+    {
+        if (_cachedGenomeAgentId != agent.Id)
+        {
+            // Dispose old texture if it exists
+            _cachedGenomeTexture?.Dispose();
+            
+            // Generate new texture
+            _cachedGenomeTexture = GenomeHelper.GenerateHelixTexture(_graphics, agent);
+            _cachedGenomeAgentId = agent.Id;
+        }
+    }
+
+    private void AddTexture(Texture2D texture, int width, int height, ref int currentY)
+    {
+        _elements.Add(new TextureElement(texture, width, height, currentY));
+        currentY += height + UITheme.Padding;
+    }
+
+    private void AddHeader(string text, ref int currentY, Color? color = null)
     {
         var e = new HeaderElement(text, color ?? UITheme.HeaderColor);
         _elements.Add(e);
-        currentHeight += e.Height;
+        currentY += e.Height;
     }
 
     private void AddRow(string label, string value, ref int currentHeight)
@@ -316,99 +348,175 @@ public class Inspector
     private interface IInspectorElement
     {
         int Height { get; }
-        void Draw(Inspector context, SpriteBatch sb);
+        void Draw(Inspector inspector, SpriteBatch sb);
     }
 
-    private readonly struct HeaderElement(string text, Color color) : IInspectorElement
+    private class TextureElement : IInspectorElement
     {
+        private readonly Texture2D _texture;
+        private readonly int _width;
+        private readonly int _height;
+        private readonly int _y;
+
+        public int Height => _height + UITheme.Padding;
+
+        public TextureElement(Texture2D texture, int width, int height, int y)
+        {
+            _texture = texture;
+            _width = width;
+            _height = height;
+            _y = y;
+        }
+
+        public void Draw(Inspector inspector, SpriteBatch sb)
+        {
+            int x = inspector._panelRect.X + (inspector._panelRect.Width - _width) / 2; // Center
+            int y = inspector._cursorY;
+
+            // Use PointClamp for pixel art scaling
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
+            
+            sb.Draw(_texture, new Rectangle(x, y, _width, _height), Color.White);
+            
+            sb.End();
+            sb.Begin(); // Restart default batch
+        }
+    }
+
+    private class HeaderElement : IInspectorElement
+    {
+        private readonly string _text;
+        private readonly Color _color;
+
+        public HeaderElement(string text, Color color)
+        {
+            _text = text;
+            _color = color;
+        }
+
         public int Height => 27; // LineHeight + 5
-        public void Draw(Inspector ctx, SpriteBatch sb)
+
+        public void Draw(Inspector inspector, SpriteBatch sb)
         {
-            sb.DrawString(ctx._font, text, new Vector2(ctx._panelRect.X + UITheme.Padding, ctx._cursorY), color);
+            sb.DrawString(inspector._font, _text, new Vector2(inspector._panelRect.X + UITheme.Padding, inspector._cursorY), _color);
         }
     }
 
-    private readonly struct RowElement(string label, string value) : IInspectorElement
+    private class RowElement : IInspectorElement
     {
-        public int Height => UITheme.LineHeight;
-        public void Draw(Inspector ctx, SpriteBatch sb)
+        private readonly string _label;
+        private readonly string _value;
+
+        public RowElement(string label, string value)
         {
-            int leftX = ctx._panelRect.X + UITheme.Padding;
-            int rightX = ctx._panelRect.X + ctx._panelRect.Width - UITheme.Padding;
-            sb.DrawString(ctx._font, label, new Vector2(leftX, ctx._cursorY), UITheme.TextColorSecondary);
-            Vector2 valSize = ctx._font.MeasureString(value);
-            sb.DrawString(ctx._font, value, new Vector2(rightX - valSize.X, ctx._cursorY), UITheme.TextColorPrimary);
+            _label = label;
+            _value = value;
+        }
+
+        public int Height => UITheme.LineHeight;
+
+        public void Draw(Inspector inspector, SpriteBatch sb)
+        {
+            int leftX = inspector._panelRect.X + UITheme.Padding;
+            int rightX = inspector._panelRect.X + inspector._panelRect.Width - UITheme.Padding;
+            sb.DrawString(inspector._font, _label, new Vector2(leftX, inspector._cursorY), UITheme.TextColorSecondary);
+            Vector2 valSize = inspector._font.MeasureString(_value);
+            sb.DrawString(inspector._font, _value, new Vector2(rightX - valSize.X, inspector._cursorY), UITheme.TextColorPrimary);
         }
     }
 
-    private readonly struct SeparatorElement : IInspectorElement
+    private class SeparatorElement : IInspectorElement
     {
         public int Height => 15; // 5 + 10
-        public void Draw(Inspector ctx, SpriteBatch sb)
+        public void Draw(Inspector inspector, SpriteBatch sb)
         {
             // Center roughly
-            int y = ctx._cursorY + 5;
-            sb.Draw(ctx._pixelTexture, new Rectangle(ctx._panelRect.X + UITheme.Padding, y, ctx._panelRect.Width - (UITheme.Padding * 2), 1), UITheme.BorderColor);
+            int y = inspector._cursorY + 5;
+            sb.Draw(inspector._pixelTexture, new Rectangle(inspector._panelRect.X + UITheme.Padding, y, inspector._panelRect.Width - (UITheme.Padding * 2), 1), UITheme.BorderColor);
         }
     }
 
-    private readonly struct ProgressBarElement(string label, float value, float max, Color color) : IInspectorElement
+    private class ProgressBarElement : IInspectorElement
     {
-        public int Height => UITheme.LineHeight;
-        public void Draw(Inspector ctx, SpriteBatch sb)
+        private readonly string _label;
+        private readonly float _value;
+        private readonly float _max;
+        private readonly Color _color;
+
+        public ProgressBarElement(string label, float value, float max, Color color)
         {
-            int leftX = ctx._panelRect.X + UITheme.Padding;
-            int rightX = ctx._panelRect.X + ctx._panelRect.Width - UITheme.Padding;
+            _label = label;
+            _value = value;
+            _max = max;
+            _color = color;
+        }
+
+        public int Height => UITheme.LineHeight;
+
+        public void Draw(Inspector inspector, SpriteBatch sb)
+        {
+            int leftX = inspector._panelRect.X + UITheme.Padding;
+            int rightX = inspector._panelRect.X + inspector._panelRect.Width - UITheme.Padding;
             int barWidth = 100;
-            int barHeight = 12;
+            int barX = rightX - barWidth;
 
-            sb.DrawString(ctx._font, label, new Vector2(leftX, ctx._cursorY), UITheme.TextColorSecondary);
+            sb.DrawString(inspector._font, _label, new Vector2(leftX, inspector._cursorY), UITheme.TextColorSecondary);
 
-            Rectangle barBg = new Rectangle(rightX - barWidth, ctx._cursorY + 4, barWidth, barHeight);
-            sb.Draw(ctx._pixelTexture, barBg, Color.Black * 0.5f);
-
-            float pct = Math.Clamp(value / max, 0f, 1f);
-            Rectangle barFill = new Rectangle(rightX - barWidth, ctx._cursorY + 4, (int)(barWidth * pct), barHeight);
-            sb.Draw(ctx._pixelTexture, barFill, color);
+            // Bg
+            sb.Draw(inspector._pixelTexture, new Rectangle(barX, inspector._cursorY + 5, barWidth, 10), Color.Black * 0.5f);
+            
+            // Fill
+            float ratio = Math.Clamp(_value / _max, 0f, 1f);
+            sb.Draw(inspector._pixelTexture, new Rectangle(barX, inspector._cursorY + 5, (int)(barWidth * ratio), 10), _color);
         }
     }
 
-    private readonly struct BrainBarElement(string label, float value, bool positiveOnly) : IInspectorElement
+    private class BrainBarElement : IInspectorElement
     {
-        public int Height => UITheme.LineHeight;
-        public void Draw(Inspector ctx, SpriteBatch sb)
+        private readonly string _label;
+        private readonly float _value;
+        private readonly bool _positiveOnly;
+
+        public BrainBarElement(string label, float value, bool positiveOnly)
         {
-            int leftX = ctx._panelRect.X + UITheme.Padding;
-            int rightX = ctx._panelRect.X + ctx._panelRect.Width - UITheme.Padding;
+            _label = label;
+            _value = value;
+            _positiveOnly = positiveOnly;
+        }
+
+        public int Height => UITheme.LineHeight;
+
+        public void Draw(Inspector inspector, SpriteBatch sb)
+        {
+            int leftX = inspector._panelRect.X + UITheme.Padding;
+            int rightX = inspector._panelRect.X + inspector._panelRect.Width - UITheme.Padding;
             int barWidth = 100;
-            int barHeight = 10;
-            int barY = ctx._cursorY + 5;
+            int barX = rightX - barWidth;
 
-            sb.DrawString(ctx._font, label, new Vector2(leftX, ctx._cursorY), UITheme.TextColorSecondary);
+            sb.DrawString(inspector._font, _label, new Vector2(leftX, inspector._cursorY), UITheme.TextColorSecondary);
 
-            Rectangle bgRect = new Rectangle(rightX - barWidth, barY, barWidth, barHeight);
-            sb.Draw(ctx._pixelTexture, bgRect, Color.Black * 0.5f);
+            // Bg
+            sb.Draw(inspector._pixelTexture, new Rectangle(barX, inspector._cursorY + 5, barWidth, 10), Color.Black * 0.5f);
 
-            if (positiveOnly)
+            int centerX = barX + (barWidth / 2);
+            
+            if (_positiveOnly)
             {
-                float pct = Math.Clamp(value, 0f, 1f);
-                sb.Draw(ctx._pixelTexture, new Rectangle(bgRect.X, barY, (int)(barWidth * pct), barHeight), UITheme.GoodColor);
+                // 0 to 1
+                float ratio = Math.Clamp(_value, 0f, 1f);
+                sb.Draw(inspector._pixelTexture, new Rectangle(barX, inspector._cursorY + 5, (int)(barWidth * ratio), 10), UITheme.GoodColor);
             }
             else
             {
-                int centerX = bgRect.X + (barWidth / 2);
-                sb.Draw(ctx._pixelTexture, new Rectangle(centerX, barY - 2, 1, barHeight + 4), Color.Gray);
-
-                float valClamped = Math.Clamp(value, -1f, 1f);
+                // -1 to 1
+                float valClamped = Math.Clamp(_value, -1f, 1f);
                 int fillWidth = (int)((barWidth / 2) * Math.Abs(valClamped));
+                
                 if (valClamped > 0)
-                {
-                    sb.Draw(ctx._pixelTexture, new Rectangle(centerX, barY, fillWidth, barHeight), Color.Cyan);
-                }
+                    sb.Draw(inspector._pixelTexture, new Rectangle(centerX, inspector._cursorY + 5, fillWidth, 10), UITheme.GoodColor);
                 else
-                {
-                    sb.Draw(ctx._pixelTexture, new Rectangle(centerX - fillWidth, barY, fillWidth, barHeight), Color.Magenta);
-                }
+                    sb.Draw(inspector._pixelTexture, new Rectangle(centerX - fillWidth, inspector._cursorY + 5, fillWidth, 10), Color.Magenta);
             }
         }
     }

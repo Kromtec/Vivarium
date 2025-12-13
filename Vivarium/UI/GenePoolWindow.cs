@@ -267,8 +267,8 @@ public class GenePoolWindow
             detailsY += 30;
 
             // Big Identicon (Helix)
-            // Original texture is 64x32. Let's scale it up 2x -> 128x64.
-            Rectangle bigIconRect = new Rectangle(detailsX, detailsY, 128, 64);
+            // Original texture is 256x128. Draw at native resolution for best quality.
+            Rectangle bigIconRect = new Rectangle(detailsX, detailsY, 256, 128);
             // Use PointClamp sampler state for pixel art scaling
             // We need to end the current batch and start a new one with PointClamp
             spriteBatch.End();
@@ -279,19 +279,26 @@ public class GenePoolWindow
             spriteBatch.End();
             spriteBatch.Begin(); // Restart default batch
 
+            // Border removed for cleaner look
+            // DrawBorder(spriteBatch, bigIconRect, 2, Agent.GetColorBasedOnDietType(g.Diet));
             
-            // Hash ID
-            spriteBatch.DrawString(_font, $"ID: {g.Hash:X}", new Vector2(detailsX + 140, detailsY), UITheme.TextColorSecondary);
-            spriteBatch.DrawString(_font, $"Diet: {g.Diet}", new Vector2(detailsX + 140, detailsY + 20), UITheme.TextColorPrimary);
+            // Move cursor below the icon
+            detailsY += 135;
+
+            // Hash ID & Diet
+            spriteBatch.DrawString(_font, $"ID: {g.Hash:X}", new Vector2(detailsX, detailsY), UITheme.TextColorSecondary);
+            detailsY += 20;
+            spriteBatch.DrawString(_font, $"Diet: {g.Diet}", new Vector2(detailsX, detailsY), UITheme.TextColorPrimary);
             
-            detailsY += 80;
+            detailsY += 30;
 
             // Traits
             DrawTraitBar(spriteBatch, "Strength", g.Representative.Strength, detailsX, ref detailsY);
-            DrawTraitBar(spriteBatch, "Speed", g.Representative.Speed, detailsX, ref detailsY);
-            DrawTraitBar(spriteBatch, "Perception", g.Representative.Perception, detailsX, ref detailsY);
-            DrawTraitBar(spriteBatch, "Metabolism", g.Representative.MetabolicEfficiency, detailsX, ref detailsY);
             DrawTraitBar(spriteBatch, "Bravery", g.Representative.Bravery, detailsX, ref detailsY);
+            DrawTraitBar(spriteBatch, "Metabolism", g.Representative.MetabolicEfficiency, detailsX, ref detailsY);
+            DrawTraitBar(spriteBatch, "Perception", g.Representative.Perception, detailsX, ref detailsY);
+            DrawTraitBar(spriteBatch, "Speed", g.Representative.Speed, detailsX, ref detailsY);
+            DrawTraitBar(spriteBatch, "Trophic Bias", g.Representative.TrophicBias, detailsX, ref detailsY);
             DrawTraitBar(spriteBatch, "Constitution", g.Representative.Constitution, detailsX, ref detailsY);
         }
         else
