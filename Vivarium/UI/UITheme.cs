@@ -16,6 +16,7 @@ public static class UITheme
     public static readonly Color GoodColor = new Color(100, 255, 100);      // Soft Green
     public static readonly Color WarningColor = new Color(255, 200, 50);    // Soft Orange
     public static readonly Color BadColor = new Color(255, 80, 80);         // Soft Red
+    public static readonly Color ButtonColor = new Color(50, 50, 60);       // Dark Grey Button
 
     // Layout
     public const int Padding = 15;

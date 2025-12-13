@@ -17,20 +17,15 @@ public class SimulationGraph
     private float _timer;
     private const float UpdateInterval = 0.1f;
 
-    public SimulationGraph(Rectangle bounds)
+    public SimulationGraph(GraphicsDevice graphicsDevice, SpriteFont font)
     {
-        _bounds = bounds;
+        _pixelTexture = new Texture2D(graphicsDevice, 1, 1);
+        _pixelTexture.SetData(new[] { Color.White });
     }
 
     public void SetBounds(Rectangle bounds)
     {
         _bounds = bounds;
-    }
-
-    public void LoadContent(GraphicsDevice graphicsDevice)
-    {
-        _pixelTexture = new Texture2D(graphicsDevice, 1, 1);
-        _pixelTexture.SetData(new[] { Color.White });
     }
 
     public void Update(GameTime gameTime, int agentCount, int plantCount)

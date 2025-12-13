@@ -48,6 +48,7 @@ public class VivariumGame : Game
     private Camera2D _camera;
     private Inspector _inspector;
     private HUD _hud;
+    private GenePoolWindow _genePoolWindow;
     private SpriteFont _sysFont;
     private SimulationGraph _simGraph;
     private WorldRenderer _worldRenderer;
@@ -109,7 +110,7 @@ public class VivariumGame : Game
         _camera.Zoom = Math.Max(initialZoom, _camera.MinZoom);
         _camera.CenterOnGrid(GridWidth, GridHeight, CellSize);
 
-        _simGraph = new SimulationGraph(new Rectangle(25, 25, 280, 100));
+        _simGraph = new SimulationGraph(GraphicsDevice, _sysFont);
 
         base.Initialize();
     }
@@ -235,52 +236,57 @@ public class VivariumGame : Game
         _sysFont = Content.Load<SpriteFont>("SystemFont");
 
         _inspector = new Inspector(GraphicsDevice, _sysFont);
-        _simGraph.LoadContent(GraphicsDevice);
-        _hud = new HUD(GraphicsDevice, _sysFont, _simGraph);
-
+        _simGraph = new SimulationGraph(GraphicsDevice, _sysFont);
+        _genePoolWindow = new GenePoolWindow(GraphicsDevice, _sysFont);
+        _hud = new HUD(GraphicsDevice, _sysFont, _simGraph, _genePoolWindow);
         _worldRenderer = new WorldRenderer(GraphicsDevice);
         _worldRenderer.LoadContent();
     }
 
     protected override void Update(GameTime gameTime)
     {
-        KeyboardState currentKeyboardState = Keyboard.GetState();
-        var currentMouseState = Mouse.GetState();
+        // Input Handling
+        var keyboardState = Keyboard.GetState();
+        if (keyboardState.IsKeyDown(Keys.Escape))
+            Exit();
 
-        if (currentKeyboardState.IsKeyDown(Keys.Escape)) Exit();
-
-
-        // --- 1. SYSTEM & INPUT
-
-        // Toggle FULLSCREEN (F11)
-        if (currentKeyboardState.IsKeyDown(Keys.F11) && !_previousKeyboardState.IsKeyDown(Keys.F11))
-        {
-            ToggleFullscreen();
-        }
-        // Toggle PAUSE (Space)
-        if (currentKeyboardState.IsKeyDown(Keys.Space) && !_previousKeyboardState.IsKeyDown(Keys.Space))
+        // Toggle Pause
+        if (keyboardState.IsKeyDown(Keys.Space) && !_previousKeyboardState.IsKeyDown(Keys.Space))
         {
             _isPaused = !_isPaused;
         }
-        // SINGLE STEP (.)
-        bool singleStep = currentKeyboardState.IsKeyDown(Keys.OemPeriod) && !_previousKeyboardState.IsKeyDown(Keys.OemPeriod);
-
-        // Save state for the next frame
-        _previousKeyboardState = currentKeyboardState;
-
-        // CAMERA UPDATE
-        Rectangle worldBounds = new Rectangle(0, 0, GridWidth * CellSize, GridHeight * CellSize);
-        _camera.HandleInput(currentMouseState, currentKeyboardState, worldBounds);
-
-        // Only update inspector input if we are NOT clicking on the HUD
-        if (!_hud.Bounds.Contains(currentMouseState.Position))
+        
+        // Single Step (Right Arrow)
+        bool singleStep = false;
+        if (_isPaused && keyboardState.IsKeyDown(Keys.Right) && !_previousKeyboardState.IsKeyDown(Keys.Right))
         {
-            _inspector.UpdateInput(_camera, _gridMap, _agentPopulation, _plantPopulation, _structurePopulation, CellSize);
+            singleStep = true;
         }
 
-        // --- 2. SIMULATION
-        if (!_isPaused || singleStep)
+        _previousKeyboardState = keyboardState;
+
+        // UI Updates
+        _hud.UpdateInput();
+        _genePoolWindow.UpdateInput();
+
+        // If Gene Window is open, force pause (optional, but requested)
+        bool effectivePause = _isPaused || _genePoolWindow.IsVisible;
+
+        if (_genePoolWindow.IsVisible)
         {
+            // Refresh data only once when opening? Or every frame?
+            // For performance, let's refresh every frame for now, or we can optimize later.
+            // Actually, refreshing every frame involves sorting 4000 agents. 
+            // Let's do it only when it becomes visible or periodically?
+            // For now, let's do it every frame to keep it simple and responsive.
+            // Optimization: Only refresh if tickCount changed? But we are paused.
+            // So we refresh once.
+            _genePoolWindow.RefreshData(_agentPopulation);
+        }
+
+        if (!effectivePause || singleStep)
+        {
+            // Simulation Logic
             _tickCount++; // Increment deterministic clock
 
             Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
@@ -487,24 +493,12 @@ public class VivariumGame : Game
 
         // Draw HUD (Graph, Stats, Timer)
         _hud.Draw(_spriteBatch, _tickCount, stats.LivingAgents, stats.LivingHerbivores, stats.LivingOmnivores, stats.LivingCarnivores, stats.LivingPlants, stats.LivingStructures);
-
+        
+        // Draw Inspector
         _inspector.DrawUI(_spriteBatch, _agentPopulation, _plantPopulation, _structurePopulation);
 
-        if (_isPaused)
-        {
-            const string pauseText = "PAUSED";
-            Vector2 textSize = _sysFont.MeasureString(pauseText);
-
-            Vector2 textPos = new Vector2(
-                GraphicsDevice.Viewport.Width / 2 - textSize.X / 2,
-                20
-            );
-
-            _spriteBatch.DrawString(_sysFont, pauseText, textPos + new Vector2(2, 2), Color.Black);
-            _spriteBatch.DrawString(_sysFont, pauseText, textPos, Color.Red);
-        }
-
-        UpdateFPSAndWindowTitle(gameTime, stats.LivingAgents, stats.LivingPlants, stats.LivingStructures);
+        // Draw Gene Pool Window (on top)
+        _genePoolWindow.Draw(_spriteBatch);
 
         _spriteBatch.End();
 

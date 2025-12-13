@@ -10,20 +10,40 @@ public class HUD
     private readonly SpriteFont _font;
     private readonly Texture2D _pixelTexture;
     private readonly SimulationGraph _simGraph;
+    private readonly GenePoolWindow _genePoolWindow;
 
     private Rectangle _panelRect;
     private int _cursorY;
+    private Rectangle _geneButtonRect;
+    private bool _wasLeftButtonPressed = false;
 
     public Rectangle Bounds => _panelRect;
 
-    public HUD(GraphicsDevice graphics, SpriteFont font, SimulationGraph simGraph)
+    public HUD(GraphicsDevice graphics, SpriteFont font, SimulationGraph simGraph, GenePoolWindow genePoolWindow)
     {
         _graphics = graphics;
         _font = font;
         _simGraph = simGraph;
+        _genePoolWindow = genePoolWindow;
         
         _pixelTexture = new Texture2D(graphics, 1, 1);
         _pixelTexture.SetData(new[] { Color.White });
+    }
+
+    public void UpdateInput()
+    {
+        var mouse = Microsoft.Xna.Framework.Input.Mouse.GetState();
+        bool isPressed = mouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed;
+
+        if (isPressed && !_wasLeftButtonPressed)
+        {
+            if (_geneButtonRect.Contains(mouse.Position))
+            {
+                _genePoolWindow.IsVisible = !_genePoolWindow.IsVisible;
+            }
+        }
+
+        _wasLeftButtonPressed = isPressed;
     }
 
     public void Draw(SpriteBatch spriteBatch, long tickCount, int agents, int herbs, int omnis, int carnis, int plants, int structures)
@@ -99,6 +119,16 @@ public class HUD
 
         // -- POPULATION STATS --
         spriteBatch.DrawString(_font, "POPULATION", new Vector2(leftX, _cursorY), UITheme.HeaderColor);
+        
+        // Draw Gene Button next to header
+        Vector2 headerSize = _font.MeasureString("POPULATION");
+        _geneButtonRect = new Rectangle(leftX + (int)headerSize.X + 10, _cursorY, 60, 20);
+        
+        // Button Visuals
+        spriteBatch.Draw(_pixelTexture, _geneButtonRect, UITheme.ButtonColor);
+        DrawBorder(spriteBatch, _geneButtonRect, 1, UITheme.BorderColor);
+        spriteBatch.DrawString(_font, "GENES", new Vector2(_geneButtonRect.X + 5, _geneButtonRect.Y + 2), Color.White);
+
         _cursorY += 30;
 
         DrawStatRow(spriteBatch, "Total Agents", agents.ToString(), VivariumColors.Agent, leftX, rightX);
