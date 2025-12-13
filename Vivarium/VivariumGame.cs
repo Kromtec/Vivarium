@@ -17,19 +17,11 @@ public class VivariumGame : Game
 
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-    private Texture2D _pixelTexture;
-    private Texture2D _circleTexture;
-    private Texture2D _starTexture;
-    private Texture2D _roundedRectTexture;
-    private Texture2D _arrowTexture;
-    private Texture2D _dotTexture;
-    private Texture2D _ringTexture;
 
     // Simulation Constants
     private const int GridHeight = 96;
     private const int GridWidth = (int)((GridHeight / 9) * 16);
     private const int CellSize = 1280 / GridHeight;
-    private const float HalfCellSize = (CellSize * 0.5f);
     private const int AgentCount = GridWidth * GridHeight / 8;
     private const int PlantCount = GridWidth * GridHeight / 8;
     private const int StructureCount = GridWidth * GridHeight / 64;
@@ -58,6 +50,7 @@ public class VivariumGame : Game
     private HUD _hud;
     private SpriteFont _sysFont;
     private SimulationGraph _simGraph;
+    private WorldRenderer _worldRenderer;
 
     private bool _isPaused = false;
     private long _tickCount = 0; // Deterministic time source
@@ -103,12 +96,12 @@ public class VivariumGame : Game
         _camera = new Camera2D(GraphicsDevice);
 
         // Calculate zoom to fit the grid on screen
-        float gridPixelWidth = GridWidth * CellSize;
-        float gridPixelHeight = GridHeight * CellSize;
-        
+        const float gridPixelWidth = GridWidth * CellSize;
+        const float gridPixelHeight = GridHeight * CellSize;
+
         // Restrict zoom out so the height fits exactly the screen
-        _camera.MinZoom = (float)screenHeight / gridPixelHeight;
-        
+        _camera.MinZoom = screenHeight / gridPixelHeight;
+
         float zoomX = screenWidth / gridPixelWidth;
         float zoomY = screenHeight / gridPixelHeight;
         float initialZoom = Math.Min(zoomX, zoomY); // Fit entire grid
@@ -237,25 +230,16 @@ public class VivariumGame : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        _pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
-        _pixelTexture.SetData([Color.White]);
-
-        // Generate a high-res circle (50px radius = 100px width)
-        // We will scale this down significantly when drawing.
-        _circleTexture = TextureGenerator.CreateCircle(GraphicsDevice, 50);
-
-        _starTexture = TextureGenerator.CreateStar(GraphicsDevice, 50, 5);
-
-        _roundedRectTexture = TextureGenerator.CreateRoundedRect(GraphicsDevice, 50, 20, 5);
-        _arrowTexture = TextureGenerator.CreateTriangle(GraphicsDevice, 32);
-        _dotTexture = TextureGenerator.CreateCircle(GraphicsDevice, 16); // Small dot
-        _ringTexture = TextureGenerator.CreateRing(GraphicsDevice, 64, 8);
+        // Removed texture loading as it is now in WorldRenderer
 
         _sysFont = Content.Load<SpriteFont>("SystemFont");
 
         _inspector = new Inspector(GraphicsDevice, _sysFont);
         _simGraph.LoadContent(GraphicsDevice);
         _hud = new HUD(GraphicsDevice, _sysFont, _simGraph);
+
+        _worldRenderer = new WorldRenderer(GraphicsDevice);
+        _worldRenderer.LoadContent();
     }
 
     protected override void Update(GameTime gameTime)
@@ -385,7 +369,7 @@ public class VivariumGame : Game
                 if (agent.ReproductionVisualTimer > 0)
                 {
                     agent.ReproductionVisualTimer--;
-                    
+
                     // Loop the animation while paused so the user can clearly see who reproduced
                     if (agent.ReproductionVisualTimer == 0)
                     {
@@ -419,7 +403,7 @@ public class VivariumGame : Game
                 throw new Exception($"LOGIC ERROR FOR AGENT #{index}: It is still at {agent.X},{agent.Y}, but the map shows: {cellAtPos.Type} #{cellAtPos.Index}");
             }
         }
-        else if(!agent.IsAlive && cellAtPos != GridCell.Empty)
+        else if (!agent.IsAlive && cellAtPos != GridCell.Empty)
         {
             throw new Exception($"LOGIC ERROR FOR AGENT #{index}: It is dead at {agent.X},{agent.Y}, but the map shows: {cellAtPos.Type} #{cellAtPos.Index}");
         }
@@ -481,88 +465,34 @@ public class VivariumGame : Game
     {
         GraphicsDevice.Clear(Color.Black);
 
-        int worldWidth = GridWidth * CellSize;
-        int worldHeight = GridHeight * CellSize;
-
-        // Calculate visible area in world coordinates
-        Vector2 topLeft = _camera.ScreenToWorld(Vector2.Zero);
-        Vector2 bottomRight = _camera.ScreenToWorld(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
-        Rectangle viewRect = new Rectangle((int)topLeft.X, (int)topLeft.Y, (int)(bottomRight.X - topLeft.X), (int)(bottomRight.Y - topLeft.Y));
-
-        // Determine which copies of the world we need to draw
-        // We check offsets -1, 0, 1 for both X and Y
-        int[] offsets = { -1, 0, 1 };
-
-        int livingAgents = 0, livingHerbivore = 0, livingOmnivore = 0, livingCarnivore = 0;
-        int livingPlants = 0, livingStructures = 0;
-        bool statsCaptured = false;
-
-        foreach (int ox in offsets)
-        {
-            foreach (int oy in offsets)
-            {
-                // Calculate the position of this world copy
-                int worldOffsetX = ox * worldWidth;
-                int worldOffsetY = oy * worldHeight;
-
-                Rectangle worldRect = new Rectangle(worldOffsetX, worldOffsetY, worldWidth, worldHeight);
-
-                if (viewRect.Intersects(worldRect))
-                {
-                    // Create a transform that shifts the drawing to this copy's position
-                    Matrix transform = Matrix.CreateTranslation(worldOffsetX, worldOffsetY, 0) * _camera.GetTransformation();
-
-                    _spriteBatch.Begin(
-                        SpriteSortMode.Deferred,
-                        BlendState.NonPremultiplied,
-                        SamplerState.LinearClamp,
-                        null,
-                        null,
-                        null,
-                        transform
-                    );
-
-                    if (!statsCaptured)
-                    {
-                        DrawStructures(out livingStructures);
-                        DrawPlants(out livingPlants);
-                        DrawKinshipLines();
-                        DrawAgents(out livingAgents, out livingHerbivore, out livingOmnivore, out livingCarnivore);
-                        statsCaptured = true;
-                    }
-                    else
-                    {
-                        DrawStructures(out _);
-                        DrawPlants(out _);
-                        DrawKinshipLines();
-                        DrawAgents(out _, out _, out _, out _);
-                    }
-
-                    // Draw the Selection Box inside the world
-                    float totalSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
-                    _inspector.DrawSelectionMarker(_spriteBatch, CellSize, totalSeconds);
-
-                    _spriteBatch.End();
-                }
-            }
-        }
+        // Draw World
+        RenderStats stats = _worldRenderer.Draw(
+            gameTime,
+            _camera,
+            _gridMap,
+            _agentPopulation,
+            _plantPopulation,
+            _structurePopulation,
+            _inspector,
+            CellSize
+        );
 
         // --- 2. SCREEN SPACE (Camera Off) ---
         // This draws the UI fixed on top of everything
         _spriteBatch.Begin(
             SpriteSortMode.Deferred,
             BlendState.AlphaBlend
-            // No Matrix here! 
+        // No Matrix here! 
         );
 
         // Draw HUD (Graph, Stats, Timer)
-        _hud.Draw(_spriteBatch, _tickCount, livingAgents, livingHerbivore, livingOmnivore, livingCarnivore, livingPlants, livingStructures);
+        _hud.Draw(_spriteBatch, _tickCount, stats.LivingAgents, stats.LivingHerbivores, stats.LivingOmnivores, stats.LivingCarnivores, stats.LivingPlants, stats.LivingStructures);
 
         _inspector.DrawUI(_spriteBatch, _agentPopulation, _plantPopulation, _structurePopulation);
 
         if (_isPaused)
         {
-            string pauseText = "PAUSED";
+            const string pauseText = "PAUSED";
             Vector2 textSize = _sysFont.MeasureString(pauseText);
 
             Vector2 textPos = new Vector2(
@@ -574,7 +504,7 @@ public class VivariumGame : Game
             _spriteBatch.DrawString(_sysFont, pauseText, textPos, Color.Red);
         }
 
-        UpdateFPSAndWindowTitle(gameTime, livingAgents, livingPlants, livingStructures);
+        UpdateFPSAndWindowTitle(gameTime, stats.LivingAgents, stats.LivingPlants, stats.LivingStructures);
 
         _spriteBatch.End();
 
@@ -612,348 +542,6 @@ public class VivariumGame : Game
             _framesCounter = 0;
             _fpsTimer--;
         }
-    }
-
-    private void DrawStructures(out int livingStructures)
-    {
-        var textureCenter = new Vector2(_roundedRectTexture.Width / 2f, _roundedRectTexture.Height / 2f);
-        Span<Structure> structurePopulationSpan = _structurePopulation.AsSpan();
-        livingStructures = structurePopulationSpan.Length;
-        for (int i = 0; i < structurePopulationSpan.Length; i++)
-        {
-            ref Structure structure = ref structurePopulationSpan[i];
-
-            float structScale = ((float)CellSize / _roundedRectTexture.Width);
-
-            // Calculate screen position
-            Vector2 position = new Vector2(
-                structure.X * CellSize + HalfCellSize,
-                structure.Y * CellSize + HalfCellSize
-            );
-            _spriteBatch.Draw(
-                _roundedRectTexture,
-                position,
-                null,
-                structure.Color,
-                0f,
-                textureCenter,
-                structScale,
-                SpriteEffects.None,
-                0f
-            );
-        }
-    }
-
-    private int DrawPlants(out int livingPlants)
-    {
-        livingPlants = 0;
-        var textureCenter = new Vector2(_starTexture.Width / 2f, _starTexture.Height / 2f);
-        float baseScale = (float)CellSize / _starTexture.Width;
-
-        const float plantAgeGrowthFactor = 1.0f / Plant.MaturityAge;
-
-        Span<Plant> plantPopulationSpan = _plantPopulation.AsSpan();
-        for (int i = 0; i < plantPopulationSpan.Length; i++)
-        {
-            ref Plant plant = ref plantPopulationSpan[i];
-            if (!plant.IsAlive)
-            {
-                continue;
-            }
-
-            livingPlants++;
-
-            // --- GROWTH LOGIC ---
-            // Babies start small (0.3 scale) and grow to full size (1.0 scale) over 200 frames.
-            // Math.Min ensures they stop growing at max size.
-            float ageRatio = Math.Min(plant.Age * plantAgeGrowthFactor, 1.0f);
-
-            // Linear interpolation: Start at 30% size, end at 100% size
-            float finalScale = baseScale * (0.3f + (0.7f * ageRatio));
-
-            // Calculate screen position
-            Vector2 position = new Vector2(
-                plant.X * CellSize + HalfCellSize,
-                plant.Y * CellSize + HalfCellSize
-            );
-            _spriteBatch.Draw(
-                _starTexture,
-                position,
-                null,
-                plant.Color,
-                0f,
-                textureCenter, // Draw from the center of the texture!
-                finalScale,
-                SpriteEffects.None,
-                0f
-            );
-        }
-
-        return livingPlants;
-    }
-
-    private void DrawAgents(out int livingAgents, out int livingHerbivore, out int livingOmnivore, out int livingCarnivore)
-    {
-        livingAgents = 0;
-        livingHerbivore = 0;
-        livingOmnivore = 0;
-        livingCarnivore = 0;
-
-        // Calculate the center of our source texture (needed for pivot point)
-        var textureCenter = new Vector2(_circleTexture.Width / 2f, _circleTexture.Height / 2f);
-        var arrowCenter = new Vector2(_arrowTexture.Width / 2f, _arrowTexture.Height / 2f);
-        var dotCenter = new Vector2(_dotTexture.Width / 2f, _dotTexture.Height / 2f);
-        var ringCenter = new Vector2(_ringTexture.Width / 2f, _ringTexture.Height / 2f);
-
-        float baseScale = (float)CellSize / _circleTexture.Width;
-        float arrowScale = ((float)CellSize / _arrowTexture.Width) * 0.6f; // Slightly smaller than cell
-        float dotScale = ((float)CellSize / _dotTexture.Width) * 0.4f; // Small dot
-        float ringBaseScale = (float)CellSize / _ringTexture.Width;
-
-        const float agentAgeGrowthFactor = 1.0f / Agent.MaturityAge;
-
-        Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
-
-        // PASS 1: Draw Agent Bodies (Bottom Layer)
-        for (int i = 0; i < agentPopulationSpan.Length; i++)
-        {
-            ref Agent agent = ref agentPopulationSpan[i];
-            if (!agent.IsAlive)
-            {
-                continue;
-            }
-
-            livingAgents++;
-            switch(agent.Diet)
-            {
-                case DietType.Herbivore:
-                    livingHerbivore++;
-                    break;
-                case DietType.Omnivore:
-                    livingOmnivore++;
-                    break;
-                case DietType.Carnivore:
-                    livingCarnivore++;
-                    break;
-            }
-
-            // --- GROWTH LOGIC ---
-            // Babies start small (0.3 scale) and grow to full size (1.0 scale) over 200 frames.
-            // Math.Min ensures they stop growing at max size.
-            float ageRatio = Math.Min(agent.Age * agentAgeGrowthFactor, 1.0f);
-            float growthFactor = 0.3f + (0.7f * ageRatio);
-
-            // Linear interpolation: Start at 30% size, end at 100% size
-            float finalScale = baseScale * growthFactor;
-
-            // Calculate screen position
-            // Important: Add half CellSize to X and Y so we draw at the CENTER of the grid cell
-            Vector2 position = new Vector2(
-                agent.X * CellSize + HalfCellSize,
-                agent.Y * CellSize + HalfCellSize
-            );
-
-            _spriteBatch.Draw(
-                _circleTexture,
-                position,
-                null,
-                agent.Color,
-                0f,
-                textureCenter, // Draw from the center of the texture!
-                finalScale,
-                SpriteEffects.None,
-                0f
-            );
-        }
-
-        // PASS 2: Draw Visual Effects (Top Layer)
-        // We iterate again to ensure effects are drawn ON TOP of all agent bodies (no occlusion by neighbors)
-        for (int i = 0; i < agentPopulationSpan.Length; i++)
-        {
-            ref Agent agent = ref agentPopulationSpan[i];
-            if (!agent.IsAlive) continue;
-
-            // Re-calculate position/growth for effects
-            float ageRatio = Math.Min(agent.Age * agentAgeGrowthFactor, 1.0f);
-            float growthFactor = 0.3f + (0.7f * ageRatio);
-            
-            Vector2 position = new Vector2(
-                agent.X * CellSize + HalfCellSize,
-                agent.Y * CellSize + HalfCellSize
-            );
-
-            // Calculate offset based on current size so indicators stick to the edge
-            // We normalize the direction vector to ensure consistent distance (circle vs square).
-            // We use 0.85f to match the "diagonal" distance the user liked (1.414 * 0.6 ~= 0.85).
-            float indicatorOffset = (CellSize * 0.85f) * growthFactor;
-
-            // Scale indicators less aggressively than the agent body
-            // Agent: 0.3 -> 1.0
-            // Indicator: 0.65 -> 1.0
-            float indicatorScaleFactor = 0.65f + (0.35f * ageRatio);
-
-            // --- ATTACK VISUALIZATION ---
-            if (agent.AttackVisualTimer > 0)
-            {
-                float alpha = agent.AttackVisualTimer / 15f; // Fade out
-                float rotation = MathF.Atan2(agent.LastAttackDirY, agent.LastAttackDirX);
-                
-                Vector2 dir = new Vector2(agent.LastAttackDirX, agent.LastAttackDirY);
-                if (dir != Vector2.Zero) dir.Normalize();
-
-                // Offset the arrow so it appears on the edge of the agent
-                Vector2 offset = dir * indicatorOffset;
-
-                _spriteBatch.Draw(
-                    _arrowTexture,
-                    position + offset,
-                    null,
-                    agent.Color * alpha,
-                    rotation,
-                    arrowCenter,
-                    arrowScale * indicatorScaleFactor,
-                    SpriteEffects.None,
-                    0f
-                );
-            }
-
-            // --- FLEE VISUALIZATION ---
-            if (agent.FleeVisualTimer > 0)
-            {
-                float alpha = agent.FleeVisualTimer / 15f; // Fade out
-                
-                Vector2 dir = new Vector2(agent.LastFleeDirX, agent.LastFleeDirY);
-                if (dir != Vector2.Zero) dir.Normalize();
-
-                // Offset the dot so it appears on the edge of the agent, in the direction of the threat
-                Vector2 offset = dir * indicatorOffset;
-
-                _spriteBatch.Draw(
-                    _dotTexture,
-                    position + offset,
-                    null,
-                    agent.Color * alpha, // Use agent color
-                    0f,
-                    dotCenter,
-                    dotScale * indicatorScaleFactor,
-                    SpriteEffects.None,
-                    0f
-                );
-            }
-
-            // --- REPRODUCTION VISUALIZATION ---
-            if (agent.ReproductionVisualTimer > 0)
-            {
-                float t = 1.0f - (agent.ReproductionVisualTimer / 30f); // 0 to 1 over time
-                float alpha = 1.0f - t; // Fade out
-                
-                // Start larger (0.8x) and expand further (3.0x) to be clearly visible
-                float scale = ringBaseScale * (0.8f + (t * 2.2f)); 
-
-                _spriteBatch.Draw(
-                    _ringTexture,
-                    position,
-                    null,
-                    Color.White * alpha,
-                    0f,
-                    ringCenter,
-                    scale,
-                    SpriteEffects.None,
-                    0f
-                );
-            }
-        }
-    }
-
-    private void DrawKinshipLines()
-    {
-        if (!_inspector.IsEntitySelected || _inspector.SelectedType != EntityType.Agent) return;
-
-        // Get the selected agent
-        // We need to find the agent with the selected ID.
-        // Since we don't have a direct reference, we search.
-        // Optimization: Inspector stores Index.
-        // We can't access Inspector's private index, but we can use the public SelectedGridPos to find it in the map.
-        
-        var gridPos = _inspector.SelectedGridPos;
-        var cell = _gridMap[gridPos.X, gridPos.Y];
-        
-        if (cell.Type != EntityType.Agent) return;
-
-        ref Agent selectedAgent = ref _agentPopulation[cell.Index];
-        if (!selectedAgent.IsAlive) return;
-
-        const int BorderThickness = 2;
-        const float agentAgeGrowthFactor = 1.0f / Agent.MaturityAge;
-
-        // Calculate center and radius for selected agent
-        Vector2 selectedCenter = new Vector2(
-            (selectedAgent.X * CellSize) + HalfCellSize,
-            (selectedAgent.Y * CellSize) + HalfCellSize
-        );
-
-        float selectedAgeRatio = Math.Min(selectedAgent.Age * agentAgeGrowthFactor, 1.0f);
-        float selectedGrowth = 0.3f + (0.7f * selectedAgeRatio);
-        float selectedRadius = (CellSize * selectedGrowth) * 0.5f;
-
-        Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
-        for (int i = 0; i < agentPopulationSpan.Length; i++)
-        {
-            ref Agent other = ref agentPopulationSpan[i];
-            if (!other.IsAlive || i == cell.Index) continue;
-
-            // Check Kinship
-            if (selectedAgent.IsDirectlyRelatedTo(ref other))
-            {
-                Vector2 otherCenter = new Vector2(
-                    (other.X * CellSize) + HalfCellSize,
-                    (other.Y * CellSize) + HalfCellSize
-                );
-
-                float otherAgeRatio = Math.Min(other.Age * agentAgeGrowthFactor, 1.0f);
-                float otherGrowth = 0.3f + (0.7f * otherAgeRatio);
-                float otherRadius = (CellSize * otherGrowth) * 0.5f;
-
-                // Calculate direction and distance
-                Vector2 direction = otherCenter - selectedCenter;
-                float distance = direction.Length();
-
-                if (distance > 0.001f)
-                {
-                    direction /= distance; // Normalize
-
-                    // Calculate start and end points at the hull
-                    // Clamp offsets to avoid crossing if agents overlap
-                    float startOffset = Math.Min(selectedRadius, distance * 0.5f);
-                    float endOffset = Math.Min(otherRadius, distance * 0.5f);
-
-                    Vector2 lineStart = selectedCenter + (direction * startOffset);
-                    Vector2 lineEnd = otherCenter - (direction * endOffset);
-
-                    // Draw Line
-                    DrawLine(lineStart, lineEnd, selectedAgent.OriginalColor * 0.5f, BorderThickness);
-                }
-            }
-        }
-    }
-
-    private void DrawLine(Vector2 start, Vector2 end, Color color, int thickness)
-    {
-        Vector2 edge = end - start;
-        float angle = MathF.Atan2(edge.Y, edge.X);
-        float length = edge.Length();
-
-        _spriteBatch.Draw(
-            _pixelTexture,
-            start,
-            null,
-            color,
-            angle,
-            new Vector2(0, 0.5f), // Origin at middle-left of the 1x1 pixel for vertical centering
-            new Vector2(length, thickness),
-            SpriteEffects.None,
-            0f
-        );
     }
 
     private void ToggleFullscreen()
