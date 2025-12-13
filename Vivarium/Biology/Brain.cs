@@ -32,11 +32,11 @@ public static class Brain
         // --- 2. SENSORS (Inputs) ---
         // Direct mapping since Sensors start at index 0
 
-        neurons[(int)SensorType.LocationX] = (float)agent.X / gridWidth;
-        neurons[(int)SensorType.LocationY] = (float)agent.Y / gridHeight;
-        neurons[(int)SensorType.Random] = (float)rng.NextDouble();
-        neurons[(int)SensorType.Energy] = agent.Energy / 100f;
-        neurons[(int)SensorType.Hunger] = agent.Hunger / 100f;
+        neurons[(int)SensorType.LocationX] = ((float)(agent.X / gridWidth) * 2) - 1.0f; // -1 .. +1
+        neurons[(int)SensorType.LocationY] = ((float)agent.Y / gridHeight * 2) - 1.0f;  // -1 .. +1
+        neurons[(int)SensorType.Random] = (float)rng.NextDouble();                      //  0 .. +1
+        neurons[(int)SensorType.Energy] = agent.Energy / agent.MaxEnergy;               //  0 .. +1
+        neurons[(int)SensorType.Hunger] = agent.Hunger / 100f;                          //  0 .. +1
         neurons[(int)SensorType.Age] = Math.Min(agent.Age / 2000f, 1.0f);
         neurons[(int)SensorType.Oscillator] = MathF.Sin(agent.Age * 0.1f);
 
@@ -46,58 +46,44 @@ public static class Brain
         neurons[(int)SensorType.PlantDensity] = density.PlantDensity;
         neurons[(int)SensorType.StructureDensity] = density.StructureDensity;
 
-        // Trait sensors (derived from genome and precomputed on the Agent)
-        neurons[(int)SensorType.Strength] = agent.Strength; // -1 .. +1
-        neurons[(int)SensorType.Bravery] = agent.Bravery; // -1 .. +1
-        neurons[(int)SensorType.MetabolicEfficiency] = agent.MetabolicEfficiency; // -1 .. +1
-        neurons[(int)SensorType.Perception] = agent.Perception; // -1 .. +1
-        neurons[(int)SensorType.Speed] = agent.Speed; // -1 .. +1
-        neurons[(int)SensorType.TrophicBias] = agent.TrophicBias; // -1 .. +1 (carnivore->herbivore)
-        neurons[(int)SensorType.Constitution] = agent.Constitution; // -1 .. +1
-
         // Directional sensors (8-way). Perception influences effective radius.
         const int baseRadius = 2;
         const int extraRange = 2; // max additional radius from perception
         int dirRadius = Math.Clamp(baseRadius + (int)MathF.Round(agent.Perception * extraRange), 1, 6);
 
-        // Slightly amplify signals for higher perception (but keep bounded)
-        float amp = (float)Math.Clamp(1f + agent.Perception * 0.5f, 0.5f, 2f);
-
         // --- OPTIMIZATION: Zero-Alloc Direct Write ---
         // We pass the offsets for the N (North) sensor. The function assumes N, NE, E... follow mainly.
         // Based on SensorType enum, the directions are sequential:
         // AgentDensity_N, AgentDensity_NE...
-        
-        WorldSensor.PopulateDirectionalSensors(
-            gridMap, 
-            agent.X, 
-            agent.Y, 
-            dirRadius, 
-            neurons, 
+        WorldSensor.PopulateDirectionalSensors(                                         //  0 .. +1
+            gridMap,
+            agent.X,
+            agent.Y,
+            dirRadius,
+            neurons,
             (int)SensorType.AgentDensity_N,
             (int)SensorType.PlantDensity_N,
-            (int)SensorType.StructureDensity_N,
-            amp
+            (int)SensorType.StructureDensity_N
         );
 
+        // Trait sensors (derived from genome and precomputed on the Agent)
+        neurons[(int)SensorType.Strength] = agent.Strength;                             // -1 .. +1
+        neurons[(int)SensorType.Bravery] = agent.Bravery;                               // -1 .. +1
+        neurons[(int)SensorType.MetabolicEfficiency] = agent.MetabolicEfficiency;       // -1 .. +1
+        neurons[(int)SensorType.Perception] = agent.Perception;                         // -1 .. +1
+        neurons[(int)SensorType.Speed] = agent.Speed;                                   // -1 .. +1
+        neurons[(int)SensorType.TrophicBias] = agent.TrophicBias;                       // -1 .. +1 (carnivore->herbivore)
+        neurons[(int)SensorType.Constitution] = agent.Constitution;                     // -1 .. +1
+
         // --- 3. PROCESS GENOME ---
-        // OPTIMIZATION: Manual Inlining
-        // We unpack the DNA manually to avoid Property Access overhead in Debug builds.
         foreach (var gene in agent.Genome)
         {
-            uint dna = gene.Dna;
-
-            // Unpack directly (Matches Gene.cs logic)
-            // Source = Dna & 0xFF
-            // Sink = (Dna >> 8) & 0xFF
-            int sourceIdx = (int)(dna & 0xFF);
-            int sinkIdx = (int)((dna >> 8) & 0xFF);
-
-            // Weight = (short)(Dna >> 16) / 8192.0f
-            float weight = ((short)(dna >> 16)) / 8192.0f;
+            // Safety modulo ensures we stay within valid array bounds [0..NeuronCount-1]
+            int sourceIdx = gene.SourceId % BrainConfig.NeuronCount;
+            int sinkIdx = gene.SinkId % BrainConfig.NeuronCount;
 
             // Feed Forward
-            neurons[sinkIdx] += neurons[sourceIdx] * weight;
+            neurons[sinkIdx] += neurons[sourceIdx] * gene.Weight;
         }
 
         // --- 4. ACTIVATION ---
@@ -148,7 +134,7 @@ public static class Brain
         // - Ignore Parents/Children (Kinship)
         // - Ignore Herbivores if I am a Herbivore (Diet)
         // - Ignore PREY if I am a Predator (Don't run from food!)
-        if (GetAction(ActionType.Flee) > agent.MovementThreshold) 
+        if (GetAction(ActionType.Flee) > agent.MovementThreshold)
         {
             if (agent.TryToFlee(gridMap, agentPopulationSpan, rng))
             {

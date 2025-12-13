@@ -51,15 +51,14 @@ public static class WorldSensor
     /// Uses stackalloc to avoid heap allocations.
     /// </summary>
     public static void PopulateDirectionalSensors(
-        GridCell[,] gridMap, 
-        int centerX, 
-        int centerY, 
+        GridCell[,] gridMap,
+        int centerX,
+        int centerY,
         int radius,
         Span<float> neuronOutput,
         int agentOffset,
         int plantOffset,
-        int structOffset,
-        float amplification)
+        int structOffset)
     {
         int gridWidth = gridMap.GetLength(0);
         int gridHeight = gridMap.GetLength(1);
@@ -83,13 +82,13 @@ public static class WorldSensor
                 if (dx == 0 && dy == 0) continue;
                 int nx = centerX + dx;
                 int ny = centerY + dy;
-                
+
                 // Bounds check
                 if (nx < 0 || nx >= gridWidth || ny < 0 || ny >= gridHeight) continue;
 
                 int dir = GetDirectionIndex(dx, dy);
                 cellsPerBucket[dir]++;
-                
+
                 var cell = gridMap[nx, ny];
                 switch (cell.Type)
                 {
@@ -106,9 +105,9 @@ public static class WorldSensor
             if (cellsPerBucket[i] > 0)
             {
                 float count = (float)cellsPerBucket[i];
-                neuronOutput[agentOffset + i] = (agentCounts[i] / count) * amplification;
-                neuronOutput[plantOffset + i] = (plantCounts[i] / count) * amplification;
-                neuronOutput[structOffset + i] = (structureCounts[i] / count) * amplification;
+                neuronOutput[agentOffset + i] = (agentCounts[i] / count);
+                neuronOutput[plantOffset + i] = (plantCounts[i] / count);
+                neuronOutput[structOffset + i] = (structureCounts[i] / count);
             }
             else
             {
@@ -123,18 +122,18 @@ public static class WorldSensor
     {
         // Map to angle with 0 = North, clockwise
         // Atan2 returns angle from X axis (East). North (-Y) is -PI/2.
-        float angle = MathF.Atan2(dy, dx); 
-        
+        float angle = MathF.Atan2(dy, dx);
+
         // Rotate so North (-PI/2) becomes 0.
-        float rotated = angle + MathF.PI / 2f; 
-        
+        float rotated = angle + MathF.PI / 2f;
+
         // Wrap to 0..2PI range
         if (rotated < 0) rotated += 2f * MathF.PI;
-        
+
         // Map 0..2PI to 0..8
         // We use Round to center the sectors on the cardinal directions
         int idx = (int)MathF.Round((rotated / (2f * MathF.PI)) * 8f);
-        
+
         // Wrap index 8 back to 0 (North)
         return idx % 8;
     }

@@ -35,7 +35,7 @@ public struct Structure : IGridEntity
             Index = index,
             X = x,
             Y = y,
-            OriginalColor = Color.Beige
+            OriginalColor = Visuals.VivariumColors.Structure,
         };
     }
 }

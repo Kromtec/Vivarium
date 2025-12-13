@@ -21,7 +21,7 @@ public struct Agent : IGridEntity
     private const float BaseMetabolismRate = 0.01f; // Energy lost per frame (Reduced 10x)
     private const int BaseMovementCooldown = 3; // Base cooldown for moving
 
-    public const float MovementCost = 0.1f;   // Base cost for moving (Reduced 5x)
+    public const float MovementCost = 0.25f;   // Base cost for moving
     public const float OrthogonalMovementCost = MovementCost; // Extra cost for non-cardinal moves
     public const float DiagonalMovementCost = MovementCost * 1.414f; // Extra cost for diagonal moves
     public const float FleeCost = 0.5f; // High cost for panic running (5x normal)
@@ -167,7 +167,7 @@ public struct Agent : IGridEntity
             // Orthogonal move (0,1) or (1,0) length is 1.
             // Diagonal move (1,1) length is approx 1.414.
             bool isDiagonal = (dx != 0 && dy != 0);
-            cost = isDiagonal ? Agent.DiagonalMovementCost : Agent.OrthogonalMovementCost;
+            cost = isDiagonal ? DiagonalMovementCost : OrthogonalMovementCost;
         }
 
         ChangeEnergy(-cost, gridMap);
@@ -335,10 +335,10 @@ public struct Agent : IGridEntity
     {
         return dietType switch
         {
-            DietType.Herbivore => Color.Turquoise,
-            DietType.Carnivore => Color.Crimson,
-            DietType.Omnivore => Color.Plum,
-            _ => Color.White
+            DietType.Herbivore => Visuals.VivariumColors.Herbivore,
+            DietType.Carnivore => Visuals.VivariumColors.Carnivore,
+            DietType.Omnivore => Visuals.VivariumColors.Omnivore,
+            _ => Visuals.VivariumColors.Agent
         };
     }
 
@@ -417,12 +417,12 @@ public struct Agent : IGridEntity
         for (int i = 0; i < 8; i++)
         {
             int dirIndex = (startDir + i) % 8;
-            
+
             // Map index 0..7 to dx,dy
             // 0: -1,-1 | 1: 0,-1 | 2: 1,-1
             // 3: -1, 0 |          | 4: 1, 0
             // 5: -1, 1 | 6: 0, 1 | 7: 1, 1
-            
+
             int dx = 0, dy = 0;
             switch(dirIndex) {
                 case 0: dx=-1; dy=-1; break;
@@ -525,7 +525,7 @@ public struct Agent : IGridEntity
             // Normalize and Execute
             int fleeMoveX = Math.Clamp(vecX, -1, 1);
             int fleeMoveY = Math.Clamp(vecY, -1, 1);
-            
+
             if (fleeMoveX != 0 || fleeMoveY != 0)
             {
                 // Calculate target position (Pac-Man Wrap)
@@ -573,7 +573,7 @@ public struct Agent : IGridEntity
         {
             damage = Math.Min(damage, plant.Energy);
             plant.ChangeEnergy(-damage, gridMap);
-            
+
             // Only eat if not full
             if (!isFull) Eat(damage * 0.8f);
         }
@@ -598,7 +598,7 @@ public struct Agent : IGridEntity
         // Since we are inside the struct, 'this' is passed by value (read-only) unless we are careful.
         // But wait, we are modifying 'this' (Hunger, Energy).
         // C# instance methods on structs can modify state.
-        
+
         // HOWEVER, IsDirectlyRelatedTo takes 'ref Agent'. We need to be careful.
         // 'this' is available. 
         if (IsDirectlyRelatedTo(ref victim))

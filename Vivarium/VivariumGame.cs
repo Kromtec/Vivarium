@@ -5,8 +5,8 @@ using System;
 using Vivarium.Biology;
 using Vivarium.Engine;
 using Vivarium.Entities;
-using Vivarium.Graphics;
 using Vivarium.UI;
+using Vivarium.Visuals;
 using Vivarium.World;
 
 namespace Vivarium;
@@ -336,7 +336,7 @@ public class VivariumGame : Game
                 {
                     Brain.Think(ref currentAgent, _gridMap, _rng);
                 }
-                
+
                 // Act every frame (physics/movement) using the last cached neuron activations
                 Brain.Act(ref currentAgent, _gridMap, _rng, agentPopulationSpan, plantPopulationSpan);
 
@@ -497,12 +497,12 @@ public class VivariumGame : Game
         string timeString = $"Time: {simTime:hh\\:mm\\:ss} | T: {_tickCount, 8}";
         _spriteBatch.DrawString(_sysFont, timeString, new Vector2(25, 5), Color.White);
 
-        _spriteBatch.DrawString(_sysFont, $"Agents: {livingAgents,20}", new Vector2(25, 130), Color.Silver);
-        _spriteBatch.DrawString(_sysFont, $"-Herbivore: {livingHerbivore,16}", new Vector2(25, 150), Color.Turquoise);
-        _spriteBatch.DrawString(_sysFont, $"-Omnivore: {livingOmnivore,17}", new Vector2(25, 170), Color.Plum);
-        _spriteBatch.DrawString(_sysFont, $"-Carnivore: {livingCarnivore,16}", new Vector2(25, 190), Color.Crimson);
-        _spriteBatch.DrawString(_sysFont, $"Plants: {livingPlants,20}", new Vector2(25, 210), Color.LimeGreen);
-        _spriteBatch.DrawString(_sysFont, $"Structures: {livingStructures,16}", new Vector2(25, 230), Color.Beige);
+        _spriteBatch.DrawString(_sysFont, $"Agents: {livingAgents,20}", new Vector2(25, 130), VivariumColors.Agent);
+        _spriteBatch.DrawString(_sysFont, $"-Herbivore: {livingHerbivore,16}", new Vector2(25, 150), VivariumColors.Herbivore);
+        _spriteBatch.DrawString(_sysFont, $"-Omnivore: {livingOmnivore,17}", new Vector2(25, 170), VivariumColors.Omnivore);
+        _spriteBatch.DrawString(_sysFont, $"-Carnivore: {livingCarnivore,16}", new Vector2(25, 190), VivariumColors.Carnivore);
+        _spriteBatch.DrawString(_sysFont, $"Plants: {livingPlants,20}", new Vector2(25, 210), VivariumColors.Plant);
+        _spriteBatch.DrawString(_sysFont, $"Structures: {livingStructures,16}", new Vector2(25, 230), VivariumColors.Structure);
 
         _inspector.DrawUI(_spriteBatch, _agentPopulation, _plantPopulation, _structurePopulation);
 

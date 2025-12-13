@@ -6,7 +6,7 @@ namespace Vivarium.Entities;
 
 public struct Plant : IGridEntity
 {
-    public const float ShrivelRate = 0.02f; // Energy lost per frame (Aging)
+    public const float ShrivelRate = 0.2f; // Energy lost per frame (Aging)
     public const float PhotosynthesisRate = 0.15f; // Energy gained per frame from sun (Buffed 50%)
     public const int MaturityAge = 60 * 5; // 5 Seconds to mature (Buffed 2x)
 
@@ -199,7 +199,7 @@ public struct Plant : IGridEntity
             Index = index,
             X = x,
             Y = y,
-            OriginalColor = Color.LimeGreen,
+            OriginalColor = Visuals.VivariumColors.Plant,
             IsAlive = true,
             Age = 0,
             Energy = 100f

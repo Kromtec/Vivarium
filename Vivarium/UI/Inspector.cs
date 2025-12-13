@@ -368,7 +368,7 @@ public class Inspector
             int barHeight = 12;
 
             sb.DrawString(ctx._font, label, new Vector2(leftX, ctx._cursorY), ctx._labelColor);
-            
+
             Rectangle barBg = new Rectangle(rightX - barWidth, ctx._cursorY + 4, barWidth, barHeight);
             sb.Draw(ctx._pixelTexture, barBg, Color.Black * 0.5f);
 
