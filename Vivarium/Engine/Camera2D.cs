@@ -12,8 +12,8 @@ public class Camera2D
 
     public float Zoom { get; set; } = 1.0f;
 
-    private const float MinZoom = 0.1f;
-    private const float MaxZoom = 5.0f;
+    public float MinZoom { get; set; } = 0.1f;
+    public float MaxZoom { get; set; } = 5.0f;
 
     private Vector2 _lastMousePosition;
     private bool _isDragging;
@@ -40,7 +40,7 @@ public class Camera2D
         return Vector2.Transform(screenPos, Matrix.Invert(GetTransformation()));
     }
 
-    public void HandleInput(MouseState mouseState, KeyboardState keyboardState)
+    public void HandleInput(MouseState mouseState, KeyboardState keyboardState, Rectangle? worldBounds = null)
     {
         int scrollDelta = mouseState.ScrollWheelValue - _previousScrollValue;
         _previousScrollValue = mouseState.ScrollWheelValue;
@@ -79,6 +79,21 @@ public class Camera2D
         if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down)) Position += new Vector2(0, speed);
         if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left)) Position -= new Vector2(speed, 0);
         if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right)) Position += new Vector2(speed, 0);
+
+        // Wrap Position if world bounds are provided
+        if (worldBounds.HasValue)
+        {
+            float w = worldBounds.Value.Width;
+            float h = worldBounds.Value.Height;
+
+            // Wrap X
+            while (Position.X < 0) Position = new Vector2(Position.X + w, Position.Y);
+            while (Position.X >= w) Position = new Vector2(Position.X - w, Position.Y);
+
+            // Wrap Y
+            while (Position.Y < 0) Position = new Vector2(Position.X, Position.Y + h);
+            while (Position.Y >= h) Position = new Vector2(Position.X, Position.Y - h);
+        }
     }
 
     public void CenterOnGrid(int gridWidth, int gridHeight, int cellSize)

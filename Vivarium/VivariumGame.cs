@@ -106,11 +106,14 @@ public class VivariumGame : Game
         float gridPixelWidth = GridWidth * CellSize;
         float gridPixelHeight = GridHeight * CellSize;
         
+        // Restrict zoom out so the height fits exactly the screen
+        _camera.MinZoom = (float)screenHeight / gridPixelHeight;
+        
         float zoomX = screenWidth / gridPixelWidth;
         float zoomY = screenHeight / gridPixelHeight;
         float initialZoom = Math.Min(zoomX, zoomY); // Fit entire grid
 
-        _camera.Zoom = initialZoom;
+        _camera.Zoom = Math.Max(initialZoom, _camera.MinZoom);
         _camera.CenterOnGrid(GridWidth, GridHeight, CellSize);
 
         _simGraph = new SimulationGraph(new Rectangle(25, 25, 280, 100));
@@ -282,7 +285,8 @@ public class VivariumGame : Game
         _previousKeyboardState = currentKeyboardState;
 
         // CAMERA UPDATE
-        _camera.HandleInput(currentMouseState, currentKeyboardState);
+        Rectangle worldBounds = new Rectangle(0, 0, GridWidth * CellSize, GridHeight * CellSize);
+        _camera.HandleInput(currentMouseState, currentKeyboardState, worldBounds);
 
         // Only update inspector input if we are NOT clicking on the HUD
         if (!_hud.Bounds.Contains(currentMouseState.Position))
@@ -477,26 +481,71 @@ public class VivariumGame : Game
     {
         GraphicsDevice.Clear(Color.Black);
 
-        _spriteBatch.Begin(
-            SpriteSortMode.Deferred,
-            BlendState.NonPremultiplied,
-            SamplerState.LinearClamp,
-            null,
-            null,
-            null,
-            _camera.GetTransformation()
-        );
+        int worldWidth = GridWidth * CellSize;
+        int worldHeight = GridHeight * CellSize;
 
-        DrawStructures(out int livingStructures);
-        DrawPlants(out int livingPlants);
-        DrawKinshipLines();
-        DrawAgents(out int livingAgents, out int livingHerbivore, out int livingOmnivore, out int livingCarnivore);
+        // Calculate visible area in world coordinates
+        Vector2 topLeft = _camera.ScreenToWorld(Vector2.Zero);
+        Vector2 bottomRight = _camera.ScreenToWorld(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
+        Rectangle viewRect = new Rectangle((int)topLeft.X, (int)topLeft.Y, (int)(bottomRight.X - topLeft.X), (int)(bottomRight.Y - topLeft.Y));
 
-        // Draw the Selection Box inside the world
-        float totalSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
-        _inspector.DrawSelectionMarker(_spriteBatch, CellSize, totalSeconds);
+        // Determine which copies of the world we need to draw
+        // We check offsets -1, 0, 1 for both X and Y
+        int[] offsets = { -1, 0, 1 };
 
-        _spriteBatch.End();
+        int livingAgents = 0, livingHerbivore = 0, livingOmnivore = 0, livingCarnivore = 0;
+        int livingPlants = 0, livingStructures = 0;
+        bool statsCaptured = false;
+
+        foreach (int ox in offsets)
+        {
+            foreach (int oy in offsets)
+            {
+                // Calculate the position of this world copy
+                int worldOffsetX = ox * worldWidth;
+                int worldOffsetY = oy * worldHeight;
+
+                Rectangle worldRect = new Rectangle(worldOffsetX, worldOffsetY, worldWidth, worldHeight);
+
+                if (viewRect.Intersects(worldRect))
+                {
+                    // Create a transform that shifts the drawing to this copy's position
+                    Matrix transform = Matrix.CreateTranslation(worldOffsetX, worldOffsetY, 0) * _camera.GetTransformation();
+
+                    _spriteBatch.Begin(
+                        SpriteSortMode.Deferred,
+                        BlendState.NonPremultiplied,
+                        SamplerState.LinearClamp,
+                        null,
+                        null,
+                        null,
+                        transform
+                    );
+
+                    if (!statsCaptured)
+                    {
+                        DrawStructures(out livingStructures);
+                        DrawPlants(out livingPlants);
+                        DrawKinshipLines();
+                        DrawAgents(out livingAgents, out livingHerbivore, out livingOmnivore, out livingCarnivore);
+                        statsCaptured = true;
+                    }
+                    else
+                    {
+                        DrawStructures(out _);
+                        DrawPlants(out _);
+                        DrawKinshipLines();
+                        DrawAgents(out _, out _, out _, out _);
+                    }
+
+                    // Draw the Selection Box inside the world
+                    float totalSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
+                    _inspector.DrawSelectionMarker(_spriteBatch, CellSize, totalSeconds);
+
+                    _spriteBatch.End();
+                }
+            }
+        }
 
         // --- 2. SCREEN SPACE (Camera Off) ---
         // This draws the UI fixed on top of everything
