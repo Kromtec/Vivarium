@@ -40,33 +40,40 @@ public class Camera2D
         return Vector2.Transform(screenPos, Matrix.Invert(GetTransformation()));
     }
 
-    public void HandleInput(MouseState mouseState, KeyboardState keyboardState, Rectangle? worldBounds = null)
+    public void HandleInput(MouseState mouseState, KeyboardState keyboardState, bool processInput = true, Rectangle? worldBounds = null)
     {
         int scrollDelta = mouseState.ScrollWheelValue - _previousScrollValue;
         _previousScrollValue = mouseState.ScrollWheelValue;
 
-        if (scrollDelta != 0)
+        if (processInput)
         {
-            Zoom += scrollDelta * 0.001f * Zoom;
-            Zoom = MathHelper.Clamp(Zoom, MinZoom, MaxZoom);
-        }
-
-        Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
-
-        if (mouseState.RightButton == ButtonState.Pressed || mouseState.MiddleButton == ButtonState.Pressed)
-        {
-            if (!_isDragging)
+            if (scrollDelta != 0)
             {
-                _isDragging = true;
-                _lastMousePosition = currentMousePos;
+                Zoom += scrollDelta * 0.001f * Zoom;
+                Zoom = MathHelper.Clamp(Zoom, MinZoom, MaxZoom);
+            }
+
+            Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
+
+            if (mouseState.RightButton == ButtonState.Pressed || mouseState.MiddleButton == ButtonState.Pressed)
+            {
+                if (!_isDragging)
+                {
+                    _isDragging = true;
+                    _lastMousePosition = currentMousePos;
+                }
+                else
+                {
+                    Vector2 delta = _lastMousePosition - currentMousePos;
+
+                    Position += delta / Zoom;
+
+                    _lastMousePosition = currentMousePos;
+                }
             }
             else
             {
-                Vector2 delta = _lastMousePosition - currentMousePos;
-
-                Position += delta / Zoom;
-
-                _lastMousePosition = currentMousePos;
+                _isDragging = false;
             }
         }
         else

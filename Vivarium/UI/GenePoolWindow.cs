@@ -87,13 +87,16 @@ public class GenePoolWindow
 
     public void UpdateInput()
     {
-        if (!IsVisible) return;
-
         var mouse = Mouse.GetState();
         
-        // Scroll Handling
+        // Always update previous scroll value to prevent jumps when window becomes visible
         int scrollDelta = mouse.ScrollWheelValue - _previousScrollValue;
         _previousScrollValue = mouse.ScrollWheelValue;
+
+        if (!IsVisible) return;
+        
+        // Only handle input if mouse is over the window
+        if (!IsMouseOver(mouse.Position)) return;
 
         if (scrollDelta != 0)
         {
@@ -206,8 +209,19 @@ public class GenePoolWindow
             DrawBorder(spriteBatch, iconRect, 1, Agent.GetColorBasedOnDietType(entry.Diet));
 
             // Text
-            string text = $"#{i + 1} - Count: {entry.Count}";
-            spriteBatch.DrawString(_font, text, new Vector2(listX + 45, itemY + 8), UITheme.TextColorPrimary);
+            // Left align Rank
+            string rankText = $"#{i + 1}";
+            spriteBatch.DrawString(_font, rankText, new Vector2(listX + 45, itemY + 8), UITheme.TextColorPrimary);
+
+            // Right align Count
+            // ListWidth is 250. Padding is 15.
+            // Let's align it to the right edge of the list item area (ListWidth)
+            string countText = $"{entry.Count}";
+            Vector2 countSize = _font.MeasureString(countText);
+            // Subtract scrollbar width (6) + padding (5)
+            float countX = listX + ListWidth - countSize.X - 15; 
+            
+            spriteBatch.DrawString(_font, countText, new Vector2(countX, itemY + 8), UITheme.TextColorSecondary);
         }
 
         // End Scissor Batch
@@ -233,6 +247,9 @@ public class GenePoolWindow
             float scrollRatio = (float)_scrollOffset / (totalContentHeight - listHeight);
             int thumbY = listY + (int)(scrollRatio * (listHeight - thumbHeight));
             
+            // Clamp thumbY to ensure it stays within the track
+            thumbY = Math.Clamp(thumbY, listY, listY + listHeight - thumbHeight);
+
             spriteBatch.Draw(_pixelTexture, new Rectangle(scrollbarX, thumbY, scrollbarWidth, thumbHeight), Color.Gray * 0.8f);
         }
 

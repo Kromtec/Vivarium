@@ -286,7 +286,8 @@ public class VivariumGame : Game
 
         // Input Blocking Logic
         var mouseState = Mouse.GetState();
-        bool uiCapturesMouse = _hud.IsMouseOver(mouseState.Position) || _genePoolWindow.IsMouseOver(mouseState.Position);
+        // If Gene Window is visible, it captures mouse globally (Modal)
+        bool uiCapturesMouse = _hud.IsMouseOver(mouseState.Position) || _genePoolWindow.IsVisible;
 
         if (!effectivePause)
         {
@@ -388,11 +389,8 @@ public class VivariumGame : Game
         }
         
         // Camera always updates so we can look around even when paused
-        // But block zoom/pan if UI captures mouse
-        if (!uiCapturesMouse)
-        {
-            _camera.HandleInput(Mouse.GetState(), Keyboard.GetState());
-        }
+        // We pass !uiCapturesMouse to allow the camera to sync its scroll state even if blocked
+        _camera.HandleInput(Mouse.GetState(), Keyboard.GetState(), !uiCapturesMouse);
 
         base.Update(gameTime);
     }
@@ -431,7 +429,8 @@ public class VivariumGame : Game
         _genePoolWindow.Draw(_spriteBatch);
 
         // Draw "PAUSED" text if paused (and not covered by Gene Window, or maybe on top of everything?
-        if (_isPaused && !_genePoolWindow.IsVisible)
+        // User requested PAUSED text to be visible even when Gene Window is open
+        if (_isPaused || _genePoolWindow.IsVisible)
         {
             string pausedText = "PAUSED";
             Vector2 textSize = _sysFont.MeasureString(pausedText);
