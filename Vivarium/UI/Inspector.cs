@@ -177,6 +177,7 @@ public class Inspector
                         AddBrainBar("Rand", GetSensorVal(ref agent, SensorType.Random), true, ref contentHeight);
                         AddBrainBar("Agnt Dens", GetSensorVal(ref agent, SensorType.AgentDensity), true, ref contentHeight);
                         AddBrainBar("Plnt Dens", GetSensorVal(ref agent, SensorType.PlantDensity), true, ref contentHeight);
+                        AddBrainBar("Strt Dens", GetSensorVal(ref agent, SensorType.StructureDensity), true, ref contentHeight);
 
                         // Outputs (Actions)
                         AddSeparator(ref contentHeight);

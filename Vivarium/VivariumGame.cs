@@ -867,9 +867,11 @@ public class VivariumGame : Game
         ref Agent selectedAgent = ref _agentPopulation[cell.Index];
         if (!selectedAgent.IsAlive) return;
 
+        const int BorderThickness = 2;
+
         Vector2 selectedPos = new Vector2(
-            (selectedAgent.X * CellSize) + HalfCellSize,
-            (selectedAgent.Y * CellSize) + HalfCellSize
+            (selectedAgent.X * CellSize) + HalfCellSize + (BorderThickness * 0.5f),
+            (selectedAgent.Y * CellSize) + HalfCellSize + (BorderThickness * 0.5f)
         );
 
         Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
@@ -882,12 +884,12 @@ public class VivariumGame : Game
             if (selectedAgent.IsDirectlyRelatedTo(ref other))
             {
                 Vector2 otherPos = new Vector2(
-                    (other.X * CellSize) + HalfCellSize,
-                    (other.Y * CellSize) + HalfCellSize
+                    (other.X * CellSize) + HalfCellSize + (BorderThickness * 0.5f),
+                    (other.Y * CellSize) + HalfCellSize + (BorderThickness * 0.5f)
                 );
 
                 // Draw Line
-                DrawLine(selectedPos, otherPos, selectedAgent.Color * 0.5f, 2);
+                DrawLine(selectedPos, otherPos, selectedAgent.OriginalColor * 0.5f, BorderThickness);
             }
         }
     }

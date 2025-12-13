@@ -80,7 +80,9 @@ public static class Brain
         {
             // Safety modulo ensures we stay within valid array bounds [0..NeuronCount-1]
             int sourceIdx = gene.SourceId % BrainConfig.NeuronCount;
-            int sinkIdx = gene.SinkId % BrainConfig.NeuronCount;
+
+            // Wrap Sink to Actions + Hidden only
+            int sinkIdx = (gene.SinkId % (BrainConfig.NeuronCount - BrainConfig.ActionsStart)) + BrainConfig.ActionsStart;
 
             // Feed Forward
             neurons[sinkIdx] += neurons[sourceIdx] * gene.Weight;
