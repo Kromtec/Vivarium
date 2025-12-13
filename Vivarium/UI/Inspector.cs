@@ -46,7 +46,7 @@ public class Inspector
         _pixelTexture.SetData(new[] { Color.White });
     }
 
-    public void UpdateInput(Camera2D camera, GridCell[,] gridMap, Agent[] agents, Plant[] plants, Structure[] structures)
+    public void UpdateInput(Camera2D camera, GridCell[,] gridMap, Agent[] agents, Plant[] plants, Structure[] structures, int cellSize)
     {
         var mouseState = Mouse.GetState();
 
@@ -58,8 +58,6 @@ public class Inspector
 
             Vector2 mouseWorld = camera.ScreenToWorld(new Vector2(mouseState.X, mouseState.Y));
 
-            // Assume CellSize = 10 (should be passed in config ideally)
-            int cellSize = 10;
             int gx = (int)(mouseWorld.X / cellSize);
             int gy = (int)(mouseWorld.Y / cellSize);
 

@@ -14,6 +14,8 @@ public class HUD
     private Rectangle _panelRect;
     private int _cursorY;
 
+    public Rectangle Bounds => _panelRect;
+
     public HUD(GraphicsDevice graphics, SpriteFont font, SimulationGraph simGraph)
     {
         _graphics = graphics;

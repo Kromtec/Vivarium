@@ -26,8 +26,8 @@ public class VivariumGame : Game
     private Texture2D _ringTexture;
 
     // Simulation Constants
-    private const int GridHeight = 128;
-    private const int GridWidth = (int)(GridHeight * 1.5);
+    private const int GridHeight = 96;
+    private const int GridWidth = (int)((GridHeight / 9) * 16);
     private const int CellSize = 1280 / GridHeight;
     private const float HalfCellSize = (CellSize * 0.5f);
     private const int AgentCount = GridWidth * GridHeight / 8;
@@ -77,8 +77,13 @@ public class VivariumGame : Game
 
     protected override void Initialize()
     {
-        _graphics.PreferredBackBufferWidth = GridWidth * CellSize;
-        _graphics.PreferredBackBufferHeight = GridHeight * CellSize;
+        // Start in Fullscreen
+        _graphics.IsFullScreen = true;
+        var screenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+        var screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+
+        _graphics.PreferredBackBufferWidth = screenWidth;
+        _graphics.PreferredBackBufferHeight = screenHeight;
         // Modern .NET 10 apps handle high-DPI scaling better
         _graphics.HardwareModeSwitch = false;
         _graphics.SynchronizeWithVerticalRetrace = true;
@@ -97,6 +102,15 @@ public class VivariumGame : Game
 
         _camera = new Camera2D(GraphicsDevice);
 
+        // Calculate zoom to fit the grid on screen
+        float gridPixelWidth = GridWidth * CellSize;
+        float gridPixelHeight = GridHeight * CellSize;
+        
+        float zoomX = screenWidth / gridPixelWidth;
+        float zoomY = screenHeight / gridPixelHeight;
+        float initialZoom = Math.Min(zoomX, zoomY); // Fit entire grid
+
+        _camera.Zoom = initialZoom;
         _camera.CenterOnGrid(GridWidth, GridHeight, CellSize);
 
         _simGraph = new SimulationGraph(new Rectangle(25, 25, 280, 100));
@@ -270,7 +284,11 @@ public class VivariumGame : Game
         // CAMERA UPDATE
         _camera.HandleInput(currentMouseState, currentKeyboardState);
 
-        _inspector.UpdateInput(_camera, _gridMap, _agentPopulation, _plantPopulation, _structurePopulation);
+        // Only update inspector input if we are NOT clicking on the HUD
+        if (!_hud.Bounds.Contains(currentMouseState.Position))
+        {
+            _inspector.UpdateInput(_camera, _gridMap, _agentPopulation, _plantPopulation, _structurePopulation, CellSize);
+        }
 
         // --- 2. SIMULATION
         if (!_isPaused || singleStep)
