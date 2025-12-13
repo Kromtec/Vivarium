@@ -868,11 +868,17 @@ public class VivariumGame : Game
         if (!selectedAgent.IsAlive) return;
 
         const int BorderThickness = 2;
+        const float agentAgeGrowthFactor = 1.0f / Agent.MaturityAge;
 
-        Vector2 selectedPos = new Vector2(
-            (selectedAgent.X * CellSize) + HalfCellSize + (BorderThickness * 0.5f),
-            (selectedAgent.Y * CellSize) + HalfCellSize + (BorderThickness * 0.5f)
+        // Calculate center and radius for selected agent
+        Vector2 selectedCenter = new Vector2(
+            (selectedAgent.X * CellSize) + HalfCellSize,
+            (selectedAgent.Y * CellSize) + HalfCellSize
         );
+
+        float selectedAgeRatio = Math.Min(selectedAgent.Age * agentAgeGrowthFactor, 1.0f);
+        float selectedGrowth = 0.3f + (0.7f * selectedAgeRatio);
+        float selectedRadius = (CellSize * selectedGrowth) * 0.5f;
 
         Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
         for (int i = 0; i < agentPopulationSpan.Length; i++)
@@ -883,13 +889,34 @@ public class VivariumGame : Game
             // Check Kinship
             if (selectedAgent.IsDirectlyRelatedTo(ref other))
             {
-                Vector2 otherPos = new Vector2(
-                    (other.X * CellSize) + HalfCellSize + (BorderThickness * 0.5f),
-                    (other.Y * CellSize) + HalfCellSize + (BorderThickness * 0.5f)
+                Vector2 otherCenter = new Vector2(
+                    (other.X * CellSize) + HalfCellSize,
+                    (other.Y * CellSize) + HalfCellSize
                 );
 
-                // Draw Line
-                DrawLine(selectedPos, otherPos, selectedAgent.OriginalColor * 0.5f, BorderThickness);
+                float otherAgeRatio = Math.Min(other.Age * agentAgeGrowthFactor, 1.0f);
+                float otherGrowth = 0.3f + (0.7f * otherAgeRatio);
+                float otherRadius = (CellSize * otherGrowth) * 0.5f;
+
+                // Calculate direction and distance
+                Vector2 direction = otherCenter - selectedCenter;
+                float distance = direction.Length();
+
+                if (distance > 0.001f)
+                {
+                    direction /= distance; // Normalize
+
+                    // Calculate start and end points at the hull
+                    // Clamp offsets to avoid crossing if agents overlap
+                    float startOffset = Math.Min(selectedRadius, distance * 0.5f);
+                    float endOffset = Math.Min(otherRadius, distance * 0.5f);
+
+                    Vector2 lineStart = selectedCenter + (direction * startOffset);
+                    Vector2 lineEnd = otherCenter - (direction * endOffset);
+
+                    // Draw Line
+                    DrawLine(lineStart, lineEnd, selectedAgent.OriginalColor * 0.5f, BorderThickness);
+                }
             }
         }
     }
@@ -906,7 +933,7 @@ public class VivariumGame : Game
             null,
             color,
             angle,
-            Vector2.Zero,
+            new Vector2(0, 0.5f), // Origin at middle-left of the 1x1 pixel for vertical centering
             new Vector2(length, thickness),
             SpriteEffects.None,
             0f
