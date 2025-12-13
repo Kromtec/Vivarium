@@ -55,6 +55,7 @@ public class VivariumGame : Game
 
     private bool _isPaused = false;
     private long _tickCount = 0; // Deterministic time source
+    private bool _showExitConfirmation = false;
 
     public VivariumGame()
     {
@@ -247,30 +248,71 @@ public class VivariumGame : Game
     {
         // Input Handling
         var keyboardState = Keyboard.GetState();
-        if (keyboardState.IsKeyDown(Keys.Escape))
-            Exit();
-
-        // Toggle Pause
-        if (keyboardState.IsKeyDown(Keys.Space) && !_previousKeyboardState.IsKeyDown(Keys.Space))
+        
+        // ESC Logic
+        if (keyboardState.IsKeyDown(Keys.Escape) && !_previousKeyboardState.IsKeyDown(Keys.Escape))
         {
-            _isPaused = !_isPaused;
+            if (_showExitConfirmation)
+            {
+                // Close confirmation dialog
+                _showExitConfirmation = false;
+            }
+            else if (_genePoolWindow.IsVisible)
+            {
+                // Close Gene Pool Window
+                _genePoolWindow.IsVisible = false;
+            }
+            else if (_inspector.IsEntitySelected)
+            {
+                // Close Inspector
+                _inspector.Deselect();
+            }
+            else
+            {
+                // Show Exit Confirmation
+                _showExitConfirmation = true;
+            }
         }
 
-        // Single Step (Right Arrow)
-        bool singleStep = false;
-        if (_isPaused && keyboardState.IsKeyDown(Keys.Right) && !_previousKeyboardState.IsKeyDown(Keys.Right))
+        // Exit Confirmation Logic
+        bool singleStep = false; // Declare here to be accessible below
+
+        if (_showExitConfirmation)
         {
-            singleStep = true;
+            if (keyboardState.IsKeyDown(Keys.Enter) && !_previousKeyboardState.IsKeyDown(Keys.Enter))
+            {
+                Exit();
+            }
+            // Note: ESC to close is handled above
+        }
+        else
+        {
+            // Normal Game Input (Only if not showing confirmation)
+            
+            // Toggle Pause
+            if (keyboardState.IsKeyDown(Keys.Space) && !_previousKeyboardState.IsKeyDown(Keys.Space))
+            {
+                _isPaused = !_isPaused;
+            }
+
+            // Single Step (Right Arrow)
+            if (_isPaused && keyboardState.IsKeyDown(Keys.Right) && !_previousKeyboardState.IsKeyDown(Keys.Right))
+            {
+                singleStep = true;
+            }
         }
 
         _previousKeyboardState = keyboardState;
 
         // UI Updates
-        _hud.UpdateInput();
-        _genePoolWindow.UpdateInput();
+        if (!_showExitConfirmation)
+        {
+            _hud.UpdateInput();
+            _genePoolWindow.UpdateInput();
+        }
 
         // If Gene Window is open, force pause (optional, but requested)
-        bool effectivePause = _isPaused || _genePoolWindow.IsVisible;
+        bool effectivePause = _isPaused || _genePoolWindow.IsVisible || _showExitConfirmation;
 
         if (_genePoolWindow.IsVisible)
         {
@@ -444,9 +486,51 @@ public class VivariumGame : Game
             _spriteBatch.DrawString(_sysFont, pausedText, pos, Color.White);
         }
 
+        // Draw Exit Confirmation
+        if (_showExitConfirmation)
+        {
+            DrawExitConfirmation();
+        }
+
         _spriteBatch.End();
 
         base.Draw(gameTime);
+    }
+
+    private void DrawExitConfirmation()
+    {
+        int width = 440; // Increased width by 40px (20px padding each side)
+        int height = 150;
+        Rectangle rect = new Rectangle(
+            (GraphicsDevice.Viewport.Width - width) / 2,
+            (GraphicsDevice.Viewport.Height - height) / 2,
+            width,
+            height
+        );
+
+        // Background
+        Texture2D pixel = new Texture2D(GraphicsDevice, 1, 1);
+        pixel.SetData(new[] { Color.White });
+        
+        // Shadow
+        _spriteBatch.Draw(pixel, new Rectangle(rect.X + 4, rect.Y + 4, width, height), Color.Black * 0.5f);
+        // Panel
+        _spriteBatch.Draw(pixel, rect, UITheme.PanelBgColor);
+        // Border
+        _spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, width, 2), UITheme.BorderColor);
+        _spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y + height - 2, width, 2), UITheme.BorderColor);
+        _spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, 2, height), UITheme.BorderColor);
+        _spriteBatch.Draw(pixel, new Rectangle(rect.X + width - 2, rect.Y, 2, height), UITheme.BorderColor);
+
+        // Text
+        string title = "EXIT APPLICATION?";
+        string subtitle = "Press ENTER to Confirm or ESC to Cancel";
+        
+        Vector2 titleSize = _sysFont.MeasureString(title);
+        Vector2 subSize = _sysFont.MeasureString(subtitle);
+
+        _spriteBatch.DrawString(_sysFont, title, new Vector2(rect.X + (width - titleSize.X) / 2, rect.Y + 40), UITheme.HeaderColor);
+        _spriteBatch.DrawString(_sysFont, subtitle, new Vector2(rect.X + (width - subSize.X) / 2, rect.Y + 80), UITheme.TextColorPrimary);
     }
 
     private void UpdateFPSAndWindowTitle(GameTime gameTime, int livingAgents, int livingPlants, int livingStructures)

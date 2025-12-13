@@ -43,6 +43,12 @@ public class Inspector
         _pixelTexture.SetData(new[] { Color.White });
     }
 
+    public void Deselect()
+    {
+        IsEntitySelected = false;
+        _selectedEntityId = -1;
+    }
+
     public void UpdateInput(Camera2D camera, GridCell[,] gridMap, Agent[] agents, Plant[] plants, Structure[] structures, int cellSize)
     {
         var mouseState = Mouse.GetState();
