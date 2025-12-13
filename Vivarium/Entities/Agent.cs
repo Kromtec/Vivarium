@@ -171,6 +171,34 @@ public struct Agent : IGridEntity
         return ParentId == other.Id || Id == other.ParentId;
     }
 
+    public readonly bool IsThreat(ref Agent other)
+    {
+        // Constraint 1: Kinship (Don't flee from family)
+        if (IsDirectlyRelatedTo(ref other)) return false;
+
+        // Constraint 2: Diet (Herbivores don't flee from Herbivores)
+        if (Diet == DietType.Herbivore && other.Diet == DietType.Herbivore) return false;
+
+        // Constraint 3: Predation (Carnivores && Omnivores don't flee from Herbivores)
+        if ((Diet == DietType.Carnivore || Diet == DietType.Omnivore) && other.Diet == DietType.Herbivore) return false;
+
+        // Constraint 4: Bravery Check (Braver than threat, don't flee)
+        if (Bravery > other.Bravery) return false;
+
+        return true;
+    }
+
+    public readonly bool IsPrey(ref Agent other)
+    {
+        // Constraint 1: Kinship (Don't eat family)
+        if (IsDirectlyRelatedTo(ref other)) return false;
+
+        // Constraint 2: Diet (Herbivores don't eat agents)
+        if (Diet == DietType.Herbivore) return false;
+
+        return true;
+    }
+
     public static DietType DetermineDiet(float trophicBias)
     {
         return trophicBias switch
@@ -514,17 +542,7 @@ public struct Agent : IGridEntity
                     ref Agent other = ref agentPopulationSpan[cell.Index];
                     if (!other.IsAlive) continue;
 
-                    // Constraint 1: Kinship (Don't flee from family)
-                    if (IsDirectlyRelatedTo(ref other)) continue;
-
-                    // Constraint 2: Diet (Herbivores don't flee from Herbivores)
-                    if (Diet == DietType.Herbivore && other.Diet == DietType.Herbivore) continue;
-
-                    // Constraint 3: Predation (Carnivores && Omnivores don't flee from Herbivores)
-                    if ((Diet == DietType.Carnivore || Diet == DietType.Omnivore) && other.Diet == DietType.Herbivore) continue;
-
-                    // Constraint 4: Bravery Check (Braver than threat, don't flee)
-                    if (Bravery > other.Bravery) continue;
+                    if (!IsThreat(ref other)) continue;
 
                     // EVADE!
                     vecX -= Math.Sign(dx);
@@ -601,12 +619,12 @@ public struct Agent : IGridEntity
             plant.ChangeEnergy(-damage, gridMap);
 
             // Only eat if not full
-            if (!isFull) Eat(damage * 0.8f);
+            if (!isFull) Eat(damage * 0.5f);
         }
         else if (Diet == DietType.Omnivore)
         {
             plant.ChangeEnergy(-damage * 0.25f, gridMap);
-            Eat(damage * 0.1f);
+            if (!isFull) Eat(damage * 0.1f);
         }
         else
         {
@@ -627,19 +645,11 @@ public struct Agent : IGridEntity
         {
             return false;
         }
-        // Since we are inside the struct, 'this' is passed by value (read-only) unless we are careful.
-        // But wait, we are modifying 'this' (Hunger, Energy).
-        // C# instance methods on structs can modify state.
 
-        // HOWEVER, IsDirectlyRelatedTo takes 'ref Agent'. We need to be careful.
-        // 'this' is available. 
-        if (IsDirectlyRelatedTo(ref victim))
+        // Motivation Check: Is it food or a threat?
+        if (!IsPrey(ref victim) && !IsThreat(ref victim))
         {
-            return false; // No friendly fire
-        }
-        if (Bravery < victim.Bravery)
-        {
-            return false; // Too craven to attack an opponent that looks braver
+            return false;
         }
 
         const float baseDamage = 7.5f;
@@ -658,7 +668,7 @@ public struct Agent : IGridEntity
         else if (Diet == DietType.Omnivore)
         {
             victim.ChangeEnergy(-damage * 0.25f, gridMap);
-            Eat(damage * 0.05f);
+            Eat(damage * 0.1f);
         }
         else
         {
