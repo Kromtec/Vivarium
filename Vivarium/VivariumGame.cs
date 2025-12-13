@@ -284,7 +284,11 @@ public class VivariumGame : Game
             _genePoolWindow.RefreshData(_agentPopulation);
         }
 
-        if (!effectivePause || singleStep)
+        // Input Blocking Logic
+        var mouseState = Mouse.GetState();
+        bool uiCapturesMouse = _hud.IsMouseOver(mouseState.Position) || _genePoolWindow.IsMouseOver(mouseState.Position);
+
+        if (!effectivePause)
         {
             // Simulation Logic
             _tickCount++; // Increment deterministic clock
@@ -385,10 +389,18 @@ public class VivariumGame : Game
             }
         }
 
-        // World Integrity Check: O(Width*Height). Only run periodically.
-        if (_tickCount % 60 == 0)
+        // Update Inspector Input (Selection) only if UI is not capturing mouse
+        // Moved outside of (!effectivePause) so we can select while paused
+        if (!uiCapturesMouse)
         {
-            ValidateWorldIntegrity();
+            _inspector.UpdateInput(_camera, _gridMap, _agentPopulation, _plantPopulation, _structurePopulation, CellSize);
+        }
+        
+        // Camera always updates so we can look around even when paused
+        // But block zoom/pan if UI captures mouse
+        if (!uiCapturesMouse)
+        {
+            _camera.HandleInput(Mouse.GetState(), Keyboard.GetState());
         }
 
         base.Update(gameTime);
@@ -499,6 +511,21 @@ public class VivariumGame : Game
 
         // Draw Gene Pool Window (on top)
         _genePoolWindow.Draw(_spriteBatch);
+
+        // Draw "PAUSED" text if paused (and not covered by Gene Window, or maybe on top of everything?
+        if (_isPaused && !_genePoolWindow.IsVisible)
+        {
+            string pausedText = "PAUSED";
+            Vector2 textSize = _sysFont.MeasureString(pausedText);
+            Vector2 pos = new Vector2(
+                (GraphicsDevice.Viewport.Width - textSize.X) / 2,
+                30 // Top center, slightly down
+            );
+            
+            // Draw text with shadow for visibility
+            _spriteBatch.DrawString(_sysFont, pausedText, pos + new Vector2(2, 2), Color.Black);
+            _spriteBatch.DrawString(_sysFont, pausedText, pos, Color.White);
+        }
 
         _spriteBatch.End();
 

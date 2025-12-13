@@ -132,12 +132,17 @@ public class GenePoolWindow
         }
     }
 
+    public bool IsMouseOver(Point mousePos)
+    {
+        return IsVisible && _windowRect.Contains(mousePos);
+    }
+
     public void Draw(SpriteBatch spriteBatch)
     {
         if (!IsVisible) return;
 
         // Center Window
-        int width = 600;
+        int width = 700; // Increased width from 600 to 700
         int height = 500;
         _windowRect = new Rectangle(
             (_graphics.Viewport.Width - width) / 2,
@@ -227,7 +232,16 @@ public class GenePoolWindow
 
             // Big Identicon
             Rectangle bigIconRect = new Rectangle(detailsX, detailsY, 64, 64);
+            // Use PointClamp sampler state for pixel art scaling
+            // We need to end the current batch and start a new one with PointClamp
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
+            
             spriteBatch.Draw(g.Identicon, bigIconRect, Color.White);
+            
+            spriteBatch.End();
+            spriteBatch.Begin(); // Restart default batch
+
             DrawBorder(spriteBatch, bigIconRect, 2, Agent.GetColorBasedOnDietType(g.Diet));
             
             // Hash ID

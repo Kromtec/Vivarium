@@ -46,6 +46,11 @@ public class HUD
         _wasLeftButtonPressed = isPressed;
     }
 
+    public bool IsMouseOver(Point mousePos)
+    {
+        return _panelRect.Contains(mousePos) || _geneButtonRect.Contains(mousePos);
+    }
+
     public void Draw(SpriteBatch spriteBatch, long tickCount, int agents, int herbs, int omnis, int carnis, int plants, int structures)
     {
         // 1. Calculate Layout
