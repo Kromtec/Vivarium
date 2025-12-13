@@ -91,7 +91,7 @@ public static class Brain
         // --- 3.5 INSTINCTS (Biological Overrides) ---
         // We apply strong biases based on critical survival needs.
         // These are applied BEFORE activation, so they can be modulated by the network but provide a strong baseline.
-        ApplyInstincts(ref agent, gridMap, neurons, agentPopulation);
+        ApplyInstincts(ref agent, gridMap, rng, neurons, agentPopulation);
 
         // --- 4. ACTIVATION ---
         // Apply Tanh to everything AFTER the sensors (Actions + Hidden)
@@ -101,22 +101,40 @@ public static class Brain
         }
     }
 
-    private static void ApplyInstincts(ref Agent agent, GridCell[,] gridMap, float[] neurons, Agent[] agentPopulation)
+    private static void ApplyInstincts(ref Agent agent, GridCell[,] gridMap, Random rng, float[] neurons, Agent[] agentPopulation)
     {
-        // Helper to add bias
-        void AddBias(ActionType type, float amount) => neurons[BrainConfig.GetActionIndex(type)] += amount;
+        // Helper to add bias to one action and suppress all others
+        void ApplyDominantBias(ActionType targetType, float amount)
+        {
+            int targetIndex = BrainConfig.GetActionIndex(targetType);
+            int start = BrainConfig.ActionsStart;
+            int end = start + BrainConfig.ActionCount;
+
+            for (int i = start; i < end; i++)
+            {
+                if (i == targetIndex)
+                {
+                    neurons[i] += amount;
+                }
+                else
+                {
+                    neurons[i] -= amount;
+                }
+            }
+        }
 
         // 1. SURVIVAL INSTINCT (Panic)
         // If threats are nearby, run away!
         // We do a quick scan for threats.
         if (WorldSensor.DetectThreats(gridMap, agentPopulation, agent.X, agent.Y, 2, ref agent))
         {
-            AddBias(ActionType.Flee, 2.0f);
+            ApplyDominantBias(ActionType.Flee, 2.0f);
+            return; // Priority 1: Survival overrides everything
         }
 
         // 2. FEEDING INSTINCT (Hunger)
         // If hungry or low energy, seek food.
-        if (agent.Hunger > 50f || agent.Energy < agent.MaxEnergy * 0.3f)
+        if (agent.Hunger > 50f || agent.Energy < agent.MaxEnergy * 0.5f)
         {
             if (agent.Diet == DietType.Herbivore)
             {
@@ -124,7 +142,7 @@ public static class Brain
                 // We check the directional sensors we just populated.
                 // Note: This assumes the sensors are populated in the standard order (N, NE, E...)
                 // We find the direction with the highest plant density.
-                
+
                 int bestDir = -1;
                 float maxDensity = 0f;
 
@@ -140,10 +158,15 @@ public static class Brain
                 if (s > maxDensity) { maxDensity = s; bestDir = 2; }
                 if (w > maxDensity) { maxDensity = w; bestDir = 3; }
 
-                if (bestDir == 0) AddBias(ActionType.MoveN, 2.0f);
-                else if (bestDir == 1) AddBias(ActionType.MoveE, 2.0f);
-                else if (bestDir == 2) AddBias(ActionType.MoveS, 2.0f);
-                else if (bestDir == 3) AddBias(ActionType.MoveW, 2.0f);
+                if (bestDir == -1)
+                {
+                    bestDir = rng.Next(0, 4); // Random direction if no food detected
+                }
+                if (bestDir == 0) ApplyDominantBias(ActionType.MoveN, 2.0f);
+                else if (bestDir == 1) ApplyDominantBias(ActionType.MoveE, 2.0f);
+                else if (bestDir == 2) ApplyDominantBias(ActionType.MoveS, 2.0f);
+                else if (bestDir == 3) ApplyDominantBias(ActionType.MoveW, 2.0f);
+                return; // Priority 2: Food
             }
             else if (agent.Diet == DietType.Carnivore)
             {
@@ -162,16 +185,19 @@ public static class Brain
                 if (s > maxDensity) { maxDensity = s; bestDir = 2; }
                 if (w > maxDensity) { maxDensity = w; bestDir = 3; }
 
-                if (bestDir != -1)
+                if (bestDir == -1)
                 {
-                    if (bestDir == 0) AddBias(ActionType.MoveN, 2.0f);
-                    else if (bestDir == 1) AddBias(ActionType.MoveE, 2.0f);
-                    else if (bestDir == 2) AddBias(ActionType.MoveS, 2.0f);
-                    else if (bestDir == 3) AddBias(ActionType.MoveW, 2.0f);
-                    
-                    // Also encourage attacking if we smell food
-                    AddBias(ActionType.Attack, 2.0f);
+                    bestDir = rng.Next(0, 4); // Random direction if no plants detected
                 }
+                if (bestDir == 0) ApplyDominantBias(ActionType.MoveN, 2.0f);
+                else if (bestDir == 1) ApplyDominantBias(ActionType.MoveE, 2.0f);
+                else if (bestDir == 2) ApplyDominantBias(ActionType.MoveS, 2.0f);
+                else if (bestDir == 3) ApplyDominantBias(ActionType.MoveW, 2.0f);
+
+                // Also encourage attacking if we smell food
+                // We need to counteract the suppression (-2.0) and add bias (+2.0) -> +4.0 total
+                neurons[BrainConfig.GetActionIndex(ActionType.Attack)] += 4.0f;
+                return; // Priority 2: Food
             }
         }
 
@@ -179,7 +205,7 @@ public static class Brain
         // If healthy and mature, try to reproduce.
         if (agent.Energy > agent.MaxEnergy * 0.9f && agent.Age > Agent.MaturityAge)
         {
-            AddBias(ActionType.Reproduce, 2.0f);
+            ApplyDominantBias(ActionType.Reproduce, 2.0f);
         }
     }
 
