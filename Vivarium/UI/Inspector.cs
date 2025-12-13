@@ -299,7 +299,7 @@ public class Inspector
             (int)currentSize
         );
 
-        DrawBorder(spriteBatch, r, HighlightBorderThickness, Color.Cyan);
+        DrawBorder(spriteBatch, r, HighlightBorderThickness, Color.Gold);
     }
 
     private void DrawBorder(SpriteBatch sb, Rectangle r, int thickness, Color c)

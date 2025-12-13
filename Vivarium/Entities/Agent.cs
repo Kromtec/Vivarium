@@ -134,6 +134,10 @@ public struct Agent : IGridEntity
     public sbyte LastAttackDirY;
     public byte AttackVisualTimer;
 
+    public sbyte LastFleeDirX;
+    public sbyte LastFleeDirY;
+    public byte FleeVisualTimer;
+
     public void Update(GridCell[,] gridMap)
     {
         if (!IsAlive)
@@ -149,6 +153,7 @@ public struct Agent : IGridEntity
         if (MovementCooldown > 0) MovementCooldown--;
         if (AttackCooldown > 0) AttackCooldown--;
         if (AttackVisualTimer > 0) AttackVisualTimer--;
+        if (FleeVisualTimer > 0) FleeVisualTimer--;
 
         // Metabolize energy
         Hunger += MetabolismRate * 2;
@@ -542,6 +547,14 @@ public struct Agent : IGridEntity
                 if (gridMap[pendingX, pendingY] == GridCell.Empty)
                 {
                     TryMoveToLocation(gridMap, pendingX, pendingY, fleeMoveX, fleeMoveY, FleeCost);
+                    
+                    // Visual Feedback for Fleeing
+                    // We want to show where we are fleeing FROM.
+                    // If we move (1, 0), we are fleeing from (-1, 0).
+                    LastFleeDirX = (sbyte)-fleeMoveX;
+                    LastFleeDirY = (sbyte)-fleeMoveY;
+                    FleeVisualTimer = 15;
+
                     return true;
                 }
             }

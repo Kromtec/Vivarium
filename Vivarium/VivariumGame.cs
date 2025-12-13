@@ -22,6 +22,7 @@ public class VivariumGame : Game
     private Texture2D _starTexture;
     private Texture2D _roundedRectTexture;
     private Texture2D _arrowTexture;
+    private Texture2D _dotTexture;
 
     // Simulation Constants
     private const int GridHeight = 128;
@@ -269,6 +270,7 @@ public class VivariumGame : Game
 
         _roundedRectTexture = TextureGenerator.CreateRoundedRect(GraphicsDevice, 50, 20, 5);
         _arrowTexture = TextureGenerator.CreateTriangle(GraphicsDevice, 32);
+        _dotTexture = TextureGenerator.CreateCircle(GraphicsDevice, 16); // Small dot
 
         _sysFont = Content.Load<SpriteFont>("SystemFont");
 
@@ -322,6 +324,7 @@ public class VivariumGame : Game
                 for (int i = 0; i < agentPopulationSpan.Length; i++)
                 {
                     agentPopulationSpan[i].AttackVisualTimer = 0;
+                    agentPopulationSpan[i].FleeVisualTimer = 0;
                 }
             }
 
@@ -660,9 +663,11 @@ public class VivariumGame : Game
         // Calculate the center of our source texture (needed for pivot point)
         var textureCenter = new Vector2(_circleTexture.Width / 2f, _circleTexture.Height / 2f);
         var arrowCenter = new Vector2(_arrowTexture.Width / 2f, _arrowTexture.Height / 2f);
+        var dotCenter = new Vector2(_dotTexture.Width / 2f, _dotTexture.Height / 2f);
 
         float baseScale = (float)CellSize / _circleTexture.Width;
         float arrowScale = ((float)CellSize / _arrowTexture.Width) * 0.6f; // Slightly smaller than cell
+        float dotScale = ((float)CellSize / _dotTexture.Width) * 0.4f; // Small dot
 
         const float agentAgeGrowthFactor = 1.0f / Agent.MaturityAge;
 
@@ -693,9 +698,10 @@ public class VivariumGame : Game
             // Babies start small (0.3 scale) and grow to full size (1.0 scale) over 200 frames.
             // Math.Min ensures they stop growing at max size.
             float ageRatio = Math.Min(agent.Age * agentAgeGrowthFactor, 1.0f);
+            float growthFactor = 0.3f + (0.7f * ageRatio);
 
             // Linear interpolation: Start at 30% size, end at 100% size
-            float finalScale = baseScale * (0.3f + (0.7f * ageRatio));
+            float finalScale = baseScale * growthFactor;
 
             // Calculate screen position
             // Important: Add half CellSize to X and Y so we draw at the CENTER of the grid cell
@@ -716,15 +722,27 @@ public class VivariumGame : Game
                 0f
             );
 
+            // Calculate offset based on current size so indicators stick to the edge
+            // We normalize the direction vector to ensure consistent distance (circle vs square).
+            // We use 0.85f to match the "diagonal" distance the user liked (1.414 * 0.6 ~= 0.85).
+            float indicatorOffset = (CellSize * 0.85f) * growthFactor;
+
+            // Scale indicators less aggressively than the agent body
+            // Agent: 0.3 -> 1.0
+            // Indicator: 0.65 -> 1.0
+            float indicatorScaleFactor = 0.65f + (0.35f * ageRatio);
+
             // --- ATTACK VISUALIZATION ---
             if (agent.AttackVisualTimer > 0)
             {
                 float alpha = agent.AttackVisualTimer / 15f; // Fade out
                 float rotation = MathF.Atan2(agent.LastAttackDirY, agent.LastAttackDirX);
                 
+                Vector2 dir = new Vector2(agent.LastAttackDirX, agent.LastAttackDirY);
+                if (dir != Vector2.Zero) dir.Normalize();
+
                 // Offset the arrow so it appears on the edge of the agent
-                // Radius is roughly CellSize/2.
-                Vector2 offset = new Vector2(agent.LastAttackDirX, agent.LastAttackDirY) * (CellSize * 0.6f);
+                Vector2 offset = dir * indicatorOffset;
 
                 _spriteBatch.Draw(
                     _arrowTexture,
@@ -733,7 +751,31 @@ public class VivariumGame : Game
                     agent.Color * alpha,
                     rotation,
                     arrowCenter,
-                    arrowScale,
+                    arrowScale * indicatorScaleFactor,
+                    SpriteEffects.None,
+                    0f
+                );
+            }
+
+            // --- FLEE VISUALIZATION ---
+            if (agent.FleeVisualTimer > 0)
+            {
+                float alpha = agent.FleeVisualTimer / 15f; // Fade out
+                
+                Vector2 dir = new Vector2(agent.LastFleeDirX, agent.LastFleeDirY);
+                if (dir != Vector2.Zero) dir.Normalize();
+
+                // Offset the dot so it appears on the edge of the agent, in the direction of the threat
+                Vector2 offset = dir * indicatorOffset;
+
+                _spriteBatch.Draw(
+                    _dotTexture,
+                    position + offset,
+                    null,
+                    agent.Color * alpha, // Use agent color
+                    0f,
+                    dotCenter,
+                    dotScale * indicatorScaleFactor,
                     SpriteEffects.None,
                     0f
                 );
