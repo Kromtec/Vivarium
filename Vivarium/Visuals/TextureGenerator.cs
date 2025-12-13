@@ -208,4 +208,44 @@ public static class TextureGenerator
         texture.SetData(colorData);
         return texture;
     }
+
+    public static Texture2D CreateRing(GraphicsDevice graphicsDevice, int radius, int thickness)
+    {
+        int diameter = radius * 2;
+        var texture = new Texture2D(graphicsDevice, diameter, diameter);
+        var colorData = new Color[diameter * diameter];
+
+        float center = radius;
+        
+        for (int i = 0; i < diameter; i++)
+        {
+            for (int j = 0; j < diameter; j++)
+            {
+                int index = (i * diameter) + j;
+
+                float distFromCenter = Vector2.Distance(new Vector2(j, i), new Vector2(center, center));
+
+                if (distFromCenter <= radius && distFromCenter >= radius - thickness)
+                {
+                    // Simple anti-aliasing
+                    float distToEdge = Math.Min(Math.Abs(radius - distFromCenter), Math.Abs((radius - thickness) - distFromCenter));
+                    if (distToEdge < 1.0f)
+                    {
+                        colorData[index] = Color.White * distToEdge;
+                    }
+                    else
+                    {
+                        colorData[index] = Color.White;
+                    }
+                }
+                else
+                {
+                    colorData[index] = Color.Transparent;
+                }
+            }
+        }
+
+        texture.SetData(colorData);
+        return texture;
+    }
 }

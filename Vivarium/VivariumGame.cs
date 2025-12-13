@@ -23,6 +23,7 @@ public class VivariumGame : Game
     private Texture2D _roundedRectTexture;
     private Texture2D _arrowTexture;
     private Texture2D _dotTexture;
+    private Texture2D _ringTexture;
 
     // Simulation Constants
     private const int GridHeight = 128;
@@ -271,6 +272,7 @@ public class VivariumGame : Game
         _roundedRectTexture = TextureGenerator.CreateRoundedRect(GraphicsDevice, 50, 20, 5);
         _arrowTexture = TextureGenerator.CreateTriangle(GraphicsDevice, 32);
         _dotTexture = TextureGenerator.CreateCircle(GraphicsDevice, 16); // Small dot
+        _ringTexture = TextureGenerator.CreateRing(GraphicsDevice, 64, 8);
 
         _sysFont = Content.Load<SpriteFont>("SystemFont");
 
@@ -325,6 +327,7 @@ public class VivariumGame : Game
                 {
                     agentPopulationSpan[i].AttackVisualTimer = 0;
                     agentPopulationSpan[i].FleeVisualTimer = 0;
+                    // ReproductionVisualTimer is preserved to allow animation
                 }
             }
 
@@ -388,6 +391,25 @@ public class VivariumGame : Game
             }
 
             _simGraph.Update(gameTime, aliveAgents, alivePlants);
+        }
+        else
+        {
+            // When paused, loop the animation for agents that are currently showing it
+            Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
+            for (int i = 0; i < agentPopulationSpan.Length; i++)
+            {
+                ref Agent agent = ref agentPopulationSpan[i];
+                if (agent.ReproductionVisualTimer > 0)
+                {
+                    agent.ReproductionVisualTimer--;
+                    
+                    // Loop the animation while paused so the user can clearly see who reproduced
+                    if (agent.ReproductionVisualTimer == 0)
+                    {
+                        agent.ReproductionVisualTimer = 30;
+                    }
+                }
+            }
         }
 
         // World Integrity Check: O(Width*Height). Only run periodically.
@@ -486,9 +508,10 @@ public class VivariumGame : Game
             _camera.GetTransformation()
         );
 
-        DrawAgents(out int livingAgents, out int livingHerbivore, out int livingOmnivore, out int livingCarnivore);
-        DrawPlants(out int livingPlants);
         DrawStructures(out int livingStructures);
+        DrawPlants(out int livingPlants);
+        DrawKinshipLines();
+        DrawAgents(out int livingAgents, out int livingHerbivore, out int livingOmnivore, out int livingCarnivore);
 
         // Draw the Selection Box inside the world
         float totalSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
@@ -664,14 +687,18 @@ public class VivariumGame : Game
         var textureCenter = new Vector2(_circleTexture.Width / 2f, _circleTexture.Height / 2f);
         var arrowCenter = new Vector2(_arrowTexture.Width / 2f, _arrowTexture.Height / 2f);
         var dotCenter = new Vector2(_dotTexture.Width / 2f, _dotTexture.Height / 2f);
+        var ringCenter = new Vector2(_ringTexture.Width / 2f, _ringTexture.Height / 2f);
 
         float baseScale = (float)CellSize / _circleTexture.Width;
         float arrowScale = ((float)CellSize / _arrowTexture.Width) * 0.6f; // Slightly smaller than cell
         float dotScale = ((float)CellSize / _dotTexture.Width) * 0.4f; // Small dot
+        float ringBaseScale = (float)CellSize / _ringTexture.Width;
 
         const float agentAgeGrowthFactor = 1.0f / Agent.MaturityAge;
 
         Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
+
+        // PASS 1: Draw Agent Bodies (Bottom Layer)
         for (int i = 0; i < agentPopulationSpan.Length; i++)
         {
             ref Agent agent = ref agentPopulationSpan[i];
@@ -720,6 +747,23 @@ public class VivariumGame : Game
                 finalScale,
                 SpriteEffects.None,
                 0f
+            );
+        }
+
+        // PASS 2: Draw Visual Effects (Top Layer)
+        // We iterate again to ensure effects are drawn ON TOP of all agent bodies (no occlusion by neighbors)
+        for (int i = 0; i < agentPopulationSpan.Length; i++)
+        {
+            ref Agent agent = ref agentPopulationSpan[i];
+            if (!agent.IsAlive) continue;
+
+            // Re-calculate position/growth for effects
+            float ageRatio = Math.Min(agent.Age * agentAgeGrowthFactor, 1.0f);
+            float growthFactor = 0.3f + (0.7f * ageRatio);
+            
+            Vector2 position = new Vector2(
+                agent.X * CellSize + HalfCellSize,
+                agent.Y * CellSize + HalfCellSize
             );
 
             // Calculate offset based on current size so indicators stick to the edge
@@ -780,7 +824,91 @@ public class VivariumGame : Game
                     0f
                 );
             }
+
+            // --- REPRODUCTION VISUALIZATION ---
+            if (agent.ReproductionVisualTimer > 0)
+            {
+                float t = 1.0f - (agent.ReproductionVisualTimer / 30f); // 0 to 1 over time
+                float alpha = 1.0f - t; // Fade out
+                
+                // Start larger (0.8x) and expand further (3.0x) to be clearly visible
+                float scale = ringBaseScale * (0.8f + (t * 2.2f)); 
+
+                _spriteBatch.Draw(
+                    _ringTexture,
+                    position,
+                    null,
+                    Color.White * alpha,
+                    0f,
+                    ringCenter,
+                    scale,
+                    SpriteEffects.None,
+                    0f
+                );
+            }
         }
+    }
+
+    private void DrawKinshipLines()
+    {
+        if (!_inspector.IsEntitySelected || _inspector.SelectedType != EntityType.Agent) return;
+
+        // Get the selected agent
+        // We need to find the agent with the selected ID.
+        // Since we don't have a direct reference, we search.
+        // Optimization: Inspector stores Index.
+        // We can't access Inspector's private index, but we can use the public SelectedGridPos to find it in the map.
+        
+        var gridPos = _inspector.SelectedGridPos;
+        var cell = _gridMap[gridPos.X, gridPos.Y];
+        
+        if (cell.Type != EntityType.Agent) return;
+
+        ref Agent selectedAgent = ref _agentPopulation[cell.Index];
+        if (!selectedAgent.IsAlive) return;
+
+        Vector2 selectedPos = new Vector2(
+            (selectedAgent.X * CellSize) + HalfCellSize,
+            (selectedAgent.Y * CellSize) + HalfCellSize
+        );
+
+        Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
+        for (int i = 0; i < agentPopulationSpan.Length; i++)
+        {
+            ref Agent other = ref agentPopulationSpan[i];
+            if (!other.IsAlive || i == cell.Index) continue;
+
+            // Check Kinship
+            if (selectedAgent.IsDirectlyRelatedTo(ref other))
+            {
+                Vector2 otherPos = new Vector2(
+                    (other.X * CellSize) + HalfCellSize,
+                    (other.Y * CellSize) + HalfCellSize
+                );
+
+                // Draw Line
+                DrawLine(selectedPos, otherPos, selectedAgent.Color * 0.5f, 2);
+            }
+        }
+    }
+
+    private void DrawLine(Vector2 start, Vector2 end, Color color, int thickness)
+    {
+        Vector2 edge = end - start;
+        float angle = MathF.Atan2(edge.Y, edge.X);
+        float length = edge.Length();
+
+        _spriteBatch.Draw(
+            _pixelTexture,
+            start,
+            null,
+            color,
+            angle,
+            Vector2.Zero,
+            new Vector2(length, thickness),
+            SpriteEffects.None,
+            0f
+        );
     }
 
     private void ToggleFullscreen()

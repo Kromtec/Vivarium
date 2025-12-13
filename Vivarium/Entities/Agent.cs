@@ -138,6 +138,8 @@ public struct Agent : IGridEntity
     public sbyte LastFleeDirY;
     public byte FleeVisualTimer;
 
+    public byte ReproductionVisualTimer;
+
     public void Update(GridCell[,] gridMap)
     {
         if (!IsAlive)
@@ -154,6 +156,7 @@ public struct Agent : IGridEntity
         if (AttackCooldown > 0) AttackCooldown--;
         if (AttackVisualTimer > 0) AttackVisualTimer--;
         if (FleeVisualTimer > 0) FleeVisualTimer--;
+        if (ReproductionVisualTimer > 0) ReproductionVisualTimer--;
 
         // Metabolize energy
         Hunger += MetabolismRate * 2;
@@ -409,6 +412,10 @@ public struct Agent : IGridEntity
 
         // Set reproduction cooldown (Prevent rapid-fire breeding)
         ReproductionCooldown = 600; // 10 seconds at 60 FPS
+
+        // Visual Feedback
+        ReproductionVisualTimer = 30; // Show for 0.5 seconds (longer than attack)
+
         return true;
     }
 
@@ -666,7 +673,7 @@ public struct Agent : IGridEntity
             {
                 var retaliationDamage = baseDamage * victim.Power / Resilience;
                 ChangeEnergy(-retaliationDamage * 0.2f, gridMap); // Retaliation is less effective
-                
+
                 // Visual Feedback for Retaliation (Victim hits back!)
                 // The victim is attacking US (the attacker).
                 // Direction is -dx, -dy relative to the victim.
