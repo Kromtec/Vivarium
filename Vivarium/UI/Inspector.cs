@@ -145,10 +145,19 @@ public class Inspector
                     if (isSameAgent && agent.IsAlive)
                     {
                         AddRow("ID", $"#{agent.Id}", ref contentHeight);
+                        AddRow("Parent ID", $"#{agent.ParentId}", ref contentHeight);
                         AddRow("Generation", $"{agent.Generation}", ref contentHeight);
+                        AddRow("Diet", $"{agent.Diet}", ref contentHeight);
                         AddRow("Age", $"{agent.Age:F0} t | {agent.Age / VivariumGame.FramesPerSecond:F0} s", ref contentHeight);
                         AddProgressBar("Energy", agent.Energy, agent.MaxEnergy, Color.Lerp(Color.Red, Color.Lime, agent.Energy / agent.MaxEnergy), ref contentHeight);
                         AddProgressBar("Hunger", agent.Hunger, 100f, Color.Lerp(Color.Lime, Color.Red, agent.Hunger / 100f), ref contentHeight);
+
+                        // Cooldowns
+                        AddSeparator(ref contentHeight);
+                        AddHeader("COOLDOWNS", ref contentHeight);
+                        AddProgressBar("Attack", agent.AttackCooldown, 60f, Color.Orange, ref contentHeight);
+                        AddProgressBar("Move", agent.MovementCooldown, 5f, Color.LightBlue, ref contentHeight);
+                        AddProgressBar("Breed", agent.ReproductionCooldown, 600f, Color.Pink, ref contentHeight);
 
                         // Traits
                         AddSeparator(ref contentHeight);
@@ -160,6 +169,14 @@ public class Inspector
                         AddBrainBar(nameof(TraitType.Perception), agent.Perception, false, ref contentHeight);
                         AddBrainBar(nameof(TraitType.Speed), agent.Speed, false, ref contentHeight);
                         AddBrainBar("Carni <-> Herbi", agent.TrophicBias, false, ref contentHeight);
+
+                        // Inputs (Sensors)
+                        AddSeparator(ref contentHeight);
+                        AddHeader("SENSORY INPUTS", ref contentHeight);
+                        AddBrainBar("Oscillator", GetSensorVal(ref agent, SensorType.Oscillator), false, ref contentHeight);
+                        AddBrainBar("Rand", GetSensorVal(ref agent, SensorType.Random), true, ref contentHeight);
+                        AddBrainBar("Agnt Dens", GetSensorVal(ref agent, SensorType.AgentDensity), true, ref contentHeight);
+                        AddBrainBar("Plnt Dens", GetSensorVal(ref agent, SensorType.PlantDensity), true, ref contentHeight);
 
                         // Outputs (Actions)
                         AddSeparator(ref contentHeight);
@@ -316,6 +333,12 @@ public class Inspector
         return agent.NeuronActivations[idx];
     }
 
+    private static float GetSensorVal(ref Agent agent, SensorType type)
+    {
+        int idx = (int)type;
+        return agent.NeuronActivations[idx];
+    }
+
     // --- ELEMENT INTERFACES & STRUCTS (Internal) ---
 
     private interface IInspectorElement
@@ -397,7 +420,7 @@ public class Inspector
             if (positiveOnly)
             {
                 float pct = Math.Clamp(value, 0f, 1f);
-                sb.Draw(ctx._pixelTexture, new Rectangle(bgRect.X, barY, (int)(barWidth * pct), barHeight), Color.OrangeRed);
+                sb.Draw(ctx._pixelTexture, new Rectangle(bgRect.X, barY, (int)(barWidth * pct), barHeight), Color.YellowGreen);
             }
             else
             {
