@@ -315,6 +315,16 @@ public class VivariumGame : Game
             Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
             Span<Plant> plantPopulationSpan = _plantPopulation.AsSpan();
 
+            // If we are single-stepping, clear previous visual feedback so we only see
+            // what happens in this specific frame.
+            if (singleStep)
+            {
+                for (int i = 0; i < agentPopulationSpan.Length; i++)
+                {
+                    agentPopulationSpan[i].AttackVisualTimer = 0;
+                }
+            }
+
             // --- BIOLOGICAL LOOP ---
             int aliveAgents = 0;
             for (int index = 0; index < agentPopulationSpan.Length; index++)
