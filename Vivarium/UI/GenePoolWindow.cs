@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Vivarium.Biology;
 using Vivarium.Entities;
-using Vivarium.Visuals;
 
 namespace Vivarium.UI;
 
@@ -22,7 +21,7 @@ public class GenePoolWindow
     // Data
     private List<GenomeEntry> _topGenomes = new List<GenomeEntry>();
     private GenomeEntry? _selectedGenome;
-    private Texture2D _selectedIdenticon;
+    private DietType? _filterDiet = null; // null = All
 
     // UI State
     private int _scrollOffset = 0;
@@ -46,6 +45,9 @@ public class GenePoolWindow
         foreach (var agent in agents)
         {
             if (!agent.IsAlive) continue;
+            
+            // Apply Filter
+            if (_filterDiet.HasValue && agent.Diet != _filterDiet.Value) continue;
 
             ulong hash = GenomeHelper.CalculateGenomeHash(agent.Genome);
 
@@ -112,6 +114,30 @@ public class GenePoolWindow
         {
             Point mousePos = mouse.Position;
             
+            // Filter Buttons Input
+            // Must match Draw coordinates
+            Vector2 headerSize = _font.MeasureString("GENOME CENSUS (TOP 20)");
+            int buttonHeight = 24; // Increased height (was 20)
+            int headerY = _windowRect.Y + UITheme.Padding + 5; // Added +5 padding
+            // Center button vertically relative to header text
+            int filterY = headerY + (int)((headerSize.Y - buttonHeight) / 2);
+            
+            int filterX = _windowRect.X + UITheme.Padding + 240;
+            
+            // All
+            if (new Rectangle(filterX, filterY, 35, buttonHeight).Contains(mousePos)) 
+            {
+                _filterDiet = null;
+                // Force refresh immediately if possible, or wait for next frame update
+                // Since RefreshData is called from Game.Update, it will pick up change next frame.
+            }
+            // Herbivore
+            if (new Rectangle(filterX + 40, filterY, 35, buttonHeight).Contains(mousePos)) _filterDiet = DietType.Herbivore;
+            // Omnivore
+            if (new Rectangle(filterX + 80, filterY, 35, buttonHeight).Contains(mousePos)) _filterDiet = DietType.Omnivore;
+            // Carnivore
+            if (new Rectangle(filterX + 120, filterY, 35, buttonHeight).Contains(mousePos)) _filterDiet = DietType.Carnivore;
+
             // Check if inside List Area
             Rectangle listRect = new Rectangle(_windowRect.X + UITheme.Padding, _windowRect.Y + 50, ListWidth, _windowRect.Height - 60);
             
@@ -146,7 +172,7 @@ public class GenePoolWindow
 
         // Center Window
         int width = 700; // Increased width from 600 to 700
-        int height = 500;
+        int height = 520;
         _windowRect = new Rectangle(
             (_graphics.Viewport.Width - width) / 2,
             (_graphics.Viewport.Height - height) / 2,
@@ -160,10 +186,26 @@ public class GenePoolWindow
         DrawBorder(spriteBatch, _windowRect, UITheme.BorderThickness, UITheme.BorderColor);
 
         // Header
-        spriteBatch.DrawString(_font, "GENOME CENSUS (TOP 20)", new Vector2(_windowRect.X + UITheme.Padding, _windowRect.Y + UITheme.Padding), UITheme.HeaderColor);
+        Vector2 headerPos = new Vector2(_windowRect.X + UITheme.Padding, _windowRect.Y + UITheme.Padding);
+        string headerText = "GENOME CENSUS (TOP 20)";
+        Vector2 headerSize = _font.MeasureString(headerText);
+        // Move header text down by 3 pixels to align with button text
+        spriteBatch.DrawString(_font, headerText, new Vector2(headerPos.X, headerPos.Y + 3), UITheme.HeaderColor);
         
+        // Filter Buttons
+        // Center buttons vertically relative to header text (using original headerPos)
+        int buttonHeight = 24; // Increased height (was 20)
+        int filterY = (int)(headerPos.Y + (headerSize.Y - buttonHeight) / 2);
+        
+        int filterX = _windowRect.X + UITheme.Padding + 240;
+        
+        DrawFilterButton(spriteBatch, "ALL", null, filterX, filterY, buttonHeight);
+        DrawFilterButton(spriteBatch, "H", DietType.Herbivore, filterX + 40, filterY, buttonHeight);
+        DrawFilterButton(spriteBatch, "O", DietType.Omnivore, filterX + 80, filterY, buttonHeight);
+        DrawFilterButton(spriteBatch, "C", DietType.Carnivore, filterX + 120, filterY, buttonHeight);
+
         // Close Button [X]
-        spriteBatch.DrawString(_font, "[X]", new Vector2(_windowRect.Right - 30, _windowRect.Y + 5), UITheme.BadColor);
+        spriteBatch.DrawString(_font, "X", new Vector2(_windowRect.Right - 35, _windowRect.Y + UITheme.Padding), UITheme.BadColor);
 
         // --- LEFT PANEL: LIST ---
         int listX = _windowRect.X + UITheme.Padding;
@@ -292,6 +334,10 @@ public class GenePoolWindow
             
             detailsY += 30;
 
+            // Traits Header
+            spriteBatch.DrawString(_font, "TRAITS", new Vector2(detailsX, detailsY), UITheme.HeaderColor);
+            detailsY += 25;
+
             // Traits
             DrawTraitBar(spriteBatch, "Strength", g.Representative.Strength, detailsX, ref detailsY);
             DrawTraitBar(spriteBatch, "Bravery", g.Representative.Bravery, detailsX, ref detailsY);
@@ -306,6 +352,27 @@ public class GenePoolWindow
             int detailsX = listX + ListWidth + 30;
             spriteBatch.DrawString(_font, "Select a genome to view details.", new Vector2(detailsX, listY + 100), Color.Gray);
         }
+    }
+
+    private void DrawFilterButton(SpriteBatch sb, string label, DietType? type, int x, int y, int height)
+    {
+        bool isSelected = _filterDiet == type;
+        Rectangle rect = new Rectangle(x, y, 35, height);
+        
+        Color bgColor = isSelected ? UITheme.ButtonColor : Color.Black * 0.5f;
+        if (type.HasValue)
+        {
+             // Use diet color for active state or border?
+             if (isSelected) bgColor = Agent.GetColorBasedOnDietType(type.Value);
+        }
+
+        sb.Draw(_pixelTexture, rect, bgColor);
+        DrawBorder(sb, rect, 1, isSelected ? Color.White : UITheme.BorderColor);
+        
+        Vector2 size = _font.MeasureString(label);
+        // Add +3 to Y to visually center the text better (pushed down from top)
+        Vector2 pos = new Vector2(x + (rect.Width - size.X) / 2, y + (rect.Height - size.Y) / 2 + 3);
+        sb.DrawString(_font, label, pos, Color.White);
     }
 
     private void DrawTraitBar(SpriteBatch sb, string label, float value, int x, ref int y)

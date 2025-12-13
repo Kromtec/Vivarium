@@ -123,16 +123,32 @@ public class HUD
         _cursorY += graphHeight + graphPadding;
 
         // -- POPULATION STATS --
-        spriteBatch.DrawString(_font, "POPULATION", new Vector2(leftX, _cursorY), UITheme.HeaderColor);
+        _cursorY += 5; // Added padding
+        // Move header text down by 3 pixels to align with button text
+        spriteBatch.DrawString(_font, "POPULATION", new Vector2(leftX, _cursorY + 3), UITheme.HeaderColor);
         
-        // Draw Gene Button next to header
+        // Draw Gene Button right aligned
+        int buttonWidth = 60;
+        int buttonHeight = 24; // Increased height (was 20)
+        
         Vector2 headerSize = _font.MeasureString("POPULATION");
-        _geneButtonRect = new Rectangle(leftX + (int)headerSize.X + 10, _cursorY, 60, 20);
+        // Align vertically with text center (using original cursorY)
+        int buttonY = _cursorY + (int)((headerSize.Y - buttonHeight) / 2);
+        
+        _geneButtonRect = new Rectangle(rightX - buttonWidth, buttonY, buttonWidth, buttonHeight);
         
         // Button Visuals
         spriteBatch.Draw(_pixelTexture, _geneButtonRect, UITheme.ButtonColor);
         DrawBorder(spriteBatch, _geneButtonRect, 1, UITheme.BorderColor);
-        spriteBatch.DrawString(_font, "GENES", new Vector2(_geneButtonRect.X + 5, _geneButtonRect.Y + 2), Color.White);
+        
+        // Center text in button
+        Vector2 btnTextSize = _font.MeasureString("GENES");
+        // Add +3 to Y to visually center the text better (pushed down from top)
+        Vector2 btnTextPos = new Vector2(
+            _geneButtonRect.X + (_geneButtonRect.Width - btnTextSize.X) / 2,
+            _geneButtonRect.Y + (_geneButtonRect.Height - btnTextSize.Y) / 2 + 3
+        );
+        spriteBatch.DrawString(_font, "GENES", btnTextPos, Color.White);
 
         _cursorY += 30;
 
