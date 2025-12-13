@@ -10,8 +10,6 @@ namespace Vivarium.Entities;
 public struct Agent : IGridEntity
 {
     // Reproduction Thermodynamics
-    // Reproduction Thermodynamics
-    // Reproduction Thermodynamics
     public const float ReproductionOverheadPct = 0.30f; // 30% of MaxEnergy wasted as effort (Harder to breed)
     // Buffer to ensure parent survives the process
     public const float MinEnergyBuffer = 5.0f;
@@ -76,7 +74,6 @@ public struct Agent : IGridEntity
         }
     }
 
-
     public float Hunger
     {
         get;
@@ -110,6 +107,138 @@ public struct Agent : IGridEntity
             Energy += amount + (amount * MetabolicEfficiency * 0.5f);
         }
     }
+
+    public Gene[] Genome { get; set; }
+    public float[] NeuronActivations { get; set; }
+
+    // Traits derived from genome (normalized to [-1, +1])
+    public float Strength { get; private set; }
+
+    public float Power { get; private set; }
+    public float Resilience { get; private set; }
+
+    public float Bravery { get; private set; }
+    public float AttackThreshold { get; private set; }
+    public float MetabolicEfficiency { get; private set; }
+    public float MetabolismRate { get; private set; }
+
+    public float Perception { get; private set; }
+    public float Speed { get; private set; }
+    public float MovementThreshold {  get; private set; }
+    public float TrophicBias { get; private set; } // continuous diet axis: -1 carnivore .. +1 herbivore
+    public float Constitution { get; private set; }
+    public float MaxEnergy { get; private set; }
+
+    public void Update(GridCell[,] gridMap)
+    {
+        if (!IsAlive)
+        {
+            return;
+        }
+
+        // Age the agent
+        Age++;
+
+        // Cooldown timers
+        if (ReproductionCooldown > 0) ReproductionCooldown--;
+        if (MovementCooldown > 0) MovementCooldown--;
+        if (AttackCooldown > 0) AttackCooldown--;
+
+        // Metabolize energy
+        Hunger += MetabolismRate * 2;
+        ChangeEnergy(-(MetabolismRate + (MetabolismRate * (Hunger / 100))), gridMap);
+
+        // Color Update
+        Color = Color.Lerp(Color.Black, OriginalColor, Math.Clamp(Energy / 100f, .25f, 1f));
+    }
+
+    public readonly bool IsDirectlyRelatedTo(ref Agent other)
+    {
+        return ParentId == other.Id || Id == other.ParentId;
+    }
+
+    public static DietType DetermineDiet(float trophicBias)
+    {
+        return trophicBias switch
+        {
+            < -0.3f => DietType.Carnivore,
+            > 0.3f => DietType.Herbivore,
+            _ => DietType.Omnivore,
+        };
+    }
+
+    public static Color GetColorBasedOnDietType(DietType dietType)
+    {
+        return dietType switch
+        {
+            DietType.Herbivore => Visuals.VivariumColors.Herbivore,
+            DietType.Carnivore => Visuals.VivariumColors.Carnivore,
+            DietType.Omnivore => Visuals.VivariumColors.Omnivore,
+            _ => Visuals.VivariumColors.Agent
+        };
+    }
+
+    public static Agent Create(int index, int x, int y, Random rng)
+    {
+        Gene[] initialGenome = Genetics.CreateGenome(rng);
+
+        return ConstructAgent(index, x, y, initialGenome);
+    }
+
+    public static Agent CreateChild(int index, int x, int y, Random rng, Gene[] genome, ref Agent parent, float initialEnergy)
+    {
+        // Apply Mutation to the genome of the parent to create the child's genome
+        Genetics.Mutate(ref genome, rng);
+
+        Agent child = ConstructAgent(index, x, y, genome, parent, initialEnergy);
+        child.Generation = parent.Generation + 1;
+        return child;
+    }
+
+    private static Agent ConstructAgent(int index, int x, int y, Gene[] genome, Agent? parent = null, float? initialEnergy = null)
+    {
+        // Extract traits and assign individually
+        float strength = Genetics.ExtractTrait(genome, Genetics.TraitType.Strength);
+        float bravery = Genetics.ExtractTrait(genome, Genetics.TraitType.Bravery);
+        float metabolicEfficiency = Genetics.ExtractTrait(genome, Genetics.TraitType.MetabolicEfficiency);
+        float perception = Genetics.ExtractTrait(genome, Genetics.TraitType.Perception);
+        float speed = Genetics.ExtractTrait(genome, Genetics.TraitType.Speed);
+        float trophicBias = Genetics.ExtractTrait(genome, Genetics.TraitType.TrophicBias);
+        float constitution = Genetics.ExtractTrait(genome, Genetics.TraitType.Constitution);
+
+        DietType dietType = DetermineDiet(trophicBias);
+        return new Agent()
+        {
+            Id = VivariumGame.NextEntityId++,
+            // Initialize MaxEnergy FIRST so Energy clamp works correctly
+            MaxEnergy = 100f * (1.0f + (constitution * 0.5f)),
+            Index = index,
+            X = x,
+            Y = y,
+            ParentId = parent?.Id ?? -1,
+            OriginalColor = GetColorBasedOnDietType(dietType),
+            IsAlive = true,
+            Diet = dietType,
+            Energy = initialEnergy ?? 100f,
+            Genome = genome,
+            NeuronActivations = new float[BrainConfig.NeuronCount],
+            Strength = strength,
+            Power = 1.0f + (strength * 0.5f),
+            Resilience = 1.0f + (constitution * 0.5f),
+            Bravery = bravery,
+            AttackThreshold = BaseAttackThreshold * (1.0f + (bravery * 0.5f)),
+            MetabolicEfficiency = metabolicEfficiency,
+            MetabolismRate = BaseMetabolismRate * (1f - (metabolicEfficiency * 0.5f)),
+            Perception = perception,
+            Speed = speed,
+            MovementThreshold = BaseMovementThreshold - (speed * BaseMovementThreshold),
+            TrophicBias = trophicBias,
+            Constitution = constitution
+        };
+    }
+
+
+    // Methods called from Brain.Act()
 
     public bool TryMoveToLocation(GridCell[,] gridMap, int pendingX, int pendingY, int dx, int dy, float? overrideCost = null)
     {
@@ -173,50 +302,6 @@ public struct Agent : IGridEntity
         ChangeEnergy(-cost, gridMap);
         MovementCooldown = BaseMovementCooldown - (int)(Energy * 0.02 * Math.Clamp(Speed, 0d, 1d)); // - 0 to 2 frames
         return true;
-    }
-
-    public Gene[] Genome { get; set; }
-    public float[] NeuronActivations { get; set; }
-
-    // Traits derived from genome (normalized to [-1, +1])
-    public float Strength { get; private set; }
-
-    public float Power { get; private set; }
-    public float Resilience { get; private set; }
-
-    public float Bravery { get; private set; }
-    public float AttackThreshold { get; private set; }
-    public float MetabolicEfficiency { get; private set; }
-    public float MetabolismRate { get; private set; }
-
-    public float Perception { get; private set; }
-    public float Speed { get; private set; }
-    public float MovementThreshold {  get; private set; }
-    public float TrophicBias { get; private set; } // continuous diet axis: -1 carnivore .. +1 herbivore
-    public float Constitution { get; private set; }
-    public float MaxEnergy { get; private set; }
-
-    public void Update(GridCell[,] gridMap)
-    {
-        if (!IsAlive)
-        {
-            return;
-        }
-
-        // Age the agent
-        Age++;
-
-        // Cooldown timers
-        if (ReproductionCooldown > 0) ReproductionCooldown--;
-        if (MovementCooldown > 0) MovementCooldown--;
-        if (AttackCooldown > 0) AttackCooldown--;
-
-        // Metabolize energy
-        Hunger += MetabolismRate * 2;
-        ChangeEnergy(-(MetabolismRate + (MetabolismRate * (Hunger / 100))), gridMap);
-
-        // Color Update
-        Color = Color.Lerp(Color.Black, OriginalColor, Math.Clamp(Energy / 100f, .25f, 1f));
     }
 
     public bool TryReproduce(Span<Agent> population, GridCell[,] gridMap, Random rng)
@@ -316,92 +401,7 @@ public struct Agent : IGridEntity
         return true;
     }
 
-    public bool IsDirectlyRelatedTo(ref Agent other)
-    {
-        return ParentId == other.Id || Id == other.ParentId;
-    }
-
-    public static DietType DetermineDiet(float trophicBias)
-    {
-        return trophicBias switch
-        {
-            < -0.3f => DietType.Carnivore,
-            > 0.3f => DietType.Herbivore,
-            _ => DietType.Omnivore,
-        };
-    }
-
-    public static Color GetColorBasedOnDietType(DietType dietType)
-    {
-        return dietType switch
-        {
-            DietType.Herbivore => Visuals.VivariumColors.Herbivore,
-            DietType.Carnivore => Visuals.VivariumColors.Carnivore,
-            DietType.Omnivore => Visuals.VivariumColors.Omnivore,
-            _ => Visuals.VivariumColors.Agent
-        };
-    }
-
-    public static Agent Create(int index, int x, int y, Random rng)
-    {
-        Gene[] initialGenome = Genetics.CreateGenome(rng);
-
-        return ConstructAgent(index, x, y, initialGenome);
-    }
-
-    public static Agent CreateChild(int index, int x, int y, Random rng, Gene[] genome, ref Agent parent, float initialEnergy)
-    {
-        // Apply Mutation to the genome of the parent to create the child's genome
-        Genetics.Mutate(ref genome, rng);
-
-        Agent child = ConstructAgent(index, x, y, genome, parent, initialEnergy);
-        child.Generation = parent.Generation + 1;
-        return child;
-    }
-
-    private static Agent ConstructAgent(int index, int x, int y, Gene[] genome, Agent? parent = null, float? initialEnergy = null)
-    {
-        // Extract traits and assign individually
-        float strength = Genetics.ExtractTrait(genome, Genetics.TraitType.Strength);
-        float bravery = Genetics.ExtractTrait(genome, Genetics.TraitType.Bravery);
-        float metabolicEfficiency = Genetics.ExtractTrait(genome, Genetics.TraitType.MetabolicEfficiency);
-        float perception = Genetics.ExtractTrait(genome, Genetics.TraitType.Perception);
-        float speed = Genetics.ExtractTrait(genome, Genetics.TraitType.Speed);
-        float trophicBias = Genetics.ExtractTrait(genome, Genetics.TraitType.TrophicBias);
-        float constitution = Genetics.ExtractTrait(genome, Genetics.TraitType.Constitution);
-
-        DietType dietType = DetermineDiet(trophicBias);
-        return new Agent()
-        {
-            Id = VivariumGame.NextEntityId++,
-            // Initialize MaxEnergy FIRST so Energy clamp works correctly
-            MaxEnergy = 100f * (1.0f + (constitution * 0.5f)),
-            Index = index,
-            X = x,
-            Y = y,
-            ParentId = parent?.Id ?? -1,
-            OriginalColor = GetColorBasedOnDietType(dietType),
-            IsAlive = true,
-            Diet = dietType,
-            Energy = initialEnergy ?? 100f,
-            Genome = genome,
-            NeuronActivations = new float[BrainConfig.NeuronCount],
-            Strength = strength,
-            Power = 1.0f + (strength * 0.5f),
-            Resilience = 1.0f + (constitution * 0.5f),
-            Bravery = bravery,
-            AttackThreshold = BaseAttackThreshold * (1.0f + (bravery * 0.5f)),
-            MetabolicEfficiency = metabolicEfficiency,
-            MetabolismRate = BaseMetabolismRate * (1f - (metabolicEfficiency * 0.5f)),
-            Perception = perception,
-            Speed = speed,
-            MovementThreshold = BaseMovementThreshold - (speed * BaseMovementThreshold),
-            TrophicBias = trophicBias,
-            Constitution = constitution
-        };
-    }
-
-    public bool TryPerformAreaAttack(GridCell[,] gridMap, Span<Agent> agentPopulation, Span<Plant> plantPopulation, Random rng)
+    public bool TryAreaAttack(GridCell[,] gridMap, Span<Agent> agentPopulation, Span<Plant> plantPopulation, Random rng)
     {
         if (AttackCooldown > 0) return false;
 

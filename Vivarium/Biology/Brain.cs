@@ -42,9 +42,9 @@ public static class Brain
 
         var density = WorldSensor.ScanLocalArea(gridMap, agent.X, agent.Y, radius: 2);
 
-        neurons[(int)SensorType.AgentDensity] = density.AgentDensity;
-        neurons[(int)SensorType.PlantDensity] = density.PlantDensity;
-        neurons[(int)SensorType.StructureDensity] = density.StructureDensity;
+        neurons[(int)SensorType.AgentDensity] = density.AgentDensity;                   //  0 .. +1
+        neurons[(int)SensorType.PlantDensity] = density.PlantDensity;                   //  0 .. +1
+        neurons[(int)SensorType.StructureDensity] = density.StructureDensity;           //  0 .. +1
 
         // Directional sensors (8-way). Perception influences effective radius.
         const int baseRadius = 2;
@@ -123,7 +123,7 @@ public static class Brain
         }
 
         if (GetAction(ActionType.Attack) > agent.AttackThreshold &&
-            agent.TryPerformAreaAttack(gridMap, agentPopulationSpan, plantPopulationSpan, rng))
+            agent.TryAreaAttack(gridMap, agentPopulationSpan, plantPopulationSpan, rng))
         {
             return;
         }

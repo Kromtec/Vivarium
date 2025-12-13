@@ -27,7 +27,7 @@ public readonly struct Gene
     // Bits 16-31: The weight of the connection (signed 16-bit integer)
     // We shift right by 16. Since we cast to 'short', the sign bit is preserved properly.
     // This gives us a raw value between -32768 and 32767.
-    public short RawWeight => (short)(Dna >> 16);
+    private short RawWeight => (short)(Dna >> 16);
 
     // Helper to get the weight as a float (e.g., between -4.0 and 4.0)
     // Neural networks work better with small float values.
