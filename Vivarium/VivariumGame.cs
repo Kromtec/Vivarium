@@ -27,22 +27,17 @@ public class VivariumGame : Game
     private const int StructureCount = GridWidth * GridHeight / 64;
     public const double FramesPerSecond = 60d;
 
-    // Using .NET 10 specific array pooling optimizations if we wanted, 
-    // but a simple array is fine for now.
     private Agent[] _agentPopulation;
     private Plant[] _plantPopulation;
     private Structure[] _structurePopulation;
     private Random _rng;
 
-    // Stores the index of the agent currently at this coordinate.
-    // -1 means the cell is empty.
     private GridCell[,] _gridMap;
 
     private double _fpsTimer;
     private int _framesCounter;
     private int _currentFps;
 
-    // Store the keyboard state from the previous frame to detect key presses (edges)
     private KeyboardState _previousKeyboardState;
 
     private Camera2D _camera;
@@ -64,9 +59,6 @@ public class VivariumGame : Game
         IsMouseVisible = true;
 
         TargetElapsedTime = TimeSpan.FromSeconds(1d / FramesPerSecond);
-
-        // VS 2026 / .NET 10 defaults to high-performance garbage collection settings
-        // but we ensure we run at fixed time step for simulation stability.
         IsFixedTimeStep = true;
     }
 
@@ -79,14 +71,12 @@ public class VivariumGame : Game
 
         _graphics.PreferredBackBufferWidth = screenWidth;
         _graphics.PreferredBackBufferHeight = screenHeight;
-        // Modern .NET 10 apps handle high-DPI scaling better
         _graphics.HardwareModeSwitch = false;
         _graphics.SynchronizeWithVerticalRetrace = true;
         _graphics.ApplyChanges();
 
         _rng = new Random(64);
 
-        // .NET 10 JIT optimizes array allocation significantly
         _agentPopulation = new Agent[AgentCount];
         _plantPopulation = new Plant[PlantCount];
         _structurePopulation = new Structure[StructureCount];
@@ -101,7 +91,6 @@ public class VivariumGame : Game
         const float gridPixelWidth = GridWidth * CellSize;
         const float gridPixelHeight = GridHeight * CellSize;
 
-        // Restrict zoom out so the height fits exactly the screen
         _camera.MinZoom = screenHeight / gridPixelHeight;
 
         float zoomX = screenWidth / gridPixelWidth;
@@ -135,17 +124,14 @@ public class VivariumGame : Game
         {
             bool placed = false;
 
-            // 1. CLUSTER GROWTH
-            // Try to attach to an existing neighbor
+            // Cluster Growth
             if (i > 0 && _rng.NextDouble() > newClusterChance)
             {
                 for (int attempt = 0; attempt < GrowthAttempts; attempt++)
                 {
-                    // Choose random "Parent" from those already placed
                     int parentIndex = _rng.Next(0, i);
-                    T parent = populationSpan[parentIndex]; // The Interface/Generic helps here
+                    T parent = populationSpan[parentIndex];
 
-                    // Random neighbor
                     int dx = _rng.Next(-1, 2);
                     int dy = _rng.Next(-1, 2);
                     if (dx == 0 && dy == 0) continue;
@@ -157,7 +143,6 @@ public class VivariumGame : Game
                     {
                         if (_gridMap[tx, ty] == GridCell.Empty)
                         {
-                            // Call factory to build the concrete object
                             T newItem = createFactory(i, tx, ty);
 
                             populationSpan[i] = newItem;
@@ -170,7 +155,7 @@ public class VivariumGame : Game
                 }
             }
 
-            // 2. FALLBACK / NEW SEED
+            // Fallback
             if (!placed)
             {
                 if (WorldSensor.TryGetRandomEmptySpot(_gridMap, out int x, out int y, _rng))
@@ -212,11 +197,8 @@ public class VivariumGame : Game
         {
             if (WorldSensor.TryGetRandomEmptySpot(_gridMap, out int x, out int y, _rng))
             {
-                // --- DIAGNOSE START ---
-                // We manually check the "raw" values of the cell, without using the == operator.
                 GridCell occupiedCell = _gridMap[x, y];
 
-                // If the Type is NOT 0 (Empty), TryGetRandomEmptySpot lied!
                 if (occupiedCell.Type != EntityType.Empty)
                 {
                     throw new Exception($"FATAL LOGIC ERROR: TryGetRandomEmptySpot says {x},{y} is empty, but found: {occupiedCell.Type} #{occupiedCell.Index}. \n" +
@@ -232,7 +214,6 @@ public class VivariumGame : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        // Removed texture loading as it is now in WorldRenderer
 
         _sysFont = Content.Load<SpriteFont>("SystemFont");
 
@@ -246,36 +227,32 @@ public class VivariumGame : Game
 
     protected override void Update(GameTime gameTime)
     {
-        // Input Handling
+        // Input
         var keyboardState = Keyboard.GetState();
         
-        // ESC Logic
+        // ESC
         if (keyboardState.IsKeyDown(Keys.Escape) && !_previousKeyboardState.IsKeyDown(Keys.Escape))
         {
             if (_showExitConfirmation)
             {
-                // Close confirmation dialog
                 _showExitConfirmation = false;
             }
             else if (_genePoolWindow.IsVisible)
             {
-                // Close Gene Pool Window
                 _genePoolWindow.IsVisible = false;
             }
             else if (_inspector.IsEntitySelected)
             {
-                // Close Inspector
                 _inspector.Deselect();
             }
             else
             {
-                // Show Exit Confirmation
                 _showExitConfirmation = true;
             }
         }
 
-        // Exit Confirmation Logic
-        bool singleStep = false; // Declare here to be accessible below
+        // Exit Confirmation
+        bool singleStep = false;
 
         if (_showExitConfirmation)
         {
@@ -283,25 +260,22 @@ public class VivariumGame : Game
             {
                 Exit();
             }
-            // Note: ESC to close is handled above
         }
         else
         {
-            // Normal Game Input (Only if not showing confirmation)
-            
-            // Toggle Pause
+            // Pause
             if (keyboardState.IsKeyDown(Keys.Space) && !_previousKeyboardState.IsKeyDown(Keys.Space))
             {
                 _isPaused = !_isPaused;
             }
 
-            // Single Step (.)
+            // Single Step
             if (_isPaused && !_genePoolWindow.IsVisible && keyboardState.IsKeyDown(Keys.OemPeriod) && !_previousKeyboardState.IsKeyDown(Keys.OemPeriod))
             {
                 singleStep = true;
             }
 
-            // Toggle Fullscreen (F11)
+            // Fullscreen
             if (keyboardState.IsKeyDown(Keys.F11) && !_previousKeyboardState.IsKeyDown(Keys.F11))
             {
                 ToggleFullscreen();
@@ -310,97 +284,77 @@ public class VivariumGame : Game
 
         _previousKeyboardState = keyboardState;
 
-        // UI Updates
+        // UI
         if (!_showExitConfirmation)
         {
             _hud.UpdateInput();
             _genePoolWindow.UpdateInput();
         }
 
-        // If Gene Window is open, force pause (optional, but requested)
         bool effectivePause = _isPaused || _genePoolWindow.IsVisible || _showExitConfirmation;
 
         if (_genePoolWindow.IsVisible)
         {
-            // Refresh data only once when opening? Or every frame?
-            // For performance, let's refresh every frame for now, or we can optimize later.
-            // Actually, refreshing every frame involves sorting 4000 agents. 
-            // Let's do it only when it becomes visible or periodically?
-            // For now, let's do it every frame to keep it simple and responsive.
-            // Optimization: Only refresh if tickCount changed? But we are paused.
-            // So we refresh once.
             _genePoolWindow.RefreshData(_agentPopulation);
         }
 
-        // Input Blocking Logic
+        // Input Blocking
         var mouseState = Mouse.GetState();
-        // If Gene Window is visible, it captures mouse globally (Modal)
         bool uiCapturesMouse = _hud.IsMouseOver(mouseState.Position) || _genePoolWindow.IsVisible;
 
         if (!effectivePause || singleStep)
         {
-            // Simulation Logic
-            _tickCount++; // Increment deterministic clock
+            // Simulation
+            _tickCount++;
 
             Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
             Span<Plant> plantPopulationSpan = _plantPopulation.AsSpan();
 
-            // If we are single-stepping, clear previous visual feedback so we only see
-            // what happens in this specific frame.
             if (singleStep)
             {
                 for (int i = 0; i < agentPopulationSpan.Length; i++)
                 {
                     agentPopulationSpan[i].AttackVisualTimer = 0;
                     agentPopulationSpan[i].FleeVisualTimer = 0;
-                    // ReproductionVisualTimer is preserved to allow animation
                 }
             }
 
-            // --- BIOLOGICAL LOOP ---
+            // Biological Loop
             int aliveAgents = 0;
             for (int index = 0; index < agentPopulationSpan.Length; index++)
             {
-                // Skip dead slots
                 if (!agentPopulationSpan[index].IsAlive) continue;
 
                 aliveAgents++;
 
-                // Use ref to modify directly
                 ref Agent currentAgent = ref agentPopulationSpan[index];
 
-                // A. THINK & ACT
-                // OPTIMIZATION: Time-Slicing
-                // Update brains at 30Hz (every other frame) to reduce Debug CPU load by 50%.
-                // (index + tick) % 2 == 0 ensures we update even/odd agents on alternating frames.
+                // Think & Act
+                // Time-Slicing
                 if ((index + _tickCount) % 2 == 0)
                 {
                     Brain.Think(ref currentAgent, _gridMap, _rng, _agentPopulation);
                 }
 
-                // Act every frame (physics/movement) using the last cached neuron activations
                 Brain.Act(ref currentAgent, _gridMap, _rng, agentPopulationSpan, plantPopulationSpan);
 
-                // B. AGING & METABOLISM
+                // Aging & Metabolism
                 currentAgent.Update(_gridMap);
             }
 
             int alivePlants = 0;
             for (int i = 0; i < plantPopulationSpan.Length; i++)
             {
-                // Skip dead slots
                 if (!plantPopulationSpan[i].IsAlive) continue;
 
                 alivePlants++;
 
-                // Use ref to modify directly
                 ref Plant currentPlant = ref plantPopulationSpan[i];
 
-                // A. AGING
+                // Aging
                 currentPlant.Update(_gridMap, _rng);
 
-                // B. REPRODUCTION
-                // If plant is mature, try to spawn a child
+                // Reproduction
                 if (currentPlant.CanReproduce())
                 {
                     currentPlant.TryReproduce(plantPopulationSpan, _gridMap, _rng);
@@ -411,7 +365,6 @@ public class VivariumGame : Game
         }
         else
         {
-            // When paused, loop the animation for agents that are currently showing it
             Span<Agent> agentPopulationSpan = _agentPopulation.AsSpan();
             for (int i = 0; i < agentPopulationSpan.Length; i++)
             {
@@ -420,7 +373,6 @@ public class VivariumGame : Game
                 {
                     agent.ReproductionVisualTimer--;
 
-                    // Loop the animation while paused so the user can clearly see who reproduced
                     if (agent.ReproductionVisualTimer == 0)
                     {
                         agent.ReproductionVisualTimer = 30;
@@ -429,15 +381,13 @@ public class VivariumGame : Game
             }
         }
 
-        // Update Inspector Input (Selection) only if UI is not capturing mouse
-        // Moved outside of (!effectivePause) so we can select while paused
+        // Inspector Input
         if (!uiCapturesMouse)
         {
             _inspector.UpdateInput(_camera, _gridMap, _agentPopulation, _plantPopulation, _structurePopulation, CellSize);
         }
 
-        // Camera always updates so we can look around even when paused
-        // We pass !uiCapturesMouse to allow the camera to sync its scroll state even if blocked
+        // Camera
         _camera.HandleInput(Mouse.GetState(), Keyboard.GetState(), !uiCapturesMouse);
 
         base.Update(gameTime);
@@ -459,39 +409,36 @@ public class VivariumGame : Game
             CellSize
         );
 
-        // --- 2. SCREEN SPACE (Camera Off) ---
-        // This draws the UI fixed on top of everything
+        // Screen Space
         _spriteBatch.Begin(
             SpriteSortMode.Deferred,
             BlendState.AlphaBlend
-        // No Matrix here! 
         );
 
-        // Draw HUD (Graph, Stats, Timer)
+        // HUD
         _hud.Draw(_spriteBatch, _tickCount, stats.LivingAgents, stats.LivingHerbivores, stats.LivingOmnivores, stats.LivingCarnivores, stats.LivingPlants, stats.LivingStructures);
 
-        // Draw Inspector
+        // Inspector
         _inspector.DrawUI(_spriteBatch, _agentPopulation, _plantPopulation, _structurePopulation);
 
-        // Draw Gene Pool Window (on top)
+        // Gene Pool Window
         _genePoolWindow.Draw(_spriteBatch);
 
-        // Draw "PAUSED" text if paused
+        // Paused Text
         if (_isPaused || _genePoolWindow.IsVisible)
         {
             string pausedText = "PAUSED";
             Vector2 textSize = _sysFont.MeasureString(pausedText);
             Vector2 pos = new Vector2(
                 (GraphicsDevice.Viewport.Width - textSize.X) / 2,
-                30 // Top center, slightly down
+                30
             );
 
-            // Draw text with shadow for visibility
             _spriteBatch.DrawString(_sysFont, pausedText, pos + new Vector2(2, 2), Color.Black);
             _spriteBatch.DrawString(_sysFont, pausedText, pos, Color.White);
         }
 
-        // Draw Exit Confirmation
+        // Exit Confirmation
         if (_showExitConfirmation)
         {
             DrawExitConfirmation();
@@ -506,7 +453,7 @@ public class VivariumGame : Game
 
     private void DrawExitConfirmation()
     {
-        int width = 440; // Increased width by 40px (20px padding each side)
+        int width = 440;
         int height = 150;
         Rectangle rect = new Rectangle(
             (GraphicsDevice.Viewport.Width - width) / 2,
@@ -515,21 +462,16 @@ public class VivariumGame : Game
             height
         );
 
-        // Background
         Texture2D pixel = new Texture2D(GraphicsDevice, 1, 1);
         pixel.SetData(new[] { Color.White });
         
-        // Shadow
         _spriteBatch.Draw(pixel, new Rectangle(rect.X + 4, rect.Y + 4, width, height), Color.Black * 0.5f);
-        // Panel
         _spriteBatch.Draw(pixel, rect, UITheme.PanelBgColor);
-        // Border
         _spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, width, 2), UITheme.BorderColor);
         _spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y + height - 2, width, 2), UITheme.BorderColor);
         _spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, 2, height), UITheme.BorderColor);
         _spriteBatch.Draw(pixel, new Rectangle(rect.X + width - 2, rect.Y, 2, height), UITheme.BorderColor);
 
-        // Text
         string title = "EXIT APPLICATION?";
         string subtitle = "Press ENTER to Confirm or ESC to Cancel";
         
@@ -542,8 +484,7 @@ public class VivariumGame : Game
 
     private void UpdateFPSAndWindowTitle(GameTime gameTime, int livingAgents, int livingPlants, int livingStructures)
     {
-        // --- FPS COUNTER ---
-        // Increment frame counter
+        // FPS Counter
         _framesCounter++;
 
         if (_currentFps > 0)
@@ -560,10 +501,8 @@ public class VivariumGame : Game
             _spriteBatch.DrawString(_sysFont, fpsText, textPos, Color.Turquoise);
         }
 
-        // Add elapsed time
         _fpsTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
-        // Once per second, update the window title
         if (_fpsTimer >= 1.0d)
         {
             Window.Title = $"Vivarium - FPS: {_framesCounter} - Agents: {livingAgents} | Plants: {livingPlants} | Structures: {livingStructures}";
@@ -575,32 +514,24 @@ public class VivariumGame : Game
 
     private void ToggleFullscreen()
     {
-        // Toggle the boolean flag
         _graphics.IsFullScreen = !_graphics.IsFullScreen;
 
         if (_graphics.IsFullScreen)
         {
-            // Get the resolution of the user's monitor
             var screenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             var screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 
-            // Update the backbuffer size to match the screen
             _graphics.PreferredBackBufferWidth = screenWidth;
             _graphics.PreferredBackBufferHeight = screenHeight;
 
-            // "HardwareModeSwitch = false" means "Borderless Windowed Fullscreen".
-            // This is usually preferred because Alt-Tab is faster and it handles multi-monitor better.
-            // If set to true, it changes the actual signal to the monitor (Exclusive Mode).
             _graphics.HardwareModeSwitch = false;
         }
         else
         {
-            // Revert to our simulation grid size
             _graphics.PreferredBackBufferWidth = GridWidth * CellSize;
             _graphics.PreferredBackBufferHeight = GridHeight * CellSize;
         }
 
-        // Apply the changes to the GraphicsDevice
         _graphics.ApplyChanges();
     }
 }

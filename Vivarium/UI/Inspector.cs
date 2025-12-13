@@ -127,15 +127,15 @@ public class Inspector
     {
         if (!IsEntitySelected) return;
 
-        // 1. Build Command List & Calculate Height
+        // Build Command List
         _elements.Clear();
         int contentHeight = UITheme.Padding;
 
-        // --- HEADER ---
+        // Header
         AddHeader($"{SelectedType.ToString().ToUpper()}", ref contentHeight);
         AddSeparator(ref contentHeight);
 
-        // --- CONTENT ---
+        // Content
         AddRow("Grid Pos", $"{SelectedGridPos.X}/{SelectedGridPos.Y}", ref contentHeight);
         AddRow("Index", $"{_selectedIndex}", ref contentHeight);
 
@@ -156,11 +156,10 @@ public class Inspector
                         AddRow("Diet", $"{agent.Diet}", ref contentHeight);
                         AddRow("Age", $"{agent.Age:F0} t | {agent.Age / VivariumGame.FramesPerSecond:F0} s", ref contentHeight);
 
-                        // Genome Visualization
+                        // Genome
                         UpdateCachedGenomeTexture(agent);
                         if (_cachedGenomeTexture != null)
                         {
-                            // Draw at native resolution (256x128) to avoid scaling artifacts
                             AddTexture(_cachedGenomeTexture, 256, 128, ref contentHeight);
                         }
 
@@ -178,7 +177,7 @@ public class Inspector
                         AddBrainBar("Trophic Bias", agent.TrophicBias, false, ref contentHeight);
                         AddBrainBar(nameof(TraitType.Constitution), agent.Constitution, false, ref contentHeight);
 
-                        // Inputs (Sensors)
+                        // Sensors
                         AddSeparator(ref contentHeight);
                         AddHeader("SENSORY INPUTS", ref contentHeight);
                         AddBrainBar("Oscillator", GetSensorVal(ref agent, SensorType.Oscillator), false, ref contentHeight);
@@ -187,7 +186,7 @@ public class Inspector
                         AddBrainBar("Plant Density", GetSensorVal(ref agent, SensorType.PlantDensity), true, ref contentHeight);
                         AddBrainBar("Structure Density", GetSensorVal(ref agent, SensorType.StructureDensity), true, ref contentHeight);
 
-                        // Outputs (Actions)
+                        // Actions
                         AddSeparator(ref contentHeight);
                         AddHeader("BRAIN ACTIVITY", ref contentHeight);
                         AddBrainBar("Move N", GetActionVal(ref agent, ActionType.MoveN), true, ref contentHeight);
@@ -253,23 +252,20 @@ public class Inspector
 
         contentHeight += UITheme.Padding;
 
-        // 2. Set Height & Draw Background
-        // Fixed panel position (Top Right), height is dynamic
+        // Draw Background
         _panelRect = new Rectangle(_graphics.Viewport.Width - 20 - 300, 20, 300, contentHeight);
 
-        // Shadow & Bg
         spriteBatch.Draw(_pixelTexture, new Rectangle(_panelRect.X + UITheme.ShadowOffset, _panelRect.Y + UITheme.ShadowOffset, _panelRect.Width, _panelRect.Height), UITheme.ShadowColor);
         spriteBatch.Draw(_pixelTexture, _panelRect, UITheme.PanelBgColor);
 
-        // Border
         DrawBorder(spriteBatch, _panelRect, UITheme.BorderThickness, UITheme.BorderColor);
 
-        // 3. Execute Commands
-        _cursorY = _panelRect.Y + UITheme.Padding; // Reset cursor for drawing
+        // Execute Commands
+        _cursorY = _panelRect.Y + UITheme.Padding;
         foreach (var cmd in _elements)
         {
             cmd.Draw(this, spriteBatch);
-            _cursorY += cmd.Height; // Advance cursor by the element's height
+            _cursorY += cmd.Height;
         }
     }
 
@@ -379,14 +375,14 @@ public class Inspector
             int x = inspector._panelRect.X + (inspector._panelRect.Width - _width) / 2; // Center
             int y = inspector._cursorY;
 
-            // Use PointClamp for pixel art scaling
+            // Pixel art scaling
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
 
             sb.Draw(_texture, new Rectangle(x, y, _width, _height), Color.White);
 
             sb.End();
-            sb.Begin(); // Restart default batch
+            sb.Begin();
         }
     }
 
@@ -511,7 +507,6 @@ public class Inspector
             {
                 // 0 to 1
                 float ratio = Math.Clamp(_value, 0f, 1f);
-                // Use GetColorForWeight for consistency (assuming 0..1 maps to positive range)
                 Color c = UITheme.GetColorForWeight(_value);
                 sb.Draw(inspector._pixelTexture, new Rectangle(barX, inspector._cursorY + 5, (int)(barWidth * ratio), 10), c);
             }

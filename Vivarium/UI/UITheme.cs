@@ -18,7 +18,7 @@ public static class UITheme
     public static readonly Color BadColor = new Color(255, 80, 80);         // Soft Red
     public static readonly Color ButtonColor = new Color(50, 50, 60);       // Dark Grey Button
 
-    // Genome / Weight Colors (GitHub Style)
+    // Genome / Weight Colors
     public static readonly Color WeightNeutral = new Color(22, 27, 34);
     
     public static readonly Color[] WeightPositive = new Color[] {

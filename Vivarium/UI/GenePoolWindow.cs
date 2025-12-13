@@ -39,15 +39,12 @@ public class GenePoolWindow
 
     public void RefreshData(Agent[] agents)
     {
-        // 1. Group ALL agents by Genome Hash
+        // Group agents
         var groups = new Dictionary<ulong, GenomeEntry>();
 
         foreach (var agent in agents)
         {
             if (!agent.IsAlive) continue;
-
-            // Note: We do NOT filter here anymore, because we need global ranks.
-            // Filter is applied later.
 
             ulong hash = GenomeHelper.CalculateGenomeHash(agent.Genome);
 
@@ -57,7 +54,7 @@ public class GenePoolWindow
                 {
                     Hash = hash,
                     Count = 0,
-                    Representative = agent, // Store one agent to read traits later
+                    Representative = agent,
                     Diet = agent.Diet
                 };
             }
@@ -67,7 +64,7 @@ public class GenePoolWindow
             groups[hash] = entry;
         }
 
-        // 2. Sort ALL by Count to establish Rank
+        // Sort by Count
         var allSorted = groups.Values
             .OrderByDescending(g => g.Count)
             .ToList();
@@ -78,7 +75,7 @@ public class GenePoolWindow
             allSorted[i].Rank = i + 1;
         }
 
-        // 3. Apply Filter and Take Top 20
+        // Filter and Top 20
         IEnumerable<GenomeEntry> filtered = allSorted;
         if (_filterDiet.HasValue)
         {
@@ -87,22 +84,21 @@ public class GenePoolWindow
 
         _topGenomes = filtered.Take(20).ToList();
 
-        // 4. Generate Identicons
+        // Generate Identicons
         foreach (var entry in _topGenomes)
         {
-            // Dispose old texture if needed? (For now we just create new ones, might need pooling later)
             entry.Identicon = GenomeHelper.GenerateHelixTexture(_graphics, entry.Representative);
             entry.GenomeGrid = GenomeHelper.GenerateGenomeGridTexture(_graphics, entry.Representative);
         }
 
-        // Update selection reference to the new object if it exists
+        // Update selection reference
         if (_selectedGenome != null)
         {
             var newRef = _topGenomes.FirstOrDefault(g => g.Hash == _selectedGenome.Hash);
-            _selectedGenome = newRef; // Will be null if not found
+            _selectedGenome = newRef;
         }
 
-        // If nothing selected (or selection lost), select the first one
+        // Select first if none selected
         if (_selectedGenome == null && _topGenomes.Count > 0)
         {
             _selectedGenome = _topGenomes[0];
@@ -113,35 +109,31 @@ public class GenePoolWindow
     {
         var mouse = Mouse.GetState();
 
-        // Always update previous scroll value to prevent jumps when window becomes visible
         int scrollDelta = mouse.ScrollWheelValue - _previousScrollValue;
         _previousScrollValue = mouse.ScrollWheelValue;
 
         if (!IsVisible) return;
 
-        // Only handle input if mouse is over the window
         if (!IsMouseOver(mouse.Position)) return;
 
         if (scrollDelta != 0)
         {
-            _scrollOffset -= scrollDelta / 2; // Adjust scroll speed
+            _scrollOffset -= scrollDelta / 2;
 
             // Clamp Scroll
             int maxScroll = Math.Max(0, (_topGenomes.Count * ItemHeight) - (_windowRect.Height - 100));
             _scrollOffset = Math.Clamp(_scrollOffset, 0, maxScroll);
         }
 
-        // Simple Click Handling for the List
         if (mouse.LeftButton == ButtonState.Pressed)
         {
             Point mousePos = mouse.Position;
 
-            // Filter Buttons Input
-            // Must match Draw coordinates
+            // Filter Buttons
             Vector2 headerSize = _font.MeasureString("GENOME CENSUS (TOP 20)");
-            int buttonHeight = 24; // Increased height (was 20)
-            int headerY = _windowRect.Y + UITheme.Padding + 5; // Added +5 padding
-            // Center button vertically relative to header text
+            int buttonHeight = 24;
+            int headerY = _windowRect.Y + UITheme.Padding + 5;
+            // Center button
             int filterY = headerY + (int)((headerSize.Y - buttonHeight) / 2);
 
             int filterX = _windowRect.X + UITheme.Padding + 240;
@@ -150,8 +142,6 @@ public class GenePoolWindow
             if (new Rectangle(filterX, filterY, 35, buttonHeight).Contains(mousePos))
             {
                 _filterDiet = null;
-                // Force refresh immediately if possible, or wait for next frame update
-                // Since RefreshData is called from Game.Update, it will pick up change next frame.
             }
             // Herbivore
             if (new Rectangle(filterX + 40, filterY, 35, buttonHeight).Contains(mousePos)) _filterDiet = DietType.Herbivore;
@@ -160,7 +150,7 @@ public class GenePoolWindow
             // Carnivore
             if (new Rectangle(filterX + 120, filterY, 35, buttonHeight).Contains(mousePos)) _filterDiet = DietType.Carnivore;
 
-            // Check if inside List Area
+            // List Area
             Rectangle listRect = new Rectangle(_windowRect.X + UITheme.Padding, _windowRect.Y + 50, ListWidth, _windowRect.Height - 60);
 
             if (listRect.Contains(mousePos))
@@ -174,7 +164,7 @@ public class GenePoolWindow
                 }
             }
 
-            // Close Button (Top Right)
+            // Close Button
             int closeBtnSize = 20;
             Rectangle closeRect = new Rectangle(_windowRect.Right - closeBtnSize - UITheme.Padding, _windowRect.Y + UITheme.Padding, closeBtnSize, closeBtnSize);
             if (closeRect.Contains(mousePos))
@@ -194,7 +184,7 @@ public class GenePoolWindow
         if (!IsVisible) return;
 
         // Center Window
-        int width = 1080;
+        int width = 1100;
         int height = 600;
         _windowRect = new Rectangle(
             (_graphics.Viewport.Width - width) / 2,
@@ -212,12 +202,10 @@ public class GenePoolWindow
         Vector2 headerPos = new Vector2(_windowRect.X + UITheme.Padding, _windowRect.Y + UITheme.Padding);
         string headerText = "GENOME CENSUS (TOP 20)";
         Vector2 headerSize = _font.MeasureString(headerText);
-        // Move header text down by 3 pixels to align with button text
         spriteBatch.DrawString(_font, headerText, new Vector2(headerPos.X, headerPos.Y + 3), UITheme.HeaderColor);
 
         // Filter Buttons
-        // Center buttons vertically relative to header text (using original headerPos)
-        int buttonHeight = 24; // Increased height (was 20)
+        int buttonHeight = 24;
         int filterY = (int)(headerPos.Y + (headerSize.Y - buttonHeight) / 2);
 
         int filterX = _windowRect.X + UITheme.Padding + 240;
@@ -227,7 +215,7 @@ public class GenePoolWindow
         DrawFilterButton(spriteBatch, "O", DietType.Omnivore, filterX + 80, filterY, buttonHeight);
         DrawFilterButton(spriteBatch, "C", DietType.Carnivore, filterX + 120, filterY, buttonHeight);
 
-        // Close Button X
+        // Close Button
         int closeBtnSize = 20;
         Rectangle closeBtnRect = new Rectangle(_windowRect.Right - closeBtnSize - UITheme.Padding, _windowRect.Y + UITheme.Padding, closeBtnSize, closeBtnSize);
 
@@ -245,20 +233,16 @@ public class GenePoolWindow
         int listY = _windowRect.Y + 50;
         int listHeight = _windowRect.Height - 60;
 
-        // Scissor Test for Scrolling
-        // We need to clip the drawing to the list area so items don't draw outside
+        // Scissor Test
         Rectangle currentScissor = _graphics.ScissorRectangle;
         Rectangle listClipRect = new Rectangle(listX, listY, ListWidth, listHeight);
 
-        // Ensure clip rect is within viewport
         listClipRect = Rectangle.Intersect(listClipRect, _graphics.Viewport.Bounds);
 
-        // End current batch to apply scissor
         spriteBatch.End();
 
         _graphics.ScissorRectangle = listClipRect;
 
-        // Start new batch with Scissor Test enabled
         RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
         spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, rasterizerState);
 
@@ -267,7 +251,7 @@ public class GenePoolWindow
             var entry = _topGenomes[i];
             int itemY = listY + (i * ItemHeight) - _scrollOffset;
 
-            // Optimization: Don't draw if outside view
+            // Don't draw if outside view
             if (itemY + ItemHeight < listY || itemY > listY + listHeight) continue;
 
             // Highlight Selection
@@ -276,33 +260,24 @@ public class GenePoolWindow
                 spriteBatch.Draw(_pixelTexture, new Rectangle(listX, itemY, ListWidth, ItemHeight), Color.White * 0.1f);
             }
 
-            // Identicon (Helix)
-            // List item height is 40. We want to fit a 64x32 texture.
-            // Let's scale it to fit nicely. 60x30 fits well.
+            // Identicon
             Rectangle iconRect = new Rectangle(listX + 5, itemY + 5, 60, 30);
             spriteBatch.Draw(entry.Identicon, iconRect, Color.White);
 
 
             // Text
-            // Left align Rank
             string rankText = $"#{entry.Rank}";
             spriteBatch.DrawString(_font, rankText, new Vector2(listX + 70, itemY + 8), UITheme.TextColorPrimary);
 
-            // Right align Count
-            // ListWidth is 250. Padding is 15.
-            // Let's align it to the right edge of the list item area (ListWidth)
             string countText = $"{entry.Count}";
             Vector2 countSize = _font.MeasureString(countText);
-            // Subtract scrollbar width (6) + padding (5)
             float countX = listX + ListWidth - countSize.X - 15;
 
             spriteBatch.DrawString(_font, countText, new Vector2(countX, itemY + 8), UITheme.TextColorSecondary);
         }
 
-        // End Scissor Batch
         spriteBatch.End();
 
-        // Restore Scissor and Restart Normal Batch
         _graphics.ScissorRectangle = currentScissor;
         spriteBatch.Begin();
 
@@ -322,7 +297,6 @@ public class GenePoolWindow
             float scrollRatio = (float)_scrollOffset / (totalContentHeight - listHeight);
             int thumbY = listY + (int)(scrollRatio * (listHeight - thumbHeight));
 
-            // Clamp thumbY to ensure it stays within the track
             thumbY = Math.Clamp(thumbY, listY, listY + listHeight - thumbHeight);
 
             spriteBatch.Draw(_pixelTexture, new Rectangle(scrollbarX, thumbY, scrollbarWidth, thumbHeight), Color.Gray * 0.8f);
@@ -331,7 +305,7 @@ public class GenePoolWindow
         // Separator
         spriteBatch.Draw(_pixelTexture, new Rectangle(listX + ListWidth + 10, listY, 2, height - 70), UITheme.BorderColor);
 
-        // --- RIGHT PANEL: DETAILS ---
+        // Details Panel
         if (_selectedGenome != null)
         {
             int detailsX = listX + ListWidth + 30;
@@ -341,7 +315,7 @@ public class GenePoolWindow
             spriteBatch.DrawString(_font, "GENOME DETAILS", new Vector2(detailsX, detailsY), UITheme.HeaderColor);
             detailsY += 30;
 
-            // 1. Helix (Restored)
+            // Helix
             Rectangle bigIconRect = new Rectangle(detailsX, detailsY, 256, 128);
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
@@ -349,21 +323,19 @@ public class GenePoolWindow
             spriteBatch.End();
             spriteBatch.Begin(); 
 
-            // Move cursor below the icon
             detailsY += 135;
 
-            // 2. Hash ID & Diet
+            // ID & Diet
             spriteBatch.DrawString(_font, $"ID: {g.Hash:X}", new Vector2(detailsX, detailsY), UITheme.TextColorSecondary);
             detailsY += 20;
             spriteBatch.DrawString(_font, $"Diet: {g.Diet}", new Vector2(detailsX, detailsY), UITheme.TextColorPrimary);
             
             detailsY += 30;
 
-            // Traits Header
+            // Traits
             spriteBatch.DrawString(_font, "TRAITS", new Vector2(detailsX, detailsY), UITheme.HeaderColor);
             detailsY += 25;
 
-            // Traits
             DrawTraitBar(spriteBatch, "Strength", g.Representative.Strength, detailsX, ref detailsY);
             DrawTraitBar(spriteBatch, "Bravery", g.Representative.Bravery, detailsX, ref detailsY);
             DrawTraitBar(spriteBatch, "Metabolism", g.Representative.MetabolicEfficiency, detailsX, ref detailsY);
@@ -372,9 +344,9 @@ public class GenePoolWindow
             DrawTraitBar(spriteBatch, "Trophic Bias", g.Representative.TrophicBias, detailsX, ref detailsY);
             DrawTraitBar(spriteBatch, "Constitution", g.Representative.Constitution, detailsX, ref detailsY);
 
-            detailsY += 10; // Spacing
+            detailsY += 10;
 
-            // 4. Genome Grid (Bottom)
+            // Genome Grid
             if (g.GenomeGrid != null)
             {
                 spriteBatch.Draw(g.GenomeGrid, new Vector2(detailsX, detailsY), Color.White);
@@ -395,7 +367,6 @@ public class GenePoolWindow
         Color bgColor = isSelected ? UITheme.ButtonColor : Color.Black * 0.5f;
         if (type.HasValue)
         {
-            // Use diet color for active state or border?
             if (isSelected) bgColor = Agent.GetColorBasedOnDietType(type.Value);
         }
 
@@ -403,8 +374,7 @@ public class GenePoolWindow
         DrawBorder(sb, rect, 1, isSelected ? Color.White : UITheme.BorderColor);
 
         Vector2 size = _font.MeasureString(label);
-        // Add +3 to Y to visually center the text better (pushed down from top)
-        Vector2 pos = new Vector2(x + (rect.Width - size.X) / 2, y + (rect.Height - size.Y) / 2 + 3);
+        Vector2 pos = new Vector2(x + (rect.Width - size.X) / 2, y + (rect.Height - size.Y) / 2 + 1);
         sb.DrawString(_font, label, pos, Color.White);
     }
 
@@ -414,11 +384,6 @@ public class GenePoolWindow
 
         int barWidth = 150;
         int barHeight = 10;
-        // Align bar to the right side of the details panel
-        // The details panel starts at x. Let's assume a fixed width for the details area or calculate it.
-        // The window width is 700. ListWidth is 250. Padding is 15.
-        // Details area width = 700 - 250 - 30 - 15 = ~405.
-        // Let's align the bar to the right edge of the window minus padding.
 
         int windowRight = _windowRect.Right - UITheme.Padding;
         int barX = windowRight - barWidth;
@@ -426,18 +391,12 @@ public class GenePoolWindow
         // Background
         sb.Draw(_pixelTexture, new Rectangle(barX, y + 5, barWidth, barHeight), Color.Black * 0.5f);
 
-        // Fill (Normalized -1 to 1 -> 0 to 1 for display simplicity or split?)
-        // Let's do split like Inspector
         int centerX = barX + (barWidth / 2);
-        float valClamped = Math.Clamp(value, -4f, 4f); // Traits can be up to +/- 4 roughly? Or normalized?
-        // Actually traits are usually small floats. Let's assume range -4 to 4 for color mapping consistency with genes.
-        // But for bar width, we might want to clamp to -1..1 or -2..2?
-        // The original code clamped -1 to 1. Let's stick to that for width, but use color from weight.
         
         float displayVal = Math.Clamp(value, -1f, 1f);
         int fillWidth = (int)((barWidth / 2) * Math.Abs(displayVal));
         
-        Color barColor = UITheme.GetColorForWeight(value); // Use actual value for color
+        Color barColor = UITheme.GetColorForWeight(value);
 
         if (displayVal > 0)
             sb.Draw(_pixelTexture, new Rectangle(centerX, y + 5, fillWidth, barHeight), barColor);
@@ -459,10 +418,10 @@ public class GenePoolWindow
     {
         public ulong Hash;
         public int Count;
-        public int Rank; // New property
-        public Agent Representative; // A copy or ref to one agent to read traits
+        public int Rank;
+        public Agent Representative;
         public DietType Diet;
         public Texture2D Identicon;
-        public Texture2D GenomeGrid; // New visual
+        public Texture2D GenomeGrid;
     }
 }

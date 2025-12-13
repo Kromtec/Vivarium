@@ -169,9 +169,6 @@ public static class GenomeHelper
 
         Gene[] genome = agent.Genome;
 
-        // GitHub-like colors
-        // Now using UITheme colors
-        
         for (int y = 0; y < rows; y++)
         {
             for (int x = 0; x < cols; x++)
