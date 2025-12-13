@@ -494,8 +494,8 @@ public struct Agent : IGridEntity
                     ref Agent victim = ref agentPopulation[victimIndex];
                     if (TryAttackAgent(ref victim, gridMap, dx, dy))
                     {
-                        ChangeEnergy(-2.0f, gridMap);
-                        AttackCooldown = 60;
+                        ChangeEnergy(-0.5f, gridMap); // Reduced cost for hunting (was 2.0f)
+                        AttackCooldown = 30; // Faster attacks for predators (was 60)
                         return true; // Hit one target and stop
                     }
                 }
@@ -652,7 +652,7 @@ public struct Agent : IGridEntity
             return false;
         }
 
-        const float baseDamage = 7.5f;
+        const float baseDamage = 10.0f; // Buffed damage (was 7.5f)
         var damage = baseDamage * Power / victim.Resilience;
 
         // Victim loses energy
@@ -663,7 +663,7 @@ public struct Agent : IGridEntity
             damage = Math.Min(damage, victim.Energy);
 
             victim.ChangeEnergy(-damage, gridMap);
-            Eat(damage * 0.8f);
+            Eat(damage * 1.0f); // 100% Efficiency for specialized carnivores (was 0.8f)
         }
         else if (Diet == DietType.Omnivore)
         {
