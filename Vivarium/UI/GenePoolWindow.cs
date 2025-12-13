@@ -78,6 +78,7 @@ public class GenePoolWindow
         {
             // Dispose old texture if needed? (For now we just create new ones, might need pooling later)
             entry.Identicon = GenomeHelper.GenerateHelixTexture(_graphics, entry.Representative);
+            entry.GenomeGrid = GenomeHelper.GenerateGenomeGridTexture(_graphics, entry.Representative);
         }
 
         // Reset selection if it's no longer in the list
@@ -172,8 +173,8 @@ public class GenePoolWindow
         if (!IsVisible) return;
 
         // Center Window
-        int width = 700; // Increased width from 600 to 700
-        int height = 520;
+        int width = 1080;
+        int height = 600;
         _windowRect = new Rectangle(
             (_graphics.Viewport.Width - width) / 2,
             (_graphics.Viewport.Height - height) / 2,
@@ -319,30 +320,22 @@ public class GenePoolWindow
             spriteBatch.DrawString(_font, "GENOME DETAILS", new Vector2(detailsX, detailsY), UITheme.HeaderColor);
             detailsY += 30;
 
-            // Big Identicon (Helix)
-            // Original texture is 256x128. Draw at native resolution for best quality.
+            // 1. Helix (Restored)
             Rectangle bigIconRect = new Rectangle(detailsX, detailsY, 256, 128);
-            // Use PointClamp sampler state for pixel art scaling
-            // We need to end the current batch and start a new one with PointClamp
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
-
             spriteBatch.Draw(g.Identicon, bigIconRect, Color.White);
-
             spriteBatch.End();
-            spriteBatch.Begin(); // Restart default batch
-
-            // Border removed for cleaner look
-            // DrawBorder(spriteBatch, bigIconRect, 2, Agent.GetColorBasedOnDietType(g.Diet));
+            spriteBatch.Begin(); 
 
             // Move cursor below the icon
             detailsY += 135;
 
-            // Hash ID & Diet
+            // 2. Hash ID & Diet
             spriteBatch.DrawString(_font, $"ID: {g.Hash:X}", new Vector2(detailsX, detailsY), UITheme.TextColorSecondary);
             detailsY += 20;
             spriteBatch.DrawString(_font, $"Diet: {g.Diet}", new Vector2(detailsX, detailsY), UITheme.TextColorPrimary);
-
+            
             detailsY += 30;
 
             // Traits Header
@@ -357,6 +350,14 @@ public class GenePoolWindow
             DrawTraitBar(spriteBatch, "Speed", g.Representative.Speed, detailsX, ref detailsY);
             DrawTraitBar(spriteBatch, "Trophic Bias", g.Representative.TrophicBias, detailsX, ref detailsY);
             DrawTraitBar(spriteBatch, "Constitution", g.Representative.Constitution, detailsX, ref detailsY);
+
+            detailsY += 10; // Spacing
+
+            // 4. Genome Grid (Bottom)
+            if (g.GenomeGrid != null)
+            {
+                spriteBatch.Draw(g.GenomeGrid, new Vector2(detailsX, detailsY), Color.White);
+            }
         }
         else
         {
@@ -433,5 +434,6 @@ public class GenePoolWindow
         public Agent Representative; // A copy or ref to one agent to read traits
         public DietType Diet;
         public Texture2D Identicon;
+        public Texture2D GenomeGrid; // New visual
     }
 }
