@@ -141,16 +141,16 @@ public class VivariumGame : Game
             bool placed = false;
 
             // 1. CLUSTER GROWTH
-            // Versuche an einen existierenden Nachbarn anzudocken
+            // Try to attach to an existing neighbor
             if (i > 0 && _rng.NextDouble() > newClusterChance)
             {
                 for (int attempt = 0; attempt < GrowthAttempts; attempt++)
                 {
-                    // Zufälligen "Parent" aus den bereits platzierten wählen
+                    // Choose random "Parent" from those already placed
                     int parentIndex = _rng.Next(0, i);
-                    T parent = populationSpan[parentIndex]; // Hier hilft das Interface/Generic
+                    T parent = populationSpan[parentIndex]; // The Interface/Generic helps here
 
-                    // Zufälliger Nachbar
+                    // Random neighbor
                     int dx = _rng.Next(-1, 2);
                     int dy = _rng.Next(-1, 2);
                     if (dx == 0 && dy == 0) continue;
@@ -162,7 +162,7 @@ public class VivariumGame : Game
                     {
                         if (_gridMap[tx, ty] == GridCell.Empty)
                         {
-                            // Factory aufrufen um das konkrete Objekt zu bauen
+                            // Call factory to build the concrete object
                             T newItem = createFactory(i, tx, ty);
 
                             populationSpan[i] = newItem;
@@ -218,14 +218,14 @@ public class VivariumGame : Game
             if (WorldSensor.TryGetRandomEmptySpot(_gridMap, out int x, out int y, _rng))
             {
                 // --- DIAGNOSE START ---
-                // Wir prüfen manuell die "rohen" Werte der Zelle, ohne den == Operator zu nutzen.
+                // We manually check the "raw" values of the cell, without using the == operator.
                 GridCell occupiedCell = _gridMap[x, y];
 
-                // Wenn der Type NICHT 0 (Empty) ist, hat TryGetRandomEmptySpot gelogen!
+                // If the Type is NOT 0 (Empty), TryGetRandomEmptySpot lied!
                 if (occupiedCell.Type != EntityType.Empty)
                 {
-                    throw new Exception($"FATALER LOGIK-FEHLER: TryGetRandomEmptySpot sagt {x},{y} ist leer, aber dort steht: {occupiedCell.Type} #{occupiedCell.Index}. \n" +
-                                        $"Dies beweist, dass (Cell == GridCell.Empty) TRUE liefert, obwohl es FALSE sein sollte.");
+                    throw new Exception($"FATAL LOGIC ERROR: TryGetRandomEmptySpot says {x},{y} is empty, but found: {occupiedCell.Type} #{occupiedCell.Index}. \n" +
+                                        $"This proves that (Cell == GridCell.Empty) returns TRUE, although it should be FALSE.");
                 }
                 var agent = Agent.Create(index, x, y, _rng);
                 agentPopulationSpan[index] = agent;
