@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using Vivarium.Biology;
 
 namespace Vivarium.Visuals;
 
@@ -257,8 +258,8 @@ public static class TextureGenerator
         float center = size / 2f;
         
         // Hatching parameters
-        int hatchSpacing = 8;
-        int hatchThickness = 2;
+        int hatchSpacing = 25;
+        int hatchThickness = 6;
 
         for (int y = 0; y < size; y++)
         {
@@ -444,6 +445,102 @@ public static class TextureGenerator
                     {
                         // Inner Body - Semi-transparent
                         colorData[index] = Color.White * 0.3f;
+                    }
+                }
+            }
+        }
+
+        texture.SetData(colorData);
+        return texture;
+    }
+
+    public static Texture2D CreateAgentTexture(GraphicsDevice graphicsDevice, int size, DietType diet, int traitIndex)
+    {
+        var texture = new Texture2D(graphicsDevice, size, size);
+        var colorData = new Color[size * size];
+
+        float center = size / 2f;
+        float scale = size / 2f; // Map -1..1 to 0..size
+        int borderThickness = 10; // Strong outline
+
+        // Trait Analysis
+        // 4: Speed, 5: Constitution
+        bool isFast = traitIndex == 4;
+        bool isTough = traitIndex == 5;
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                int index = (y * size) + x;
+
+                // Normalize coordinates to [-1, 1]
+                float u = (x - center) / scale;
+                float v = (y - center) / scale;
+
+                // Aspect ratio correction for Speed trait (Elongate)
+                if (isFast)
+                {
+                    v *= 1.4f; // Make it thinner/longer
+                }
+
+                float dist = 1.0f; // Signed Distance: Positive = outside, Negative = inside
+
+                switch (diet)
+                {
+                    case DietType.Herbivore: // Bacillus (Rod)
+                        // Rounded Box / Capsule
+                        // Segment from (-0.4, 0) to (0.4, 0), radius 0.5
+                        float hx = Math.Clamp(u, -0.4f, 0.4f);
+                        float dx = u - hx;
+                        float dy = v;
+                        dist = MathF.Sqrt(dx * dx + dy * dy) - 0.5f;
+                        break;
+
+                    case DietType.Omnivore: // Diplococcus (Peanut)
+                        // Two circles blended
+                        float d1 = MathF.Sqrt((u + 0.3f) * (u + 0.3f) + v * v) - 0.45f;
+                        float d2 = MathF.Sqrt((u - 0.3f) * (u - 0.3f) + v * v) - 0.45f;
+                        
+                        // Smooth Min (Polynomial)
+                        float k = 0.15f;
+                        float h = Math.Clamp(0.5f + 0.5f * (d2 - d1) / k, 0.0f, 1.0f);
+                        dist = MathHelper.Lerp(d2, d1, h) - k * h * (1.0f - h);
+                        break;
+
+                    case DietType.Carnivore: // Virus / Spiky
+                        // Radial distance with noise/sine
+                        float len = MathF.Sqrt(u * u + v * v);
+                        float angle = MathF.Atan2(v, u);
+                        // 12 spikes
+                        float r = 0.55f + 0.15f * MathF.Sin(12 * angle);
+                        dist = len - r;
+                        break;
+                }
+
+                // Convert back to pixel space for border check
+                float distPx = dist * scale;
+
+                if (distPx > 1f)
+                {
+                    colorData[index] = Color.Transparent;
+                }
+                else
+                {
+                    // Alpha for the outer edge AA
+                    float alpha = Math.Clamp(1.0f - distPx, 0f, 1f);
+                    
+                    if (distPx > -borderThickness)
+                    {
+                        // Border Area (including outer AA)
+                        colorData[index] = Color.White * alpha;
+                    }
+                    else
+                    {
+                        // Inner Body Area
+                        float bodyAlpha = 0.3f;
+                        if (isTough) bodyAlpha = 0.6f;
+                        colorData[index] = Color.White * bodyAlpha;
                     }
                 }
             }

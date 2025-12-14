@@ -33,6 +33,8 @@ public struct Agent : IGridEntity
     public int Index { get; set; }
     public int X { get; set; }
     public int Y { get; set; }
+    public int LastX { get; set; }
+    public int LastY { get; set; }
 
     public long ParentId { get; set; }
 
@@ -269,6 +271,8 @@ public struct Agent : IGridEntity
             Index = index,
             X = x,
             Y = y,
+            LastX = x,
+            LastY = y,
             ParentId = parent?.Id ?? -1,
             OriginalColor = GetColorBasedOnDietType(dietType),
             IsAlive = true,
@@ -335,6 +339,8 @@ public struct Agent : IGridEntity
                                 $"This means 'gridMap[{pendingX},{pendingY}] == Empty' was TRUE even though a structure was there.");
         }
         // move to new location
+        LastX = X;
+        LastY = Y;
         X = pendingX;
         Y = pendingY;
         gridMap[pendingX, pendingY] = new(EntityType.Agent, Index);

@@ -25,6 +25,7 @@ public class WorldRenderer
     private Texture2D _selectionRingTexture;
     private Texture2D[] _structureTextures; // Array for 16 variations
     private Texture2D[] _plantTextures; // Array for plant variations
+    private Texture2D[,] _agentTextures; // [DietType, TraitIndex]
 
     public WorldRenderer(GraphicsDevice graphicsDevice)
     {
@@ -58,11 +59,23 @@ public class WorldRenderer
 
         // Generate Plant Textures (Variations)
         _plantTextures = new Texture2D[4];
-        int plantBorder = 5; // Increased thickness to prevent broken edges at small scales
+        int plantBorder = 10; // Much thicker outline
         _plantTextures[0] = TextureGenerator.CreateOrganicShape(_graphicsDevice, 64, 5, 0.2f, plantBorder); // Standard Flower
         _plantTextures[1] = TextureGenerator.CreateOrganicShape(_graphicsDevice, 64, 3, 0.15f, plantBorder); // Triangle/Tulip
         _plantTextures[2] = TextureGenerator.CreateOrganicShape(_graphicsDevice, 64, 6, 0.25f, plantBorder); // Complex Flower
         _plantTextures[3] = TextureGenerator.CreateOrganicShape(_graphicsDevice, 64, 4, 0.2f, plantBorder); // Clover
+
+        // Generate Agent Textures
+        // 3 Diets * 6 Traits
+        _agentTextures = new Texture2D[3, 6];
+        for (int d = 0; d < 3; d++)
+        {
+            DietType diet = (DietType)d;
+            for (int t = 0; t < 6; t++)
+            {
+                _agentTextures[d, t] = TextureGenerator.CreateAgentTexture(_graphicsDevice, 64, diet, t);
+            }
+        }
     }
 
     public RenderStats Draw(
@@ -106,8 +119,9 @@ public class WorldRenderer
                     // Create a transform that shifts the drawing to this copy's position
                     Matrix transform = Matrix.CreateTranslation(worldOffsetX, worldOffsetY, 0) * camera.GetTransformation();
 
+                    // 1. Structures (Texture Sort)
                     _spriteBatch.Begin(
-                        SpriteSortMode.Deferred,
+                        SpriteSortMode.Texture,
                         BlendState.NonPremultiplied,
                         SamplerState.LinearClamp,
                         null,
@@ -119,19 +133,92 @@ public class WorldRenderer
                     if (!statsCaptured)
                     {
                         DrawStructures(structures, gridMap, cellSize, out stats.LivingStructures);
+                    }
+                    else
+                    {
+                        DrawStructures(structures, gridMap, cellSize, out _);
+                    }
+                    _spriteBatch.End();
+
+                    // 2. Plants (Texture Sort)
+                    _spriteBatch.Begin(
+                        SpriteSortMode.Texture,
+                        BlendState.NonPremultiplied,
+                        SamplerState.LinearClamp,
+                        null,
+                        null,
+                        null,
+                        transform
+                    );
+
+                    if (!statsCaptured)
+                    {
                         DrawPlants(plants, cellSize, out stats.LivingPlants);
-                        DrawKinshipLines(gridMap, agents, inspector, cellSize);
+                    }
+                    else
+                    {
+                        DrawPlants(plants, cellSize, out _);
+                    }
+                    _spriteBatch.End();
+
+                    // 3. Kinship Lines (Deferred - Single Texture usually)
+                    _spriteBatch.Begin(
+                        SpriteSortMode.Deferred,
+                        BlendState.NonPremultiplied,
+                        SamplerState.LinearClamp,
+                        null,
+                        null,
+                        null,
+                        transform
+                    );
+                    DrawKinshipLines(gridMap, agents, inspector, cellSize);
+                    _spriteBatch.End();
+
+                    // 4. Agents Bodies (Texture Sort)
+                    _spriteBatch.Begin(
+                        SpriteSortMode.Texture,
+                        BlendState.NonPremultiplied,
+                        SamplerState.LinearClamp,
+                        null,
+                        null,
+                        null,
+                        transform
+                    );
+
+                    if (!statsCaptured)
+                    {
                         DrawAgents(agents, cellSize, out stats.LivingAgents, out stats.LivingHerbivores, out stats.LivingOmnivores, out stats.LivingCarnivores);
                         statsCaptured = true;
                     }
                     else
                     {
-                        DrawStructures(structures, gridMap, cellSize, out _);
-                        DrawPlants(plants, cellSize, out _);
-                        DrawKinshipLines(gridMap, agents, inspector, cellSize);
                         DrawAgents(agents, cellSize, out _, out _, out _, out _);
                     }
+                    _spriteBatch.End();
 
+                    // 5. Agent Effects (Texture Sort)
+                    _spriteBatch.Begin(
+                        SpriteSortMode.Texture,
+                        BlendState.NonPremultiplied,
+                        SamplerState.LinearClamp,
+                        null,
+                        null,
+                        null,
+                        transform
+                    );
+                    DrawAgentEffects(agents, cellSize);
+                    _spriteBatch.End();
+
+                    // 6. Selection Marker (Deferred)
+                    _spriteBatch.Begin(
+                        SpriteSortMode.Deferred,
+                        BlendState.NonPremultiplied,
+                        SamplerState.LinearClamp,
+                        null,
+                        null,
+                        null,
+                        transform
+                    );
                     // Draw the Selection Box inside the world
                     float totalSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
                     DrawSelectionMarker(_spriteBatch, inspector, cellSize, totalSeconds);
@@ -296,15 +383,10 @@ public class WorldRenderer
         livingCarnivore = 0;
 
         // Calculate the center of our source texture (needed for pivot point)
-        var textureCenter = new Vector2(_circleTexture.Width / 2f, _circleTexture.Height / 2f);
-        var arrowCenter = new Vector2(_arrowTexture.Width / 2f, _arrowTexture.Height / 2f);
-        var dotCenter = new Vector2(_dotTexture.Width / 2f, _dotTexture.Height / 2f);
-        var ringCenter = new Vector2(_ringTexture.Width / 2f, _ringTexture.Height / 2f);
-
-        float baseScale = (float)cellSize / _circleTexture.Width;
-        float arrowScale = ((float)cellSize / _arrowTexture.Width) * 0.6f; // Slightly smaller than cell
-        float dotScale = ((float)cellSize / _dotTexture.Width) * 0.4f; // Small dot
-        float ringBaseScale = (float)cellSize / _ringTexture.Width;
+        // Assuming all agent textures are 64x64
+        var textureCenter = new Vector2(32, 32);
+        
+        float baseScale = (float)cellSize / 64f; // 64 is texture size
         float halfCellSize = cellSize * 0.5f;
 
         const float agentAgeGrowthFactor = 1.0f / Agent.MaturityAge;
@@ -338,8 +420,42 @@ public class WorldRenderer
             float ageRatio = Math.Min(agent.Age * agentAgeGrowthFactor, 1.0f);
             float growthFactor = 0.3f + (0.7f * ageRatio);
 
-            // Linear interpolation: Start at 30% size, end at 100% size
-            float finalScale = baseScale * growthFactor;
+            // --- TRAIT LOGIC ---
+            // Determine dominant trait for texture selection
+            // 0: Strength, 1: Bravery, 2: Metabolism, 3: Perception, 4: Speed, 5: Constitution
+            int traitIndex = 0;
+            float maxVal = Math.Abs(agent.Strength);
+            
+            if (Math.Abs(agent.Bravery) > maxVal) { maxVal = Math.Abs(agent.Bravery); traitIndex = 1; }
+            if (Math.Abs(agent.MetabolicEfficiency) > maxVal) { maxVal = Math.Abs(agent.MetabolicEfficiency); traitIndex = 2; }
+            if (Math.Abs(agent.Perception) > maxVal) { maxVal = Math.Abs(agent.Perception); traitIndex = 3; }
+            if (Math.Abs(agent.Speed) > maxVal) { maxVal = Math.Abs(agent.Speed); traitIndex = 4; }
+            if (Math.Abs(agent.Constitution) > maxVal) { maxVal = Math.Abs(agent.Constitution); traitIndex = 5; }
+
+            // Scale Modifiers
+            // Strength/Constitution -> Bigger
+            float sizeMod = 1.0f + (agent.Strength * 0.2f) + (agent.Constitution * 0.1f);
+            
+            // Speed -> Elongation (Scale X vs Y)
+            float stretch = 1.0f + (Math.Max(0, agent.Speed) * 0.5f); 
+            
+            Vector2 scale = new Vector2(baseScale * growthFactor * sizeMod * stretch, baseScale * growthFactor * sizeMod);
+
+            // --- ROTATION LOGIC ---
+            float rotation = 0f;
+            int dx = agent.X - agent.LastX;
+            int dy = agent.Y - agent.LastY;
+
+            // Handle Wrapping (if moved more than 1 cell, assume wrap)
+            if (dx < -1) dx = 1;
+            if (dx > 1) dx = -1;
+            if (dy < -1) dy = 1;
+            if (dy > 1) dy = -1;
+
+            if (dx != 0 || dy != 0)
+            {
+                rotation = MathF.Atan2(dy, dx);
+            }
 
             // Calculate screen position
             Vector2 position = new Vector2(
@@ -347,18 +463,36 @@ public class WorldRenderer
                 agent.Y * cellSize + halfCellSize
             );
 
+            Texture2D texture = _agentTextures[(int)agent.Diet, traitIndex];
+
             _spriteBatch.Draw(
-                _circleTexture,
+                texture,
                 position,
                 null,
                 agent.Color,
-                0f,
+                rotation,
                 textureCenter, // Draw from the center of the texture!
-                finalScale,
+                scale,
                 SpriteEffects.None,
                 0f
             );
         }
+    }
+
+    private void DrawAgentEffects(Agent[] agents, int cellSize)
+    {
+        var arrowCenter = new Vector2(_arrowTexture.Width / 2f, _arrowTexture.Height / 2f);
+        var dotCenter = new Vector2(_dotTexture.Width / 2f, _dotTexture.Height / 2f);
+        var ringCenter = new Vector2(_ringTexture.Width / 2f, _ringTexture.Height / 2f);
+
+        float arrowScale = ((float)cellSize / _arrowTexture.Width) * 0.6f; // Slightly smaller than cell
+        float dotScale = ((float)cellSize / _dotTexture.Width) * 0.4f; // Small dot
+        float ringBaseScale = (float)cellSize / _ringTexture.Width;
+        float halfCellSize = cellSize * 0.5f;
+
+        const float agentAgeGrowthFactor = 1.0f / Agent.MaturityAge;
+
+        Span<Agent> agentPopulationSpan = agents.AsSpan();
 
         // PASS 2: Draw Visual Effects (Top Layer)
         for (int i = 0; i < agentPopulationSpan.Length; i++)
