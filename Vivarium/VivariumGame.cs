@@ -388,7 +388,8 @@ public class VivariumGame : Game
         }
 
         // Camera
-        _camera.HandleInput(Mouse.GetState(), Keyboard.GetState(), !uiCapturesMouse);
+        Rectangle worldBounds = new Rectangle(0, 0, GridWidth * CellSize, GridHeight * CellSize);
+        _camera.HandleInput(Mouse.GetState(), Keyboard.GetState(), !uiCapturesMouse, worldBounds);
 
         base.Update(gameTime);
     }

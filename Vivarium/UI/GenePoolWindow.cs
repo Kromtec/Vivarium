@@ -26,7 +26,7 @@ public class GenePoolWindow
     // UI State
     private int _scrollOffset = 0;
     private const int ItemHeight = 40;
-    private const int ListWidth = 250;
+    private const int ListWidth = 270;
     private int _previousScrollValue;
 
     public GenePoolWindow(GraphicsDevice graphics, SpriteFont font)
