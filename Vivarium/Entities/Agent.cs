@@ -26,6 +26,7 @@ public struct Agent : IGridEntity
     public const int MaturityAge = 60 * 10; // Frames until agent can reproduce after birth (10 seconds at 60 FPS)
     public int ReproductionCooldown;        // Frames until next possible reproduction
     public int MovementCooldown;            // Frames until next possible movement
+    public int TotalMovementCooldown;       // The total duration of the current movement cooldown (for interpolation)
     public int AttackCooldown { get; set; } // Frames until next possible attack
     private Color originalColor;
 
@@ -361,6 +362,7 @@ public struct Agent : IGridEntity
 
         ChangeEnergy(-cost, gridMap);
         MovementCooldown = BaseMovementCooldown - (int)(Energy * 0.05 * Math.Clamp(Speed, 0d, 1d)); // - 0 to 5+ frames
+        TotalMovementCooldown = MovementCooldown; // Store for interpolation
         return true;
     }
 

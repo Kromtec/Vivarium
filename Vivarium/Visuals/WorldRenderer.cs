@@ -457,10 +457,26 @@ public class WorldRenderer
                 rotation = MathF.Atan2(dy, dx);
             }
 
+            // Interpolation Logic
+            float offsetX = 0;
+            float offsetY = 0;
+
+            if (agent.MovementCooldown > 0 && agent.TotalMovementCooldown > 0)
+            {
+                // t goes from 1.0 (start of move) to 0.0 (end of move)
+                float t = (float)agent.MovementCooldown / agent.TotalMovementCooldown;
+                
+                // We want to draw at: CurrentPos - (MoveVector * t)
+                // MoveVector is (dx, dy) * cellSize
+                
+                offsetX = -(dx * cellSize * t);
+                offsetY = -(dy * cellSize * t);
+            }
+
             // Calculate screen position
             Vector2 position = new Vector2(
-                agent.X * cellSize + halfCellSize,
-                agent.Y * cellSize + halfCellSize
+                (agent.X * cellSize + halfCellSize) + offsetX,
+                (agent.Y * cellSize + halfCellSize) + offsetY
             );
 
             Texture2D texture = _agentTextures[(int)agent.Diet, traitIndex];
