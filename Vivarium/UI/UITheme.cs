@@ -19,13 +19,13 @@ public static class UITheme
     public static readonly Color ButtonColor = new Color(50, 50, 60);       // Dark Grey Button
     public static readonly Color ButtonHoverColor = new Color(70, 70, 80);  // Lighter Grey Button
     public static readonly Color ScrollThumbColor = Color.Gray;
-    
+
     public static readonly Color CooldownMoveColor = Color.LightBlue;
     public static readonly Color CooldownBreedColor = Color.Pink;
 
     // Genome / Weight Colors
     public static readonly Color WeightNeutral = new Color(22, 27, 34);
-    
+
     public static readonly Color[] WeightPositive = new Color[] {
         new Color(14, 68, 41),
         new Color(0, 109, 50),
@@ -44,7 +44,7 @@ public static class UITheme
     public static Color GetColorForWeight(float weight)
     {
         if (System.Math.Abs(weight) < 0.2f) return WeightNeutral;
-        
+
         if (weight > 0)
         {
             if (weight < 1.0f) return WeightPositive[0];

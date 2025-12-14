@@ -16,7 +16,7 @@ public struct Agent : IGridEntity
 
     private const float BaseAttackThreshold = 0.5f;
     private const float BaseMovementThreshold = 0.1f;
-    private const float BaseMetabolismRate = 0.01f; // Energy lost per frame (Reduced 10x)
+    private const float BaseMetabolismRate = 0.05f; // Energy lost per frame (Increased from 0.01f)
     private const int BaseMovementCooldown = 3; // Base cooldown for moving
 
     public const float MovementCost = 0.25f;   // Base cost for moving
@@ -74,15 +74,6 @@ public struct Agent : IGridEntity
         }
     }
 
-    public float Hunger
-    {
-        get;
-        private set
-        {
-            field = Math.Clamp(value, 0f, 100f);
-        }
-    }
-
     public void ChangeEnergy(float amount, GridCell[,] gridMap)
     {
         if (IsAlive)
@@ -96,15 +87,6 @@ public struct Agent : IGridEntity
             {
                 gridMap[X, Y] = GridCell.Empty;
             }
-        }
-    }
-
-    public void Eat(float amount)
-    {
-        if (IsAlive)
-        {
-            Hunger -= amount;
-            Energy += amount + (amount * MetabolicEfficiency * 0.5f);
         }
     }
 
@@ -158,9 +140,9 @@ public struct Agent : IGridEntity
         if (FleeVisualTimer > 0) FleeVisualTimer--;
         if (ReproductionVisualTimer > 0) ReproductionVisualTimer--;
 
-        // Metabolize energy
-        Hunger += MetabolismRate * 2;
-        ChangeEnergy(-(MetabolismRate + (MetabolismRate * (Hunger / 100))), gridMap);
+        // Metabolize energy (Entropy)
+        // Constant energy loss per frame
+        ChangeEnergy(-MetabolismRate, gridMap);
 
         // Color Update
         Color = Color.Lerp(Color.Black, OriginalColor, Math.Clamp(Energy / 100f, .25f, 1f));
@@ -585,18 +567,9 @@ public struct Agent : IGridEntity
             return false;
         }
 
-        // Appetite Check
-        bool isFull = false;
-        if (Diet != DietType.Carnivore)
-        {
-            if (Energy >= MaxEnergy * 0.95f && Hunger <= 5f)
-            {
-                isFull = true;
-                // We USED to return false here, trapping agents.
-                // Now we allow them to destroy plants (Trample) but gain no energy.
-                // It effectively costs them energy to clear the path.
-            }
-        }
+        // Appetite Check (Thermodynamic)
+        // Don't eat if full (Energy > 95%)
+        bool isFull = Energy >= MaxEnergy * 0.95f;
 
         const float baseDamage = 7.5f;
         var power = 1.0f + (Strength * 0.5f);
@@ -610,12 +583,12 @@ public struct Agent : IGridEntity
             plant.ChangeEnergy(-damage, gridMap);
 
             // Only eat if not full
-            if (!isFull) Eat(damage * 0.5f);
+            if (!isFull) ChangeEnergy(damage * 0.5f, gridMap);
         }
         else if (Diet == DietType.Omnivore)
         {
             plant.ChangeEnergy(-damage * 0.25f, gridMap);
-            if (!isFull) Eat(damage * 0.1f);
+            if (!isFull) ChangeEnergy(damage * 0.1f, gridMap);
         }
         else
         {
@@ -654,12 +627,12 @@ public struct Agent : IGridEntity
             damage = Math.Min(damage, victim.Energy);
 
             victim.ChangeEnergy(-damage, gridMap);
-            Eat(damage * 1.0f); // 100% Efficiency for specialized carnivores (was 0.8f)
+            ChangeEnergy(damage * 1.0f, gridMap); // 100% Efficiency for specialized carnivores
         }
         else if (Diet == DietType.Omnivore)
         {
             victim.ChangeEnergy(-damage * 0.25f, gridMap);
-            Eat(damage * 0.1f);
+            ChangeEnergy(damage * 0.1f, gridMap);
         }
         else
         {

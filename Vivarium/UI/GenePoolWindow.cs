@@ -17,9 +17,9 @@ public class GenePoolWindow
     private readonly Texture2D _pixelTexture;
     private readonly Texture2D _dotTexture;
 
-    public bool IsVisible 
-    { 
-        get => _isVisible; 
+    public bool IsVisible
+    {
+        get => _isVisible;
         set
         {
             if (_isVisible != value)
@@ -70,7 +70,7 @@ public class GenePoolWindow
     {
         // Delegate to Census
         _census.AnalyzePopulation(agents);
-        
+
         // Generate Textures for the new census data
         foreach (var family in _census.TopFamilies)
         {
@@ -79,7 +79,7 @@ public class GenePoolWindow
             {
                 family.Identicon = GetOrGenerateHelix(family.Representative.Representative);
             }
-            
+
             // Generate textures for variants
             foreach (var variant in family.Variants)
             {
@@ -108,7 +108,7 @@ public class GenePoolWindow
             // Try to find the same family (by Representative Hash)
             var newRef = topFamilies.FirstOrDefault(f => f.Representative.Hash == _selectedFamily.Representative.Hash);
             _selectedFamily = newRef;
-            
+
             // Clamp variant index
             if (_selectedFamily != null)
             {
@@ -205,19 +205,19 @@ public class GenePoolWindow
                 RequiresRefresh = true;
             }
             // Herbivore
-            if (new Rectangle(filterX + 50, filterY, 35, buttonHeight).Contains(mousePos)) 
+            if (new Rectangle(filterX + 50, filterY, 35, buttonHeight).Contains(mousePos))
             {
                 _filterDiet = DietType.Herbivore;
                 RequiresRefresh = true;
             }
             // Omnivore
-            if (new Rectangle(filterX + 90, filterY, 35, buttonHeight).Contains(mousePos)) 
+            if (new Rectangle(filterX + 90, filterY, 35, buttonHeight).Contains(mousePos))
             {
                 _filterDiet = DietType.Omnivore;
                 RequiresRefresh = true;
             }
             // Carnivore
-            if (new Rectangle(filterX + 130, filterY, 35, buttonHeight).Contains(mousePos)) 
+            if (new Rectangle(filterX + 130, filterY, 35, buttonHeight).Contains(mousePos))
             {
                 _filterDiet = DietType.Carnivore;
                 RequiresRefresh = true;
@@ -248,19 +248,19 @@ public class GenePoolWindow
             {
                 int detailsX = _windowRect.X + UITheme.Padding + ListWidth + 30;
                 int detailsY = _windowRect.Y + 50 + 30; // Header + Padding
-                
+
                 // Info block is now right aligned
                 int infoWidth = 250;
                 int infoX = _windowRect.Right - UITheme.Padding - infoWidth;
                 int infoY = detailsY + 75; // ID (40) + Diet (35) spacing
-                
+
                 // Prev Button
                 if (new Rectangle(infoX + infoWidth - 30 - 150 - 30, infoY, 30, 20).Contains(mousePos))
                 {
                     _selectedVariantIndex--;
                     if (_selectedVariantIndex < 0) _selectedVariantIndex = _selectedFamily.Variants.Count - 1;
                 }
-                
+
                 // Next Button
                 if (new Rectangle(infoX + infoWidth - 30, infoY, 30, 20).Contains(mousePos))
                 {
@@ -329,7 +329,7 @@ public class GenePoolWindow
         var mouse = Mouse.GetState();
         bool closeHover = closeBtnRect.Contains(mouse.Position);
         bool closePress = closeHover && mouse.LeftButton == ButtonState.Pressed;
-        
+
         UIComponents.DrawButton(spriteBatch, _font, closeBtnRect, "X", _pixelTexture, closeHover, closePress, UITheme.BadColor);
 
         // --- LEFT PANEL: LIST ---
@@ -390,7 +390,7 @@ public class GenePoolWindow
             {
                 countText += $" ({family.Variants.Count})";
             }
-            
+
             Vector2 countSize = _font.MeasureString(countText);
             float countX = listX + ListWidth - countSize.X - 15;
 
@@ -432,7 +432,7 @@ public class GenePoolWindow
             int detailsX = listX + ListWidth + 30;
             int detailsY = _windowRect.Y + 50;
             int detailsWidth = _windowRect.Width - (ListWidth + 30 + UITheme.Padding * 2);
-            
+
             // Get the currently selected variant within the family
             if (_selectedVariantIndex >= _selectedFamily.Variants.Count) _selectedVariantIndex = 0;
             var variant = _selectedFamily.Variants[_selectedVariantIndex];
@@ -446,7 +446,7 @@ public class GenePoolWindow
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
             spriteBatch.Draw(variant.Identicon, bigIconRect, Color.White);
             spriteBatch.End();
-            spriteBatch.Begin(); 
+            spriteBatch.Begin();
 
             // Info Block (Right Aligned)
             int infoWidth = 250;
@@ -487,12 +487,12 @@ public class GenePoolWindow
                 // Variant Info (Index / Total)
                 string varInfo = $"({_selectedVariantIndex + 1} / {_selectedFamily.Variants.Count})";
                 Vector2 infoSize = _font.MeasureString(varInfo);
-                
+
                 int textAreaWidth = 150;
                 float textX = nextRect.X - textAreaWidth + (textAreaWidth - infoSize.X) / 2;
-                
+
                 spriteBatch.DrawString(_font, varInfo, new Vector2(textX, infoY + 2), UITheme.TextColorPrimary);
-                
+
                 // Prev Button
                 Rectangle prevRect = new Rectangle(nextRect.X - textAreaWidth - 30, infoY, 30, 20);
                 bool prevHover = prevRect.Contains(mouse.Position);
@@ -507,7 +507,7 @@ public class GenePoolWindow
             }
 
             detailsY += 135;
-            
+
             detailsY += 30;
 
             // Traits
@@ -527,10 +527,10 @@ public class GenePoolWindow
             {
                 int gridWidth = variant.GenomeGrid.Width;
                 int gridHeight = variant.GenomeGrid.Height;
-                
+
                 int gridX = detailsX + (detailsWidth - gridWidth) / 2;
                 int gridY = _windowRect.Bottom - UITheme.Padding - gridHeight;
-                
+
                 spriteBatch.Draw(variant.GenomeGrid, new Vector2(gridX, gridY), Color.White);
             }
         }
@@ -546,7 +546,7 @@ public class GenePoolWindow
         int dotSize = 6;
         int spacing = 2;
         int totalWidth = (dotSize * 3) + (spacing * 2);
-        
+
         int startX = iconRect.Right - totalWidth - 2;
         int startY = iconRect.Bottom - dotSize - 2;
 
@@ -583,7 +583,7 @@ public class GenePoolWindow
         // Use UIComponents.DrawButton
         // We need to handle the "Selected" state which might differ from Hover/Press
         // For now, let's just use the overrideColor logic
-        
+
         var mouse = Mouse.GetState();
         bool isHover = rect.Contains(mouse.Position);
         bool isPress = isHover && mouse.LeftButton == ButtonState.Pressed;

@@ -229,7 +229,7 @@ public class VivariumGame : Game
     {
         // Input
         var keyboardState = Keyboard.GetState();
-        
+
         // ESC
         if (keyboardState.IsKeyDown(Keys.Escape) && !_previousKeyboardState.IsKeyDown(Keys.Escape))
         {
@@ -470,7 +470,7 @@ public class VivariumGame : Game
 
         Texture2D pixel = new Texture2D(GraphicsDevice, 1, 1);
         pixel.SetData(new[] { Color.White });
-        
+
         _spriteBatch.Draw(pixel, new Rectangle(rect.X + 4, rect.Y + 4, width, height), Color.Black * 0.5f);
         _spriteBatch.Draw(pixel, rect, UITheme.PanelBgColor);
         _spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, width, 2), UITheme.BorderColor);
@@ -480,7 +480,7 @@ public class VivariumGame : Game
 
         string title = "EXIT APPLICATION?";
         string subtitle = "Press ENTER to Confirm or ESC to Cancel";
-        
+
         Vector2 titleSize = _sysFont.MeasureString(title);
         Vector2 subSize = _sysFont.MeasureString(subtitle);
 

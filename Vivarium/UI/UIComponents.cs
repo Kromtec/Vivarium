@@ -60,7 +60,7 @@ public static class UIComponents
         // Let's make this flexible. If label is provided, we draw it and push bar to right.
         // But for generic usage, maybe just draw the bar in the rect provided?
         // Let's stick to the Inspector style for now as it's the main user.
-        
+
         // Actually, let's make it simple: Draw bar in the given rect. Label drawing is caller's responsibility or separate.
         // But the request is to refactor components.
         // Let's support the "Label ...... [Bar]" layout.
@@ -70,7 +70,7 @@ public static class UIComponents
     {
         // Bg
         sb.Draw(pixel, rect, Color.Black * 0.5f);
-        
+
         // Fill
         float r = Math.Clamp(ratio, 0f, 1f);
         sb.Draw(pixel, new Rectangle(rect.X, rect.Y, (int)(rect.Width * r), rect.Height), color);
@@ -95,7 +95,7 @@ public static class UIComponents
             // -1 to 1
             float valClamped = Math.Clamp(value, -1f, 1f);
             int fillWidth = (int)((rect.Width / 2) * Math.Abs(valClamped));
-            
+
             Color c = UITheme.GetColorForWeight(value);
 
             if (valClamped > 0)

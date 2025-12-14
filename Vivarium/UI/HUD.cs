@@ -61,16 +61,16 @@ public class HUD
 
         int graphHeight = 100;
         int graphPadding = 10;
-        
+
         // Header
         contentHeight += 30;
         contentHeight += UITheme.LineHeight;
-        
+
         // Graph
         contentHeight += graphPadding;
         contentHeight += graphHeight;
         contentHeight += graphPadding;
-        
+
         // Stats
         contentHeight += 30;
         contentHeight += UITheme.LineHeight * 6;
@@ -93,8 +93,7 @@ public class HUD
         // -- TIME --
         System.TimeSpan simTime = System.TimeSpan.FromSeconds(tickCount / VivariumGame.FramesPerSecond);
         string timeString = $"{simTime:hh\\:mm\\:ss}";
-        string tickString = $"T: {tickCount}";
-        
+
         spriteBatch.DrawString(_font, "Time Elapsed", new Vector2(leftX, _cursorY), UITheme.TextColorSecondary);
         Vector2 timeSize = _font.MeasureString(timeString);
         spriteBatch.DrawString(_font, timeString, new Vector2(rightX - timeSize.X, _cursorY), UITheme.TextColorPrimary);
@@ -110,21 +109,21 @@ public class HUD
         // -- POPULATION STATS --
         _cursorY += 5;
         spriteBatch.DrawString(_font, "POPULATION", new Vector2(leftX, _cursorY + 3), UITheme.HeaderColor);
-        
+
         // Gene Button
         int buttonWidth = 60;
         int buttonHeight = 24;
-        
+
         Vector2 headerSize = _font.MeasureString("POPULATION");
         int buttonY = _cursorY + (int)((headerSize.Y - buttonHeight) / 2);
-        
+
         _geneButtonRect = new Rectangle(rightX - buttonWidth, buttonY, buttonWidth, buttonHeight);
-        
+
         // Use UIComponents.DrawButton
         var mouse = Microsoft.Xna.Framework.Input.Mouse.GetState();
         bool isHover = _geneButtonRect.Contains(mouse.Position);
         bool isPress = isHover && mouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed;
-        
+
         UIComponents.DrawButton(spriteBatch, _font, _geneButtonRect, "GENES", _pixelTexture, isHover, isPress, UITheme.ButtonColor);
 
         _cursorY += 30;

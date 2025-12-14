@@ -183,10 +183,12 @@ public class Inspector
 
                         AddRow("Generation", $"{agent.Generation}", ref contentHeight);
                         AddRow("Diet", $"{agent.Diet}", ref contentHeight);
-                        AddRow("Age", $"{agent.Age:F0} t | {agent.Age / VivariumGame.FramesPerSecond:F0} s", ref contentHeight);
+                        
+                        TimeSpan simTime = TimeSpan.FromSeconds(agent.Age / VivariumGame.FramesPerSecond);
+                        string timeString = $"{simTime:hh\\:mm\\:ss}";
+                        AddRow("Age", timeString, ref contentHeight);
 
                         AddProgressBar("Energy", agent.Energy, agent.MaxEnergy, Color.Lerp(UITheme.BadColor, UITheme.GoodColor, agent.Energy / agent.MaxEnergy), ref contentHeight);
-                        AddProgressBar("Hunger", agent.Hunger, 100f, Color.Lerp(UITheme.GoodColor, UITheme.BadColor, agent.Hunger / 100f), ref contentHeight);
 
                         // Traits
                         AddSeparator(ref contentHeight);

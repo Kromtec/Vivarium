@@ -90,7 +90,7 @@ public class GenomeCensus
             for (int i = unassigned.Count - 1; i >= 0; i--)
             {
                 var candidate = unassigned[i];
-                
+
                 // Optimization: Only check similarity if Diet matches (Diet is a hard filter usually)
                 if (candidate.Diet == seed.Diet)
                 {
@@ -105,7 +105,7 @@ public class GenomeCensus
 
             // Calculate total count for the family
             family.TotalCount = family.Variants.Sum(v => v.Count);
-            
+
             // Sort variants within family by count
             family.Variants = family.Variants.OrderByDescending(v => v.Count).ToList();
 

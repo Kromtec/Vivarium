@@ -26,8 +26,8 @@ public static class ScientificNameGenerator
         { "Constitution", (new[] { "aeternus", "solidus", "perennis" }, new[] { "fragilis", "caducus", "mortalis" }, "Enduring", "Fragile") }
     };
 
-    private static readonly string[] GenericSpeciesNames = { 
-        "vulgaris", "communis", "simplex", "variabilis", "mirabilis", "notabilis", "modestus" 
+    private static readonly string[] GenericSpeciesNames = {
+        "vulgaris", "communis", "simplex", "variabilis", "mirabilis", "notabilis", "modestus"
     };
 
     public static (string ScientificName, string Translation) GenerateFamilyName(Agent agent)
@@ -42,7 +42,7 @@ public static class ScientificNameGenerator
         string dietMeaning = dietData.Meaning;
 
         var (traitName, isPositive, intensity) = GetDominantTrait(agent, 0); // 0 = Most dominant
-        
+
         string suffix = "morphus";
         string traitMeaning = "Form";
 
@@ -83,10 +83,10 @@ public static class ScientificNameGenerator
 
     public static string GenerateVariantName(int variantIndex)
     {
-        string[] greekLetters = { 
-            "alpha", "beta", "gamma", "delta", "epsilon", 
-            "zeta", "eta", "theta", "iota", "kappa", 
-            "lambda", "mu", "nu", "xi", "omicron" 
+        string[] greekLetters = {
+            "alpha", "beta", "gamma", "delta", "epsilon",
+            "zeta", "eta", "theta", "iota", "kappa",
+            "lambda", "mu", "nu", "xi", "omicron"
         };
 
         if (variantIndex < greekLetters.Length)
@@ -112,7 +112,7 @@ public static class ScientificNameGenerator
         traits.Sort((a, b) => Math.Abs(b.Value).CompareTo(Math.Abs(a.Value)));
 
         if (rank >= traits.Count) rank = traits.Count - 1;
-        
+
         var selected = traits[rank];
         return (selected.Name, selected.Value > 0, Math.Abs(selected.Value));
     }

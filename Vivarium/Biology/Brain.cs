@@ -36,7 +36,6 @@ public static class Brain
         neurons[(int)SensorType.LocationY] = ((float)agent.Y / gridHeight * 2) - 1.0f;  // -1 .. +1
         neurons[(int)SensorType.Random] = (float)rng.NextDouble();                      //  0 .. +1
         neurons[(int)SensorType.Energy] = agent.Energy / agent.MaxEnergy;               //  0 .. +1
-        neurons[(int)SensorType.Hunger] = agent.Hunger / 100f;                          //  0 .. +1
         neurons[(int)SensorType.Age] = Math.Min(agent.Age / 2000f, 1.0f);
         neurons[(int)SensorType.Oscillator] = MathF.Sin(agent.Age * 0.1f);
 
@@ -132,9 +131,9 @@ public static class Brain
             return; // Priority 1: Survival overrides everything
         }
 
-        // 2. FEEDING INSTINCT (Hunger)
-        // If hungry or low energy, seek food.
-        if (agent.Hunger > 50f || agent.Energy < agent.MaxEnergy * 0.5f)
+        // 2. FEEDING INSTINCT (Energy)
+        // If low energy, seek food.
+        if (agent.Energy < agent.MaxEnergy * 0.6f)
         {
             if (agent.Diet == DietType.Herbivore)
             {
@@ -328,8 +327,8 @@ public static class Brain
                 return;
             }
         }
-        // Regenerate if no action taken and properly fed
-        if (agent.Hunger < 10f)
+        // Regenerate if no action taken and properly fed (Energy > 90%)
+        if (agent.Energy > agent.MaxEnergy * 0.9f)
         {
             agent.ChangeEnergy(agent.MetabolismRate, gridMap);
         }

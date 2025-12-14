@@ -124,7 +124,7 @@ public static class GenomeHelper
         const int cellSize = 10;
         const int gap = 2;
         const int totalCellSize = cellSize + gap;
-        
+
         int width = cols * totalCellSize;
         int height = rows * totalCellSize;
 
