@@ -265,26 +265,26 @@ public class GenePoolWindow
             int filterY = _windowRect.Y + 45;
             int filterX = _windowRect.X + UITheme.Padding;
 
-            // All
-            if (new Rectangle(filterX, filterY, 35, buttonHeight).Contains(mousePos))
+            // All (Wider)
+            if (new Rectangle(filterX, filterY, 45, buttonHeight).Contains(mousePos))
             {
                 _filterDiet = null;
                 RequiresRefresh = true;
             }
             // Herbivore
-            if (new Rectangle(filterX + 40, filterY, 35, buttonHeight).Contains(mousePos)) 
+            if (new Rectangle(filterX + 50, filterY, 35, buttonHeight).Contains(mousePos)) 
             {
                 _filterDiet = DietType.Herbivore;
                 RequiresRefresh = true;
             }
             // Omnivore
-            if (new Rectangle(filterX + 80, filterY, 35, buttonHeight).Contains(mousePos)) 
+            if (new Rectangle(filterX + 90, filterY, 35, buttonHeight).Contains(mousePos)) 
             {
                 _filterDiet = DietType.Omnivore;
                 RequiresRefresh = true;
             }
             // Carnivore
-            if (new Rectangle(filterX + 120, filterY, 35, buttonHeight).Contains(mousePos)) 
+            if (new Rectangle(filterX + 130, filterY, 35, buttonHeight).Contains(mousePos)) 
             {
                 _filterDiet = DietType.Carnivore;
                 RequiresRefresh = true;
@@ -322,14 +322,14 @@ public class GenePoolWindow
                 int infoY = detailsY + 60; // ID + Diet lines approx
                 
                 // Prev Button
-                if (new Rectangle(infoX, infoY, 30, 20).Contains(mousePos))
+                if (new Rectangle(infoX + infoWidth - 30 - 150 - 30, infoY, 30, 20).Contains(mousePos))
                 {
                     _selectedVariantIndex--;
                     if (_selectedVariantIndex < 0) _selectedVariantIndex = _selectedFamily.Variants.Count - 1;
                 }
                 
                 // Next Button
-                if (new Rectangle(infoX + 30 + 150, infoY, 30, 20).Contains(mousePos))
+                if (new Rectangle(infoX + infoWidth - 30, infoY, 30, 20).Contains(mousePos))
                 {
                     _selectedVariantIndex++;
                     if (_selectedVariantIndex >= _selectedFamily.Variants.Count) _selectedVariantIndex = 0;
@@ -383,10 +383,10 @@ public class GenePoolWindow
         int filterY = _windowRect.Y + 45;
         int filterX = _windowRect.X + UITheme.Padding;
 
-        DrawFilterButton(spriteBatch, "ALL", null, filterX, filterY, buttonHeight);
-        DrawFilterButton(spriteBatch, "H", DietType.Herbivore, filterX + 40, filterY, buttonHeight);
-        DrawFilterButton(spriteBatch, "O", DietType.Omnivore, filterX + 80, filterY, buttonHeight);
-        DrawFilterButton(spriteBatch, "C", DietType.Carnivore, filterX + 120, filterY, buttonHeight);
+        DrawFilterButton(spriteBatch, "ALL", null, filterX, filterY, buttonHeight, 45);
+        DrawFilterButton(spriteBatch, "H", DietType.Herbivore, filterX + 50, filterY, buttonHeight);
+        DrawFilterButton(spriteBatch, "O", DietType.Omnivore, filterX + 90, filterY, buttonHeight);
+        DrawFilterButton(spriteBatch, "C", DietType.Carnivore, filterX + 130, filterY, buttonHeight);
 
         // Close Button
         int closeBtnSize = 20;
@@ -517,41 +517,47 @@ public class GenePoolWindow
             int infoY = detailsY;
 
             // ID
-            spriteBatch.DrawString(_font, $"ID: {variant.Hash:X}", new Vector2(infoX, infoY), UITheme.TextColorSecondary);
+            string idText = $"ID: {variant.Hash:X}";
+            Vector2 idSize = _font.MeasureString(idText);
+            spriteBatch.DrawString(_font, idText, new Vector2(infoX + infoWidth - idSize.X, infoY), UITheme.TextColorSecondary);
             infoY += 25;
 
             // Diet
-            spriteBatch.DrawString(_font, $"Diet: {variant.Diet}", new Vector2(infoX, infoY), UITheme.TextColorPrimary);
+            string dietText = $"Diet: {variant.Diet}";
+            Vector2 dietSize = _font.MeasureString(dietText);
+            spriteBatch.DrawString(_font, dietText, new Vector2(infoX + infoWidth - dietSize.X, infoY), UITheme.TextColorPrimary);
             infoY += 35;
 
             // Variant Navigation
             if (_selectedFamily.Variants.Count > 1)
             {
-                // Prev Button
-                Rectangle prevRect = new Rectangle(infoX, infoY, 30, 20);
-                spriteBatch.Draw(_pixelTexture, prevRect, Color.DarkGray);
-                DrawBorder(spriteBatch, prevRect, 1, Color.White);
-                spriteBatch.DrawString(_font, "<", new Vector2(prevRect.X + 10, prevRect.Y), Color.White);
-                
+                // Next Button (Rightmost)
+                Rectangle nextRect = new Rectangle(infoX + infoWidth - 30, infoY, 30, 20);
+                spriteBatch.Draw(_pixelTexture, nextRect, Color.DarkGray);
+                DrawBorder(spriteBatch, nextRect, 1, Color.White);
+                spriteBatch.DrawString(_font, ">", new Vector2(nextRect.X + 10, nextRect.Y + 2), Color.White);
+
                 // Variant Info
                 string varInfo = $"Var {_selectedVariantIndex + 1}/{_selectedFamily.Variants.Count}";
                 Vector2 infoSize = _font.MeasureString(varInfo);
                 
                 // Fixed width area for text to avoid clipping
                 int textAreaWidth = 150;
-                float textX = infoX + 30 + (textAreaWidth - infoSize.X) / 2;
+                float textX = nextRect.X - textAreaWidth + (textAreaWidth - infoSize.X) / 2;
                 
-                spriteBatch.DrawString(_font, varInfo, new Vector2(textX, infoY), UITheme.TextColorPrimary);
+                spriteBatch.DrawString(_font, varInfo, new Vector2(textX, infoY + 2), UITheme.TextColorPrimary);
                 
-                // Next Button
-                Rectangle nextRect = new Rectangle(infoX + 30 + textAreaWidth, infoY, 30, 20);
-                spriteBatch.Draw(_pixelTexture, nextRect, Color.DarkGray);
-                DrawBorder(spriteBatch, nextRect, 1, Color.White);
-                spriteBatch.DrawString(_font, ">", new Vector2(nextRect.X + 10, nextRect.Y), Color.White);
+                // Prev Button
+                Rectangle prevRect = new Rectangle(nextRect.X - textAreaWidth - 30, infoY, 30, 20);
+                spriteBatch.Draw(_pixelTexture, prevRect, Color.DarkGray);
+                DrawBorder(spriteBatch, prevRect, 1, Color.White);
+                spriteBatch.DrawString(_font, "<", new Vector2(prevRect.X + 10, prevRect.Y + 2), Color.White);
             }
             else
             {
-                spriteBatch.DrawString(_font, $"Count: {variant.Count}", new Vector2(infoX, infoY), UITheme.TextColorPrimary);
+                string countText = $"Count: {variant.Count}";
+                Vector2 countSize = _font.MeasureString(countText);
+                spriteBatch.DrawString(_font, countText, new Vector2(infoX + infoWidth - countSize.X, infoY), UITheme.TextColorPrimary);
             }
 
             detailsY += 135;
@@ -616,10 +622,10 @@ public class GenePoolWindow
         }
     }
 
-    private void DrawFilterButton(SpriteBatch sb, string label, DietType? type, int x, int y, int height)
+    private void DrawFilterButton(SpriteBatch sb, string label, DietType? type, int x, int y, int height, int width = 35)
     {
         bool isSelected = _filterDiet == type;
-        Rectangle rect = new Rectangle(x, y, 35, height);
+        Rectangle rect = new Rectangle(x, y, width, height);
 
         Color bgColor = isSelected ? UITheme.ButtonColor : Color.Black * 0.5f;
         if (type.HasValue)
@@ -631,7 +637,7 @@ public class GenePoolWindow
         DrawBorder(sb, rect, 1, isSelected ? Color.White : UITheme.BorderColor);
 
         Vector2 size = _font.MeasureString(label);
-        Vector2 pos = new Vector2(x + (rect.Width - size.X) / 2, y + (rect.Height - size.Y) / 2 + 1);
+        Vector2 pos = new Vector2(x + (rect.Width - size.X) / 2, y + (rect.Height - size.Y) / 2 + 3);
         sb.DrawString(_font, label, pos, Color.White);
     }
 
