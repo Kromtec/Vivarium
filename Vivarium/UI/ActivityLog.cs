@@ -82,12 +82,11 @@ public static class ActivityLog
             // Index 0 (Oldest) -> Faded
             // Index Count-1 (Newest) -> Opaque
             
-            // We want the newest to be at the bottom slot.
-            // If we have fewer than MaxEntries, we start drawing from the top?
-            // Requirement: "new log messages appear at the bottom and the others move one line to the top"
-            // So we should draw relative to the bottom of the box.
+            // Align to bottom:
+            // If we have fewer entries than MaxEntries, push them down.
+            int offset = MaxEntries - _entries.Count;
+            int drawIndex = i + offset;
             
-            int drawIndex = i; // 0 is top
             int textY = y + 10 + (drawIndex * lineHeight);
             
             // Opacity: 

@@ -139,10 +139,6 @@ public struct Agent : IGridEntity
         if (FleeVisualTimer > 0) FleeVisualTimer--;
         if (ReproductionVisualTimer > 0) ReproductionVisualTimer--;
 
-        // Metabolize energy (Entropy)
-        // Constant energy loss per frame
-        ChangeEnergy(-MetabolismRate, gridMap);
-
         // Color Update
         Color = Color.Lerp(Color.Black, OriginalColor, Math.Clamp(Energy / 100f, .25f, 1f));
     }

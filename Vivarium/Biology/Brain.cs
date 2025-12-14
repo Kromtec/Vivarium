@@ -137,7 +137,8 @@ public static class Brain
         // If low energy, seek food.
         if (agent.Energy < agent.MaxEnergy * 0.6f)
         {
-            if (agent.Diet == DietType.Herbivore)
+            var dietDecision = rng.NextDouble();
+            if (agent.Diet == DietType.Herbivore || (agent.Diet == DietType.Omnivore && dietDecision > 0.5f))
             {
                 // Move towards plants
                 // We check the directional sensors we just populated.
@@ -181,7 +182,7 @@ public static class Brain
                 ActivityLog.Log(agent.Id, $"Instinct: Low Energy. Seeking Plants towards {biasDir}.");
                 return; // Priority 2: Food
             }
-            else if (agent.Diet == DietType.Carnivore)
+            else if (agent.Diet == DietType.Carnivore || (agent.Diet == DietType.Omnivore && dietDecision < 0.5f))
             {
                 // Move towards prey (Agents)
                 // Similar logic but for AgentDensity
@@ -227,10 +228,10 @@ public static class Brain
 
         // 3. REPRODUCTION INSTINCT (Libido)
         // If healthy and mature, try to reproduce.
-        if (agent.Energy > agent.MaxEnergy * 0.9f && agent.Age > Agent.MaturityAge)
+        if (agent.Energy > agent.MaxEnergy * 0.9f && agent.Age > Agent.MaturityAge && agent.ReproductionCooldown == 0)
         {
             ApplyDominantBias(ActionType.Reproduce, 2.0f);
-            ActivityLog.Log(agent.Id, $"Instinct: Libido. Healthy & Mature (Age {agent.Age}). Urge to reproduce.");
+            ActivityLog.Log(agent.Id, $"Instinct: Libido. Healthy & Mature. Urge to reproduce.");
         }
     }
 
@@ -239,6 +240,12 @@ public static class Brain
         Span<Agent> agentPopulationSpan,
         Span<Plant> plantPopulationSpan)
     {
+
+        // Metabolize energy (Entropy)
+        // Constant energy loss per frame
+        agent.ChangeEnergy(-agent.MetabolismRate, gridMap);
+        ActivityLog.Log(agent.Id, $"Entropy: Metabolized {agent.MetabolismRate:F2} Energy.");
+
         var neurons = agent.NeuronActivations;
         int gridWidth = gridMap.GetLength(0);
         int gridHeight = gridMap.GetLength(1);
@@ -271,12 +278,12 @@ public static class Brain
             if (result.Success)
             {
                 // Log for Attacker
-                ActivityLog.Log(agent.Id, $"Action: Attacked {result.TargetType} #{result.TargetId} for {result.DamageDealt:F1} damage.");
+                ActivityLog.Log(agent.Id, $"Action: Attacked {result.TargetType} #{result.TargetId} in an uncoordinated swing for {result.DamageDealt:F1} damage.");
 
                 // Log for Victim (if it was an agent)
                 if (result.TargetType == "Agent")
                 {
-                    ActivityLog.Log(result.TargetId, $"Event: Attacked by Agent #{agent.Id} for {result.DamageDealt:F1} damage.");
+                    ActivityLog.Log(result.TargetId, $"Event: Attacked by Agent #{agent.Id} in an uncoordinated swing for {result.DamageDealt:F1} damage.");
                 }
 
                 // Log Retaliation
@@ -350,8 +357,8 @@ public static class Brain
 
                 float damageDealt;
                 agent.TryAttackPlant(ref plant, gridMap, moveX, moveY, out damageDealt);
-                var actionText = agent.Diet == DietType.Herbivore ? "Ate" : "Trampled";
-                ActivityLog.Log(agent.Id, $"Action: {actionText} Plant #{plant.Id} (made {damageDealt:F1} damage) and Moved {dirText}.");
+                var actionText = agent.Diet != DietType.Carnivore ? "Ate" : "Trampled";
+                ActivityLog.Log(agent.Id, $"Action: {actionText} Plant #{plant.Id} in the {dirText} and made {damageDealt:F1} damage.");
 
                 if (!plant.IsAlive)
                 {
@@ -388,7 +395,7 @@ public static class Brain
                 }
 
                 string retalMsg = selfDamage > 0 ? $" (Took {selfDamage:F1} retaliation damage)" : "";
-                ActivityLog.Log(agent.Id, $"Action: Attacked Agent #{victim.Id} for {damageDealt:F1} damage{retalMsg}.");
+                ActivityLog.Log(agent.Id, $"Action: Attacked {dirText} Agent #{victim.Id} for {damageDealt:F1} damage{retalMsg}.");
             }
             else if (gridMap[pendingX, pendingY].Type == EntityType.Structure)
             {
@@ -396,19 +403,20 @@ public static class Brain
                 bool isDiagonal = (moveX != 0 && moveY != 0);
                 float cost = isDiagonal ? Agent.DiagonalMovementCost : Agent.OrthogonalMovementCost; // cost * sqrt(2) approx
                 agent.ChangeEnergy(-cost, gridMap);
-                ActivityLog.Log(agent.Id, $"Action: Hit a wall and took {cost:F2} damage!");
+                ActivityLog.Log(agent.Id, $"Action: Hit a wall in the {dirText} and took {cost:F2} damage!");
                 return;
             }
         }
+
         // Regenerate if no action taken and properly fed (Energy > 90%)
         if (agent.Energy > agent.MaxEnergy * 0.9f)
         {
-            agent.ChangeEnergy(agent.MetabolismRate, gridMap);
+            agent.ChangeEnergy(agent.MetabolismRate * 0.5f, gridMap);
             ActivityLog.Log(agent.Id, $"Action: Resting. Regenerated {agent.MetabolismRate:F2} Energy.");
         }
         else
         {
-            ActivityLog.Log(agent.Id, "Action: Idle. No action taken.");
+            ActivityLog.Log(agent.Id, "Action: Idle.");
         }
     }
 

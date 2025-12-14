@@ -206,7 +206,7 @@ public class Inspector
                         AddSeparator(ref contentHeight);
                         AddHeader("SENSORY INPUTS", ref contentHeight);
                         AddBrainBar("Oscillator", GetSensorVal(ref agent, SensorType.Oscillator), false, ref contentHeight);
-                        AddBrainBar("Rand", GetSensorVal(ref agent, SensorType.Random), true, ref contentHeight);
+                        AddBrainBar("Random", GetSensorVal(ref agent, SensorType.Random), true, ref contentHeight);
                         AddBrainBar("Agent Density", GetSensorVal(ref agent, SensorType.AgentDensity), true, ref contentHeight);
                         AddBrainBar("Plant Density", GetSensorVal(ref agent, SensorType.PlantDensity), true, ref contentHeight);
                         AddBrainBar("Structure Density", GetSensorVal(ref agent, SensorType.StructureDensity), true, ref contentHeight);
