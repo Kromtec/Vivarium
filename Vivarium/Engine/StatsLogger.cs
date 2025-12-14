@@ -28,7 +28,7 @@ public static class StatsLogger
         }
 
         string line = $"{simulation.TickCount},{simulation.AliveAgents},{herbs},{omnis},{carnis},{simulation.AlivePlants},{simulation.AliveStructures}";
-        
+
         // Append to file
         File.AppendAllText(logFilePath, line + Environment.NewLine);
     }

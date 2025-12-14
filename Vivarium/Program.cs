@@ -1,11 +1,16 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using Vivarium.Engine;
 
 namespace Vivarium;
 
 public static class Program
 {
+    [DllImport("kernel32.dll")]
+    private static extern bool AttachConsole(int dwProcessId);
+    private const int ATTACH_PARENT_PROCESS = -1;
+
     [STAThread]
     static void Main(string[] args)
     {
@@ -30,6 +35,11 @@ public static class Program
 
         if (headless)
         {
+            // Attempt to attach to the parent console to enable output
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                AttachConsole(ATTACH_PARENT_PROCESS);
+            }
             RunHeadless(duration);
         }
         else
@@ -42,7 +52,7 @@ public static class Program
     static void RunHeadless(int durationTicks)
     {
         Console.WriteLine($"Starting Headless Simulation for {durationTicks} ticks...");
-        
+
         var simulation = new Simulation();
         simulation.Initialize();
 
@@ -54,7 +64,7 @@ public static class Program
         }
         string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
         string logFile = Path.Combine(logDir, $"simulation_run_{timestamp}.csv");
-        
+
         // Header
         File.WriteAllText(logFile, "Tick,Agents,Herbivores,Omnivores,Carnivores,Plants,Structures" + Environment.NewLine);
 
@@ -69,16 +79,17 @@ public static class Program
                 StatsLogger.LogStats(simulation, logFile);
                 if (i % 600 == 0)
                 {
-                    Console.WriteLine($"Progress: {i}/{durationTicks} ticks ({(double)i/durationTicks*100:F1}%)");
+                    Console.WriteLine($"Progress: {i}/{durationTicks} ticks ({(double)i / durationTicks * 100:F1}%)");
                 }
             }
         }
 
         var endTime = DateTime.Now;
         var realDuration = endTime - startTime;
+        var simulatedSeconds = durationTicks / 60.0;
 
         Console.WriteLine($"Simulation Complete.");
-        Console.WriteLine($"Simulated {durationTicks} ticks in {realDuration.TotalSeconds:F2} seconds.");
+        Console.WriteLine($"Simulated {durationTicks} ticks ({simulatedSeconds} seconds) in {realDuration.TotalSeconds:F2} seconds real time.");
         Console.WriteLine($"Speedup: {durationTicks / 60.0 / realDuration.TotalSeconds:F2}x real-time.");
         Console.WriteLine($"Log saved to: {logFile}");
     }

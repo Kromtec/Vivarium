@@ -184,7 +184,7 @@ public class Inspector
 
                         AddRow("Generation", $"{agent.Generation}", ref contentHeight);
                         AddRow("Diet", $"{agent.Diet}", ref contentHeight);
-                        
+
                         TimeSpan simTime = TimeSpan.FromSeconds(agent.Age / VivariumGame.FramesPerSecond);
                         string timeString = $"{simTime:hh\\:mm\\:ss}";
                         AddRow("Age", timeString, ref contentHeight);

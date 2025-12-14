@@ -67,7 +67,7 @@ public static class ActivityLog
         // Draw Background
         Texture2D pixel = new Texture2D(graphics, 1, 1);
         pixel.SetData(new[] { Color.White });
-        
+
         Rectangle bgRect = new Rectangle(x, y, width, height);
         sb.Draw(pixel, bgRect, Color.Black * 0.7f);
         // Removed Border
@@ -77,23 +77,23 @@ public static class ActivityLog
         for (int i = 0; i < _entries.Count; i++)
         {
             var entry = _entries[i];
-            
+
             // Calculate opacity based on age in the list (index)
             // Index 0 (Oldest) -> Faded
             // Index Count-1 (Newest) -> Opaque
-            
+
             // Align to bottom:
             // If we have fewer entries than MaxEntries, push them down.
             int offset = MaxEntries - _entries.Count;
             int drawIndex = i + offset;
-            
+
             int textY = y + 10 + (drawIndex * lineHeight);
-            
+
             // Opacity: 
             // Newest (i == Count-1) -> 1.0
             // Oldest (i == 0) -> Lower
             float opacity = 0.4f + (0.6f * ((float)(i + 1) / _entries.Count));
-            
+
             sb.DrawString(font, $"> {entry.Message}", new Vector2(x + 10, textY), Color.White * opacity);
         }
     }
