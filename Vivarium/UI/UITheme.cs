@@ -20,24 +20,26 @@ public static class UITheme
     public static readonly Color ButtonHoverColor = new Color(50, 50, 60);  // Lighter Grey Button
     public static readonly Color ScrollThumbColor = Color.Gray;
 
+    public static readonly Color BarBackgroundColor = new Color(45, 45, 50); // Subtle background for bars
+
     public static readonly Color CooldownMoveColor = Color.LightBlue;
     public static readonly Color CooldownBreedColor = Color.Pink;
 
     // Genome / Weight Colors
-    public static readonly Color WeightNeutral = new Color(22, 27, 34);
+    public static readonly Color WeightNeutral = new Color(60, 65, 75); // Brightened further
 
     public static readonly Color[] WeightPositive = new Color[] {
-        new Color(14, 68, 41),
-        new Color(0, 109, 50),
-        new Color(38, 166, 65),
-        new Color(57, 211, 83)
+        new Color(60, 140, 80),   // Brightened
+        new Color(80, 180, 100),  // Brightened
+        new Color(100, 220, 120), // Brightened
+        new Color(120, 255, 140)  // Brightened
     };
 
     public static readonly Color[] WeightNegative = new Color[] {
-        new Color(68, 14, 14),
-        new Color(109, 0, 0),
-        new Color(166, 38, 38),
-        new Color(211, 57, 57)
+        new Color(140, 60, 60),   // Brightened
+        new Color(180, 80, 80),   // Brightened
+        new Color(220, 100, 100), // Brightened
+        new Color(255, 120, 120)  // Brightened
     };
 
     // Helper to get color from weight

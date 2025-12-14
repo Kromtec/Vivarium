@@ -283,8 +283,8 @@ public class Inspector
                         AddSeparator(ref contentHeight);
                         AddHeader("COOLDOWNS", ref contentHeight);
                         AddProgressBar("Attack", agent.AttackCooldown, 60f, UITheme.WarningColor, ref contentHeight);
-                        AddProgressBar("Move", agent.MovementCooldown, 5f, Color.LightBlue, ref contentHeight);
-                        AddProgressBar("Breed", agent.ReproductionCooldown, 600f, Color.Pink, ref contentHeight);
+                        AddProgressBar("Move", agent.MovementCooldown, 5f, UITheme.CooldownMoveColor, ref contentHeight);
+                        AddProgressBar("Breed", agent.ReproductionCooldown, 600f, UITheme.CooldownBreedColor, ref contentHeight);
                     }
                     else
                     {
@@ -531,7 +531,7 @@ public class Inspector
         {
             int leftX = inspector._panelRect.X + UITheme.Padding;
             int rightX = inspector._panelRect.X + inspector._panelRect.Width - UITheme.Padding;
-            int barWidth = 100;
+            int barWidth = 150; // Increased from 100
             int barX = rightX - barWidth;
 
             sb.DrawString(inspector._font, _label, new Vector2(leftX, inspector._cursorY), UITheme.TextColorSecondary);
@@ -561,7 +561,7 @@ public class Inspector
         {
             int leftX = inspector._panelRect.X + UITheme.Padding;
             int rightX = inspector._panelRect.X + inspector._panelRect.Width - UITheme.Padding;
-            int barWidth = 100;
+            int barWidth = 150; // Increased from 100
             int barX = rightX - barWidth;
 
             sb.DrawString(inspector._font, _label, new Vector2(leftX, inspector._cursorY), UITheme.TextColorSecondary);

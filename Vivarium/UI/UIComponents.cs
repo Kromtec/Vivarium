@@ -69,7 +69,7 @@ public static class UIComponents
     public static void DrawSimpleProgressBar(SpriteBatch sb, Rectangle rect, float ratio, Color color, Texture2D pixel)
     {
         // Bg
-        sb.Draw(pixel, rect, Color.Black * 0.5f);
+        sb.Draw(pixel, rect, UITheme.BarBackgroundColor);
 
         // Fill
         float r = Math.Clamp(ratio, 0f, 1f);
@@ -79,7 +79,7 @@ public static class UIComponents
     public static void DrawBrainBar(SpriteBatch sb, Rectangle rect, float value, bool positiveOnly, Texture2D pixel)
     {
         // Bg
-        sb.Draw(pixel, rect, Color.Black * 0.5f);
+        sb.Draw(pixel, rect, UITheme.BarBackgroundColor);
 
         int centerX = rect.X + (rect.Width / 2);
 
