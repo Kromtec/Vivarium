@@ -11,7 +11,7 @@ public class Simulation
     public const int GridHeight = 96;
     public const int GridWidth = (int)((GridHeight / 9) * 16);
     public const int CellSize = 1280 / GridHeight;
-    public const int AgentCount = GridWidth * GridHeight / 8;
+    public const int AgentCount = GridWidth * GridHeight / 16; // Reduced from /8 (Half the initial agents)
     public const int PlantCount = GridWidth * GridHeight / 8;
     public const int StructureCount = GridWidth * GridHeight / 32;
 

@@ -200,8 +200,8 @@ public struct Agent : IGridEntity
     {
         return trophicBias switch
         {
-            < -0.5f => DietType.Carnivore, // Increased initial population (was < -0.6f)
-            > 0.1f => DietType.Herbivore,
+            < -0.60f => DietType.Carnivore, // Increased initial population (was < -0.65f)
+            > 0.0f => DietType.Herbivore,
             _ => DietType.Omnivore,
         };
     }
@@ -253,7 +253,7 @@ public struct Agent : IGridEntity
         // Omnivores: High maintenance (1.2x)
         float metabolismMultiplier = dietType switch
         {
-            DietType.Carnivore => 0.7f, // Buffed from 0.8f to help survival
+            DietType.Carnivore => 0.6f, // Buffed from 0.7f to help survival
             DietType.Omnivore => 1.1f,  // Buffed from 1.2f (was too harsh)
             _ => 1.0f
         };
@@ -366,6 +366,16 @@ public struct Agent : IGridEntity
         if (Diet == DietType.Omnivore)
         {
             overhead *= 1.2f; // Reduced penalty from 1.5f
+        }
+        // Herbivores have lower reproduction overhead (Buff)
+        else if (Diet == DietType.Herbivore)
+        {
+            overhead *= 0.5f; // Significant buff to help them recover numbers
+        }
+        // Carnivores have lower reproduction overhead (Buff)
+        else if (Diet == DietType.Carnivore)
+        {
+            overhead *= 0.5f; // Buff to help them recover numbers
         }
 
         float totalCost = childEnergy + overhead;
@@ -642,7 +652,7 @@ public struct Agent : IGridEntity
 
             // Only eat if not full
             // Increased efficiency (0.8f) so they get more energy per bite, needing to eat less often
-            if (!isFull) ChangeEnergy(damage * 0.8f, gridMap);
+            if (!isFull) ChangeEnergy(damage * 1.0f, gridMap); // Buffed to 1.0f (100% efficiency)
         }
         else if (Diet == DietType.Omnivore)
         {
@@ -699,8 +709,8 @@ public struct Agent : IGridEntity
         {
             // Omnivores are now more efficient at hunting (was 0.25/0.1)
             victim.ChangeEnergy(-damage * 0.5f, gridMap);
-            // Reduced efficiency for Omnivores (was 0.4f) to curb population explosion
-            ChangeEnergy(damage * 0.3f, gridMap);
+            // Reduced efficiency for Omnivores (was 0.3f) to curb predation on herbivores
+            ChangeEnergy(damage * 0.2f, gridMap);
         }
         else
         {

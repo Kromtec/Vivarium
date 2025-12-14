@@ -64,7 +64,7 @@ public static class Program
         }
         string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
         string logFile = Path.Combine(logDir, $"simulation_run_{timestamp}.csv");
-
+        
         // Header
         File.WriteAllText(logFile, "Tick,Agents,Herbivores,Omnivores,Carnivores,Plants,Structures" + Environment.NewLine);
 
