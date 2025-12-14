@@ -35,10 +35,13 @@ public class Inspector
     private Texture2D _cachedGenomeTexture;
     private long _cachedGenomeAgentId = -1;
 
-    public Inspector(GraphicsDevice graphics, SpriteFont font)
+    private readonly GenomeCensus _census; // Use shared census
+
+    public Inspector(GraphicsDevice graphics, SpriteFont font, GenomeCensus census)
     {
         _graphics = graphics;
         _font = font;
+        _census = census;
         _pixelTexture = new Texture2D(graphics, 1, 1);
         _pixelTexture.SetData(new[] { Color.White });
     }
@@ -123,7 +126,7 @@ public class Inspector
         }
     }
 
-    public void DrawUI(SpriteBatch spriteBatch, Agent[] agents, Plant[] plants, Structure[] structures, GenePoolWindow genePoolWindow)
+    public void DrawUI(SpriteBatch spriteBatch, Agent[] agents, Plant[] plants, Structure[] structures)
     {
         if (!IsEntitySelected) return;
 
@@ -159,7 +162,7 @@ public class Inspector
 
                         // Scientific Name & Variant
                         var (ScientificName, Translation) = ScientificNameGenerator.GenerateFamilyName(agent);
-                        string variantName = genePoolWindow.GetVariantName(GenomeHelper.CalculateGenomeHash(agent.Genome));
+                        string variantName = _census.GetVariantName(Genetics.CalculateGenomeHash(agent.Genome));
 
                         AddRow("Species", "", ref contentHeight);
                         string scientificName = ScientificName;
@@ -272,13 +275,10 @@ public class Inspector
         contentHeight += UITheme.Padding;
 
         // Draw Background
-        int panelWidth = 380; // Increased from 300
+        int panelWidth = 380;
         _panelRect = new Rectangle(_graphics.Viewport.Width - 20 - panelWidth, 20, panelWidth, contentHeight);
 
-        spriteBatch.Draw(_pixelTexture, new Rectangle(_panelRect.X + UITheme.ShadowOffset, _panelRect.Y + UITheme.ShadowOffset, _panelRect.Width, _panelRect.Height), UITheme.ShadowColor);
-        spriteBatch.Draw(_pixelTexture, _panelRect, UITheme.PanelBgColor);
-
-        DrawBorder(spriteBatch, _panelRect, UITheme.BorderThickness, UITheme.BorderColor);
+        UIComponents.DrawPanel(spriteBatch, _panelRect, _pixelTexture);
 
         // Execute Commands
         _cursorY = _panelRect.Y + UITheme.Padding;
@@ -343,14 +343,6 @@ public class Inspector
         var e = new BrainBarElement(label, value, positiveOnly);
         _elements.Add(e);
         currentHeight += e.Height;
-    }
-
-    private void DrawBorder(SpriteBatch sb, Rectangle r, int thickness, Color c)
-    {
-        sb.Draw(_pixelTexture, new Rectangle(r.X, r.Y, r.Width, thickness), c); // Top
-        sb.Draw(_pixelTexture, new Rectangle(r.X, r.Y + r.Height - thickness, r.Width, thickness), c); // Bottom
-        sb.Draw(_pixelTexture, new Rectangle(r.X, r.Y, thickness, r.Height), c); // Left
-        sb.Draw(_pixelTexture, new Rectangle(r.X + r.Width - thickness, r.Y, thickness, r.Height), c); // Right
     }
 
     private static float GetActionVal(ref Agent agent, ActionType type)
@@ -485,12 +477,9 @@ public class Inspector
 
             sb.DrawString(inspector._font, _label, new Vector2(leftX, inspector._cursorY), UITheme.TextColorSecondary);
 
-            // Bg
-            sb.Draw(inspector._pixelTexture, new Rectangle(barX, inspector._cursorY + 5, barWidth, 10), Color.Black * 0.5f);
-
-            // Fill
-            float ratio = Math.Clamp(_value / _max, 0f, 1f);
-            sb.Draw(inspector._pixelTexture, new Rectangle(barX, inspector._cursorY + 5, (int)(barWidth * ratio), 10), _color);
+            // Use UIComponents
+            float ratio = _value / _max;
+            UIComponents.DrawSimpleProgressBar(sb, new Rectangle(barX, inspector._cursorY + 5, barWidth, 10), ratio, _color, inspector._pixelTexture);
         }
     }
 
@@ -518,31 +507,8 @@ public class Inspector
 
             sb.DrawString(inspector._font, _label, new Vector2(leftX, inspector._cursorY), UITheme.TextColorSecondary);
 
-            // Bg
-            sb.Draw(inspector._pixelTexture, new Rectangle(barX, inspector._cursorY + 5, barWidth, 10), Color.Black * 0.5f);
-
-            int centerX = barX + (barWidth / 2);
-
-            if (_positiveOnly)
-            {
-                // 0 to 1
-                float ratio = Math.Clamp(_value, 0f, 1f);
-                Color c = UITheme.GetColorForWeight(_value);
-                sb.Draw(inspector._pixelTexture, new Rectangle(barX, inspector._cursorY + 5, (int)(barWidth * ratio), 10), c);
-            }
-            else
-            {
-                // -1 to 1
-                float valClamped = Math.Clamp(_value, -1f, 1f);
-                int fillWidth = (int)((barWidth / 2) * Math.Abs(valClamped));
-                
-                Color c = UITheme.GetColorForWeight(_value);
-
-                if (valClamped > 0)
-                    sb.Draw(inspector._pixelTexture, new Rectangle(centerX, inspector._cursorY + 5, fillWidth, 10), c);
-                else
-                    sb.Draw(inspector._pixelTexture, new Rectangle(centerX - fillWidth, inspector._cursorY + 5, fillWidth, 10), c);
-            }
+            // Use UIComponents
+            UIComponents.DrawBrainBar(sb, new Rectangle(barX, inspector._cursorY + 5, barWidth, 10), _value, _positiveOnly, inspector._pixelTexture);
         }
     }
 }

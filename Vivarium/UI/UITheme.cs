@@ -17,6 +17,11 @@ public static class UITheme
     public static readonly Color WarningColor = new Color(255, 200, 50);    // Soft Orange
     public static readonly Color BadColor = new Color(255, 80, 80);         // Soft Red
     public static readonly Color ButtonColor = new Color(50, 50, 60);       // Dark Grey Button
+    public static readonly Color ButtonHoverColor = new Color(70, 70, 80);  // Lighter Grey Button
+    public static readonly Color ScrollThumbColor = Color.Gray;
+    
+    public static readonly Color CooldownMoveColor = Color.LightBlue;
+    public static readonly Color CooldownBreedColor = Color.Pink;
 
     // Genome / Weight Colors
     public static readonly Color WeightNeutral = new Color(22, 27, 34);

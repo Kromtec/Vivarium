@@ -79,9 +79,7 @@ public class HUD
         _panelRect = new Rectangle(startX, startY, width, contentHeight);
 
         // 2. Draw Background
-        spriteBatch.Draw(_pixelTexture, new Rectangle(_panelRect.X + UITheme.ShadowOffset, _panelRect.Y + UITheme.ShadowOffset, _panelRect.Width, _panelRect.Height), UITheme.ShadowColor);
-        spriteBatch.Draw(_pixelTexture, _panelRect, UITheme.PanelBgColor);
-        DrawBorder(spriteBatch, _panelRect, UITheme.BorderThickness, UITheme.BorderColor);
+        UIComponents.DrawPanel(spriteBatch, _panelRect, _pixelTexture);
 
         // 3. Draw Content
         _cursorY = _panelRect.Y + UITheme.Padding;
@@ -122,15 +120,12 @@ public class HUD
         
         _geneButtonRect = new Rectangle(rightX - buttonWidth, buttonY, buttonWidth, buttonHeight);
         
-        spriteBatch.Draw(_pixelTexture, _geneButtonRect, UITheme.ButtonColor);
-        DrawBorder(spriteBatch, _geneButtonRect, 1, UITheme.BorderColor);
+        // Use UIComponents.DrawButton
+        var mouse = Microsoft.Xna.Framework.Input.Mouse.GetState();
+        bool isHover = _geneButtonRect.Contains(mouse.Position);
+        bool isPress = isHover && mouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed;
         
-        Vector2 btnTextSize = _font.MeasureString("GENES");
-        Vector2 btnTextPos = new Vector2(
-            _geneButtonRect.X + (_geneButtonRect.Width - btnTextSize.X) / 2,
-            _geneButtonRect.Y + (_geneButtonRect.Height - btnTextSize.Y) / 2 + 3
-        );
-        spriteBatch.DrawString(_font, "GENES", btnTextPos, Color.White);
+        UIComponents.DrawButton(spriteBatch, _font, _geneButtonRect, "GENES", _pixelTexture, isHover, isPress, UITheme.ButtonColor);
 
         _cursorY += 30;
 
@@ -148,13 +143,5 @@ public class HUD
         Vector2 valSize = _font.MeasureString(value);
         sb.DrawString(_font, value, new Vector2(rightX - valSize.X, _cursorY), valueColor);
         _cursorY += UITheme.LineHeight;
-    }
-
-    private void DrawBorder(SpriteBatch sb, Rectangle r, int thickness, Color c)
-    {
-        sb.Draw(_pixelTexture, new Rectangle(r.X, r.Y, r.Width, thickness), c); // Top
-        sb.Draw(_pixelTexture, new Rectangle(r.X, r.Y + r.Height - thickness, r.Width, thickness), c); // Bottom
-        sb.Draw(_pixelTexture, new Rectangle(r.X, r.Y, thickness, r.Height), c); // Left
-        sb.Draw(_pixelTexture, new Rectangle(r.X + r.Width - thickness, r.Y, thickness, r.Height), c); // Right
     }
 }

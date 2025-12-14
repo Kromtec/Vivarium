@@ -33,7 +33,7 @@ public static class ScientificNameGenerator
     public static (string ScientificName, string Translation) GenerateFamilyName(Agent agent)
     {
         // Deterministic RNG based on genome hash
-        ulong hash = GenomeHelper.CalculateGenomeHash(agent.Genome);
+        ulong hash = Genetics.CalculateGenomeHash(agent.Genome);
         Random rng = new Random((int)(hash & 0xFFFFFFFF));
 
         // 1. Genus (Diet + Primary Trait)

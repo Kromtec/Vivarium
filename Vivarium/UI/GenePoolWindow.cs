@@ -38,7 +38,7 @@ public class GenePoolWindow
     private Rectangle _windowRect;
 
     // Data
-    private List<GenomeFamily> _topFamilies = new List<GenomeFamily>();
+    private GenomeCensus _census; // Use shared census
     private GenomeFamily _selectedFamily;
     private int _selectedVariantIndex = 0;
     private DietType? _filterDiet = null; // null = All
@@ -54,164 +54,59 @@ public class GenePoolWindow
     private readonly Dictionary<ulong, Texture2D> _helixCache = new Dictionary<ulong, Texture2D>();
     private readonly Dictionary<ulong, Texture2D> _gridCache = new Dictionary<ulong, Texture2D>();
 
-    public GenePoolWindow(GraphicsDevice graphics, SpriteFont font)
+    public GenePoolWindow(GraphicsDevice graphics, SpriteFont font, GenomeCensus census)
     {
         _graphics = graphics;
         _font = font;
+        _census = census;
         _pixelTexture = new Texture2D(graphics, 1, 1);
         _pixelTexture.SetData(new[] { Color.White });
         _dotTexture = TextureGenerator.CreateCircle(graphics, 32);
     }
 
-    public string GetVariantName(ulong genomeHash)
-    {
-        foreach (var family in _topFamilies)
-        {
-            foreach (var variant in family.Variants)
-            {
-                if (variant.Hash == genomeHash)
-                {
-                    return variant.VariantName;
-                }
-            }
-        }
-        return null;
-    }
+    // Removed GetVariantName - moved to GenomeCensus
 
     public void RefreshData(Agent[] agents)
     {
-        // 1. Group agents by exact genome hash (Variants)
-        var variants = new Dictionary<ulong, GenomeVariant>();
-
-        foreach (var agent in agents)
-        {
-            if (!agent.IsAlive) continue;
-
-            ulong hash = GenomeHelper.CalculateGenomeHash(agent.Genome);
-
-            if (!variants.ContainsKey(hash))
-            {
-                variants[hash] = new GenomeVariant
-                {
-                    Hash = hash,
-                    Count = 0,
-                    Representative = agent,
-                    Diet = agent.Diet
-                };
-            }
-
-            var entry = variants[hash];
-            entry.Count++;
-            variants[hash] = entry;
-        }
-
-        // Sort variants by Count (Most popular first)
-        var sortedVariants = variants.Values
-            .OrderByDescending(v => v.Count)
-            .ToList();
-
-        // 2. Cluster Variants into Families
-        var families = new List<GenomeFamily>();
-        var unassigned = new List<GenomeVariant>(sortedVariants);
-
-        // Threshold: 90% similarity to be in the same family
-        const float SimilarityThreshold = 0.90f;
-
-        while (unassigned.Count > 0)
-        {
-            // Take the most popular remaining variant as the seed for a new family
-            var seed = unassigned[0];
-            unassigned.RemoveAt(0);
-
-            var family = new GenomeFamily
-            {
-                Representative = seed, // The most popular variant represents the family
-                Diet = seed.Diet
-            };
-            family.Variants.Add(seed);
-
-            // Find all other variants that are similar to the seed
-            for (int i = unassigned.Count - 1; i >= 0; i--)
-            {
-                var candidate = unassigned[i];
-                
-                // Optimization: Only check similarity if Diet matches (Diet is a hard filter usually)
-                if (candidate.Diet == seed.Diet)
-                {
-                    float similarity = Genetics.CalculateSimilarity(seed.Representative.Genome, candidate.Representative.Genome);
-                    if (similarity >= SimilarityThreshold)
-                    {
-                        family.Variants.Add(candidate);
-                        unassigned.RemoveAt(i);
-                    }
-                }
-            }
-
-            // Calculate total count for the family
-            family.TotalCount = family.Variants.Sum(v => v.Count);
-            
-            // Sort variants within family by count
-            family.Variants = family.Variants.OrderByDescending(v => v.Count).ToList();
-
-            // Generate Scientific Name for the Family
-            var names = ScientificNameGenerator.GenerateFamilyName(family.Representative.Representative);
-            family.ScientificName = names.ScientificName;
-            family.ScientificNameTranslation = names.Translation;
-
-            // Generate Variant Names
-            for (int i = 0; i < family.Variants.Count; i++)
-            {
-                family.Variants[i].VariantName = ScientificNameGenerator.GenerateVariantName(i);
-            }
-
-            families.Add(family);
-        }
-
-        // 3. Sort Families by Total Count
-        var allSortedFamilies = families
-            .OrderByDescending(f => f.TotalCount)
-            .ToList();
-
-        // Assign Ranks
-        for (int i = 0; i < allSortedFamilies.Count; i++)
-        {
-            allSortedFamilies[i].Rank = i + 1;
-        }
-
-        // Filter and Top 20
-        IEnumerable<GenomeFamily> filtered = allSortedFamilies;
-        if (_filterDiet.HasValue)
-        {
-            filtered = filtered.Where(g => g.Diet == _filterDiet.Value);
-        }
-
-        _topFamilies = filtered.Take(20).ToList();
-
-        // Generate Identicons for Families (using Representative)
-        foreach (var family in _topFamilies)
+        // Delegate to Census
+        _census.AnalyzePopulation(agents);
+        
+        // Generate Textures for the new census data
+        foreach (var family in _census.TopFamilies)
         {
             // Generate texture for the family representative
-            family.Identicon = GetOrGenerateHelix(family.Representative.Representative);
+            if (family.Identicon == null)
+            {
+                family.Identicon = GetOrGenerateHelix(family.Representative.Representative);
+            }
             
-            // Removed AddFamilyIndicator call to avoid baking dots into the texture
-            // Dots will be drawn in Draw()
-
-            // Generate textures for variants if needed (lazy loading would be better but we do it here for simplicity)
+            // Generate textures for variants
             foreach (var variant in family.Variants)
             {
                 if (variant.Identicon == null)
                 {
                     variant.Identicon = GetOrGenerateHelix(variant.Representative);
+                }
+                if (variant.GenomeGrid == null)
+                {
                     variant.GenomeGrid = GetOrGenerateGrid(variant.Representative);
                 }
             }
         }
 
+        // Update local selection logic based on _census.TopFamilies
+        UpdateSelection();
+    }
+
+    private void UpdateSelection()
+    {
+        var topFamilies = GetFilteredFamilies();
+
         // Update selection reference
         if (_selectedFamily != null)
         {
-            // Try to find the same family (by Representative Hash of the seed)
-            var newRef = _topFamilies.FirstOrDefault(f => f.Representative.Hash == _selectedFamily.Representative.Hash);
+            // Try to find the same family (by Representative Hash)
+            var newRef = topFamilies.FirstOrDefault(f => f.Representative.Hash == _selectedFamily.Representative.Hash);
             _selectedFamily = newRef;
             
             // Clamp variant index
@@ -222,16 +117,26 @@ public class GenePoolWindow
         }
 
         // Select first if none selected
-        if (_selectedFamily == null && _topFamilies.Count > 0)
+        if (_selectedFamily == null && topFamilies.Count > 0)
         {
-            _selectedFamily = _topFamilies[0];
+            _selectedFamily = topFamilies[0];
             _selectedVariantIndex = 0;
         }
     }
 
+    private List<GenomeFamily> GetFilteredFamilies()
+    {
+        IEnumerable<GenomeFamily> filtered = _census.TopFamilies;
+        if (_filterDiet.HasValue)
+        {
+            filtered = filtered.Where(g => g.Diet == _filterDiet.Value);
+        }
+        return filtered.Take(20).ToList();
+    }
+
     private Texture2D GetOrGenerateHelix(Agent agent)
     {
-        ulong hash = GenomeHelper.CalculateGenomeHash(agent.Genome);
+        ulong hash = Genetics.CalculateGenomeHash(agent.Genome);
         if (!_helixCache.TryGetValue(hash, out var texture))
         {
             texture = GenomeHelper.GenerateHelixTexture(_graphics, agent);
@@ -242,7 +147,7 @@ public class GenePoolWindow
 
     private Texture2D GetOrGenerateGrid(Agent agent)
     {
-        ulong hash = GenomeHelper.CalculateGenomeHash(agent.Genome);
+        ulong hash = Genetics.CalculateGenomeHash(agent.Genome);
         if (!_gridCache.TryGetValue(hash, out var texture))
         {
             texture = GenomeHelper.GenerateGenomeGridTexture(_graphics, agent);
@@ -270,12 +175,14 @@ public class GenePoolWindow
             return;
         }
 
+        var topFamilies = GetFilteredFamilies();
+
         if (scrollDelta != 0)
         {
             _scrollOffset -= scrollDelta / 2;
 
             // Clamp Scroll
-            int maxScroll = Math.Max(0, (_topFamilies.Count * ItemHeight) - (_windowRect.Height - 100));
+            int maxScroll = Math.Max(0, (topFamilies.Count * ItemHeight) - (_windowRect.Height - 100));
             _scrollOffset = Math.Clamp(_scrollOffset, 0, maxScroll);
         }
 
@@ -326,11 +233,11 @@ public class GenePoolWindow
                 int relativeY = mousePos.Y - listRect.Y + _scrollOffset;
                 int index = relativeY / ItemHeight;
 
-                if (index >= 0 && index < _topFamilies.Count)
+                if (index >= 0 && index < topFamilies.Count)
                 {
-                    if (_selectedFamily != _topFamilies[index])
+                    if (_selectedFamily != topFamilies[index])
                     {
-                        _selectedFamily = _topFamilies[index];
+                        _selectedFamily = topFamilies[index];
                         _selectedVariantIndex = 0; // Reset variant selection when changing family
                     }
                 }
@@ -384,7 +291,7 @@ public class GenePoolWindow
         if (!IsVisible) return;
 
         // Center Window
-        int width = 1280; // Increased from 1100 to 1200
+        int width = 1280;
         int height = 600;
         _windowRect = new Rectangle(
             (_graphics.Viewport.Width - width) / 2,
@@ -394,14 +301,11 @@ public class GenePoolWindow
         );
 
         // Background
-        spriteBatch.Draw(_pixelTexture, new Rectangle(_windowRect.X + UITheme.ShadowOffset, _windowRect.Y + UITheme.ShadowOffset, width, height), UITheme.ShadowColor);
-        spriteBatch.Draw(_pixelTexture, _windowRect, UITheme.PanelBgColor);
-        DrawBorder(spriteBatch, _windowRect, UITheme.BorderThickness, UITheme.BorderColor);
+        UIComponents.DrawPanel(spriteBatch, _windowRect, _pixelTexture);
 
         // Header
         Vector2 headerPos = new Vector2(_windowRect.X + UITheme.Padding, _windowRect.Y + UITheme.Padding);
         string headerText = "GENOME CENSUS (TOP 20 FAMILIES)";
-        Vector2 headerSize = _font.MeasureString(headerText);
         spriteBatch.DrawString(_font, headerText, new Vector2(headerPos.X, headerPos.Y + 3), UITheme.HeaderColor);
 
         // Filter Buttons
@@ -418,14 +322,15 @@ public class GenePoolWindow
         int closeBtnSize = 20;
         Rectangle closeBtnRect = new Rectangle(_windowRect.Right - closeBtnSize - UITheme.Padding, _windowRect.Y + UITheme.Padding, closeBtnSize, closeBtnSize);
 
-        DrawBorder(spriteBatch, closeBtnRect, 1, UITheme.BadColor);
-
-        Vector2 xSize = _font.MeasureString("X");
-        Vector2 xPos = new Vector2(
-            closeBtnRect.X + (closeBtnRect.Width - xSize.X) / 2,
-            closeBtnRect.Y + (closeBtnRect.Height - xSize.Y) / 2 + 1
-        );
-        spriteBatch.DrawString(_font, "X", xPos, UITheme.BadColor);
+        // Use UIComponents for Close Button? It's a bit custom with the 'X'.
+        // But we can use DrawButton logic partially or just keep it as is for now to avoid breaking the 'X' centering logic which is specific.
+        // Actually, let's use DrawButton but with "X" text.
+        // Check if mouse is over for hover effect
+        var mouse = Mouse.GetState();
+        bool closeHover = closeBtnRect.Contains(mouse.Position);
+        bool closePress = closeHover && mouse.LeftButton == ButtonState.Pressed;
+        
+        UIComponents.DrawButton(spriteBatch, _font, closeBtnRect, "X", _pixelTexture, closeHover, closePress, UITheme.BadColor);
 
         // --- LEFT PANEL: LIST ---
         int listX = _windowRect.X + UITheme.Padding;
@@ -445,9 +350,11 @@ public class GenePoolWindow
         RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
         spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, rasterizerState);
 
-        for (int i = 0; i < _topFamilies.Count; i++)
+        var topFamilies = GetFilteredFamilies();
+
+        for (int i = 0; i < topFamilies.Count; i++)
         {
-            var family = _topFamilies[i];
+            var family = topFamilies[i];
             int itemY = listY + (i * ItemHeight) - _scrollOffset;
 
             // Don't draw if outside view
@@ -473,12 +380,11 @@ public class GenePoolWindow
             string rankText = $"#{family.Rank}";
             spriteBatch.DrawString(_font, rankText, new Vector2(listX + 70, itemY + 8), UITheme.TextColorPrimary);
 
-            // Scientific Name (instead of just rank/count)
-            // We draw the name next to the rank
+            // Scientific Name
             Vector2 rankSize = _font.MeasureString(rankText);
             spriteBatch.DrawString(_font, family.ScientificName, new Vector2(listX + 70 + rankSize.X + 10, itemY + 8), UITheme.TextColorPrimary);
 
-            // Count Text (Total Family Count)
+            // Count Text
             string countText = $"{family.TotalCount}";
             if (family.Variants.Count > 1)
             {
@@ -497,7 +403,7 @@ public class GenePoolWindow
         spriteBatch.Begin();
 
         // Scrollbar
-        int totalContentHeight = _topFamilies.Count * ItemHeight;
+        int totalContentHeight = topFamilies.Count * ItemHeight;
         if (totalContentHeight > listHeight)
         {
             int scrollbarWidth = 6;
@@ -514,7 +420,7 @@ public class GenePoolWindow
 
             thumbY = Math.Clamp(thumbY, listY, listY + listHeight - thumbHeight);
 
-            spriteBatch.Draw(_pixelTexture, new Rectangle(scrollbarX, thumbY, scrollbarWidth, thumbHeight), Color.Gray * 0.8f);
+            spriteBatch.Draw(_pixelTexture, new Rectangle(scrollbarX, thumbY, scrollbarWidth, thumbHeight), UITheme.ScrollThumbColor);
         }
 
         // Separator
@@ -555,14 +461,13 @@ public class GenePoolWindow
             // Translation (Small, below name)
             string translation = $"\"{_selectedFamily.ScientificNameTranslation}\"";
             Vector2 transSize = _font.MeasureString(translation);
-            // Draw slightly smaller or dimmer
             spriteBatch.DrawString(_font, translation, new Vector2(infoX + infoWidth - transSize.X, infoY - 10), Color.Gray);
 
             // ID
             string idText = $"ID: {variant.Hash:X}";
             Vector2 idSize = _font.MeasureString(idText);
-            spriteBatch.DrawString(_font, idText, new Vector2(infoX + infoWidth - idSize.X, infoY + 15), UITheme.TextColorSecondary); // Shifted down
-            infoY += 40; // Increased spacing
+            spriteBatch.DrawString(_font, idText, new Vector2(infoX + infoWidth - idSize.X, infoY + 15), UITheme.TextColorSecondary);
+            infoY += 40;
 
             // Diet
             string dietText = $"Diet: {variant.Diet}";
@@ -575,15 +480,14 @@ public class GenePoolWindow
             {
                 // Next Button (Rightmost)
                 Rectangle nextRect = new Rectangle(infoX + infoWidth - 30, infoY, 30, 20);
-                spriteBatch.Draw(_pixelTexture, nextRect, Color.DarkGray);
-                DrawBorder(spriteBatch, nextRect, 1, Color.White);
-                spriteBatch.DrawString(_font, ">", new Vector2(nextRect.X + 10, nextRect.Y + 2), Color.White);
+                bool nextHover = nextRect.Contains(mouse.Position);
+                bool nextPress = nextHover && mouse.LeftButton == ButtonState.Pressed;
+                UIComponents.DrawButton(spriteBatch, _font, nextRect, ">", _pixelTexture, nextHover, nextPress);
 
                 // Variant Info (Index / Total)
                 string varInfo = $"({_selectedVariantIndex + 1} / {_selectedFamily.Variants.Count})";
                 Vector2 infoSize = _font.MeasureString(varInfo);
                 
-                // Fixed width area for text to avoid clipping
                 int textAreaWidth = 150;
                 float textX = nextRect.X - textAreaWidth + (textAreaWidth - infoSize.X) / 2;
                 
@@ -591,9 +495,9 @@ public class GenePoolWindow
                 
                 // Prev Button
                 Rectangle prevRect = new Rectangle(nextRect.X - textAreaWidth - 30, infoY, 30, 20);
-                spriteBatch.Draw(_pixelTexture, prevRect, Color.DarkGray);
-                DrawBorder(spriteBatch, prevRect, 1, Color.White);
-                spriteBatch.DrawString(_font, "<", new Vector2(prevRect.X + 10, prevRect.Y + 2), Color.White);
+                bool prevHover = prevRect.Contains(mouse.Position);
+                bool prevPress = prevHover && mouse.LeftButton == ButtonState.Pressed;
+                UIComponents.DrawButton(spriteBatch, _font, prevRect, "<", _pixelTexture, prevHover, prevPress);
             }
             else
             {
@@ -624,10 +528,7 @@ public class GenePoolWindow
                 int gridWidth = variant.GenomeGrid.Width;
                 int gridHeight = variant.GenomeGrid.Height;
                 
-                // Center horizontally in details area
                 int gridX = detailsX + (detailsWidth - gridWidth) / 2;
-                
-                // Align to bottom with padding
                 int gridY = _windowRect.Bottom - UITheme.Padding - gridHeight;
                 
                 spriteBatch.Draw(variant.GenomeGrid, new Vector2(gridX, gridY), Color.White);
@@ -669,18 +570,25 @@ public class GenePoolWindow
         bool isSelected = _filterDiet == type;
         Rectangle rect = new Rectangle(x, y, width, height);
 
-        Color bgColor = isSelected ? UITheme.ButtonColor : Color.Black * 0.5f;
-        if (type.HasValue)
+        Color? overrideColor = null;
+        if (type.HasValue && isSelected)
         {
-            if (isSelected) bgColor = Agent.GetColorBasedOnDietType(type.Value);
+            overrideColor = Agent.GetColorBasedOnDietType(type.Value);
+        }
+        else if (isSelected)
+        {
+            overrideColor = UITheme.ButtonColor; // Or a selected color
         }
 
-        sb.Draw(_pixelTexture, rect, bgColor);
-        DrawBorder(sb, rect, 1, isSelected ? Color.White : UITheme.BorderColor);
+        // Use UIComponents.DrawButton
+        // We need to handle the "Selected" state which might differ from Hover/Press
+        // For now, let's just use the overrideColor logic
+        
+        var mouse = Mouse.GetState();
+        bool isHover = rect.Contains(mouse.Position);
+        bool isPress = isHover && mouse.LeftButton == ButtonState.Pressed;
 
-        Vector2 size = _font.MeasureString(label);
-        Vector2 pos = new Vector2(x + (rect.Width - size.X) / 2, y + (rect.Height - size.Y) / 2 + 3);
-        sb.DrawString(_font, label, pos, Color.White);
+        UIComponents.DrawButton(sb, _font, rect, label, _pixelTexture, isHover, isPress, overrideColor);
     }
 
     private void DrawTraitBar(SpriteBatch sb, string label, float value, int x, ref int y)
@@ -693,52 +601,11 @@ public class GenePoolWindow
         int windowRight = _windowRect.Right - UITheme.Padding;
         int barX = windowRight - barWidth;
 
-        // Background
-        sb.Draw(_pixelTexture, new Rectangle(barX, y + 5, barWidth, barHeight), Color.Black * 0.5f);
-
-        int centerX = barX + (barWidth / 2);
-        
-        float displayVal = Math.Clamp(value, -1f, 1f);
-        int fillWidth = (int)((barWidth / 2) * Math.Abs(displayVal));
-        
-        Color barColor = UITheme.GetColorForWeight(value);
-
-        if (displayVal > 0)
-            sb.Draw(_pixelTexture, new Rectangle(centerX, y + 5, fillWidth, barHeight), barColor);
-        else
-            sb.Draw(_pixelTexture, new Rectangle(centerX - fillWidth, y + 5, fillWidth, barHeight), barColor);
+        UIComponents.DrawBrainBar(sb, new Rectangle(barX, y + 5, barWidth, barHeight), value, false, _pixelTexture);
 
         y += 25;
     }
 
-    private void DrawBorder(SpriteBatch sb, Rectangle r, int thickness, Color c)
-    {
-        sb.Draw(_pixelTexture, new Rectangle(r.X, r.Y, r.Width, thickness), c);
-        sb.Draw(_pixelTexture, new Rectangle(r.X, r.Y + r.Height - thickness, r.Width, thickness), c);
-        sb.Draw(_pixelTexture, new Rectangle(r.X, r.Y, thickness, r.Height), c);
-        sb.Draw(_pixelTexture, new Rectangle(r.X + r.Width - thickness, r.Y, thickness, r.Height), c);
-    }
-
-    public class GenomeFamily
-    {
-        public GenomeVariant Representative; // The seed variant
-        public List<GenomeVariant> Variants = new List<GenomeVariant>();
-        public int TotalCount;
-        public int Rank;
-        public DietType Diet;
-        public Texture2D Identicon;
-        public string ScientificName;
-        public string ScientificNameTranslation;
-    }
-
-    public class GenomeVariant
-    {
-        public ulong Hash;
-        public int Count;
-        public Agent Representative;
-        public DietType Diet;
-        public Texture2D Identicon;
-        public Texture2D GenomeGrid;
-        public string VariantName;
-    }
+    // Removed DrawBorder - using UIComponents.DrawBorder
+    // Removed GenomeFamily/GenomeVariant classes - moved to GenomeCensus.cs
 }

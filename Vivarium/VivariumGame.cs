@@ -44,6 +44,7 @@ public class VivariumGame : Game
     private Inspector _inspector;
     private HUD _hud;
     private GenePoolWindow _genePoolWindow;
+    private GenomeCensus _genomeCensus; // New shared service
     private SpriteFont _sysFont;
     private SimulationGraph _simGraph;
     private WorldRenderer _worldRenderer;
@@ -214,9 +215,11 @@ public class VivariumGame : Game
 
         _sysFont = Content.Load<SpriteFont>("SystemFont");
 
-        _inspector = new Inspector(GraphicsDevice, _sysFont);
+        _genomeCensus = new GenomeCensus(); // Initialize Census
+
+        _inspector = new Inspector(GraphicsDevice, _sysFont, _genomeCensus);
         _simGraph = new SimulationGraph(GraphicsDevice, _sysFont);
-        _genePoolWindow = new GenePoolWindow(GraphicsDevice, _sysFont);
+        _genePoolWindow = new GenePoolWindow(GraphicsDevice, _sysFont, _genomeCensus);
         _hud = new HUD(GraphicsDevice, _sysFont, _simGraph, _genePoolWindow);
         _worldRenderer = new WorldRenderer(GraphicsDevice);
         _worldRenderer.LoadContent();
@@ -422,7 +425,7 @@ public class VivariumGame : Game
         _hud.Draw(_spriteBatch, _tickCount, stats.LivingAgents, stats.LivingHerbivores, stats.LivingOmnivores, stats.LivingCarnivores, stats.LivingPlants, stats.LivingStructures);
 
         // Inspector
-        _inspector.DrawUI(_spriteBatch, _agentPopulation, _plantPopulation, _structurePopulation, _genePoolWindow);
+        _inspector.DrawUI(_spriteBatch, _agentPopulation, _plantPopulation, _structurePopulation);
 
         // Gene Pool Window
         _genePoolWindow.Draw(_spriteBatch);
