@@ -200,7 +200,7 @@ public struct Agent : IGridEntity
     {
         return trophicBias switch
         {
-            < -0.60f => DietType.Carnivore, // Increased initial population (was < -0.65f)
+            < -0.55f => DietType.Carnivore, // Adjusted from -0.60f to give slightly more carnivores
             > 0.0f => DietType.Herbivore,
             _ => DietType.Omnivore,
         };
@@ -253,8 +253,8 @@ public struct Agent : IGridEntity
         // Omnivores: High maintenance (1.2x)
         float metabolismMultiplier = dietType switch
         {
-            DietType.Carnivore => 0.6f, // Buffed from 0.7f to help survival
-            DietType.Omnivore => 1.1f,  // Buffed from 1.2f (was too harsh)
+            DietType.Carnivore => 0.55f, // Increased from 0.5f to reduce predator density
+            DietType.Omnivore => 1.2f,
             _ => 1.0f
         };
 
@@ -365,17 +365,17 @@ public struct Agent : IGridEntity
         // Omnivores have higher reproduction overhead (Population Control)
         if (Diet == DietType.Omnivore)
         {
-            overhead *= 1.2f; // Reduced penalty from 1.5f
+            overhead *= 1.3f; // Increased penalty from 1.2f to curb population explosion
         }
         // Herbivores have lower reproduction overhead (Buff)
         else if (Diet == DietType.Herbivore)
         {
-            overhead *= 0.5f; // Significant buff to help them recover numbers
+            overhead *= 0.4f; // Buffed from 0.5f to help them outbreed omnivores
         }
         // Carnivores have lower reproduction overhead (Buff)
         else if (Diet == DietType.Carnivore)
         {
-            overhead *= 0.5f; // Buff to help them recover numbers
+            overhead *= 0.4f; // Buffed from 0.5f to help recovery
         }
 
         float totalCost = childEnergy + overhead;
@@ -656,10 +656,12 @@ public struct Agent : IGridEntity
         }
         else if (Diet == DietType.Omnivore)
         {
-            // Omnivores are now more efficient at eating plants (was 0.25/0.1)
-            plant.ChangeEnergy(-damage * 0.5f, gridMap);
-            // Reduced efficiency for Omnivores (was 0.4f) to curb population explosion
-            if (!isFull) ChangeEnergy(damage * 0.3f, gridMap);
+            damage = Math.Min(damage, plant.Energy);
+            plant.ChangeEnergy(-damage, gridMap);
+
+            // Reduced efficiency for Omnivores eating plants (was 0.8f)
+            // They have shorter digestive tracts than true herbivores.
+            if (!isFull) ChangeEnergy(damage * 0.6f, gridMap); // Buffed from 0.5f to prevent extinction
         }
         else
         {
