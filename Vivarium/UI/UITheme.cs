@@ -5,8 +5,8 @@ namespace Vivarium.UI;
 public static class UITheme
 {
     // Colors (Modern Dark Palette)
-    public static readonly Color PanelBgColor = new Color(25, 25, 30, 245); // Very dark blue-grey, high opacity
-    public static readonly Color BorderColor = new Color(60, 65, 75);       // Subtle border
+    public static readonly Color PanelBgColor = new Color(0, 0, 0, 180); // Black semi-transparent
+    public static readonly Color BorderColor = new Color(80, 80, 90);       // Subtle border
     public static readonly Color ShadowColor = Color.Black * 0.5f;
 
     public static readonly Color TextColorPrimary = new Color(230, 230, 240);
@@ -16,8 +16,8 @@ public static class UITheme
     public static readonly Color GoodColor = new Color(100, 255, 100);      // Soft Green
     public static readonly Color WarningColor = new Color(255, 200, 50);    // Soft Orange
     public static readonly Color BadColor = new Color(255, 80, 80);         // Soft Red
-    public static readonly Color ButtonColor = new Color(50, 50, 60);       // Dark Grey Button
-    public static readonly Color ButtonHoverColor = new Color(70, 70, 80);  // Lighter Grey Button
+    public static readonly Color ButtonColor = new Color(30, 30, 35);       // Darker Grey Button
+    public static readonly Color ButtonHoverColor = new Color(50, 50, 60);  // Lighter Grey Button
     public static readonly Color ScrollThumbColor = Color.Gray;
 
     public static readonly Color CooldownMoveColor = Color.LightBlue;
