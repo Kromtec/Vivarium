@@ -23,6 +23,7 @@ public class WorldRenderer
     private Texture2D _dotTexture;
     private Texture2D _ringTexture;
     private Texture2D _selectionRingTexture;
+    private Texture2D[] _structureTextures; // Array for 16 variations
 
     public WorldRenderer(GraphicsDevice graphicsDevice)
     {
@@ -42,6 +43,17 @@ public class WorldRenderer
         _dotTexture = TextureGenerator.CreateCircle(_graphicsDevice, 16);
         _ringTexture = TextureGenerator.CreateRing(_graphicsDevice, 64, 8);
         _selectionRingTexture = TextureGenerator.CreateRing(_graphicsDevice, 64, 16); // Thicker ring for selection
+
+        // Generate Structure Textures (16 variations)
+        _structureTextures = new Texture2D[16];
+        for (int i = 0; i < 16; i++)
+        {
+            bool top = (i & 1) != 0;
+            bool right = (i & 2) != 0;
+            bool bottom = (i & 4) != 0;
+            bool left = (i & 8) != 0;
+            _structureTextures[i] = TextureGenerator.CreateStructureTexture(_graphicsDevice, 50, 15, 4, top, right, bottom, left);
+        }
     }
 
     public RenderStats Draw(
@@ -97,7 +109,7 @@ public class WorldRenderer
 
                     if (!statsCaptured)
                     {
-                        DrawStructures(structures, cellSize, out stats.LivingStructures);
+                        DrawStructures(structures, gridMap, cellSize, out stats.LivingStructures);
                         DrawPlants(plants, cellSize, out stats.LivingPlants);
                         DrawKinshipLines(gridMap, agents, inspector, cellSize);
                         DrawAgents(agents, cellSize, out stats.LivingAgents, out stats.LivingHerbivores, out stats.LivingOmnivores, out stats.LivingCarnivores);
@@ -105,7 +117,7 @@ public class WorldRenderer
                     }
                     else
                     {
-                        DrawStructures(structures, cellSize, out _);
+                        DrawStructures(structures, gridMap, cellSize, out _);
                         DrawPlants(plants, cellSize, out _);
                         DrawKinshipLines(gridMap, agents, inspector, cellSize);
                         DrawAgents(agents, cellSize, out _, out _, out _, out _);
@@ -160,17 +172,43 @@ public class WorldRenderer
         );
     }
 
-    private void DrawStructures(Structure[] structures, int cellSize, out int livingStructures)
+    private void DrawStructures(Structure[] structures, GridCell[,] gridMap, int cellSize, out int livingStructures)
     {
-        var textureCenter = new Vector2(_roundedRectTexture.Width / 2f, _roundedRectTexture.Height / 2f);
+        var textureCenter = new Vector2(_structureTextures[0].Width / 2f, _structureTextures[0].Height / 2f);
         float halfCellSize = cellSize * 0.5f;
         Span<Structure> structurePopulationSpan = structures.AsSpan();
         livingStructures = structurePopulationSpan.Length;
+        
+        int gridWidth = gridMap.GetLength(0);
+        int gridHeight = gridMap.GetLength(1);
+
         for (int i = 0; i < structurePopulationSpan.Length; i++)
         {
             ref Structure structure = ref structurePopulationSpan[i];
 
-            float structScale = ((float)cellSize / _roundedRectTexture.Width);
+            // Determine neighbors
+            int neighbors = 0;
+            int x = structure.X;
+            int y = structure.Y;
+
+            // Top (0,-1)
+            int ty = (y - 1 + gridHeight) % gridHeight;
+            if (gridMap[x, ty].Type == EntityType.Structure) neighbors |= 1;
+
+            // Right (1,0)
+            int rx = (x + 1) % gridWidth;
+            if (gridMap[rx, y].Type == EntityType.Structure) neighbors |= 2;
+
+            // Bottom (0,1)
+            int by = (y + 1) % gridHeight;
+            if (gridMap[x, by].Type == EntityType.Structure) neighbors |= 4;
+
+            // Left (-1,0)
+            int lx = (x - 1 + gridWidth) % gridWidth;
+            if (gridMap[lx, y].Type == EntityType.Structure) neighbors |= 8;
+
+            Texture2D texture = _structureTextures[neighbors];
+            float structScale = ((float)cellSize / texture.Width);
 
             // Calculate screen position
             Vector2 position = new Vector2(
@@ -178,7 +216,7 @@ public class WorldRenderer
                 structure.Y * cellSize + halfCellSize
             );
             _spriteBatch.Draw(
-                _roundedRectTexture,
+                texture,
                 position,
                 null,
                 structure.Color,

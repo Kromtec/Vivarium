@@ -248,4 +248,147 @@ public static class TextureGenerator
         texture.SetData(colorData);
         return texture;
     }
+
+    public static Texture2D CreateStructureTexture(GraphicsDevice graphicsDevice, int size, int cornerRadius, int borderThickness, bool top, bool right, bool bottom, bool left)
+    {
+        var texture = new Texture2D(graphicsDevice, size, size);
+        var colorData = new Color[size * size];
+
+        float center = size / 2f;
+        
+        // Hatching parameters
+        int hatchSpacing = 8;
+        int hatchThickness = 2;
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                int index = (y * size) + x;
+
+                // Determine Quadrant and relevant neighbors
+                bool qTop = y < center;
+                bool qLeft = x < center;
+
+                bool nV = qTop ? top : bottom; // Neighbor Vertical (Top or Bottom)
+                bool nH = qLeft ? left : right; // Neighbor Horizontal (Left or Right)
+
+                // Calculate distance to the relevant external edges
+                // If neighbor exists, distance is effectively infinite (no edge)
+                float distV = nV ? float.MaxValue : (qTop ? y : size - 1 - y);
+                float distH = nH ? float.MaxValue : (qLeft ? x : size - 1 - x);
+
+                bool isInside = false;
+                bool isBorder = false;
+
+                // Logic:
+                // If both neighbors are present (Corner connection), it's fully filled.
+                // If one neighbor is present, it's a straight edge.
+                // If neither, it's a rounded corner.
+
+                if (nV && nH)
+                {
+                    // Full square
+                    isInside = true;
+                    isBorder = false; // Internal area
+                }
+                else if (nV)
+                {
+                    // Vertical connection (Horizontal edge is boundary)
+                    isInside = true;
+                    isBorder = distH < borderThickness;
+                }
+                else if (nH)
+                {
+                    // Horizontal connection (Vertical edge is boundary)
+                    isInside = true;
+                    isBorder = distV < borderThickness;
+                }
+                else
+                {
+                    // Corner (Both edges are boundaries, rounded)
+                    // Calculate distance from the corner center
+                    float cx = qLeft ? cornerRadius : size - 1 - cornerRadius;
+                    float cy = qTop ? cornerRadius : size - 1 - cornerRadius;
+
+                    // We only care about the "outer" part of the quadrant for rounding
+                    // If we are "inside" the corner radius box, we treat it as rect distance
+                    // If we are in the "corner" zone, we check radius.
+                    
+                    // Simplified:
+                    // The shape is defined by intersection of two half-planes and a circle?
+                    // Actually, for a rounded rect corner:
+                    // It is the set of points where distance to (cx, cy) <= radius
+                    // BUT only for the region "outside" the inner rectangle.
+                    
+                    // Let's use the logic from CreateRoundedRect but adapted for quadrants
+                    
+                    // Local coordinates relative to quadrant corner
+                    float lx = qLeft ? x : size - 1 - x;
+                    float ly = qTop ? y : size - 1 - y;
+
+                    if (lx >= cornerRadius && ly >= cornerRadius)
+                    {
+                        // Center area of the cell (far from corners)
+                        isInside = true;
+                        isBorder = false;
+                    }
+                    else if (lx < cornerRadius && ly < cornerRadius)
+                    {
+                        // The actual corner zone
+                        float dx = cornerRadius - lx;
+                        float dy = cornerRadius - ly;
+                        float dist = MathF.Sqrt(dx * dx + dy * dy);
+                        
+                        if (dist <= cornerRadius)
+                        {
+                            isInside = true;
+                            isBorder = dist >= cornerRadius - borderThickness;
+                        }
+                    }
+                    else
+                    {
+                        // The straight parts near the corner
+                        isInside = true;
+                        // Border if close to the edge
+                        isBorder = (lx < borderThickness) || (ly < borderThickness);
+                    }
+                }
+
+                if (isInside)
+                {
+                    if (isBorder)
+                    {
+                        colorData[index] = Color.White;
+                    }
+                    else
+                    {
+                        // Body
+                        // Hatching logic
+                        // Diagonal lines: x - y = const
+                        // We use (x + y) for one diagonal direction, (x - y) for the other.
+                        // Let's use x + y (Top-Right to Bottom-Left hatching)
+                        
+                        bool isHatch = ((x + y) % hatchSpacing) < hatchThickness;
+                        
+                        if (isHatch)
+                        {
+                            colorData[index] = Color.White * 0.6f; // Thinner/Fainter white lines
+                        }
+                        else
+                        {
+                            colorData[index] = Color.White * 0.2f; // Semi-transparent body
+                        }
+                    }
+                }
+                else
+                {
+                    colorData[index] = Color.Transparent;
+                }
+            }
+        }
+
+        texture.SetData(colorData);
+        return texture;
+    }
 }
