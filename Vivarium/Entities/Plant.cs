@@ -129,25 +129,21 @@ public struct Plant : IGridEntity
             // Skip the center (parent's own position)
             if (dx == 0 && dy == 0) continue;
 
-            int tx = parent.X + dx;
-            int ty = parent.Y + dy;
+            int tx = (parent.X + dx + gridWidth) % gridWidth;
+            int ty = (parent.Y + dy + gridHeight) % gridHeight;
 
-            // Bounds check
-            if (tx >= 0 && tx < gridWidth && ty >= 0 && ty < gridHeight)
+            // Count neighbors (Plants only) for density check
+            if (gridMap[tx, ty].Type == EntityType.Plant)
             {
-                // Count neighbors (Plants only) for density check
-                if (gridMap[tx, ty].Type == EntityType.Plant)
-                {
-                    neighborCount++;
-                }
+                neighborCount++;
+            }
 
-                // Check if empty using our GridMap
-                if (childX == -1 && gridMap[tx, ty] == GridCell.Empty)
-                {
-                    childX = tx;
-                    childY = ty;
-                    // Don't break, we need to count neighbors!
-                }
+            // Check if empty using our GridMap
+            if (childX == -1 && gridMap[tx, ty] == GridCell.Empty)
+            {
+                childX = tx;
+                childY = ty;
+                // Don't break, we need to count neighbors!
             }
         }
 

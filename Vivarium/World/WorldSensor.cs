@@ -24,19 +24,16 @@ public static class WorldSensor
             {
                 if (dx == 0 && dy == 0) continue;
 
-                int nx = centerX + dx;
-                int ny = centerY + dy;
+                int nx = (centerX + dx + gridWidth) % gridWidth;
+                int ny = (centerY + dy + gridHeight) % gridHeight;
 
-                if (nx >= 0 && nx < gridWidth && ny >= 0 && ny < gridHeight)
+                cellsChecked++;
+                var cell = gridMap[nx, ny];
+                switch (cell.Type)
                 {
-                    cellsChecked++;
-                    var cell = gridMap[nx, ny];
-                    switch (cell.Type)
-                    {
-                        case EntityType.Agent: agentsFound++; break;
-                        case EntityType.Plant: plantsFound++; break;
-                        case EntityType.Structure: structuresFound++; break;
-                    }
+                    case EntityType.Agent: agentsFound++; break;
+                    case EntityType.Plant: plantsFound++; break;
+                    case EntityType.Structure: structuresFound++; break;
                 }
             }
         }
@@ -101,22 +98,19 @@ public static class WorldSensor
             {
                 if (dx == 0 && dy == 0) continue;
 
-                int nx = centerX + dx;
-                int ny = centerY + dy;
+                int nx = (centerX + dx + gridWidth) % gridWidth;
+                int ny = (centerY + dy + gridHeight) % gridHeight;
 
-                if (nx >= 0 && nx < gridWidth && ny >= 0 && ny < gridHeight)
+                var cell = gridMap[nx, ny];
+                if (cell.Type == EntityType.Agent)
                 {
-                    var cell = gridMap[nx, ny];
-                    if (cell.Type == EntityType.Agent)
+                    // Bounds check to prevent crashes if the map is desynced
+                    if (cell.Index >= 0 && cell.Index < agentPopulation.Length)
                     {
-                        // Bounds check to prevent crashes if the map is desynced
-                        if (cell.Index >= 0 && cell.Index < agentPopulation.Length)
+                        ref Entities.Agent other = ref agentPopulation[cell.Index];
+                        if (other.IsAlive && self.IsThreat(ref other))
                         {
-                            ref Entities.Agent other = ref agentPopulation[cell.Index];
-                            if (other.IsAlive && self.IsThreat(ref other))
-                            {
-                                return true; // Found at least one threat
-                            }
+                            return true; // Found at least one threat
                         }
                     }
                 }
@@ -159,11 +153,8 @@ public static class WorldSensor
             for (int dx = -radius; dx <= radius; dx++)
             {
                 if (dx == 0 && dy == 0) continue;
-                int nx = centerX + dx;
-                int ny = centerY + dy;
-
-                // Bounds check
-                if (nx < 0 || nx >= gridWidth || ny < 0 || ny >= gridHeight) continue;
+                int nx = (centerX + dx + gridWidth) % gridWidth;
+                int ny = (centerY + dy + gridHeight) % gridHeight;
 
                 int dir = GetDirectionIndex(dx, dy);
                 cellsPerBucket[dir]++;

@@ -392,19 +392,15 @@ public struct Agent : IGridEntity
             // Skip the center (parent's own position)
             if (dx == 0 && dy == 0) continue;
 
-            int tx = parent.X + dx;
-            int ty = parent.Y + dy;
+            int tx = (parent.X + dx + gridWidth) % gridWidth;
+            int ty = (parent.Y + dy + gridHeight) % gridHeight;
 
-            // Bounds check
-            if (tx >= 0 && tx < gridWidth && ty >= 0 && ty < gridHeight)
+            // Check if empty using our GridMap
+            if (gridMap[tx, ty] == GridCell.Empty)
             {
-                // Check if empty using our GridMap
-                if (gridMap[tx, ty] == GridCell.Empty)
-                {
-                    childX = tx;
-                    childY = ty;
-                    break; // Found a spot!
-                }
+                childX = tx;
+                childY = ty;
+                break; // Found a spot!
             }
         }
 
@@ -482,34 +478,30 @@ public struct Agent : IGridEntity
                 case 7: dx = 1; dy = 1; break;
             }
 
-            int nx = X + dx;
-            int ny = Y + dy;
+            int nx = (X + dx + gridWidth) % gridWidth;
+            int ny = (Y + dy + gridHeight) % gridHeight;
 
-            // Bounds check
-            if (nx >= 0 && nx < gridWidth && ny >= 0 && ny < gridHeight)
+            // Is there a victim?
+            if (gridMap[nx, ny].Type == EntityType.Agent)
             {
-                // Is there a victim?
-                if (gridMap[nx, ny].Type == EntityType.Agent)
+                int victimIndex = gridMap[nx, ny].Index;
+                ref Agent victim = ref agentPopulation[victimIndex];
+                if (TryAttackAgent(ref victim, gridMap, dx, dy))
                 {
-                    int victimIndex = gridMap[nx, ny].Index;
-                    ref Agent victim = ref agentPopulation[victimIndex];
-                    if (TryAttackAgent(ref victim, gridMap, dx, dy))
-                    {
-                        ChangeEnergy(-0.5f, gridMap); // Reduced cost for hunting (was 2.0f)
-                        AttackCooldown = 30; // Faster attacks for predators (was 60)
-                        return true; // Hit one target and stop
-                    }
+                    ChangeEnergy(-0.5f, gridMap); // Reduced cost for hunting (was 2.0f)
+                    AttackCooldown = 30; // Faster attacks for predators (was 60)
+                    return true; // Hit one target and stop
                 }
-                else if (gridMap[nx, ny].Type == EntityType.Plant)
+            }
+            else if (gridMap[nx, ny].Type == EntityType.Plant)
+            {
+                int plantIndex = gridMap[nx, ny].Index;
+                ref Plant plant = ref plantPopulation[plantIndex];
+                if (TryAttackPlant(ref plant, gridMap, dx, dy))
                 {
-                    int plantIndex = gridMap[nx, ny].Index;
-                    ref Plant plant = ref plantPopulation[plantIndex];
-                    if (TryAttackPlant(ref plant, gridMap, dx, dy))
-                    {
-                        ChangeEnergy(-2.0f, gridMap);
-                        AttackCooldown = 60;
-                        return true; // Hit one target and stop
-                    }
+                    ChangeEnergy(-2.0f, gridMap);
+                    AttackCooldown = 60;
+                    return true; // Hit one target and stop
                 }
             }
         }
@@ -532,10 +524,8 @@ public struct Agent : IGridEntity
             {
                 if (dx == 0 && dy == 0) continue;
 
-                int nx = X + dx;
-                int ny = Y + dy;
-
-                if (nx < 0 || ny < 0 || nx >= gridWidth || ny >= gridHeight) continue;
+                int nx = (X + dx + gridWidth) % gridWidth;
+                int ny = (Y + dy + gridHeight) % gridHeight;
 
                 GridCell cell = gridMap[nx, ny];
                 if (cell.Type == EntityType.Agent)

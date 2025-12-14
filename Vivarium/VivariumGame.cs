@@ -136,21 +136,18 @@ public class VivariumGame : Game
                     int dy = _rng.Next(-1, 2);
                     if (dx == 0 && dy == 0) continue;
 
-                    int tx = parent.X + dx;
-                    int ty = parent.Y + dy;
+                    int tx = (parent.X + dx + GridWidth) % GridWidth;
+                    int ty = (parent.Y + dy + GridHeight) % GridHeight;
 
-                    if (tx >= 0 && tx < GridWidth && ty >= 0 && ty < GridHeight)
+                    if (_gridMap[tx, ty] == GridCell.Empty)
                     {
-                        if (_gridMap[tx, ty] == GridCell.Empty)
-                        {
-                            T newItem = createFactory(i, tx, ty);
+                        T newItem = createFactory(i, tx, ty);
 
-                            populationSpan[i] = newItem;
-                            _gridMap[tx, ty] = new GridCell(type, i);
+                        populationSpan[i] = newItem;
+                        _gridMap[tx, ty] = new GridCell(type, i);
 
-                            placed = true;
-                            break;
-                        }
+                        placed = true;
+                        break;
                     }
                 }
             }
