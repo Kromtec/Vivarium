@@ -14,6 +14,6 @@ The project simulates an ecosystem of autonomous agents ("Creatures") interactin
 
 ## 🛠️ Tech Stack
 
-* **Language:** C# 12 / .NET 10
+* **Language:** C# 14 / .NET 10
 * **Engine:** MonoGame (DesktopGL)
 * **Architecture:** Entity Component System (ECS) inspired, struct-based arrays for memory efficiency.
