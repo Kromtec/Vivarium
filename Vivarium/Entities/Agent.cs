@@ -259,9 +259,9 @@ public struct Agent : IGridEntity
         // Omnivores: High maintenance (1.2x)
         float metabolismMultiplier = dietType switch
         {
-            DietType.Carnivore => 0.40f, // Adjusted to 0.40f to ensure survival
-            DietType.Omnivore => 1.2f,
-            _ => 1.0f
+            DietType.Carnivore => 0.80f, // Increased from 0.60f to make them even hungrier
+            DietType.Omnivore => 1.4f, // Increased from 1.2f to curb their population
+            _ => 0.65f // Decreased from 0.7f to make herbivores extremely efficient
         };
 
         return new Agent()
@@ -283,7 +283,7 @@ public struct Agent : IGridEntity
             NeuronActivations = new float[BrainConfig.NeuronCount],
             Strength = strength,
             Power = 1.0f + (strength * 0.5f),
-            Resilience = 1.0f + (constitution * 0.5f),
+            Resilience = (1.0f + (constitution * 0.5f)) * (dietType == DietType.Herbivore ? 1.5f : 1.0f), // Buff Herbivore Resilience by 50%
             Bravery = bravery,
             AttackThreshold = BaseAttackThreshold * (1.0f + (bravery * 0.5f)),
             MetabolicEfficiency = metabolicEfficiency,
@@ -376,17 +376,17 @@ public struct Agent : IGridEntity
         // Omnivores have higher reproduction overhead (Population Control)
         if (Diet == DietType.Omnivore)
         {
-            overhead *= 1.3f; // Increased penalty from 1.2f to curb population explosion
+            overhead *= 1.5f; // Increased penalty from 1.3f to curb population explosion
         }
         // Herbivores have lower reproduction overhead (Buff)
         else if (Diet == DietType.Herbivore)
         {
-            overhead *= 0.3f; // Buffed from 0.4f to help them survive predation
+            overhead *= 0.1f; // Buffed from 0.2f to help them survive predation
         }
         // Carnivores have lower reproduction overhead (Buff)
         else if (Diet == DietType.Carnivore)
         {
-            overhead *= 0.25f; // Adjusted to 0.25f to balance population growth
+            overhead *= 0.5f; // Nerfed from 0.25f to balance population growth
         }
 
         float totalCost = childEnergy + overhead;
@@ -716,7 +716,7 @@ public struct Agent : IGridEntity
             damage = Math.Min(damage, victim.Energy);
 
             victim.ChangeEnergy(-damage, gridMap);
-            ChangeEnergy(damage * 1.3f, gridMap); // Adjusted to 1.3f (130% Efficiency)
+            ChangeEnergy(damage * 0.8f, gridMap); // Reduced from 1.3f to 0.8f (80% Efficiency)
         }
         else if (Diet == DietType.Omnivore)
         {
