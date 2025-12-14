@@ -16,6 +16,7 @@ public static class Program
     {
         bool headless = false;
         int duration = 3600; // Default 1 minute (60 fps * 60 sec)
+        int seed = 64;
 
         for (int i = 0; i < args.Length; i++)
         {
@@ -31,6 +32,14 @@ public static class Program
                     i++;
                 }
             }
+            else if (args[i] == "--seed" && i + 1 < args.Length)
+            {
+                if (int.TryParse(args[i + 1], out int s))
+                {
+                    seed = s;
+                    i++;
+                }
+            }
         }
 
         if (headless)
@@ -40,20 +49,20 @@ public static class Program
             {
                 AttachConsole(ATTACH_PARENT_PROCESS);
             }
-            RunHeadless(duration);
+            RunHeadless(duration, seed);
         }
         else
         {
-            using var game = new VivariumGame();
+            using var game = new VivariumGame(seed);
             game.Run();
         }
     }
 
-    static void RunHeadless(int durationTicks)
+    static void RunHeadless(int durationTicks, int seed)
     {
-        Console.WriteLine($"Starting Headless Simulation for {durationTicks} ticks...");
+        Console.WriteLine($"Starting Headless Simulation for {durationTicks} ticks with seed {seed}...");
 
-        var simulation = new Simulation();
+        var simulation = new Simulation(seed);
         simulation.Initialize();
 
         // Setup Logging
@@ -63,7 +72,7 @@ public static class Program
             Directory.CreateDirectory(logDir);
         }
         string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-        string logFile = Path.Combine(logDir, $"simulation_run_{timestamp}.csv");
+        string logFile = Path.Combine(logDir, $"simulation_run_{timestamp}_{seed}_{durationTicks}.csv");
         
         // Header
         File.WriteAllText(logFile, "Tick,Agents,Herbivores,Omnivores,Carnivores,Plants,Structures" + Environment.NewLine);

@@ -40,9 +40,11 @@ public class VivariumGame : Game
 
     private bool _isPaused = false;
     private bool _showExitConfirmation = false;
+    private int _seed;
 
-    public VivariumGame()
+    public VivariumGame(int seed = 64)
     {
+        _seed = seed;
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -64,7 +66,7 @@ public class VivariumGame : Game
         _graphics.SynchronizeWithVerticalRetrace = true;
         _graphics.ApplyChanges();
 
-        _simulation = new Simulation();
+        _simulation = new Simulation(_seed);
         _simulation.Initialize();
 
         _camera = new Camera2D(GraphicsDevice);
