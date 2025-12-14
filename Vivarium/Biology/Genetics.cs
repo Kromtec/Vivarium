@@ -115,4 +115,25 @@ public static partial class Genetics
 
         return Math.Clamp(avg / normalizer, -1f, 1f);
     }
+
+    /// <summary>
+    /// Calculates the similarity between two genomes.
+    /// Returns a value between 0.0 and 1.0.
+    /// </summary>
+    public static float CalculateSimilarity(Gene[] a, Gene[] b)
+    {
+        if (a == null || b == null || a.Length != b.Length) return 0f;
+
+        int matches = 0;
+        for (int i = 0; i < a.Length; i++)
+        {
+            // Exact DNA match
+            if (a[i].Dna == b[i].Dna)
+            {
+                matches++;
+            }
+        }
+
+        return (float)matches / a.Length;
+    }
 }

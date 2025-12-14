@@ -292,7 +292,12 @@ public class VivariumGame : Game
 
         if (_genePoolWindow.IsVisible)
         {
-            _genePoolWindow.RefreshData(_agentPopulation);
+            // Only refresh if requested or periodically (every 60 ticks ~ 1 second)
+            if (_genePoolWindow.RequiresRefresh || (!_isPaused && _tickCount % 60 == 0))
+            {
+                _genePoolWindow.RefreshData(_agentPopulation);
+                _genePoolWindow.RequiresRefresh = false;
+            }
         }
 
         // Input Blocking
