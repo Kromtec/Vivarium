@@ -16,7 +16,7 @@ public struct Agent : IGridEntity
     private const float BaseAttackThreshold = 0.5f;
     private const float BaseMovementThreshold = 0.1f;
     private const float BaseMetabolismRate = 0.01f; // Energy lost per frame (Reduced from 0.02f)
-    private const int BaseMovementCooldown = 3; // Base cooldown for moving
+    private const int BaseMovementCooldown = 10; // Base cooldown for moving
 
     public const float MovementCost = 0.25f;   // Base cost for moving
     public const float OrthogonalMovementCost = MovementCost; // Extra cost for non-cardinal moves
@@ -360,7 +360,7 @@ public struct Agent : IGridEntity
         }
 
         ChangeEnergy(-cost, gridMap);
-        MovementCooldown = BaseMovementCooldown - (int)(Energy * 0.02 * Math.Clamp(Speed, 0d, 1d)); // - 0 to 2 frames
+        MovementCooldown = BaseMovementCooldown - (int)(Energy * 0.05 * Math.Clamp(Speed, 0d, 1d)); // - 0 to 5+ frames
         return true;
     }
 
