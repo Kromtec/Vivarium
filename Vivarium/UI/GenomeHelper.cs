@@ -128,7 +128,7 @@ public static class GenomeHelper
         }
 
         // 2. Draw Strands (Sine Waves) - Thicker
-        int thicknessRadius = 3; // ~7px thick
+        int thicknessRadius = 5; // Increased to 5 to cover bond connections (was 3)
         for (int x = 0; x < width; x++)
         {
             float angle = (x * frequency) + phaseShift;
