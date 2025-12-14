@@ -40,30 +40,31 @@ public static class Brain
         neurons[(int)SensorType.Age] = Math.Min(agent.Age / 2000f, 1.0f);
         neurons[(int)SensorType.Oscillator] = MathF.Sin(agent.Age * 0.1f);
 
-        var density = WorldSensor.ScanLocalArea(gridMap, agent.X, agent.Y, radius: 2);
-
-        neurons[(int)SensorType.AgentDensity] = density.AgentDensity;                   //  0 .. +1
-        neurons[(int)SensorType.PlantDensity] = density.PlantDensity;                   //  0 .. +1
-        neurons[(int)SensorType.StructureDensity] = density.StructureDensity;           //  0 .. +1
-
         // Directional sensors (8-way). Perception influences effective radius.
         const int baseRadius = 2;
         const int extraRange = 2; // max additional radius from perception
         int dirRadius = Math.Clamp(baseRadius + (int)MathF.Round(agent.Perception * extraRange), 1, 6);
 
-        // --- OPTIMIZATION: Zero-Alloc Direct Write ---
-        // We pass the offsets for the N (North) sensor. The function assumes N, NE, E... follow mainly.
-        // Based on SensorType enum, the directions are sequential:
-        // AgentDensity_N, AgentDensity_NE...
-        WorldSensor.PopulateDirectionalSensors(                                         //  0 .. +1
+        // --- OPTIMIZATION: Combined Scan ---
+        // We scan both local area (radius 2) and directional area (variable) in one pass.
+        // Also detects threats to avoid a third pass.
+        bool threatDetected;
+        WorldSensor.ScanSensors(
             gridMap,
             agent.X,
             agent.Y,
-            dirRadius,
-            neurons,
-            (int)SensorType.AgentDensity_N,
-            (int)SensorType.PlantDensity_N,
-            (int)SensorType.StructureDensity_N
+            localRadius: 2,
+            dirRadius: dirRadius,
+            neuronOutput: neurons,
+            agentOffset: (int)SensorType.AgentDensity_N,
+            plantOffset: (int)SensorType.PlantDensity_N,
+            structOffset: (int)SensorType.StructureDensity_N,
+            localAgentIdx: (int)SensorType.AgentDensity,
+            localPlantIdx: (int)SensorType.PlantDensity,
+            localStructIdx: (int)SensorType.StructureDensity,
+            self: ref agent,
+            agentPopulation: agentPopulation,
+            threatDetected: out threatDetected
         );
 
         // Trait sensors (derived from genome and precomputed on the Agent)
@@ -79,7 +80,8 @@ public static class Brain
         foreach (var gene in agent.Genome)
         {
             // Safety modulo ensures we stay within valid array bounds [0..NeuronCount-1]
-            int sourceIdx = gene.SourceId % BrainConfig.NeuronCount;
+            // Optimization: SourceId is 8-bit (0-255) and NeuronCount is 256, so modulo is redundant.
+            int sourceIdx = gene.SourceId;
 
             // Wrap Sink to Actions + Hidden only
             int sinkIdx = (gene.SinkId % (BrainConfig.NeuronCount - BrainConfig.ActionsStart)) + BrainConfig.ActionsStart;
@@ -91,7 +93,7 @@ public static class Brain
         // --- 3.5 INSTINCTS (Biological Overrides)
         // We apply strong biases based on critical survival needs.
         // These are applied BEFORE activation, so they can be modulated by the network but provide a strong baseline.
-        ApplyInstincts(ref agent, gridMap, rng, neurons, agentPopulation);
+        ApplyInstincts(ref agent, gridMap, rng, neurons, agentPopulation, threatDetected);
 
         // --- 4. ACTIVATION ---
         // Apply Tanh to everything AFTER the sensors (Actions + Hidden)
@@ -101,7 +103,7 @@ public static class Brain
         }
     }
 
-    private static void ApplyInstincts(ref Agent agent, GridCell[,] gridMap, Random rng, float[] neurons, Agent[] agentPopulation)
+    private static void ApplyInstincts(ref Agent agent, GridCell[,] gridMap, Random rng, float[] neurons, Agent[] agentPopulation, bool threatDetected)
     {
         // Helper to add bias to one action and suppress all others
         void ApplyDominantBias(ActionType targetType, float amount)
@@ -126,7 +128,7 @@ public static class Brain
         // 1. SURVIVAL INSTINCT (Panic)
         // If threats are nearby, run away!
         // We do a quick scan for threats.
-        if (WorldSensor.DetectThreats(gridMap, agentPopulation, agent.X, agent.Y, 2, ref agent))
+        if (threatDetected)
         {
             ApplyDominantBias(ActionType.Flee, 2.0f);
             ActivityLog.Log(agent.Id, "Instinct: Panic! Threat detected nearby. Urge to flee.");
