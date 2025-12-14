@@ -24,7 +24,7 @@ public class VivariumGame : Game
     private const int CellSize = 1280 / GridHeight;
     private const int AgentCount = GridWidth * GridHeight / 8;
     private const int PlantCount = GridWidth * GridHeight / 8;
-    private const int StructureCount = GridWidth * GridHeight / 64;
+    private const int StructureCount = GridWidth * GridHeight / 32;
     public const double FramesPerSecond = 60d;
 
     private Agent[] _agentPopulation;

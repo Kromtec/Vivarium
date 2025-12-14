@@ -15,7 +15,7 @@ public struct Agent : IGridEntity
 
     private const float BaseAttackThreshold = 0.5f;
     private const float BaseMovementThreshold = 0.1f;
-    private const float BaseMetabolismRate = 0.05f; // Energy lost per frame (Increased from 0.01f)
+    private const float BaseMetabolismRate = 0.02f; // Energy lost per frame (Increased from 0.01f)
     private const int BaseMovementCooldown = 3; // Base cooldown for moving
 
     public const float MovementCost = 0.25f;   // Base cost for moving
@@ -143,12 +143,25 @@ public struct Agent : IGridEntity
         Color = Color.Lerp(Color.Black, OriginalColor, Math.Clamp(Energy / 100f, .25f, 1f));
     }
 
+    /// <summary>
+    /// Determines whether this agent is a direct parent or child of the specified agent.
+    /// </summary>
+    /// <param name="other">A reference to the agent to compare with the current agent.</param>
+    /// <returns>true if this agent is the parent or child of the specified agent; otherwise, false.</returns>
     public readonly bool IsDirectlyRelatedTo(ref Agent other)
     {
         return ParentId == other.Id || Id == other.ParentId;
     }
 
-    public readonly bool IsThreat(ref Agent other)
+    /// <summary>
+    /// Determines whether the current agent is threatened by the specified agent based on kinship, diet, and bravery.
+    /// </summary>
+    /// <remarks>An agent is not considered threatened by another agent if they are directly related, if both
+    /// are herbivores, if the current agent is a carnivore or omnivore and the other is a herbivore, or if the current
+    /// agent's bravery exceeds that of the other agent.</remarks>
+    /// <param name="other">A reference to the agent to evaluate as a potential threat.</param>
+    /// <returns>true if the current agent is considered threatened by the specified agent; otherwise, false.</returns>
+    public readonly bool IsThreatenedBy(ref Agent other)
     {
         // Constraint 1: Kinship (Don't flee from family)
         if (IsDirectlyRelatedTo(ref other)) return false;
@@ -165,7 +178,14 @@ public struct Agent : IGridEntity
         return true;
     }
 
-    public readonly bool IsPrey(ref Agent other)
+    /// <summary>
+    /// Determines whether this agent is considered to be preying on the specified agent.
+    /// </summary>
+    /// <remarks>An agent is not considered to be preying on another agent if they are directly related or if
+    /// this agent is a herbivore.</remarks>
+    /// <param name="other">The agent to evaluate as a potential prey. Passed by reference.</param>
+    /// <returns>true if this agent is preying on the specified agent; otherwise, false.</returns>
+    public readonly bool IsPreyingOn(ref Agent other)
     {
         // Constraint 1: Kinship (Don't eat family)
         if (IsDirectlyRelatedTo(ref other)) return false;
@@ -463,17 +483,17 @@ public struct Agent : IGridEntity
             {
                 int victimIndex = gridMap[nx, ny].Index;
                 ref Agent victim = ref agentPopulation[victimIndex];
-                
+
                 float damageDealt, selfDamage;
                 if (TryAttackAgent(ref victim, gridMap, dx, dy, out damageDealt, out selfDamage))
                 {
                     ChangeEnergy(-0.5f, gridMap); // Reduced cost for hunting (was 2.0f)
-                    AttackCooldown = 30; // Faster attacks for predators (was 60)
-                    return new AttackResult 
-                    { 
-                        Success = true, 
-                        DamageDealt = damageDealt, 
-                        TargetId = victim.Id, 
+                    AttackCooldown = 20; // Faster attacks for predators
+                    return new AttackResult
+                    {
+                        Success = true,
+                        DamageDealt = damageDealt,
+                        TargetId = victim.Id,
                         TargetType = "Agent",
                         SelfDamage = selfDamage
                     };
@@ -483,17 +503,17 @@ public struct Agent : IGridEntity
             {
                 int plantIndex = gridMap[nx, ny].Index;
                 ref Plant plant = ref plantPopulation[plantIndex];
-                
+
                 float damageDealt;
                 if (TryAttackPlant(ref plant, gridMap, dx, dy, out damageDealt))
                 {
                     ChangeEnergy(-2.0f, gridMap);
                     AttackCooldown = 60;
-                    return new AttackResult 
-                    { 
-                        Success = true, 
-                        DamageDealt = damageDealt, 
-                        TargetId = plant.Id, 
+                    return new AttackResult
+                    {
+                        Success = true,
+                        DamageDealt = damageDealt,
+                        TargetId = plant.Id,
                         TargetType = "Plant",
                         SelfDamage = 0
                     };
@@ -528,7 +548,7 @@ public struct Agent : IGridEntity
                     ref Agent other = ref agentPopulationSpan[cell.Index];
                     if (!other.IsAlive) continue;
 
-                    if (!IsThreat(ref other)) continue;
+                    if (!IsThreatenedBy(ref other)) continue;
 
                     // EVADE!
                     vecX -= Math.Sign(dx);
@@ -590,7 +610,7 @@ public struct Agent : IGridEntity
         // Don't eat if full (Energy > 95%)
         bool isFull = Energy >= MaxEnergy * 0.95f;
 
-        const float baseDamage = 7.5f;
+        const float baseDamage = 15f;
         var power = 1.0f + (Strength * 0.5f);
         var damage = baseDamage * power;
 
@@ -635,7 +655,7 @@ public struct Agent : IGridEntity
         }
 
         // Motivation Check: Is it food or a threat?
-        if (!IsPrey(ref victim) && !IsThreat(ref victim))
+        if (!IsPreyingOn(ref victim) && !IsThreatenedBy(ref victim))
         {
             return false;
         }

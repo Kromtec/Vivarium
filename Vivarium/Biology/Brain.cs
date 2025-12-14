@@ -138,7 +138,7 @@ public static class Brain
         if (agent.Energy < agent.MaxEnergy * 0.6f)
         {
             var dietDecision = rng.NextDouble();
-            if (agent.Diet == DietType.Herbivore || (agent.Diet == DietType.Omnivore && dietDecision > 0.5f))
+            if (agent.Diet == DietType.Herbivore || (agent.Diet == DietType.Omnivore && dietDecision >= 0.5f))
             {
                 // Move towards plants
                 // We check the directional sensors we just populated.

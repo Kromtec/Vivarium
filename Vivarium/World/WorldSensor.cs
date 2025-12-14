@@ -108,7 +108,7 @@ public static class WorldSensor
                     if (cell.Index >= 0 && cell.Index < agentPopulation.Length)
                     {
                         ref Entities.Agent other = ref agentPopulation[cell.Index];
-                        if (other.IsAlive && self.IsThreat(ref other))
+                        if (other.IsAlive && self.IsThreatenedBy(ref other))
                         {
                             return true; // Found at least one threat
                         }
