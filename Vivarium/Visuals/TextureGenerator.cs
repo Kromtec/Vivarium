@@ -391,4 +391,65 @@ public static class TextureGenerator
         texture.SetData(colorData);
         return texture;
     }
+
+    public static Texture2D CreateOrganicShape(GraphicsDevice graphicsDevice, int size, int petals, float variance, int borderThickness = 2)
+    {
+        var texture = new Texture2D(graphicsDevice, size, size);
+        var colorData = new Color[size * size];
+
+        float center = size / 2f;
+        // Leave some padding
+        float maxRadius = (size / 2f) - 2f;
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                int index = (y * size) + x;
+                float dx = x - center;
+                float dy = y - center;
+                float dist = MathF.Sqrt(dx * dx + dy * dy);
+                float angle = MathF.Atan2(dy, dx);
+
+                // Organic radius function
+                // r = R * (1 + v * sin(n * theta))
+                // We normalize so the max extent fits in maxRadius
+                // Max extent is at (1+v). So BaseR = maxRadius / (1+v)
+
+                float baseR = maxRadius / (1f + variance);
+                float currentLimit = baseR * (1f + variance * MathF.Sin(petals * angle));
+
+                // Anti-aliasing logic
+                float distFromEdge = currentLimit - dist;
+
+                if (distFromEdge < -1f)
+                {
+                    colorData[index] = Color.Transparent;
+                }
+                else if (distFromEdge < 0f)
+                {
+                    // Outer Edge Anti-aliasing (0 to 1)
+                    float alpha = 1f + distFromEdge; // distFromEdge is between -1 and 0
+                    colorData[index] = Color.White * alpha;
+                }
+                else
+                {
+                    // Inside
+                    if (distFromEdge < borderThickness)
+                    {
+                        // Border
+                        colorData[index] = Color.White;
+                    }
+                    else
+                    {
+                        // Inner Body - Semi-transparent
+                        colorData[index] = Color.White * 0.3f;
+                    }
+                }
+            }
+        }
+
+        texture.SetData(colorData);
+        return texture;
+    }
 }

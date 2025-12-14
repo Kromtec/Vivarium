@@ -24,6 +24,7 @@ public class WorldRenderer
     private Texture2D _ringTexture;
     private Texture2D _selectionRingTexture;
     private Texture2D[] _structureTextures; // Array for 16 variations
+    private Texture2D[] _plantTextures; // Array for plant variations
 
     public WorldRenderer(GraphicsDevice graphicsDevice)
     {
@@ -54,6 +55,14 @@ public class WorldRenderer
             bool left = (i & 8) != 0;
             _structureTextures[i] = TextureGenerator.CreateStructureTexture(_graphicsDevice, 50, 15, 4, top, right, bottom, left);
         }
+
+        // Generate Plant Textures (Variations)
+        _plantTextures = new Texture2D[4];
+        int plantBorder = 5; // Increased thickness to prevent broken edges at small scales
+        _plantTextures[0] = TextureGenerator.CreateOrganicShape(_graphicsDevice, 64, 5, 0.2f, plantBorder); // Standard Flower
+        _plantTextures[1] = TextureGenerator.CreateOrganicShape(_graphicsDevice, 64, 3, 0.15f, plantBorder); // Triangle/Tulip
+        _plantTextures[2] = TextureGenerator.CreateOrganicShape(_graphicsDevice, 64, 6, 0.25f, plantBorder); // Complex Flower
+        _plantTextures[3] = TextureGenerator.CreateOrganicShape(_graphicsDevice, 64, 4, 0.2f, plantBorder); // Clover
     }
 
     public RenderStats Draw(
@@ -232,8 +241,9 @@ public class WorldRenderer
     private void DrawPlants(Plant[] plants, int cellSize, out int livingPlants)
     {
         livingPlants = 0;
-        var textureCenter = new Vector2(_starTexture.Width / 2f, _starTexture.Height / 2f);
-        float baseScale = (float)cellSize / _starTexture.Width;
+        // We assume all plant textures are same size (64x64)
+        var textureCenter = new Vector2(_plantTextures[0].Width / 2f, _plantTextures[0].Height / 2f);
+        float baseScale = (float)cellSize / _plantTextures[0].Width;
         float halfCellSize = cellSize * 0.5f;
 
         const float plantAgeGrowthFactor = 1.0f / Plant.MaturityAge;
@@ -260,8 +270,12 @@ public class WorldRenderer
                 plant.X * cellSize + halfCellSize,
                 plant.Y * cellSize + halfCellSize
             );
+
+            // Select variant based on index (deterministic variation)
+            int variant = plant.Index % _plantTextures.Length;
+
             _spriteBatch.Draw(
-                _starTexture,
+                _plantTextures[variant],
                 position,
                 null,
                 plant.Color,
