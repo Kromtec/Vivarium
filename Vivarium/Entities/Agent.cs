@@ -253,8 +253,8 @@ public struct Agent : IGridEntity
         // Omnivores: High maintenance (1.2x)
         float metabolismMultiplier = dietType switch
         {
-            DietType.Carnivore => 0.8f,
-            DietType.Omnivore => 1.2f,
+            DietType.Carnivore => 0.7f, // Buffed from 0.8f to help survival
+            DietType.Omnivore => 1.1f,  // Buffed from 1.2f (was too harsh)
             _ => 1.0f
         };
 
@@ -365,7 +365,7 @@ public struct Agent : IGridEntity
         // Omnivores have higher reproduction overhead (Population Control)
         if (Diet == DietType.Omnivore)
         {
-            overhead *= 1.5f;
+            overhead *= 1.2f; // Reduced penalty from 1.5f
         }
 
         float totalCost = childEnergy + overhead;

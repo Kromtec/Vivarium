@@ -138,7 +138,8 @@ public static class Brain
         if (agent.Energy < agent.MaxEnergy * 0.6f)
         {
             var dietDecision = rng.NextDouble();
-            if (agent.Diet == DietType.Herbivore || (agent.Diet == DietType.Omnivore && dietDecision >= 0.5f))
+            // Omnivores prefer plants (75% chance) to reduce pressure on herbivores
+            if (agent.Diet == DietType.Herbivore || (agent.Diet == DietType.Omnivore && dietDecision >= 0.25f))
             {
                 // Move towards plants
                 // We check the directional sensors we just populated.
@@ -182,7 +183,7 @@ public static class Brain
                 ActivityLog.Log(agent.Id, $"Instinct: Low Energy. Seeking Plants towards {biasDir}.");
                 return; // Priority 2: Food
             }
-            else if (agent.Diet == DietType.Carnivore || (agent.Diet == DietType.Omnivore && dietDecision < 0.5f))
+            else if (agent.Diet == DietType.Carnivore || (agent.Diet == DietType.Omnivore && dietDecision < 0.25f))
             {
                 // Move towards prey (Agents)
                 // Similar logic but for AgentDensity
