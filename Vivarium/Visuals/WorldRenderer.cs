@@ -221,7 +221,7 @@ public class WorldRenderer
                     );
                     // Draw the Selection Box inside the world
                     float totalSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
-                    DrawSelectionMarker(_spriteBatch, inspector, cellSize, totalSeconds);
+                    DrawSelectionMarker(_spriteBatch, inspector, agents, cellSize, totalSeconds);
 
                     _spriteBatch.End();
                 }
@@ -231,17 +231,64 @@ public class WorldRenderer
         return stats;
     }
 
-    private void DrawSelectionMarker(SpriteBatch spriteBatch, Inspector inspector, int cellSize, float totalTime)
+    private void DrawSelectionMarker(SpriteBatch spriteBatch, Inspector inspector, Agent[] agents, int cellSize, float totalTime)
     {
         if (!inspector.IsEntitySelected) return;
 
         var gridPos = inspector.SelectedGridPos;
+        Vector2 cellCenter;
 
-        // Calculate center of the selected cell
-        Vector2 cellCenter = new Vector2(
-            (gridPos.X * cellSize) + (cellSize / 2.0f),
-            (gridPos.Y * cellSize) + (cellSize / 2.0f)
-        );
+        // If an agent is selected, use its interpolated position
+        if (inspector.SelectedType == EntityType.Agent && inspector.SelectedEntityId != -1)
+        {
+            // Find the agent in the array (Inspector stores index, but we should verify ID)
+            // Optimization: Inspector stores index, let's trust it if ID matches
+            int index = inspector.SelectedIndex;
+            if (index >= 0 && index < agents.Length && agents[index].Id == inspector.SelectedEntityId && agents[index].IsAlive)
+            {
+                ref Agent agent = ref agents[index];
+                
+                // Interpolation Logic
+                float offsetX = 0;
+                float offsetY = 0;
+
+                if (agent.MovementCooldown > 0 && agent.TotalMovementCooldown > 0)
+                {
+                    int dx = agent.X - agent.LastX;
+                    int dy = agent.Y - agent.LastY;
+
+                    if (dx < -1) dx = 1;
+                    if (dx > 1) dx = -1;
+                    if (dy < -1) dy = 1;
+                    if (dy > 1) dy = -1;
+
+                    float t = (float)agent.MovementCooldown / agent.TotalMovementCooldown;
+                    offsetX = -(dx * cellSize * t);
+                    offsetY = -(dy * cellSize * t);
+                }
+
+                cellCenter = new Vector2(
+                    (agent.X * cellSize) + (cellSize / 2.0f) + offsetX,
+                    (agent.Y * cellSize) + (cellSize / 2.0f) + offsetY
+                );
+            }
+            else
+            {
+                // Fallback to grid pos if agent not found/dead
+                cellCenter = new Vector2(
+                    (gridPos.X * cellSize) + (cellSize / 2.0f),
+                    (gridPos.Y * cellSize) + (cellSize / 2.0f)
+                );
+            }
+        }
+        else
+        {
+            // Standard Grid Selection (Plants, Structures)
+            cellCenter = new Vector2(
+                (gridPos.X * cellSize) + (cellSize / 2.0f),
+                (gridPos.Y * cellSize) + (cellSize / 2.0f)
+            );
+        }
 
         // Pulsating effect similar to ReproductionVisual
         // Use a sine wave to oscillate between 0 and 1
@@ -520,9 +567,29 @@ public class WorldRenderer
             float ageRatio = Math.Min(agent.Age * agentAgeGrowthFactor, 1.0f);
             float growthFactor = 0.3f + (0.7f * ageRatio);
 
+            // Interpolation Logic (Same as DrawAgents)
+            float offsetX = 0;
+            float offsetY = 0;
+
+            if (agent.MovementCooldown > 0 && agent.TotalMovementCooldown > 0)
+            {
+                int dx = agent.X - agent.LastX;
+                int dy = agent.Y - agent.LastY;
+
+                // Handle Wrapping
+                if (dx < -1) dx = 1;
+                if (dx > 1) dx = -1;
+                if (dy < -1) dy = 1;
+                if (dy > 1) dy = -1;
+
+                float t = (float)agent.MovementCooldown / agent.TotalMovementCooldown;
+                offsetX = -(dx * cellSize * t);
+                offsetY = -(dy * cellSize * t);
+            }
+
             Vector2 position = new Vector2(
-                agent.X * cellSize + halfCellSize,
-                agent.Y * cellSize + halfCellSize
+                (agent.X * cellSize + halfCellSize) + offsetX,
+                (agent.Y * cellSize + halfCellSize) + offsetY
             );
 
             float indicatorOffset = (cellSize * 0.85f) * growthFactor;

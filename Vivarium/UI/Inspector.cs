@@ -22,6 +22,7 @@ public class Inspector
     public Point SelectedGridPos { get; private set; }
     public EntityType SelectedType { get; private set; }
     public long SelectedEntityId => _selectedEntityId; // Expose ID
+    public int SelectedIndex => _selectedIndex; // Expose Index
     private long _selectedEntityId = -1;
     private int _selectedIndex;
 
@@ -64,6 +65,61 @@ public class Inspector
             if (IsEntitySelected && _panelRect.Contains(mouseState.Position)) return;
 
             Vector2 mouseWorld = camera.ScreenToWorld(new Vector2(mouseState.X, mouseState.Y));
+
+            // --- 1. VISUAL AGENT SELECTION (Hit Test against interpolated positions) ---
+            bool agentFound = false;
+            float halfCell = cellSize * 0.5f;
+            float selectionRadiusSq = (halfCell * 1.2f) * (halfCell * 1.2f); // Slightly larger than radius for easier clicking
+
+            // Iterate all agents to find if we clicked one visually
+            // (Optimization: In a huge world, we should only check agents in the view, but for now this is fine)
+            for (int i = 0; i < agents.Length; i++)
+            {
+                ref Agent agent = ref agents[i];
+                if (!agent.IsAlive) continue;
+
+                // Calculate Interpolated Position (Same logic as Renderer)
+                int dx = agent.X - agent.LastX;
+                int dy = agent.Y - agent.LastY;
+
+                // Handle Wrapping
+                if (dx < -1) dx = 1;
+                if (dx > 1) dx = -1;
+                if (dy < -1) dy = 1;
+                if (dy > 1) dy = -1;
+
+                float offsetX = 0;
+                float offsetY = 0;
+
+                if (agent.MovementCooldown > 0 && agent.TotalMovementCooldown > 0)
+                {
+                    float t = (float)agent.MovementCooldown / agent.TotalMovementCooldown;
+                    offsetX = -(dx * cellSize * t);
+                    offsetY = -(dy * cellSize * t);
+                }
+
+                Vector2 visualPos = new Vector2(
+                    (agent.X * cellSize + halfCell) + offsetX,
+                    (agent.Y * cellSize + halfCell) + offsetY
+                );
+
+                // Check distance
+                if (Vector2.DistanceSquared(mouseWorld, visualPos) < selectionRadiusSq)
+                {
+                    // FOUND IT!
+                    IsEntitySelected = true;
+                    SelectedGridPos = new Point(agent.X, agent.Y); // Logical position
+                    SelectedType = EntityType.Agent;
+                    _selectedIndex = i;
+                    _selectedEntityId = agent.Id;
+                    agentFound = true;
+                    break; // Stop after first hit
+                }
+            }
+
+            if (agentFound) return; // Skip grid check if we hit an agent
+
+            // --- 2. FALLBACK GRID SELECTION (Plants, Structures, Stationary Agents) ---
 
             // Use Floor to handle negative coordinates correctly
             int gx = (int)Math.Floor(mouseWorld.X / cellSize);
@@ -425,7 +481,7 @@ public class Inspector
         private readonly string _label;
         private readonly string _value;
 
-        public RowElement(string label, string value)
+        public RowElement(String label, string value)
         {
             _label = label;
             _value = value;
