@@ -51,6 +51,9 @@ public class VivariumGame : Game
 
         TargetElapsedTime = TimeSpan.FromSeconds(1d / FramesPerSecond);
         IsFixedTimeStep = true;
+        
+        // Ensure the game runs at full speed even when not in focus
+        InactiveSleepTime = TimeSpan.Zero;
     }
 
     protected override void Initialize()
