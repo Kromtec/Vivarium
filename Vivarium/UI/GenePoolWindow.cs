@@ -46,7 +46,7 @@ public class GenePoolWindow
     // UI State
     private int _scrollOffset = 0;
     private const int ItemHeight = 40;
-    private const int ListWidth = 270;
+    private const int ListWidth = 450; // Increased from 350 to 450
     private int _previousScrollValue;
     private MouseState _previousMouseState;
 
@@ -137,6 +137,17 @@ public class GenePoolWindow
             
             // Sort variants within family by count
             family.Variants = family.Variants.OrderByDescending(v => v.Count).ToList();
+
+            // Generate Scientific Name for the Family
+            var names = ScientificNameGenerator.GenerateFamilyName(family.Representative.Representative);
+            family.ScientificName = names.ScientificName;
+            family.ScientificNameTranslation = names.Translation;
+
+            // Generate Variant Names
+            for (int i = 0; i < family.Variants.Count; i++)
+            {
+                family.Variants[i].VariantName = ScientificNameGenerator.GenerateVariantName(i);
+            }
 
             families.Add(family);
         }
@@ -319,7 +330,7 @@ public class GenePoolWindow
                 // Info block is now right aligned
                 int infoWidth = 250;
                 int infoX = _windowRect.Right - UITheme.Padding - infoWidth;
-                int infoY = detailsY + 60; // ID + Diet lines approx
+                int infoY = detailsY + 75; // ID (40) + Diet (35) spacing
                 
                 // Prev Button
                 if (new Rectangle(infoX + infoWidth - 30 - 150 - 30, infoY, 30, 20).Contains(mousePos))
@@ -358,7 +369,7 @@ public class GenePoolWindow
         if (!IsVisible) return;
 
         // Center Window
-        int width = 1100;
+        int width = 1280; // Increased from 1100 to 1200
         int height = 600;
         _windowRect = new Rectangle(
             (_graphics.Viewport.Width - width) / 2,
@@ -447,11 +458,16 @@ public class GenePoolWindow
             string rankText = $"#{family.Rank}";
             spriteBatch.DrawString(_font, rankText, new Vector2(listX + 70, itemY + 8), UITheme.TextColorPrimary);
 
+            // Scientific Name (instead of just rank/count)
+            // We draw the name next to the rank
+            Vector2 rankSize = _font.MeasureString(rankText);
+            spriteBatch.DrawString(_font, family.ScientificName, new Vector2(listX + 70 + rankSize.X + 10, itemY + 8), UITheme.TextColorPrimary);
+
             // Count Text (Total Family Count)
             string countText = $"{family.TotalCount}";
             if (family.Variants.Count > 1)
             {
-                countText += $" ({family.Variants.Count} vars)";
+                countText += $" ({family.Variants.Count})";
             }
             
             Vector2 countSize = _font.MeasureString(countText);
@@ -516,11 +532,22 @@ public class GenePoolWindow
             int infoX = _windowRect.Right - UITheme.Padding - infoWidth;
             int infoY = detailsY;
 
+            // Scientific Name + Variant Name (Large)
+            string fullName = $"{_selectedFamily.ScientificName} {variant.VariantName}";
+            Vector2 nameSize = _font.MeasureString(fullName);
+            spriteBatch.DrawString(_font, fullName, new Vector2(infoX + infoWidth - nameSize.X, infoY - 30), UITheme.HeaderColor);
+
+            // Translation (Small, below name)
+            string translation = $"\"{_selectedFamily.ScientificNameTranslation}\"";
+            Vector2 transSize = _font.MeasureString(translation);
+            // Draw slightly smaller or dimmer
+            spriteBatch.DrawString(_font, translation, new Vector2(infoX + infoWidth - transSize.X, infoY - 10), Color.Gray);
+
             // ID
             string idText = $"ID: {variant.Hash:X}";
             Vector2 idSize = _font.MeasureString(idText);
-            spriteBatch.DrawString(_font, idText, new Vector2(infoX + infoWidth - idSize.X, infoY), UITheme.TextColorSecondary);
-            infoY += 25;
+            spriteBatch.DrawString(_font, idText, new Vector2(infoX + infoWidth - idSize.X, infoY + 15), UITheme.TextColorSecondary); // Shifted down
+            infoY += 40; // Increased spacing
 
             // Diet
             string dietText = $"Diet: {variant.Diet}";
@@ -537,8 +564,8 @@ public class GenePoolWindow
                 DrawBorder(spriteBatch, nextRect, 1, Color.White);
                 spriteBatch.DrawString(_font, ">", new Vector2(nextRect.X + 10, nextRect.Y + 2), Color.White);
 
-                // Variant Info
-                string varInfo = $"Var {_selectedVariantIndex + 1}/{_selectedFamily.Variants.Count}";
+                // Variant Info (Index / Total)
+                string varInfo = $"({_selectedVariantIndex + 1} / {_selectedFamily.Variants.Count})";
                 Vector2 infoSize = _font.MeasureString(varInfo);
                 
                 // Fixed width area for text to avoid clipping
@@ -685,6 +712,8 @@ public class GenePoolWindow
         public int Rank;
         public DietType Diet;
         public Texture2D Identicon;
+        public string ScientificName;
+        public string ScientificNameTranslation;
     }
 
     public class GenomeVariant
@@ -695,5 +724,6 @@ public class GenePoolWindow
         public DietType Diet;
         public Texture2D Identicon;
         public Texture2D GenomeGrid;
+        public string VariantName;
     }
 }
