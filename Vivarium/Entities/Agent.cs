@@ -193,6 +193,9 @@ public struct Agent : IGridEntity
         // Constraint 2: Diet (Herbivores don't eat agents)
         if (Diet == DietType.Herbivore) return false;
 
+        // Constraint 3: Omnivores don't eat Carnivores (Too dangerous)
+        if (Diet == DietType.Omnivore && other.Diet == DietType.Carnivore) return false;
+
         return true;
     }
 
@@ -253,7 +256,7 @@ public struct Agent : IGridEntity
         // Omnivores: High maintenance (1.2x)
         float metabolismMultiplier = dietType switch
         {
-            DietType.Carnivore => 0.55f, // Increased from 0.5f to reduce predator density
+            DietType.Carnivore => 0.40f, // Adjusted to 0.40f to ensure survival
             DietType.Omnivore => 1.2f,
             _ => 1.0f
         };
@@ -370,12 +373,12 @@ public struct Agent : IGridEntity
         // Herbivores have lower reproduction overhead (Buff)
         else if (Diet == DietType.Herbivore)
         {
-            overhead *= 0.4f; // Buffed from 0.5f to help them outbreed omnivores
+            overhead *= 0.3f; // Buffed from 0.4f to help them survive predation
         }
         // Carnivores have lower reproduction overhead (Buff)
         else if (Diet == DietType.Carnivore)
         {
-            overhead *= 0.4f; // Buffed from 0.5f to help recovery
+            overhead *= 0.25f; // Adjusted to 0.25f to balance population growth
         }
 
         float totalCost = childEnergy + overhead;
@@ -661,7 +664,7 @@ public struct Agent : IGridEntity
 
             // Reduced efficiency for Omnivores eating plants (was 0.8f)
             // They have shorter digestive tracts than true herbivores.
-            if (!isFull) ChangeEnergy(damage * 0.6f, gridMap); // Buffed from 0.5f to prevent extinction
+            if (!isFull) ChangeEnergy(damage * 0.65f, gridMap); // Adjusted to 0.65f (Middle ground)
         }
         else
         {
@@ -705,7 +708,7 @@ public struct Agent : IGridEntity
             damage = Math.Min(damage, victim.Energy);
 
             victim.ChangeEnergy(-damage, gridMap);
-            ChangeEnergy(damage * 1.0f, gridMap); // 100% Efficiency for specialized carnivores
+            ChangeEnergy(damage * 1.3f, gridMap); // Adjusted to 1.3f (130% Efficiency)
         }
         else if (Diet == DietType.Omnivore)
         {
