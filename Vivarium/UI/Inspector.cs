@@ -21,6 +21,7 @@ public class Inspector
     public bool IsEntitySelected { get; private set; }
     public Point SelectedGridPos { get; private set; }
     public EntityType SelectedType { get; private set; }
+    public long SelectedEntityId => _selectedEntityId; // Expose ID
     private long _selectedEntityId = -1;
     private int _selectedIndex;
 

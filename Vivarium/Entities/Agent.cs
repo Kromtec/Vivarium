@@ -2,11 +2,10 @@
 using System;
 using Vivarium.Biology;
 using Vivarium.World;
+using Vivarium.UI;
 
 namespace Vivarium.Entities;
 
-// --- C# 14 / .NET 10 UPDATE ---
-// Using a struct for memory efficiency (Stack allocated / packed in arrays)
 public struct Agent : IGridEntity
 {
     // Reproduction Thermodynamics
@@ -425,9 +424,9 @@ public struct Agent : IGridEntity
         return true;
     }
 
-    public bool TryAreaAttack(GridCell[,] gridMap, Span<Agent> agentPopulation, Span<Plant> plantPopulation, Random rng)
+    public AttackResult TryAreaAttack(GridCell[,] gridMap, Span<Agent> agentPopulation, Span<Plant> plantPopulation, Random rng)
     {
-        if (AttackCooldown > 0) return false;
+        if (AttackCooldown > 0) return new AttackResult { Success = false };
 
         int gridWidth = gridMap.GetLength(0);
         int gridHeight = gridMap.GetLength(1);
@@ -468,29 +467,47 @@ public struct Agent : IGridEntity
             {
                 int victimIndex = gridMap[nx, ny].Index;
                 ref Agent victim = ref agentPopulation[victimIndex];
-                if (TryAttackAgent(ref victim, gridMap, dx, dy))
+                
+                float damageDealt, selfDamage;
+                if (TryAttackAgent(ref victim, gridMap, dx, dy, out damageDealt, out selfDamage))
                 {
                     ChangeEnergy(-0.5f, gridMap); // Reduced cost for hunting (was 2.0f)
                     AttackCooldown = 30; // Faster attacks for predators (was 60)
-                    return true; // Hit one target and stop
+                    return new AttackResult 
+                    { 
+                        Success = true, 
+                        DamageDealt = damageDealt, 
+                        TargetId = victim.Id, 
+                        TargetType = "Agent",
+                        SelfDamage = selfDamage
+                    };
                 }
             }
             else if (gridMap[nx, ny].Type == EntityType.Plant)
             {
                 int plantIndex = gridMap[nx, ny].Index;
                 ref Plant plant = ref plantPopulation[plantIndex];
-                if (TryAttackPlant(ref plant, gridMap, dx, dy))
+                
+                float damageDealt;
+                if (TryAttackPlant(ref plant, gridMap, dx, dy, out damageDealt))
                 {
                     ChangeEnergy(-2.0f, gridMap);
                     AttackCooldown = 60;
-                    return true; // Hit one target and stop
+                    return new AttackResult 
+                    { 
+                        Success = true, 
+                        DamageDealt = damageDealt, 
+                        TargetId = plant.Id, 
+                        TargetType = "Plant",
+                        SelfDamage = 0
+                    };
                 }
             }
         }
-        return false;
+        return new AttackResult { Success = false };
     }
 
-    public bool TryToFlee(GridCell[,] gridMap, Span<Agent> agentPopulationSpan, Random rng)
+    public bool TryToFlee(GridCell[,] gridMap, Span<Agent> agentPopulationSpan, Random rng, out int fleeX, out int fleeY)
     {
         int gridWidth = gridMap.GetLength(0);
         int gridHeight = gridMap.GetLength(1);
@@ -553,15 +570,21 @@ public struct Agent : IGridEntity
                     LastFleeDirY = (sbyte)-fleeMoveY;
                     FleeVisualTimer = 15;
 
+                    fleeX = fleeMoveX;
+                    fleeY = fleeMoveY;
+
                     return true;
                 }
             }
         }
+        fleeX = 0;
+        fleeY = 0;
         return false;
     }
 
-    public bool TryAttackPlant(ref Plant plant, GridCell[,] gridMap, int dx = 0, int dy = 0)
+    public bool TryAttackPlant(ref Plant plant, GridCell[,] gridMap, int dx, int dy, out float damageDealt)
     {
+        damageDealt = 0;
         if (!plant.IsAlive || !IsAlive)
         {
             return false;
@@ -595,6 +618,8 @@ public struct Agent : IGridEntity
             plant.ChangeEnergy(-damage * 0.1f, gridMap);
         }
 
+        damageDealt = damage;
+
         // Visual Feedback
         LastAttackDirX = (sbyte)dx;
         LastAttackDirY = (sbyte)dy;
@@ -603,8 +628,11 @@ public struct Agent : IGridEntity
         return true;
     }
 
-    public bool TryAttackAgent(ref Agent victim, GridCell[,] gridMap, int dx = 0, int dy = 0)
+    public bool TryAttackAgent(ref Agent victim, GridCell[,] gridMap, int dx, int dy, out float damageDealt, out float selfDamage)
     {
+        damageDealt = 0;
+        selfDamage = 0;
+
         if (!victim.IsAlive || !IsAlive)
         {
             return false;
@@ -639,6 +667,8 @@ public struct Agent : IGridEntity
             victim.ChangeEnergy(-damage * 0.1f, gridMap);
         }
 
+        damageDealt = damage;
+
         if (victim.IsAlive)
         {
             // Retaliation chance
@@ -647,6 +677,7 @@ public struct Agent : IGridEntity
             {
                 var retaliationDamage = baseDamage * victim.Power / Resilience;
                 ChangeEnergy(-retaliationDamage * 0.2f, gridMap); // Retaliation is less effective
+                selfDamage = retaliationDamage * 0.2f;
 
                 // Visual Feedback for Retaliation (Victim hits back!)
                 // The victim is attacking US (the attacker).
@@ -656,8 +687,6 @@ public struct Agent : IGridEntity
                 victim.AttackVisualTimer = 15;
             }
         }
-        // Removed Death Bonus (Double Dipping Loop). You eat what you kill via the damage dealt above.
-        // If they die, they die. No extra candy.
 
         // Visual Feedback for Attacker
         LastAttackDirX = (sbyte)dx;
@@ -665,5 +694,14 @@ public struct Agent : IGridEntity
         AttackVisualTimer = 15;
 
         return true;
+    }
+
+    public struct AttackResult
+    {
+        public bool Success;
+        public float DamageDealt;
+        public long TargetId;
+        public string TargetType;
+        public float SelfDamage; // Retaliation
     }
 }

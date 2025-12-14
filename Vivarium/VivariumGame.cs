@@ -317,11 +317,23 @@ public class VivariumGame : Game
 
             if (singleStep)
             {
+                // Enable Logging for the selected agent
+                if (_inspector.IsEntitySelected && _inspector.SelectedType == EntityType.Agent)
+                {
+                    ActivityLog.SetTarget(_inspector.SelectedEntityId);
+                    ActivityLog.Enable(_tickCount);
+                }
+
                 for (int i = 0; i < agentPopulationSpan.Length; i++)
                 {
                     agentPopulationSpan[i].AttackVisualTimer = 0;
                     agentPopulationSpan[i].FleeVisualTimer = 0;
                 }
+            }
+            else
+            {
+                // If not single stepping (running normally), disable log
+                ActivityLog.Disable();
             }
 
             // Biological Loop
@@ -429,6 +441,9 @@ public class VivariumGame : Game
 
         // Gene Pool Window
         _genePoolWindow.Draw(_spriteBatch);
+
+        // Activity Log
+        ActivityLog.Draw(_spriteBatch, _sysFont, GraphicsDevice);
 
         // Paused Text
         if (_isPaused || _genePoolWindow.IsVisible)
