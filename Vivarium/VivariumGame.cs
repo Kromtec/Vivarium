@@ -422,7 +422,7 @@ public class VivariumGame : Game
         _hud.Draw(_spriteBatch, _tickCount, stats.LivingAgents, stats.LivingHerbivores, stats.LivingOmnivores, stats.LivingCarnivores, stats.LivingPlants, stats.LivingStructures);
 
         // Inspector
-        _inspector.DrawUI(_spriteBatch, _agentPopulation, _plantPopulation, _structurePopulation);
+        _inspector.DrawUI(_spriteBatch, _agentPopulation, _plantPopulation, _structurePopulation, _genePoolWindow);
 
         // Gene Pool Window
         _genePoolWindow.Draw(_spriteBatch);

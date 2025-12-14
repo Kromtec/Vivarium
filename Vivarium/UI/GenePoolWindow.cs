@@ -63,6 +63,21 @@ public class GenePoolWindow
         _dotTexture = TextureGenerator.CreateCircle(graphics, 32);
     }
 
+    public string GetVariantName(ulong genomeHash)
+    {
+        foreach (var family in _topFamilies)
+        {
+            foreach (var variant in family.Variants)
+            {
+                if (variant.Hash == genomeHash)
+                {
+                    return variant.VariantName;
+                }
+            }
+        }
+        return null;
+    }
+
     public void RefreshData(Agent[] agents)
     {
         // 1. Group agents by exact genome hash (Variants)

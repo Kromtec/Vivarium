@@ -123,7 +123,7 @@ public class Inspector
         }
     }
 
-    public void DrawUI(SpriteBatch spriteBatch, Agent[] agents, Plant[] plants, Structure[] structures)
+    public void DrawUI(SpriteBatch spriteBatch, Agent[] agents, Plant[] plants, Structure[] structures, GenePoolWindow genePoolWindow)
     {
         if (!IsEntitySelected) return;
 
@@ -150,18 +150,37 @@ public class Inspector
                     bool isSameAgent = (agent.Id == _selectedEntityId);
                     if (isSameAgent && agent.IsAlive)
                     {
-                        AddRow("ID", $"#{agent.Id}", ref contentHeight);
-                        AddRow("Parent ID", $"#{agent.ParentId}", ref contentHeight);
-                        AddRow("Generation", $"{agent.Generation}", ref contentHeight);
-                        AddRow("Diet", $"{agent.Diet}", ref contentHeight);
-                        AddRow("Age", $"{agent.Age:F0} t | {agent.Age / VivariumGame.FramesPerSecond:F0} s", ref contentHeight);
-
                         // Genome
                         UpdateCachedGenomeTexture(agent);
                         if (_cachedGenomeTexture != null)
                         {
-                            AddTexture(_cachedGenomeTexture, 256, 128, ref contentHeight);
+                            AddTexture(_cachedGenomeTexture, 128, 64, ref contentHeight);
                         }
+
+                        // Scientific Name & Variant
+                        var (ScientificName, Translation) = ScientificNameGenerator.GenerateFamilyName(agent);
+                        string variantName = genePoolWindow.GetVariantName(GenomeHelper.CalculateGenomeHash(agent.Genome));
+
+                        AddRow("Species", "", ref contentHeight);
+                        string scientificName = ScientificName;
+                        if (!string.IsNullOrEmpty(variantName))
+                        {
+                            scientificName = $"{scientificName} {variantName}";
+                        }
+                        AddRow("", scientificName, ref contentHeight);
+                        AddRow("Meaning", "", ref contentHeight);
+                        AddRow("", $"\"{Translation}\"", ref contentHeight);
+                        AddSeparator(ref contentHeight);
+
+                        AddRow("ID", $"#{agent.Id}", ref contentHeight);
+                        if (agent.ParentId != -1)
+                        {
+                            AddRow("Parent ID", $"#{agent.ParentId}", ref contentHeight);
+                        }
+
+                        AddRow("Generation", $"{agent.Generation}", ref contentHeight);
+                        AddRow("Diet", $"{agent.Diet}", ref contentHeight);
+                        AddRow("Age", $"{agent.Age:F0} t | {agent.Age / VivariumGame.FramesPerSecond:F0} s", ref contentHeight);
 
                         AddProgressBar("Energy", agent.Energy, agent.MaxEnergy, Color.Lerp(UITheme.BadColor, UITheme.GoodColor, agent.Energy / agent.MaxEnergy), ref contentHeight);
                         AddProgressBar("Hunger", agent.Hunger, 100f, Color.Lerp(UITheme.GoodColor, UITheme.BadColor, agent.Hunger / 100f), ref contentHeight);
@@ -253,7 +272,8 @@ public class Inspector
         contentHeight += UITheme.Padding;
 
         // Draw Background
-        _panelRect = new Rectangle(_graphics.Viewport.Width - 20 - 300, 20, 300, contentHeight);
+        int panelWidth = 380; // Increased from 300
+        _panelRect = new Rectangle(_graphics.Viewport.Width - 20 - panelWidth, 20, panelWidth, contentHeight);
 
         spriteBatch.Draw(_pixelTexture, new Rectangle(_panelRect.X + UITheme.ShadowOffset, _panelRect.Y + UITheme.ShadowOffset, _panelRect.Width, _panelRect.Height), UITheme.ShadowColor);
         spriteBatch.Draw(_pixelTexture, _panelRect, UITheme.PanelBgColor);
