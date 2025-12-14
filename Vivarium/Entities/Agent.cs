@@ -121,7 +121,7 @@ public struct Agent : IGridEntity
 
     public byte ReproductionVisualTimer;
 
-    public void Update(GridCell[,] gridMap)
+    public void Update()
     {
         if (!IsAlive)
         {
