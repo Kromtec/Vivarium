@@ -23,20 +23,68 @@ public static class UIComponents
 
     public static void DrawButton(SpriteBatch sb, SpriteFont font, Rectangle rect, string text, Texture2D pixel, bool isHovered, bool isPressed, Color? overrideColor = null)
     {
-        Color bgColor = overrideColor ?? (isHovered ? UITheme.ButtonHoverColor : UITheme.ButtonColor);
-        if (isPressed) bgColor = Color.Lerp(bgColor, Color.Black, 0.2f);
+        Color baseColor = overrideColor ?? UITheme.ButtonColor;
+        Color color = isHovered ? (isPressed ? Color.Lerp(baseColor, Color.Black, 0.2f) : Color.Lerp(baseColor, Color.White, 0.2f)) : baseColor;
 
-        sb.Draw(pixel, rect, bgColor);
-        DrawBorder(sb, rect, 1, isHovered ? Color.White : UITheme.BorderColor, pixel);
+        // Shadow
+        sb.Draw(pixel, new Rectangle(rect.X + 2, rect.Y + 2, rect.Width, rect.Height), Color.Black * 0.5f);
+        // Body
+        sb.Draw(pixel, rect, color);
+        // Border
+        DrawBorder(sb, rect, 1, UITheme.BorderColor, pixel);
 
-        if (!string.IsNullOrEmpty(text))
+        // Text
+        Vector2 size = font.MeasureString(text);
+        Vector2 pos = new Vector2(rect.X + (rect.Width - size.X) / 2, rect.Y + (rect.Height - size.Y) / 2);
+        sb.DrawString(font, text, pos, UITheme.TextColorPrimary);
+    }
+
+    public static void DrawDropdown(SpriteBatch sb, SpriteFont font, Rectangle rect, string currentText, bool isOpen, Texture2D pixel, bool isHovered)
+    {
+        Color baseColor = UITheme.PanelBgColor;
+        Color color = isHovered ? Color.Lerp(baseColor, Color.White, 0.1f) : baseColor;
+
+        // Body
+        sb.Draw(pixel, rect, color);
+        // Border
+        DrawBorder(sb, rect, 1, UITheme.BorderColor, pixel);
+
+        // Text
+        // Truncate if too long?
+        Vector2 size = font.MeasureString(currentText);
+        // Left align with padding
+        Vector2 pos = new Vector2(rect.X + 5, rect.Y + (rect.Height - size.Y) / 2);
+        
+        // Clip text if needed (simple scissor or just draw)
+        // For now just draw
+        sb.DrawString(font, currentText, pos, UITheme.TextColorPrimary);
+
+        // Arrow
+        string arrow = isOpen ? "^" : "v";
+        Vector2 arrowSize = font.MeasureString(arrow);
+        sb.DrawString(font, arrow, new Vector2(rect.Right - arrowSize.X - 5, rect.Y + (rect.Height - arrowSize.Y) / 2), UITheme.TextColorSecondary);
+    }
+
+    public static void DrawDropdownList(SpriteBatch sb, SpriteFont font, Rectangle rect, string[] items, int hoveredIndex, Texture2D pixel)
+    {
+        // Background
+        sb.Draw(pixel, rect, UITheme.PanelBgColor);
+        DrawBorder(sb, rect, 1, UITheme.BorderColor, pixel);
+
+        int itemHeight = rect.Height / (items.Length > 0 ? items.Length : 1);
+
+        for (int i = 0; i < items.Length; i++)
         {
-            Vector2 size = font.MeasureString(text);
-            Vector2 pos = new(
-                rect.X + ((rect.Width - size.X) / 2),
-                rect.Y + ((rect.Height - size.Y) / 2) + 2 // +2 for vertical centering adjustment
-            );
-            sb.DrawString(font, text, pos, Color.White);
+            Rectangle itemRect = new Rectangle(rect.X, rect.Y + (i * itemHeight), rect.Width, itemHeight);
+            
+            if (i == hoveredIndex)
+            {
+                sb.Draw(pixel, itemRect, UITheme.ButtonColor * 0.5f);
+            }
+
+            Vector2 size = font.MeasureString(items[i]);
+            Vector2 pos = new Vector2(itemRect.X + 5, itemRect.Y + (itemRect.Height - size.Y) / 2);
+            sb.DrawString(font, items[i], pos, UITheme.TextColorPrimary);
         }
     }
 

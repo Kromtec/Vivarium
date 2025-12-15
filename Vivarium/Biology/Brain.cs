@@ -76,14 +76,22 @@ public static class Brain
         neurons[(int)SensorType.Constitution] = agent.Constitution;                     // -1 .. +1
 
         // --- 3. PROCESS GENOME ---
+        int validSourceCount = BrainConfig.SensorCount + BrainConfig.HiddenCount;
+        int validSinkCount = BrainConfig.ActionCount + BrainConfig.HiddenCount;
+
         foreach (var gene in agent.Genome)
         {
-            // Safety modulo ensures we stay within valid array bounds [0..NeuronCount-1]
-            // Optimization: SourceId is 8-bit (0-255) and NeuronCount is 256, so modulo is redundant.
-            int sourceIdx = gene.SourceId;
+            // SOURCE RESTRICTION: Sensors or Hidden only.
+            // We skip the [Actions] block which sits in the middle of the array.
+            // This prevents Actions from driving other neurons, simplifying the network flow.
+            int rawSource = gene.SourceId % validSourceCount;
+            int sourceIdx = (rawSource < BrainConfig.SensorCount) 
+                ? rawSource 
+                : rawSource + BrainConfig.ActionCount;
 
-            // Wrap Sink to Actions + Hidden only
-            int sinkIdx = (gene.SinkId % (BrainConfig.NeuronCount - BrainConfig.ActionsStart)) + BrainConfig.ActionsStart;
+            // SINK RESTRICTION: Actions or Hidden only.
+            // We skip the [Sensors] block at the start of the array.
+            int sinkIdx = (gene.SinkId % validSinkCount) + BrainConfig.ActionsStart;
 
             // Feed Forward
             neurons[sinkIdx] += neurons[sourceIdx] * gene.Weight;

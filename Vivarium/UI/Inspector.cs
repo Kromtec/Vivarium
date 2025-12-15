@@ -42,6 +42,10 @@ public class Inspector
     private long _cachedGenomeAgentId = -1;
 
     private readonly GenomeCensus _census; // Use shared census
+    
+    // Brain Inspector Request
+    public bool WantsToOpenBrainInspector { get; private set; }
+    public Agent BrainInspectorTarget { get; private set; }
 
     public Inspector(GraphicsDevice graphics, SpriteFont font, GenomeCensus census)
     {
@@ -56,6 +60,7 @@ public class Inspector
     {
         IsEntitySelected = false;
         _selectedEntityId = -1;
+        WantsToOpenBrainInspector = false;
     }
 
     public bool IsMouseOver(Point mousePos)
@@ -308,6 +313,17 @@ public class Inspector
                         AddProgressBar("Attack", agent.AttackCooldown, 60f, UITheme.WarningColor, ref contentHeight);
                         AddProgressBar("Move", agent.MovementCooldown, 5f, UITheme.CooldownMoveColor, ref contentHeight);
                         AddProgressBar("Breed", agent.ReproductionCooldown, 600f, UITheme.CooldownBreedColor, ref contentHeight);
+                        
+                        // Brain Inspector Button
+                        AddSeparator(ref contentHeight);
+                        
+                        // Capture by value for lambda
+                        Agent targetAgent = agent;
+                        AddButton("VIEW NEURAL NETWORK", () => 
+                        {
+                            WantsToOpenBrainInspector = true;
+                            BrainInspectorTarget = targetAgent;
+                        }, ref contentHeight);
                     }
                     else
                     {
@@ -475,6 +491,13 @@ public class Inspector
         currentHeight += e.Height;
     }
 
+    private void AddButton(string label, Action onClick, ref int currentHeight)
+    {
+        var e = new ButtonElement(label, onClick);
+        _elements.Add(e);
+        currentHeight += e.Height;
+    }
+
     private static float GetActionVal(ref Agent agent, ActionType type)
     {
         int idx = BrainConfig.GetActionIndex(type);
@@ -606,6 +629,31 @@ public class Inspector
 
             // Use UIComponents
             UIComponents.DrawBrainBar(sb, new Rectangle(barX, inspector._cursorY + 5, barWidth, 10), _value, _positiveOnly, inspector._pixelTexture);
+        }
+    }
+
+    private class ButtonElement(string label, Action onClick) : IInspectorElement
+    {
+        private readonly string _label = label;
+        private readonly Action _onClick = onClick;
+
+        public int Height => 30 + UITheme.Padding;
+
+        public void Draw(Inspector inspector, SpriteBatch sb)
+        {
+            int x = inspector._panelRect.X + UITheme.Padding;
+            int width = inspector._panelRect.Width - (UITheme.Padding * 2);
+            Rectangle rect = new Rectangle(x, inspector._cursorY, width, 30);
+
+            var mouse = Mouse.GetState();
+            bool hover = rect.Contains(mouse.Position);
+            bool click = hover && mouse.LeftButton == ButtonState.Pressed;
+
+            // Simple debounce logic handled by game loop usually, but here we just trigger
+            // Ideally we check for release, but for now this works if the action sets a flag
+            if (click) _onClick?.Invoke();
+
+            UIComponents.DrawButton(sb, inspector._font, rect, _label, inspector._pixelTexture, hover, click);
         }
     }
 }

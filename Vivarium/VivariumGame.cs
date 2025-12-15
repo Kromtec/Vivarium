@@ -42,7 +42,8 @@ public class VivariumGame : Game
     private HUD _hud;
     private TitleScreen _titleScreen;
     private GenePoolWindow _genePoolWindow;
-    private GenomeCensus _genomeCensus; // New shared service
+    private BrainInspectorWindow _brainInspectorWindow;
+    private GenomeCensus _genomeCensus;
     private SpriteFont _sysFont;
     private SimulationGraph _simGraph;
     private WorldRenderer _worldRenderer;
@@ -115,9 +116,10 @@ public class VivariumGame : Game
         _genomeCensus = new GenomeCensus(); // Initialize Census
 
         _inspector = new Inspector(GraphicsDevice, _sysFont, _genomeCensus);
-        _simGraph = new SimulationGraph(GraphicsDevice, _sysFont);
         _genePoolWindow = new GenePoolWindow(GraphicsDevice, _sysFont, _genomeCensus);
         _hud = new HUD(GraphicsDevice, _sysFont, _simGraph, _genePoolWindow);
+        _brainInspectorWindow = new BrainInspectorWindow(GraphicsDevice, _sysFont);
+
         _worldRenderer = new WorldRenderer(GraphicsDevice);
         _worldRenderer.LoadContent();
     }
@@ -210,8 +212,21 @@ public class VivariumGame : Game
         }
 
         // Input Blocking
-        bool uiCapturesMouse = _hud.IsMouseOver(mouseState.Position) || _genePoolWindow.IsVisible;
+        bool uiCapturesMouse = _hud.IsMouseOver(mouseState.Position) || _genePoolWindow.IsVisible || _brainInspectorWindow.IsVisible;
         bool inspectorCapturesMouse = _inspector.IsMouseOver(mouseState.Position);
+
+        // Handle Brain Inspector Request from Inspector
+        if (_inspector.WantsToOpenBrainInspector)
+        {
+            _brainInspectorWindow.SetTarget(_inspector.BrainInspectorTarget);
+            _inspector.Deselect(); // Close inspector to focus on brain
+        }
+
+        // Brain Inspector Logic (Pause/Step)
+        if (_brainInspectorWindow.IsVisible)
+        {
+            _brainInspectorWindow.UpdateInput(ref _isPaused, ref singleStep);
+        }
 
         if (!effectivePause || singleStep)
         {
@@ -310,6 +325,7 @@ public class VivariumGame : Game
 
         // Gene Pool Window
         _genePoolWindow.Draw(_spriteBatch);
+        _brainInspectorWindow.Draw(_spriteBatch);
 
         // Activity Log
         ActivityLog.Draw(_spriteBatch, _sysFont, GraphicsDevice);
