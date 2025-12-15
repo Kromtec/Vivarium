@@ -26,15 +26,75 @@ public class TitleScreen
 
     private List<PlantDecoration> _decorations = new();
 
-    // Letter definitions (5x5 grids)
+    // Letter definitions (7x9 grids)
     private static readonly Dictionary<char, string[]> Letters = new()
     {
-        {'V', new[] { "10001", "10001", "10001", "01010", "00100" }},
-        {'I', new[] { "01110", "00100", "00100", "00100", "01110" }},
-        {'A', new[] { "01110", "10001", "11111", "10001", "10001" }},
-        {'R', new[] { "11110", "10001", "11110", "10100", "10010" }},
-        {'U', new[] { "10001", "10001", "10001", "10001", "01110" }},
-        {'M', new[] { "10001", "11011", "10101", "10001", "10001" }}
+        {'V', new[] { 
+            "1000001", 
+            "1000001", 
+            "1000001", 
+            "1000001", 
+            "0100010", 
+            "0100010", 
+            "0010100", 
+            "0010100", 
+            "0001000" 
+        }},
+        {'I', new[] { 
+            "0111110", 
+            "0001000", 
+            "0001000", 
+            "0001000", 
+            "0001000", 
+            "0001000", 
+            "0001000", 
+            "0001000", 
+            "0111110" 
+        }},
+        {'A', new[] { 
+            "0011100", 
+            "0100010", 
+            "1000001", 
+            "1000001", 
+            "1111111", 
+            "1000001", 
+            "1000001", 
+            "1000001", 
+            "1000001" 
+        }},
+        {'R', new[] { 
+            "1111110", 
+            "1000001", 
+            "1000001", 
+            "1000001", 
+            "1111110", 
+            "1001000", 
+            "1000100", 
+            "1000010", 
+            "1000001" 
+        }},
+        {'U', new[] { 
+            "1000001", 
+            "1000001", 
+            "1000001", 
+            "1000001", 
+            "1000001", 
+            "1000001", 
+            "1000001", 
+            "0111110", 
+            "0011100" 
+        }},
+        {'M', new[] { 
+            "1000001", 
+            "1100011", 
+            "1010101", 
+            "1001001", 
+            "1000001", 
+            "1000001", 
+            "1000001", 
+            "1000001", 
+            "1000001" 
+        }}
     };
 
     public TitleScreen(GraphicsDevice graphicsDevice, SpriteFont font)
@@ -79,13 +139,10 @@ public class TitleScreen
         string title = "VIVARIUM";
         
         // Layout parameters for generation (must match Draw)
-        float blockSize = 40f; 
-        float spacing = 0f; // Connected blocks have 0 spacing visually if we want them to look like one structure
-        // But our texture has borders. 
-        // In-game structures are grid cells. They touch.
-        // So spacing should be 0.
+        float blockSize = 28f; 
+        float spacing = 0f; 
         
-        float letterSpacing = 20f;
+        float letterSpacing = 14f;
         
         List<Vector2> occupiedBlocks = new();
         
@@ -98,9 +155,9 @@ public class TitleScreen
             if (Letters.ContainsKey(c))
             {
                 string[] grid = Letters[c];
-                for (int row = 0; row < 5; row++)
+                for (int row = 0; row < 9; row++)
                 {
-                    for (int col = 0; col < 5; col++)
+                    for (int col = 0; col < 7; col++)
                     {
                         if (grid[row][col] == '1')
                         {
@@ -111,12 +168,12 @@ public class TitleScreen
                     }
                 }
             }
-            currentX += (5 * blockSize) + (4 * spacing) + letterSpacing;
+            currentX += (7 * blockSize) + (6 * spacing) + letterSpacing;
         }
 
         // Center the decorations relative to the title block
         float totalWidth = currentX - letterSpacing;
-        float totalHeight = 5 * blockSize;
+        float totalHeight = 9 * blockSize;
         Vector2 centerOffset = new Vector2(totalWidth / 2f, totalHeight / 2f);
 
         // 2. Generate plants
@@ -155,7 +212,7 @@ public class TitleScreen
                     TextureIndex = rng.Next(_plantTextures.Length),
                     Scale = 0.3f + (float)rng.NextDouble() * 0.4f, // Random scale
                     Rotation = (float)(rng.NextDouble() * Math.PI * 2),
-                    Color = Color.Lerp(Color.White, Color.Gray, 0.1f)
+                    Color = Color.Lerp(VivariumColors.Plant, Color.DarkGreen, (float)rng.NextDouble() * 0.3f)
                 });
             }
         }
@@ -196,20 +253,20 @@ public class TitleScreen
 
         // Draw "VIVARIUM"
         string title = "VIVARIUM";
-        int blockSize = 40; // Bigger blocks
+        int blockSize = 28; // Bigger blocks
         int spacing = 0; // No spacing to connect textures
-        int letterSpacing = 20;
+        int letterSpacing = 14;
         
         // Calculate total width
         int totalWidth = 0;
         foreach (char c in title)
         {
-            totalWidth += (5 * blockSize) + (4 * spacing) + letterSpacing;
+            totalWidth += (7 * blockSize) + (6 * spacing) + letterSpacing;
         }
         totalWidth -= letterSpacing; // Remove last spacing
 
         int startX = (screenWidth - totalWidth) / 2;
-        int startY = (screenHeight / 2) - 150; 
+        int startY = (screenHeight / 2) - 200; // Moved up slightly more to accommodate taller letters
 
         // Draw Decorations (Plants) first (behind)
         foreach (var deco in _decorations)
@@ -232,7 +289,7 @@ public class TitleScreen
         foreach (char c in title)
         {
             DrawLetter(spriteBatch, c, currentX, startY, blockSize, spacing);
-            currentX += (5 * blockSize) + (4 * spacing) + letterSpacing;
+            currentX += (7 * blockSize) + (6 * spacing) + letterSpacing;
         }
 
         // Draw Start Button
@@ -264,21 +321,21 @@ public class TitleScreen
         if (!Letters.ContainsKey(c)) return;
 
         string[] grid = Letters[c];
-        for (int row = 0; row < 5; row++)
+        for (int row = 0; row < 9; row++)
         {
-            for (int col = 0; col < 5; col++)
+            for (int col = 0; col < 7; col++)
             {
                 if (grid[row][col] == '1')
                 {
                     // Determine neighbors for texture connection
                     bool top = (row > 0) && (grid[row - 1][col] == '1');
-                    bool bottom = (row < 4) && (grid[row + 1][col] == '1');
+                    bool bottom = (row < 8) && (grid[row + 1][col] == '1');
                     bool left = (col > 0) && (grid[row][col - 1] == '1');
-                    bool right = (col < 4) && (grid[row][col + 1] == '1');
+                    bool right = (col < 6) && (grid[row][col + 1] == '1');
 
                     int index = (left ? 8 : 0) + (bottom ? 4 : 0) + (right ? 2 : 0) + (top ? 1 : 0);
                     
-                    sb.Draw(_structureTextures[index], new Rectangle(x + col * (size + spacing), y + row * (size + spacing), size, size), Color.White);
+                    sb.Draw(_structureTextures[index], new Rectangle(x + col * (size + spacing), y + row * (size + spacing), size, size), VivariumColors.Structure);
                 }
             }
         }
