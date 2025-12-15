@@ -30,6 +30,10 @@ public class Inspector
     private Rectangle _panelRect;
     private int _cursorY;
 
+    // Scroll State
+    private int _scrollOffset = 0;
+    private int _previousScrollValue;
+
     // Deferred Layout List
     private readonly List<IInspectorElement> _elements = [];
 
@@ -57,6 +61,16 @@ public class Inspector
     public void UpdateInput(Camera2D camera, GridCell[,] gridMap, Agent[] agents, Plant[] plants, Structure[] structures, int cellSize)
     {
         var mouseState = Mouse.GetState();
+
+        // Scroll Handling
+        int scrollDelta = mouseState.ScrollWheelValue - _previousScrollValue;
+        _previousScrollValue = mouseState.ScrollWheelValue;
+
+        if (IsEntitySelected && _panelRect.Contains(mouseState.Position))
+        {
+            _scrollOffset -= scrollDelta / 2;
+            // Clamping happens in DrawUI where we know contentHeight
+        }
 
         // Left Click to Select
         if (mouseState.LeftButton == ButtonState.Pressed)
@@ -261,8 +275,12 @@ public class Inspector
                         // Sensors
                         AddSeparator(ref contentHeight);
                         AddHeader("SENSORY INPUTS", ref contentHeight);
+                        AddBrainBar("Location X", GetSensorVal(ref agent, SensorType.LocationX), false, ref contentHeight);
+                        AddBrainBar("Location Y", GetSensorVal(ref agent, SensorType.LocationY), false, ref contentHeight);
                         AddBrainBar("Oscillator", GetSensorVal(ref agent, SensorType.Oscillator), false, ref contentHeight);
-                        AddBrainBar("Random", GetSensorVal(ref agent, SensorType.Random), true, ref contentHeight);
+                        AddBrainBar("Random", GetSensorVal(ref agent, SensorType.Random), false, ref contentHeight);
+                        AddBrainBar("Energy", GetSensorVal(ref agent, SensorType.Energy), false, ref contentHeight);
+                        AddBrainBar("Age", GetSensorVal(ref agent, SensorType.Age), false, ref contentHeight);
                         AddBrainBar("Agent Density", GetSensorVal(ref agent, SensorType.AgentDensity), true, ref contentHeight);
                         AddBrainBar("Plant Density", GetSensorVal(ref agent, SensorType.PlantDensity), true, ref contentHeight);
                         AddBrainBar("Structure Density", GetSensorVal(ref agent, SensorType.StructureDensity), true, ref contentHeight);
@@ -333,18 +351,66 @@ public class Inspector
 
         contentHeight += UITheme.Padding;
 
+        // Calculate Layout & Scroll
+        int maxHeight = _graphics.Viewport.Height - 40; // 20 padding top/bottom
+        int drawHeight = Math.Min(contentHeight, maxHeight);
+        int maxScroll = Math.Max(0, contentHeight - drawHeight);
+        _scrollOffset = Math.Clamp(_scrollOffset, 0, maxScroll);
+
         // Draw Background
         const int panelWidth = 380;
-        _panelRect = new Rectangle(_graphics.Viewport.Width - 20 - panelWidth, 20, panelWidth, contentHeight);
+        _panelRect = new Rectangle(_graphics.Viewport.Width - 20 - panelWidth, 20, panelWidth, drawHeight);
 
         UIComponents.DrawPanel(spriteBatch, _panelRect, _pixelTexture);
 
+        // Setup Scissor
+        spriteBatch.End();
+        
+        Rectangle previousScissor = _graphics.ScissorRectangle;
+        // Clip to panel content area (excluding borders if possible, but panel rect is fine)
+        Rectangle clipRect = Rectangle.Intersect(_panelRect, _graphics.Viewport.Bounds);
+        _graphics.ScissorRectangle = clipRect;
+
+        RasterizerState rs = new RasterizerState { ScissorTestEnable = true };
+        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, rs);
+
         // Execute Commands
-        _cursorY = _panelRect.Y + UITheme.Padding;
+        _cursorY = _panelRect.Y + UITheme.Padding - _scrollOffset;
         foreach (var cmd in _elements)
         {
+            // Optimization: Skip if out of view
+            if (_cursorY + cmd.Height < _panelRect.Top || _cursorY > _panelRect.Bottom)
+            {
+                _cursorY += cmd.Height;
+                continue;
+            }
+
             cmd.Draw(this, spriteBatch);
             _cursorY += cmd.Height;
+        }
+
+        spriteBatch.End();
+        _graphics.ScissorRectangle = previousScissor;
+        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend); // Restore default
+
+        // Draw Scrollbar
+        if (maxScroll > 0)
+        {
+            const int scrollbarWidth = 6;
+            int scrollbarX = _panelRect.Right - scrollbarWidth - 2;
+            int scrollbarY = _panelRect.Y + 2;
+            int scrollbarHeight = _panelRect.Height - 4;
+
+            // Track
+            spriteBatch.Draw(_pixelTexture, new Rectangle(scrollbarX, scrollbarY, scrollbarWidth, scrollbarHeight), Color.Black * 0.3f);
+
+            // Thumb
+            float viewRatio = (float)drawHeight / contentHeight;
+            int thumbHeight = Math.Max(20, (int)(scrollbarHeight * viewRatio));
+            float scrollRatio = (float)_scrollOffset / maxScroll;
+            int thumbY = scrollbarY + (int)(scrollRatio * (scrollbarHeight - thumbHeight));
+
+            spriteBatch.Draw(_pixelTexture, new Rectangle(scrollbarX, thumbY, scrollbarWidth, thumbHeight), UITheme.ScrollThumbColor);
         }
     }
 
@@ -439,12 +505,15 @@ public class Inspector
 
             // Pixel art scaling
             sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
+            // Enable Scissor for this batch too
+            RasterizerState rs = new RasterizerState { ScissorTestEnable = true, CullMode = CullMode.CullCounterClockwiseFace };
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, rs);
 
             sb.Draw(_texture, new Rectangle(x, y, _width, _height), Color.White);
 
             sb.End();
-            sb.Begin();
+            // Restore previous state (LinearClamp + Scissor)
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, rs);
         }
     }
 

@@ -33,11 +33,11 @@ public static class Brain
         // --- 2. SENSORS (Inputs) ---
         // Direct mapping since Sensors start at index 0
 
-        neurons[(int)SensorType.LocationX] = ((float)(agent.X / gridWidth) * 2) - 1.0f; // -1 .. +1
-        neurons[(int)SensorType.LocationY] = ((float)agent.Y / gridHeight * 2) - 1.0f;  // -1 .. +1
-        neurons[(int)SensorType.Random] = (float)rng.NextDouble();                      //  0 .. +1
-        neurons[(int)SensorType.Energy] = agent.Energy / agent.MaxEnergy;               //  0 .. +1
-        neurons[(int)SensorType.Age] = Math.Min(agent.Age / 2000f, 1.0f);
+        neurons[(int)SensorType.LocationX] = ((float)agent.X / gridWidth * 2) - 1.0f;                        // -1 .. +1
+        neurons[(int)SensorType.LocationY] = ((float)agent.Y / gridHeight * 2) - 1.0f;                       // -1 .. +1
+        neurons[(int)SensorType.Random] = ((float)rng.NextDouble() * 2) - 1.0f;                              // -1 .. +1
+        neurons[(int)SensorType.Energy] = ((float)agent.Energy / agent.MaxEnergy * 2) - 1.0f;                // -1 .. +1
+        neurons[(int)SensorType.Age] = (Math.Clamp((float)agent.Age / Agent.MaturityAge, 0, 1f) * 2) -1.0f;  // -1 .. +1
         neurons[(int)SensorType.Oscillator] = MathF.Sin(agent.Age * 0.1f);
 
         // Directional sensors (8-way). Perception influences effective radius.
