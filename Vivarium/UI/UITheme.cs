@@ -26,20 +26,20 @@ public static class UITheme
     public static readonly Color CooldownBreedColor = Color.Pink;
 
     // Genome / Weight Colors
-    public static readonly Color WeightNeutral = new Color(60, 65, 75); // Brightened further
+    public static readonly Color WeightNeutral = new Color(60, 65, 75);
 
     public static readonly Color[] WeightPositive = new Color[] {
-        new Color(60, 140, 80),   // Brightened
-        new Color(80, 180, 100),  // Brightened
-        new Color(100, 220, 120), // Brightened
-        new Color(120, 255, 140)  // Brightened
+        new Color(60, 140, 80),
+        new Color(80, 180, 100),
+        new Color(100, 220, 120),
+        new Color(120, 255, 140)
     };
 
     public static readonly Color[] WeightNegative = new Color[] {
-        new Color(140, 60, 60),   // Brightened
-        new Color(180, 80, 80),   // Brightened
-        new Color(220, 100, 100), // Brightened
-        new Color(255, 120, 120)  // Brightened
+        new Color(140, 60, 60),
+        new Color(180, 80, 80),
+        new Color(220, 100, 100),
+        new Color(255, 120, 120)
     };
 
     // Helper to get color from weight

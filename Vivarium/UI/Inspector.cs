@@ -78,7 +78,7 @@ public class Inspector
                 ref Agent agent = ref agents[i];
                 if (!agent.IsAlive) continue;
 
-                // Calculate Interpolated Position (Same logic as Renderer)
+                // Calculate Interpolated Position
                 int dx = agent.X - agent.LastX;
                 int dy = agent.Y - agent.LastY;
 

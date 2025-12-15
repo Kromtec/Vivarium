@@ -259,9 +259,9 @@ public struct Agent : IGridEntity
         // Omnivores: High maintenance (1.2x)
         float metabolismMultiplier = dietType switch
         {
-            DietType.Carnivore => 0.80f, // Increased from 0.60f to make them even hungrier
-            DietType.Omnivore => 1.4f, // Increased from 1.2f to curb their population
-            _ => 0.65f // Decreased from 0.7f to make herbivores extremely efficient
+            DietType.Carnivore => 0.80f,
+            DietType.Omnivore => 1.4f,
+            _ => 0.65f
         };
 
         return new Agent()
@@ -283,7 +283,7 @@ public struct Agent : IGridEntity
             NeuronActivations = new float[BrainConfig.NeuronCount],
             Strength = strength,
             Power = 1.0f + (strength * 0.5f),
-            Resilience = (1.0f + (constitution * 0.5f)) * (dietType == DietType.Herbivore ? 1.5f : 1.0f), // Buff Herbivore Resilience by 50%
+            Resilience = (1.0f + (constitution * 0.5f)) * (dietType == DietType.Herbivore ? 1.5f : 1.0f),
             Bravery = bravery,
             AttackThreshold = BaseAttackThreshold * (1.0f + (bravery * 0.5f)),
             MetabolicEfficiency = metabolicEfficiency,
@@ -361,7 +361,7 @@ public struct Agent : IGridEntity
         }
 
         ChangeEnergy(-cost, gridMap);
-        MovementCooldown = BaseMovementCooldown - (int)(Energy * 0.05 * Math.Clamp(Speed, 0d, 1d)); // - 0 to 5+ frames
+        MovementCooldown = BaseMovementCooldown - (int)(Energy * 0.05 * Math.Clamp(Speed, 0d, 1d));
         TotalMovementCooldown = MovementCooldown; // Store for interpolation
         return true;
     }
@@ -376,17 +376,17 @@ public struct Agent : IGridEntity
         // Omnivores have higher reproduction overhead (Population Control)
         if (Diet == DietType.Omnivore)
         {
-            overhead *= 1.5f; // Increased penalty from 1.3f to curb population explosion
+            overhead *= 1.5f;
         }
         // Herbivores have lower reproduction overhead (Buff)
         else if (Diet == DietType.Herbivore)
         {
-            overhead *= 0.1f; // Buffed from 0.2f to help them survive predation
+            overhead *= 0.1f;
         }
         // Carnivores have lower reproduction overhead (Buff)
         else if (Diet == DietType.Carnivore)
         {
-            overhead *= 0.5f; // Nerfed from 0.25f to balance population growth
+            overhead *= 0.5f;
         }
 
         float totalCost = childEnergy + overhead;
@@ -527,8 +527,8 @@ public struct Agent : IGridEntity
                 float damageDealt, selfDamage;
                 if (TryAttackAgent(ref victim, gridMap, dx, dy, out damageDealt, out selfDamage))
                 {
-                    ChangeEnergy(-0.5f, gridMap); // Reduced cost for hunting (was 2.0f)
-                    AttackCooldown = 30; // Slightly slower attacks to give prey a chance (was 20)
+                    ChangeEnergy(-0.5f, gridMap); // Reduced cost for hunting
+                    AttackCooldown = 30; // Slightly slower attacks to give prey a chance
                     return new AttackResult
                     {
                         Success = true,
@@ -650,7 +650,7 @@ public struct Agent : IGridEntity
         // Don't eat if full (Energy > 95%)
         bool isFull = Energy >= MaxEnergy * 0.95f;
 
-        const float baseDamage = 10f; // Reduced damage to plants (was 15f) to prevent over-grazing
+        const float baseDamage = 10f; // Reduced damage to plants to prevent over-grazing
         var power = 1.0f + (Strength * 0.5f);
         var damage = baseDamage * power;
 
@@ -662,17 +662,17 @@ public struct Agent : IGridEntity
             plant.ChangeEnergy(-damage, gridMap);
 
             // Only eat if not full
-            // Increased efficiency (0.8f) so they get more energy per bite, needing to eat less often
-            if (!isFull) ChangeEnergy(damage * 1.0f, gridMap); // Buffed to 1.0f (100% efficiency)
+            // Increased efficiency so they get more energy per bite, needing to eat less often
+            if (!isFull) ChangeEnergy(damage * 1.0f, gridMap);
         }
         else if (Diet == DietType.Omnivore)
         {
             damage = Math.Min(damage, plant.Energy);
             plant.ChangeEnergy(-damage, gridMap);
 
-            // Reduced efficiency for Omnivores eating plants (was 0.8f)
+            // Reduced efficiency for Omnivores eating plants
             // They have shorter digestive tracts than true herbivores.
-            if (!isFull) ChangeEnergy(damage * 0.65f, gridMap); // Adjusted to 0.65f (Middle ground)
+            if (!isFull) ChangeEnergy(damage * 0.65f, gridMap);
         }
         else
         {
@@ -716,13 +716,13 @@ public struct Agent : IGridEntity
             damage = Math.Min(damage, victim.Energy);
 
             victim.ChangeEnergy(-damage, gridMap);
-            ChangeEnergy(damage * 0.8f, gridMap); // Reduced from 1.3f to 0.8f (80% Efficiency)
+            ChangeEnergy(damage * 0.8f, gridMap);
         }
         else if (Diet == DietType.Omnivore)
         {
-            // Omnivores are now more efficient at hunting (was 0.25/0.1)
+            // Omnivores are now more efficient at hunting
             victim.ChangeEnergy(-damage * 0.5f, gridMap);
-            // Reduced efficiency for Omnivores (was 0.3f) to curb predation on herbivores
+            // Reduced efficiency for Omnivores to curb predation on herbivores
             ChangeEnergy(damage * 0.2f, gridMap);
         }
         else

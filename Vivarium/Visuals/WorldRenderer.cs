@@ -567,7 +567,7 @@ public class WorldRenderer
             float ageRatio = Math.Min(agent.Age * agentAgeGrowthFactor, 1.0f);
             float growthFactor = 0.3f + (0.7f * ageRatio);
 
-            // Interpolation Logic (Same as DrawAgents)
+            // Interpolation Logic
             float offsetX = 0;
             float offsetY = 0;
 
