@@ -176,8 +176,8 @@ public class TitleScreen
         float totalHeight = 9 * blockSize;
         Vector2 centerOffset = new Vector2(totalWidth / 2f, totalHeight / 2f);
 
-        // 2. Generate plants
-        int plantCount = 150; 
+        // 2. Generate plants around title
+        int plantCount = 180; 
         for(int i=0; i<plantCount; i++)
         {
             // Pick a random occupied block
@@ -213,6 +213,88 @@ public class TitleScreen
                     Scale = 0.3f + (float)rng.NextDouble() * 0.4f, // Random scale
                     Rotation = (float)(rng.NextDouble() * Math.PI * 2),
                     Color = Color.Lerp(VivariumColors.Plant, Color.DarkGreen, (float)rng.NextDouble() * 0.3f)
+                });
+            }
+        }
+
+        // 3. Generate plants around screen edges (Patchy & Irregular)
+        // We need screen dimensions for this. Since we are in constructor/init, we use viewport.
+        int screenW = _graphicsDevice.Viewport.Width;
+        int screenH = _graphicsDevice.Viewport.Height;
+        
+        // Calculate where the title starts on screen (approximate based on Draw logic)
+        int startX = (screenW - (int)totalWidth) / 2;
+        int startY = (screenH / 2) - 200;
+
+        // Version Text Safe Zone
+        string versionText = "v1.0 - .NET 10 / C# 14";
+        Vector2 verSize = _font.MeasureString(versionText);
+        // Define a rectangle for the text area with some padding
+        Rectangle versionRect = new Rectangle(
+            (int)(screenW - verSize.X - 40), 
+            (int)(screenH - verSize.Y - 40),
+            (int)verSize.X + 50,
+            (int)verSize.Y + 50
+        );
+
+        int clusterCount = 32; // Number of patches along edges
+        
+        for (int c = 0; c < clusterCount; c++)
+        {
+            // Pick a random edge for the cluster center
+            int edge = rng.Next(4); // 0: Top, 1: Right, 2: Bottom, 3: Left
+            float clusterPos = (float)rng.NextDouble(); // 0.0 to 1.0 along the edge
+            
+            int plantsInCluster = rng.Next(6, 16);
+            
+            for (int p = 0; p < plantsInCluster; p++)
+            {
+                float px = 0, py = 0;
+                
+                // Spread within cluster
+                float localSpread = 180f; // How wide the patch is along the edge
+                float depthSpread = 180f; // How deep it grows into screen
+                
+                // Randomize position within patch
+                float offsetAlong = (float)(rng.NextDouble() - 0.5f) * localSpread;
+                float depth = (float)rng.NextDouble() * depthSpread;
+                
+                switch(edge)
+                {
+                    case 0: // Top
+                        px = (clusterPos * screenW) + offsetAlong;
+                        py = depth;
+                        break;
+                    case 1: // Right
+                        px = screenW - depth;
+                        py = (clusterPos * screenH) + offsetAlong;
+                        break;
+                    case 2: // Bottom
+                        px = (clusterPos * screenW) + offsetAlong;
+                        py = screenH - depth;
+                        break;
+                    case 3: // Left
+                        px = depth;
+                        py = (clusterPos * screenH) + offsetAlong;
+                        break;
+                }
+
+                // Check Version Text Collision
+                if (versionRect.Contains(new Point((int)px, (int)py)))
+                {
+                    continue;
+                }
+
+                // Convert screen position to relative position from title start
+                Vector2 relPos = new Vector2(px - startX, py - startY);
+
+                _decorations.Add(new PlantDecoration
+                {
+                    RelativePosition = relPos,
+                    TextureIndex = rng.Next(_plantTextures.Length),
+                    Scale = 0.4f + (float)rng.NextDouble() * 0.6f, // Slightly larger for edges
+                    Rotation = (float)(rng.NextDouble() * Math.PI * 2),
+                    Color = Color.Lerp(VivariumColors.Plant, Color.DarkGreen, 0.2f + (float)rng.NextDouble() * 0.4f) // Darker for background feel
                 });
             }
         }
