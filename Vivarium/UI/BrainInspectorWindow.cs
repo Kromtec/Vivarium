@@ -93,7 +93,7 @@ public class BrainInspectorWindow
         int screenH = _graphics.Viewport.Height;
         int winW = (int)(screenW * 0.9f);
         int winH = (int)(screenH * 0.9f);
-        
+
         Rectangle newRect = new Rectangle((screenW - winW) / 2, (screenH - winH) / 2, winW, winH);
         if (_windowRect != newRect)
         {
@@ -106,8 +106,8 @@ public class BrainInspectorWindow
 
         // Close Button Logic
         Rectangle closeRect = new Rectangle(_windowRect.Right - 30, _windowRect.Y + 10, 20, 20);
-        if (closeRect.Contains(mouseState.Position) && 
-            mouseState.LeftButton == ButtonState.Pressed && 
+        if (closeRect.Contains(mouseState.Position) &&
+            mouseState.LeftButton == ButtonState.Pressed &&
             prevMouseState.LeftButton == ButtonState.Released)
         {
             IsVisible = false;
@@ -142,9 +142,9 @@ public class BrainInspectorWindow
             }
         }
 
-        if (_dropdownRect.Contains(mouseState.Position) && 
-            mouseState.LeftButton == ButtonState.Pressed && 
-            prevMouseState.LeftButton == ButtonState.Released && 
+        if (_dropdownRect.Contains(mouseState.Position) &&
+            mouseState.LeftButton == ButtonState.Pressed &&
+            prevMouseState.LeftButton == ButtonState.Released &&
             !_isDropdownOpen)
         {
             _isDropdownOpen = true;
@@ -194,8 +194,8 @@ public class BrainInspectorWindow
         {
             // SOURCE RESTRICTION: Sensors or Hidden only.
             int rawSource = gene.SourceId % validSourceCount;
-            int sourceIdx = (rawSource < BrainConfig.SensorCount) 
-                ? rawSource 
+            int sourceIdx = (rawSource < BrainConfig.SensorCount)
+                ? rawSource
                 : rawSource + BrainConfig.ActionCount;
 
             // SINK RESTRICTION: Actions or Hidden only.
@@ -206,14 +206,14 @@ public class BrainInspectorWindow
 
         // 1. Identify Active Nodes (Filtered)
         HashSet<int> activeIndices = new();
-        
+
         if (_selectedActionIndex == -1)
         {
             // Show ALL active connections
             foreach (var gene in _targetAgent.Genome)
             {
                 var (sourceIdx, sinkIdx) = DecodeGene(gene);
-                
+
                 activeIndices.Add(sourceIdx);
                 activeIndices.Add(sinkIdx);
             }
@@ -237,7 +237,7 @@ public class BrainInspectorWindow
                 foreach (var gene in _targetAgent.Genome)
                 {
                     var (sourceIdx, sinkIdx) = DecodeGene(gene);
-                    
+
                     if (sinkIdx == currentSink)
                     {
                         activeIndices.Add(sourceIdx);
@@ -335,7 +335,7 @@ public class BrainInspectorWindow
         // Hidden (Center)
         // If filtering is active, use Blackbox (HiddenCluster)
         // Otherwise use standard nodes
-        
+
         int hiddenStart = BrainConfig.HiddenStart;
         List<int> activeHiddenIndices = new();
         for (int i = hiddenStart; i < BrainConfig.NeuronCount; i++)
@@ -350,7 +350,7 @@ public class BrainInspectorWindow
             float midX = startX + width / 2f;
             float midY = startY + height / 2f;
             int boxSize = 100;
-            
+
             var clusterNode = new Node
             {
                 Index = -1,
@@ -359,7 +359,7 @@ public class BrainInspectorWindow
                 Label = "HIDDEN LAYER",
                 Type = NodeType.HiddenCluster,
                 IsActive = true,
-                Bounds = new Rectangle((int)(midX - boxSize/2), (int)(midY - boxSize/2), boxSize, boxSize)
+                Bounds = new Rectangle((int)(midX - boxSize / 2), (int)(midY - boxSize / 2), boxSize, boxSize)
             };
             _nodes.Add(clusterNode);
         }
@@ -417,7 +417,7 @@ public class BrainInspectorWindow
         int screenH = _graphics.Viewport.Height;
         int winW = (int)(screenW * 0.9f);
         int winH = (int)(screenH * 0.9f);
-        
+
         Rectangle newRect = new Rectangle((screenW - winW) / 2, (screenH - winH) / 2, winW, winH);
         if (_windowRect != newRect)
         {
@@ -471,10 +471,10 @@ public class BrainInspectorWindow
 
         // Column Titles
         float titleY = laneTop + 10;
-        
+
         Vector2 sensorSize = _font.MeasureString("SENSORS");
         spriteBatch.DrawString(_font, "SENSORS", new Vector2(lane1.Center.X - sensorSize.X / 2, titleY), Color.LightGray);
-        
+
         Vector2 hiddenSize = _font.MeasureString("HIDDEN NEURONS");
         spriteBatch.DrawString(_font, "HIDDEN NEURONS", new Vector2(lane2.Center.X - hiddenSize.X / 2, titleY), Color.LightGray);
 
@@ -485,7 +485,7 @@ public class BrainInspectorWindow
         var mouseState = Mouse.GetState();
         bool ddHover = _dropdownRect.Contains(mouseState.Position);
         string currentText = _selectedActionIndex == -1 ? "ALL ACTIONS" : ((ActionType)_selectedActionIndex).ToString();
-        
+
         UIComponents.DrawDropdown(spriteBatch, _font, _dropdownRect, currentText, _isDropdownOpen, _pixelTexture, ddHover);
 
         // Draw Connections
@@ -496,25 +496,26 @@ public class BrainInspectorWindow
         {
             // Color based on weight
             Color color = conn.Weight > 0 ? UITheme.GoodColor : UITheme.BadColor;
-            
+
             // Opacity based on Source Activation (The "Flow")
             // We map activation -1..1 to 0..1 magnitude for visibility?
             // Or just absolute value?
             // If source is 0, line should be faint.
             float flow = Math.Abs(conn.Source.Activation);
             float alpha = 0.2f + (flow * 0.8f);
-            
+
             DrawLine(spriteBatch, conn.Source.Position, conn.Sink.Position, color * alpha, 1 + (flow * 2));
         }
 
         // Draw Nodes
         foreach (var node in _nodes)
         {
+            Vector2 origin = new Vector2(NodeRadius, NodeRadius);
             if (node.Type == NodeType.HiddenCluster)
             {
                 // Draw Blackbox
                 UIComponents.DrawPanel(spriteBatch, node.Bounds, _pixelTexture);
-                
+
                 // Calculate Stats
                 int pos = 0, neg = 0, neu = 0;
                 if (_targetAgent.NeuronActivations != null && node.AggregatedIndices != null)
@@ -529,21 +530,30 @@ public class BrainInspectorWindow
                 }
 
                 // Draw Symbols
-                int startX = node.Bounds.X + 10;
-                int startY = node.Bounds.Y + 10;
-                int spacing = 25;
+                int spacing = 28;
+                int centerY = node.Bounds.Center.Y;
+                int dotX = node.Bounds.X + 30;
+                int numberRightX = node.Bounds.Right - 30;
 
-                // Green
-                spriteBatch.Draw(_circleTexture, new Vector2(startX, startY), null, UITheme.GoodColor, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 0f);
-                spriteBatch.DrawString(_font, $"{pos}", new Vector2(startX + 20, startY - 5), Color.White);
+                void DrawRow(int yOffset, Color color, int count)
+                {
+                    Vector2 dotPos = new Vector2(dotX, centerY + yOffset);
+                    spriteBatch.Draw(_circleTexture, dotPos, null, color, 0f, origin, 1f, SpriteEffects.None, 0f);
 
-                // Gray
-                spriteBatch.Draw(_circleTexture, new Vector2(startX, startY + spacing), null, Color.Gray, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 0f);
-                spriteBatch.DrawString(_font, $"{neu}", new Vector2(startX + 20, startY + spacing - 5), Color.White);
+                    string text = count.ToString();
+                    Vector2 textSize = _font.MeasureString(text);
+                    Vector2 textPos = new Vector2(numberRightX - textSize.X, centerY + yOffset - textSize.Y / 2 + 3);
+                    spriteBatch.DrawString(_font, text, textPos, Color.White);
+                }
 
-                // Red
-                spriteBatch.Draw(_circleTexture, new Vector2(startX, startY + spacing * 2), null, UITheme.BadColor, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 0f);
-                spriteBatch.DrawString(_font, $"{neg}", new Vector2(startX + 20, startY + spacing * 2 - 5), Color.White);
+                // Green (Positive)
+                DrawRow(-spacing, UITheme.GoodColor, pos);
+
+                // Gray (Neutral)
+                DrawRow(0, Color.Gray, neu);
+
+                // Red (Negative)
+                DrawRow(spacing, UITheme.BadColor, neg);
 
                 continue;
             }
@@ -554,7 +564,6 @@ public class BrainInspectorWindow
             if (node.Activation > 0.1f) nodeColor = Color.Lerp(Color.Gray, Color.Lime, node.Activation);
             else if (node.Activation < -0.1f) nodeColor = Color.Lerp(Color.Gray, Color.Red, -node.Activation);
 
-            Vector2 origin = new Vector2(NodeRadius, NodeRadius);
             spriteBatch.Draw(_circleTexture, node.Position, null, nodeColor, 0f, origin, 1f, SpriteEffects.None, 0f);
 
             // Label
@@ -566,6 +575,7 @@ public class BrainInspectorWindow
                 else labelPos.X += NodeRadius + 5;
                 
                 labelPos.Y -= size.Y / 2;
+                labelPos.Y += 3;
                 spriteBatch.DrawString(_font, node.Label, labelPos, Color.White);
             }
         }
@@ -575,14 +585,14 @@ public class BrainInspectorWindow
         bool hover = closeRect.Contains(mouseState.Position);
         // Click handled in UpdateInput
         UIComponents.DrawButton(spriteBatch, _font, closeRect, "X", _pixelTexture, hover, false, UITheme.BadColor);
-        
+
         // Draw Dropdown List Overlay (Last to be on top)
         if (_isDropdownOpen)
         {
             int itemHeight = 25;
             int listHeight = itemHeight * _actionOptions.Length;
             Rectangle listRect = new Rectangle(_dropdownRect.X, _dropdownRect.Bottom, _dropdownRect.Width, listHeight);
-            
+
             int hoveredIndex = -1;
             if (listRect.Contains(mouseState.Position))
             {
