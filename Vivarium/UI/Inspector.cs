@@ -63,15 +63,18 @@ public class Inspector
         WantsToOpenBrainInspector = false;
     }
 
+    public void ClearBrainInspectorRequest()
+    {
+        WantsToOpenBrainInspector = false;
+    }
+
     public bool IsMouseOver(Point mousePos)
     {
         return IsEntitySelected && _panelRect.Contains(mousePos);
     }
 
-    public void UpdateInput(Camera2D camera, GridCell[,] gridMap, Agent[] agents, Plant[] plants, Structure[] structures, int cellSize)
+    public void UpdateInput(MouseState mouseState, MouseState previousMouseState, Camera2D camera, GridCell[,] gridMap, Agent[] agents, Plant[] plants, Structure[] structures, int cellSize)
     {
-        var mouseState = Mouse.GetState();
-
         // Scroll Handling
         int scrollDelta = mouseState.ScrollWheelValue - _previousScrollValue;
         _previousScrollValue = mouseState.ScrollWheelValue;
@@ -83,7 +86,7 @@ public class Inspector
         }
 
         // Left Click to Select
-        if (mouseState.LeftButton == ButtonState.Pressed)
+        if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
         {
             // UI Blocking: Don't select world if clicking inside the panel area
             if (IsEntitySelected && _panelRect.Contains(mouseState.Position)) return;

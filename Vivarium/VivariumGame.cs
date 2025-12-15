@@ -36,6 +36,7 @@ public class VivariumGame : Game
     private int _currentFps;
 
     private KeyboardState _previousKeyboardState;
+    private MouseState _previousMouseState;
 
     private Camera2D _camera;
     private Inspector _inspector;
@@ -134,6 +135,7 @@ public class VivariumGame : Game
         {
             _titleScreen.Update(mouseState, keyboardState, _previousKeyboardState, ref _gameState, Exit);
             _previousKeyboardState = keyboardState;
+            _previousMouseState = mouseState;
             base.Update(gameTime);
             return;
         }
@@ -219,13 +221,14 @@ public class VivariumGame : Game
         if (_inspector.WantsToOpenBrainInspector)
         {
             _brainInspectorWindow.SetTarget(_inspector.BrainInspectorTarget);
-            _inspector.Deselect(); // Close inspector to focus on brain
+            _inspector.ClearBrainInspectorRequest();
+            //_inspector.Deselect(); // Close inspector to focus on brain
         }
 
         // Brain Inspector Logic (Pause/Step)
         if (_brainInspectorWindow.IsVisible)
         {
-            _brainInspectorWindow.UpdateInput(ref _isPaused, ref singleStep);
+            _brainInspectorWindow.UpdateInput(mouseState, _previousMouseState, ref _isPaused, ref singleStep);
         }
 
         if (!effectivePause || singleStep)
@@ -278,7 +281,7 @@ public class VivariumGame : Game
         // Inspector Input
         if (!uiCapturesMouse)
         {
-            _inspector.UpdateInput(_camera, _simulation.GridMap, _simulation.AgentPopulation, _simulation.PlantPopulation, _simulation.StructurePopulation, Simulation.CellSize);
+            _inspector.UpdateInput(mouseState, _previousMouseState, _camera, _simulation.GridMap, _simulation.AgentPopulation, _simulation.PlantPopulation, _simulation.StructurePopulation, Simulation.CellSize);
         }
 
         // Camera
@@ -286,6 +289,7 @@ public class VivariumGame : Game
         _camera.HandleInput(Mouse.GetState(), Keyboard.GetState(), !(uiCapturesMouse || inspectorCapturesMouse), worldBounds);
 
         base.Update(gameTime);
+        _previousMouseState = mouseState;
     }
 
     protected override void Draw(GameTime gameTime)

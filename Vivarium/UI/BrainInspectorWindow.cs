@@ -82,12 +82,37 @@ public class BrainInspectorWindow
         _isDropdownOpen = false; // Reset dropdown
     }
 
-    public void UpdateInput(ref bool isPaused, ref bool singleStep)
+    public void UpdateInput(MouseState mouseState, MouseState prevMouseState, ref bool isPaused, ref bool singleStep)
     {
         if (!IsVisible) return;
 
-        var mouse = Mouse.GetState();
         var keyboard = Keyboard.GetState();
+
+        // Ensure Layout/Rects are valid
+        int screenW = _graphics.Viewport.Width;
+        int screenH = _graphics.Viewport.Height;
+        int winW = (int)(screenW * 0.9f);
+        int winH = (int)(screenH * 0.9f);
+        
+        Rectangle newRect = new Rectangle((screenW - winW) / 2, (screenH - winH) / 2, winW, winH);
+        if (_windowRect != newRect)
+        {
+            _windowRect = newRect;
+            _needsLayoutUpdate = true;
+        }
+
+        // Update Dropdown Rect
+        _dropdownRect = new Rectangle(_windowRect.Right - 200 - 60, _windowRect.Y + 15, 200, 25);
+
+        // Close Button Logic
+        Rectangle closeRect = new Rectangle(_windowRect.Right - 30, _windowRect.Y + 10, 20, 20);
+        if (closeRect.Contains(mouseState.Position) && 
+            mouseState.LeftButton == ButtonState.Pressed && 
+            prevMouseState.LeftButton == ButtonState.Released)
+        {
+            IsVisible = false;
+            return;
+        }
 
         // Dropdown Logic
         if (_isDropdownOpen)
@@ -97,11 +122,11 @@ public class BrainInspectorWindow
             int listHeight = itemHeight * _actionOptions.Length;
             Rectangle listRect = new Rectangle(_dropdownRect.X, _dropdownRect.Bottom, _dropdownRect.Width, listHeight);
 
-            if (listRect.Contains(mouse.Position))
+            if (listRect.Contains(mouseState.Position))
             {
-                if (mouse.LeftButton == ButtonState.Pressed)
+                if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
                 {
-                    int index = (mouse.Y - listRect.Y) / itemHeight;
+                    int index = (mouseState.Y - listRect.Y) / itemHeight;
                     if (index >= 0 && index < _actionOptions.Length)
                     {
                         _selectedActionIndex = index - 1; // -1 for ALL
@@ -111,13 +136,16 @@ public class BrainInspectorWindow
                 }
                 return; // Consume input
             }
-            else if (mouse.LeftButton == ButtonState.Pressed && !_dropdownRect.Contains(mouse.Position))
+            else if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released && !_dropdownRect.Contains(mouseState.Position))
             {
                 _isDropdownOpen = false; // Click outside closes
             }
         }
 
-        if (_dropdownRect.Contains(mouse.Position) && mouse.LeftButton == ButtonState.Pressed && !_isDropdownOpen)
+        if (_dropdownRect.Contains(mouseState.Position) && 
+            mouseState.LeftButton == ButtonState.Pressed && 
+            prevMouseState.LeftButton == ButtonState.Released && 
+            !_isDropdownOpen)
         {
             _isDropdownOpen = true;
             return; // Consume input
@@ -545,11 +573,9 @@ public class BrainInspectorWindow
         // Close Button
         Rectangle closeRect = new Rectangle(_windowRect.Right - 30, _windowRect.Y + 10, 20, 20);
         bool hover = closeRect.Contains(mouseState.Position);
-        bool click = hover && mouseState.LeftButton == ButtonState.Pressed;
-        UIComponents.DrawButton(spriteBatch, _font, closeRect, "X", _pixelTexture, hover, click, UITheme.BadColor);
+        // Click handled in UpdateInput
+        UIComponents.DrawButton(spriteBatch, _font, closeRect, "X", _pixelTexture, hover, false, UITheme.BadColor);
         
-        if (click) IsVisible = false;
-
         // Draw Dropdown List Overlay (Last to be on top)
         if (_isDropdownOpen)
         {
