@@ -156,6 +156,7 @@ public class BrainInspectorWindow
         int startY = _windowRect.Y + HeaderHeight;
         int startX = _windowRect.X;
         int availableHeight = height - Padding * 2;
+        int laneWidth = width / 3;
 
         // Helper to decode genes exactly like Brain.Think
         int validSourceCount = BrainConfig.SensorCount + BrainConfig.HiddenCount;
@@ -262,7 +263,7 @@ public class BrainInspectorWindow
                 _nodes.Add(new Node
                 {
                     Index = i,
-                    Position = new Vector2(startX + Padding + NodeRadius + sensorXOffset, y),
+                    Position = new Vector2(startX + laneWidth / 2, y),
                     Label = ((SensorType)i).ToString(),
                     Type = NodeType.Sensor,
                     IsActive = true
@@ -294,7 +295,7 @@ public class BrainInspectorWindow
                 _nodes.Add(new Node
                 {
                     Index = i,
-                    Position = new Vector2(startX + width - Padding - NodeRadius - 100, y), // Extra space for labels
+                    Position = new Vector2(startX + width - laneWidth / 2, y),
                     Label = ((ActionType)(i - actionStart)).ToString(),
                     Type = NodeType.Action,
                     IsActive = true
@@ -420,18 +421,37 @@ public class BrainInspectorWindow
         // Draw Background
         UIComponents.DrawPanel(spriteBatch, _windowRect, _pixelTexture);
 
+        // Draw Lanes
+        int laneWidth = _windowRect.Width / 3;
+        int laneTop = _windowRect.Y + 40;
+        int laneHeight = _windowRect.Height - 50; // Leave some bottom padding
+
+        // Lane 1 (Sensors) - Darker
+        Rectangle lane1 = new Rectangle(_windowRect.X + 5, laneTop, laneWidth - 5, laneHeight);
+        spriteBatch.Draw(_pixelTexture, lane1, Color.Gainsboro * 0.05f);
+
+        // Lane 2 (Hidden) - Lighter
+        Rectangle lane2 = new Rectangle(_windowRect.X + laneWidth, laneTop, laneWidth, laneHeight);
+        //spriteBatch.Draw(_pixelTexture, lane2, Color.Thistle * 0.05f);
+
+        // Lane 3 (Actions) - Darker
+        Rectangle lane3 = new Rectangle(_windowRect.X + laneWidth * 2, laneTop, laneWidth - 5, laneHeight);
+        spriteBatch.Draw(_pixelTexture, lane3, Color.Gainsboro * 0.05f);
+
         // Header
-        spriteBatch.DrawString(_font, $"NEURAL NETWORK INSPECTOR - AGENT #{_targetAgent.Id}", new Vector2(_windowRect.X + Padding, _windowRect.Y + Padding), UITheme.HeaderColor);
+        spriteBatch.DrawString(_font, $"NEURAL NETWORK INSPECTOR - AGENT #{_targetAgent.Id}", new Vector2(_windowRect.X + Padding, _windowRect.Y + Padding / 2), UITheme.HeaderColor);
 
         // Column Titles
-        float titleY = _windowRect.Y + 45;
-        spriteBatch.DrawString(_font, "SENSORS", new Vector2(_windowRect.X + Padding, titleY), Color.Gray);
+        float titleY = laneTop + 10;
+        
+        Vector2 sensorSize = _font.MeasureString("SENSORS");
+        spriteBatch.DrawString(_font, "SENSORS", new Vector2(lane1.Center.X - sensorSize.X / 2, titleY), Color.LightGray);
         
         Vector2 hiddenSize = _font.MeasureString("HIDDEN NEURONS");
-        spriteBatch.DrawString(_font, "HIDDEN NEURONS", new Vector2(_windowRect.X + _windowRect.Width / 2f - hiddenSize.X / 2f, titleY), Color.Gray);
+        spriteBatch.DrawString(_font, "HIDDEN NEURONS", new Vector2(lane2.Center.X - hiddenSize.X / 2, titleY), Color.LightGray);
 
         Vector2 actionSize = _font.MeasureString("ACTIONS");
-        spriteBatch.DrawString(_font, "ACTIONS", new Vector2(_windowRect.Right - Padding - actionSize.X, titleY), Color.Gray);
+        spriteBatch.DrawString(_font, "ACTIONS", new Vector2(lane3.Center.X - actionSize.X / 2, titleY), Color.LightGray);
 
         // Dropdown
         var mouseState = Mouse.GetState();
