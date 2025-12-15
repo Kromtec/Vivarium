@@ -461,12 +461,7 @@ public static class TextureGenerator
 
         float center = size / 2f;
         float scale = size / 2f; // Map -1..1 to 0..size
-        const int borderThickness = 10; // Strong outline
-
-        // Trait Analysis
-        // 4: Speed, 5: Constitution
-        bool isFast = traitIndex == 4;
-        bool isTough = traitIndex == 5;
+        const int borderThickness = 8; // Slightly thinner than before to allow for complex shapes
 
         for (int y = 0; y < size; y++)
         {
@@ -478,47 +473,9 @@ public static class TextureGenerator
                 float u = (x - center) / scale;
                 float v = (y - center) / scale;
 
-                // Aspect ratio correction for Speed trait (Elongate)
-                if (isFast)
-                {
-                    v *= 1.4f; // Make it thinner/longer
-                }
+                float dist = GetAgentSDF(u, v, diet, traitIndex);
 
-                float dist = 1.0f; // Signed Distance: Positive = outside, Negative = inside
-
-                switch (diet)
-                {
-                    case DietType.Herbivore: // Bacillus (Rod)
-                        // Rounded Box / Capsule
-                        // Segment from (-0.4, 0) to (0.4, 0), radius 0.5
-                        float hx = Math.Clamp(u, -0.4f, 0.4f);
-                        float dx = u - hx;
-                        float dy = v;
-                        dist = MathF.Sqrt((dx * dx) + (dy * dy)) - 0.5f;
-                        break;
-
-                    case DietType.Omnivore: // Diplococcus (Peanut)
-                        // Two circles blended
-                        float d1 = MathF.Sqrt(((u + 0.3f) * (u + 0.3f)) + (v * v)) - 0.45f;
-                        float d2 = MathF.Sqrt(((u - 0.3f) * (u - 0.3f)) + (v * v)) - 0.45f;
-
-                        // Smooth Min (Polynomial)
-                        const float k = 0.15f;
-                        float h = Math.Clamp(0.5f + (0.5f * (d2 - d1) / k), 0.0f, 1.0f);
-                        dist = MathHelper.Lerp(d2, d1, h) - (k * h * (1.0f - h));
-                        break;
-
-                    case DietType.Carnivore: // Virus / Spiky
-                        // Radial distance with noise/sine
-                        float len = MathF.Sqrt((u * u) + (v * v));
-                        float angle = MathF.Atan2(v, u);
-                        // 12 spikes
-                        float r = 0.55f + (0.15f * MathF.Sin(12 * angle));
-                        dist = len - r;
-                        break;
-                }
-
-                // Convert back to pixel space for border check
+                // Convert back to pixel space
                 float distPx = dist * scale;
 
                 if (distPx > 1f)
@@ -538,9 +495,7 @@ public static class TextureGenerator
                     else
                     {
                         // Inner Body Area
-                        float bodyAlpha = 0.3f;
-                        if (isTough) bodyAlpha = 0.6f;
-                        colorData[index] = Color.White * bodyAlpha;
+                        colorData[index] = Color.White * 0.4f;
                     }
                 }
             }
@@ -548,5 +503,129 @@ public static class TextureGenerator
 
         texture.SetData(colorData);
         return texture;
+    }
+
+    private static float GetAgentSDF(float x, float y, DietType diet, int traitIndex)
+    {
+        float d = 1.0f;
+        float len = MathF.Sqrt(x * x + y * y);
+        float angle = MathF.Atan2(y, x);
+
+        switch (diet)
+        {
+            case DietType.Herbivore: // Rounded, Bloby
+                switch (traitIndex)
+                {
+                    case 0: // Strength: Rounded Box
+                        float bx = Math.Abs(x) - 0.3f;
+                        float by = Math.Abs(y) - 0.3f;
+                        float dBox = MathF.Sqrt(Math.Max(bx, 0f) * Math.Max(bx, 0f) + Math.Max(by, 0f) * Math.Max(by, 0f));
+                        d = dBox + Math.Min(Math.Max(bx, by), 0f) - 0.3f;
+                        break;
+                    case 1: // Bravery: Rounded Triangle (Blob)
+                        // 3 circles blended
+                        float d1 = MathF.Sqrt(x * x + (y + 0.3f) * (y + 0.3f)) - 0.35f;
+                        float d2 = MathF.Sqrt((x + 0.3f) * (x + 0.3f) + (y - 0.2f) * (y - 0.2f)) - 0.35f;
+                        float d3 = MathF.Sqrt((x - 0.3f) * (x - 0.3f) + (y - 0.2f) * (y - 0.2f)) - 0.35f;
+                        d = SmoothMin(d1, SmoothMin(d2, d3, 0.3f), 0.3f);
+                        break;
+                    case 2: // Metabolism: Simple Circle
+                        d = len - 0.6f;
+                        break;
+                    case 3: // Perception: Ellipse (Eye-like)
+                        d = MathF.Sqrt(x * x + (y * 1.5f) * (y * 1.5f)) - 0.55f;
+                        break;
+                    case 4: // Speed: Egg/Teardrop
+                        d = MathF.Sqrt(x * x + y * y) - (0.5f - 0.2f * y);
+                        break;
+                    case 5: // Constitution: Squircle
+                        d = MathF.Pow(MathF.Pow(Math.Abs(x), 4) + MathF.Pow(Math.Abs(y), 4), 0.25f) - 0.6f;
+                        break;
+                }
+                break;
+
+            case DietType.Omnivore: // Segmented
+                switch (traitIndex)
+                {
+                    case 0: // Strength: Tetrad (Square of 4)
+                        float ax = Math.Abs(x) - 0.25f;
+                        float ay = Math.Abs(y) - 0.25f;
+                        d = MathF.Sqrt(ax * ax + ay * ay) - 0.25f;
+                        break;
+                    case 1: // Bravery: Diplococcus (Peanut)
+                        float dLeft = MathF.Sqrt((x + 0.3f) * (x + 0.3f) + y * y) - 0.35f;
+                        float dRight = MathF.Sqrt((x - 0.3f) * (x - 0.3f) + y * y) - 0.35f;
+                        d = SmoothMin(dLeft, dRight, 0.15f);
+                        break;
+                    case 2: // Metabolism: Chain of 3
+                        float c1 = MathF.Sqrt((x + 0.4f) * (x + 0.4f) + y * y) - 0.25f;
+                        float c2 = MathF.Sqrt(x * x + y * y) - 0.25f;
+                        float c3 = MathF.Sqrt((x - 0.4f) * (x - 0.4f) + y * y) - 0.25f;
+                        d = Math.Min(c1, Math.Min(c2, c3));
+                        break;
+                    case 3: // Perception: Curved Chain
+                        float a1 = MathF.Sqrt(x * x + (y + 0.2f) * (y + 0.2f)) - 0.25f;
+                        float a2 = MathF.Sqrt((x + 0.4f) * (x + 0.4f) + (y - 0.2f) * (y - 0.2f)) - 0.25f;
+                        float a3 = MathF.Sqrt((x - 0.4f) * (x - 0.4f) + (y - 0.2f) * (y - 0.2f)) - 0.25f;
+                        d = Math.Min(a1, Math.Min(a2, a3));
+                        break;
+                    case 4: // Speed: Worm (Overlapping segments)
+                        float hx = Math.Clamp(x, -0.4f, 0.4f);
+                        d = MathF.Sqrt((x - hx) * (x - hx) + y * y) - 0.25f;
+                        // Add bumps
+                        d -= 0.05f * MathF.Sin(x * 15f);
+                        break;
+                    case 5: // Constitution: Cluster
+                        float centerD = MathF.Sqrt(x * x + y * y) - 0.3f;
+                        float sx = Math.Abs(x) - 0.35f;
+                        float sy = Math.Abs(y) - 0.35f;
+                        float satD = MathF.Sqrt(sx * sx + sy * sy) - 0.2f;
+                        d = Math.Min(centerD, satD);
+                        break;
+                }
+                break;
+
+            case DietType.Carnivore: // Spiky / Virus
+                switch (traitIndex)
+                {
+                    case 0: // Strength: Mace (4 big spikes)
+                        float r0 = 0.4f + 0.2f * MathF.Abs(MathF.Cos(4 * angle));
+                        d = len - r0;
+                        break;
+                    case 1: // Bravery: Star (5 points)
+                        float r1 = 0.4f + 0.25f * MathF.Cos(5 * angle);
+                        d = len - r1;
+                        break;
+                    case 2: // Metabolism: Gear
+                        float r2 = 0.5f + 0.1f * MathF.Sin(12 * angle);
+                        d = len - r2;
+                        break;
+                    case 3: // Perception: Antennae
+                        float spike = MathF.Pow(MathF.Abs(MathF.Cos(4 * angle)), 10f);
+                        float r3 = 0.35f + 0.3f * spike;
+                        d = len - r3;
+                        break;
+                    case 4: // Speed: Arrow / Shuriken
+                        float r4 = 0.3f + 0.3f * MathF.Cos(3 * angle);
+                        d = len - r4;
+                        break;
+                    case 5: // Constitution: Adenovirus (Hexagon-ish with nubs)
+                        float qx = MathF.Abs(x);
+                        float qy = MathF.Abs(y);
+                        float hex = Math.Max(qx * 0.866025f + qy * 0.5f, qy);
+                        d = hex - 0.5f;
+                        d -= 0.1f * MathF.Cos(6 * angle);
+                        break;
+                }
+                break;
+        }
+
+        return d;
+    }
+
+    private static float SmoothMin(float a, float b, float k)
+    {
+        float h = Math.Clamp(0.5f + 0.5f * (b - a) / k, 0.0f, 1.0f);
+        return MathHelper.Lerp(b, a, h) - k * h * (1.0f - h);
     }
 }
