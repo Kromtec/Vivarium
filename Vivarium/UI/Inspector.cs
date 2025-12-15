@@ -31,7 +31,7 @@ public class Inspector
     private int _cursorY;
 
     // Deferred Layout List
-    private readonly List<IInspectorElement> _elements = new List<IInspectorElement>();
+    private readonly List<IInspectorElement> _elements = [];
 
     // Cached Genome Texture
     private Texture2D _cachedGenomeTexture;
@@ -45,7 +45,7 @@ public class Inspector
         _font = font;
         _census = census;
         _pixelTexture = new Texture2D(graphics, 1, 1);
-        _pixelTexture.SetData(new[] { Color.White });
+        _pixelTexture.SetData([Color.White]);
     }
 
     public void Deselect()
@@ -69,7 +69,7 @@ public class Inspector
             // --- 1. VISUAL AGENT SELECTION (Hit Test against interpolated positions) ---
             bool agentFound = false;
             float halfCell = cellSize * 0.5f;
-            float selectionRadiusSq = (halfCell * 1.2f) * (halfCell * 1.2f); // Slightly larger than radius for easier clicking
+            float selectionRadiusSq = halfCell * 1.2f * (halfCell * 1.2f); // Slightly larger than radius for easier clicking
 
             // Iterate all agents to find if we clicked one visually
             // (Optimization: In a huge world, we should only check agents in the view, but for now this is fine)
@@ -98,9 +98,9 @@ public class Inspector
                     offsetY = -(dy * cellSize * t);
                 }
 
-                Vector2 visualPos = new Vector2(
-                    (agent.X * cellSize + halfCell) + offsetX,
-                    (agent.Y * cellSize + halfCell) + offsetY
+                Vector2 visualPos = new(
+                    (agent.X * cellSize) + halfCell + offsetX,
+                    (agent.Y * cellSize) + halfCell + offsetY
                 );
 
                 // Check distance
@@ -334,7 +334,7 @@ public class Inspector
         contentHeight += UITheme.Padding;
 
         // Draw Background
-        int panelWidth = 380;
+        const int panelWidth = 380;
         _panelRect = new Rectangle(_graphics.Viewport.Width - 20 - panelWidth, 20, panelWidth, contentHeight);
 
         UIComponents.DrawPanel(spriteBatch, _panelRect, _pixelTexture);
@@ -365,7 +365,7 @@ public class Inspector
 
     private void AddTexture(Texture2D texture, int width, int height, ref int currentY)
     {
-        _elements.Add(new TextureElement(texture, width, height, currentY));
+        _elements.Add(new TextureElement(texture, width, height));
         currentY += height + UITheme.Padding;
     }
 
@@ -424,26 +424,17 @@ public class Inspector
         void Draw(Inspector inspector, SpriteBatch sb);
     }
 
-    private class TextureElement : IInspectorElement
+    private class TextureElement(Texture2D texture, int width, int height) : IInspectorElement
     {
-        private readonly Texture2D _texture;
-        private readonly int _width;
-        private readonly int _height;
-        private readonly int _y;
+        private readonly Texture2D _texture = texture;
+        private readonly int _width = width;
+        private readonly int _height = height;
 
         public int Height => _height + UITheme.Padding;
 
-        public TextureElement(Texture2D texture, int width, int height, int y)
-        {
-            _texture = texture;
-            _width = width;
-            _height = height;
-            _y = y;
-        }
-
         public void Draw(Inspector inspector, SpriteBatch sb)
         {
-            int x = inspector._panelRect.X + (inspector._panelRect.Width - _width) / 2; // Center
+            int x = inspector._panelRect.X + ((inspector._panelRect.Width - _width) / 2); // Center
             int y = inspector._cursorY;
 
             // Pixel art scaling
@@ -457,16 +448,10 @@ public class Inspector
         }
     }
 
-    private class HeaderElement : IInspectorElement
+    private class HeaderElement(string text, Color color) : IInspectorElement
     {
-        private readonly string _text;
-        private readonly Color _color;
-
-        public HeaderElement(string text, Color color)
-        {
-            _text = text;
-            _color = color;
-        }
+        private readonly string _text = text;
+        private readonly Color _color = color;
 
         public int Height => 27; // LineHeight + 5
 
@@ -476,16 +461,10 @@ public class Inspector
         }
     }
 
-    private class RowElement : IInspectorElement
+    private class RowElement(String label, string value) : IInspectorElement
     {
-        private readonly string _label;
-        private readonly string _value;
-
-        public RowElement(String label, string value)
-        {
-            _label = label;
-            _value = value;
-        }
+        private readonly string _label = label;
+        private readonly string _value = value;
 
         public int Height => UITheme.LineHeight;
 
@@ -510,20 +489,12 @@ public class Inspector
         }
     }
 
-    private class ProgressBarElement : IInspectorElement
+    private class ProgressBarElement(string label, float value, float max, Color color) : IInspectorElement
     {
-        private readonly string _label;
-        private readonly float _value;
-        private readonly float _max;
-        private readonly Color _color;
-
-        public ProgressBarElement(string label, float value, float max, Color color)
-        {
-            _label = label;
-            _value = value;
-            _max = max;
-            _color = color;
-        }
+        private readonly string _label = label;
+        private readonly float _value = value;
+        private readonly float _max = max;
+        private readonly Color _color = color;
 
         public int Height => UITheme.LineHeight;
 
@@ -531,7 +502,7 @@ public class Inspector
         {
             int leftX = inspector._panelRect.X + UITheme.Padding;
             int rightX = inspector._panelRect.X + inspector._panelRect.Width - UITheme.Padding;
-            int barWidth = 150; // Increased from 100
+            const int barWidth = 150; // Increased from 100
             int barX = rightX - barWidth;
 
             sb.DrawString(inspector._font, _label, new Vector2(leftX, inspector._cursorY), UITheme.TextColorSecondary);
@@ -542,18 +513,11 @@ public class Inspector
         }
     }
 
-    private class BrainBarElement : IInspectorElement
+    private class BrainBarElement(string label, float value, bool positiveOnly) : IInspectorElement
     {
-        private readonly string _label;
-        private readonly float _value;
-        private readonly bool _positiveOnly;
-
-        public BrainBarElement(string label, float value, bool positiveOnly)
-        {
-            _label = label;
-            _value = value;
-            _positiveOnly = positiveOnly;
-        }
+        private readonly string _label = label;
+        private readonly float _value = value;
+        private readonly bool _positiveOnly = positiveOnly;
 
         public int Height => UITheme.LineHeight;
 
@@ -561,7 +525,7 @@ public class Inspector
         {
             int leftX = inspector._panelRect.X + UITheme.Padding;
             int rightX = inspector._panelRect.X + inspector._panelRect.Width - UITheme.Padding;
-            int barWidth = 150; // Increased from 100
+            const int barWidth = 150; // Increased from 100
             int barX = rightX - barWidth;
 
             sb.DrawString(inspector._font, _label, new Vector2(leftX, inspector._cursorY), UITheme.TextColorSecondary);

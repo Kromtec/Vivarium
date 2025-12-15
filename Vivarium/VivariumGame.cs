@@ -49,7 +49,7 @@ public class VivariumGame : Game
 
     private bool _isPaused = false;
     private bool _showExitConfirmation = false;
-    private int _seed;
+    private readonly int _seed;
 
     public VivariumGame(int seed = 64)
     {
@@ -60,7 +60,7 @@ public class VivariumGame : Game
 
         TargetElapsedTime = TimeSpan.FromSeconds(1d / FramesPerSecond);
         IsFixedTimeStep = true;
-        
+
         // Ensure the game runs at full speed even when not in focus
         InactiveSleepTime = TimeSpan.Zero;
     }
@@ -106,9 +106,9 @@ public class VivariumGame : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         _sysFont = Content.Load<SpriteFont>("SystemFont");
-        
+
         _pixel = new Texture2D(GraphicsDevice, 1, 1);
-        _pixel.SetData(new[] { Color.White });
+        _pixel.SetData([Color.White]);
 
         _titleScreen = new TitleScreen(GraphicsDevice, _sysFont);
 
@@ -266,7 +266,7 @@ public class VivariumGame : Game
         }
 
         // Camera
-        Rectangle worldBounds = new Rectangle(0, 0, Simulation.GridWidth * Simulation.CellSize, Simulation.GridHeight * Simulation.CellSize);
+        Rectangle worldBounds = new(0, 0, Simulation.GridWidth * Simulation.CellSize, Simulation.GridHeight * Simulation.CellSize);
         _camera.HandleInput(Mouse.GetState(), Keyboard.GetState(), !uiCapturesMouse, worldBounds);
 
         base.Update(gameTime);
@@ -316,9 +316,9 @@ public class VivariumGame : Game
         // Paused Text
         if (_isPaused || _genePoolWindow.IsVisible)
         {
-            string pausedText = "PAUSED";
+            const string pausedText = "PAUSED";
             Vector2 textSize = _sysFont.MeasureString(pausedText);
-            Vector2 pos = new Vector2(
+            Vector2 pos = new(
                 (GraphicsDevice.Viewport.Width - textSize.X) / 2,
                 30
             );
@@ -342,9 +342,9 @@ public class VivariumGame : Game
 
     private void DrawExitConfirmation()
     {
-        int width = 440;
-        int height = 150;
-        Rectangle rect = new Rectangle(
+        const int width = 440;
+        const int height = 150;
+        Rectangle rect = new(
             (GraphicsDevice.Viewport.Width - width) / 2,
             (GraphicsDevice.Viewport.Height - height) / 2,
             width,
@@ -359,14 +359,14 @@ public class VivariumGame : Game
         _spriteBatch.Draw(_pixel, new Rectangle(rect.X, rect.Y, 2, height), UITheme.BorderColor);
         _spriteBatch.Draw(_pixel, new Rectangle(rect.X + width - 2, rect.Y, 2, height), UITheme.BorderColor);
 
-        string title = "EXIT APPLICATION?";
-        string subtitle = "Press ENTER to Confirm or ESC to Cancel";
+        const string title = "EXIT APPLICATION?";
+        const string subtitle = "Press ENTER to Confirm or ESC to Cancel";
 
         Vector2 titleSize = _sysFont.MeasureString(title);
         Vector2 subSize = _sysFont.MeasureString(subtitle);
 
-        _spriteBatch.DrawString(_sysFont, title, new Vector2(rect.X + (width - titleSize.X) / 2, rect.Y + 40), UITheme.HeaderColor);
-        _spriteBatch.DrawString(_sysFont, subtitle, new Vector2(rect.X + (width - subSize.X) / 2, rect.Y + 80), UITheme.TextColorPrimary);
+        _spriteBatch.DrawString(_sysFont, title, new Vector2(rect.X + ((width - titleSize.X) / 2), rect.Y + 40), UITheme.HeaderColor);
+        _spriteBatch.DrawString(_sysFont, subtitle, new Vector2(rect.X + ((width - subSize.X) / 2), rect.Y + 80), UITheme.TextColorPrimary);
     }
 
     private void UpdateFPSAndWindowTitle(GameTime gameTime, int livingAgents, int livingPlants, int livingStructures)
@@ -379,7 +379,7 @@ public class VivariumGame : Game
             string fpsText = $"{_currentFps} FPS";
             Vector2 textSize = _sysFont.MeasureString(fpsText);
 
-            Vector2 textPos = new Vector2(
+            Vector2 textPos = new(
                 GraphicsDevice.Viewport.Width - textSize.X - 20,
                 GraphicsDevice.Viewport.Height - 20
             );

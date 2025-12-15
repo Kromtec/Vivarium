@@ -66,7 +66,7 @@ public static class TextureGenerator
                 float dx = j - center; // x
                 float dy = i - center; // y
 
-                float dist = MathF.Sqrt(dx * dx + dy * dy);
+                float dist = MathF.Sqrt((dx * dx) + (dy * dy));
                 float angle = MathF.Atan2(dy, dx) + MathHelper.PiOver2;
 
                 if (angle < 0) angle += MathHelper.TwoPi;
@@ -128,7 +128,7 @@ public static class TextureGenerator
                 {
                     float cornerDx = dx - innerLimit;
                     float cornerDy = dy - innerLimit;
-                    float distFromCornerCenter = MathF.Sqrt(cornerDx * cornerDx + cornerDy * cornerDy);
+                    float distFromCornerCenter = MathF.Sqrt((cornerDx * cornerDx) + (cornerDy * cornerDy));
 
                     if (distFromCornerCenter <= cornerRadius)
                     {
@@ -169,7 +169,7 @@ public static class TextureGenerator
         float centerY = size / 2f;
         // Precompute sine of the angle for distance correction
         // Slope is 0.5. Angle is Atan(0.5). Sin(Atan(0.5)) = 0.4472136
-        float sinAngle = 0.4472136f;
+        const float sinAngle = 0.4472136f;
         float borderThickness = size * 0.15f; // 15% of size
 
         for (int y = 0; y < size; y++)
@@ -229,7 +229,7 @@ public static class TextureGenerator
                 if (distFromCenter <= radius && distFromCenter >= radius - thickness)
                 {
                     // Simple anti-aliasing
-                    float distToEdge = Math.Min(Math.Abs(radius - distFromCenter), Math.Abs((radius - thickness) - distFromCenter));
+                    float distToEdge = Math.Min(Math.Abs(radius - distFromCenter), Math.Abs(radius - thickness - distFromCenter));
                     if (distToEdge < 1.0f)
                     {
                         colorData[index] = Color.White * distToEdge;
@@ -256,10 +256,10 @@ public static class TextureGenerator
         var colorData = new Color[size * size];
 
         float center = size / 2f;
-        
+
         // Hatching parameters
-        int hatchSpacing = 25;
-        int hatchThickness = 6;
+        const int hatchSpacing = 25;
+        const int hatchThickness = 6;
 
         for (int y = 0; y < size; y++)
         {
@@ -315,15 +315,15 @@ public static class TextureGenerator
                     // We only care about the "outer" part of the quadrant for rounding
                     // If we are "inside" the corner radius box, we treat it as rect distance
                     // If we are in the "corner" zone, we check radius.
-                    
+
                     // Simplified:
                     // The shape is defined by intersection of two half-planes and a circle?
                     // Actually, for a rounded rect corner:
                     // It is the set of points where distance to (cx, cy) <= radius
                     // BUT only for the region "outside" the inner rectangle.
-                    
+
                     // Let's use the logic from CreateRoundedRect but adapted for quadrants
-                    
+
                     // Local coordinates relative to quadrant corner
                     float lx = qLeft ? x : size - 1 - x;
                     float ly = qTop ? y : size - 1 - y;
@@ -339,8 +339,8 @@ public static class TextureGenerator
                         // The actual corner zone
                         float dx = cornerRadius - lx;
                         float dy = cornerRadius - ly;
-                        float dist = MathF.Sqrt(dx * dx + dy * dy);
-                        
+                        float dist = MathF.Sqrt((dx * dx) + (dy * dy));
+
                         if (dist <= cornerRadius)
                         {
                             isInside = true;
@@ -369,9 +369,9 @@ public static class TextureGenerator
                         // Diagonal lines: x - y = const
                         // We use (x + y) for one diagonal direction, (x - y) for the other.
                         // Let's use x + y (Top-Right to Bottom-Left hatching)
-                        
+
                         bool isHatch = ((x + y) % hatchSpacing) < hatchThickness;
-                        
+
                         if (isHatch)
                         {
                             colorData[index] = Color.White * 0.6f; // Thinner/Fainter white lines
@@ -409,7 +409,7 @@ public static class TextureGenerator
                 int index = (y * size) + x;
                 float dx = x - center;
                 float dy = y - center;
-                float dist = MathF.Sqrt(dx * dx + dy * dy);
+                float dist = MathF.Sqrt((dx * dx) + (dy * dy));
                 float angle = MathF.Atan2(dy, dx);
 
                 // Organic radius function
@@ -418,7 +418,7 @@ public static class TextureGenerator
                 // Max extent is at (1+v). So BaseR = maxRadius / (1+v)
 
                 float baseR = maxRadius / (1f + variance);
-                float currentLimit = baseR * (1f + variance * MathF.Sin(petals * angle));
+                float currentLimit = baseR * (1f + (variance * MathF.Sin(petals * angle)));
 
                 // Anti-aliasing logic
                 float distFromEdge = currentLimit - dist;
@@ -461,7 +461,7 @@ public static class TextureGenerator
 
         float center = size / 2f;
         float scale = size / 2f; // Map -1..1 to 0..size
-        int borderThickness = 10; // Strong outline
+        const int borderThickness = 10; // Strong outline
 
         // Trait Analysis
         // 4: Speed, 5: Constitution
@@ -494,26 +494,26 @@ public static class TextureGenerator
                         float hx = Math.Clamp(u, -0.4f, 0.4f);
                         float dx = u - hx;
                         float dy = v;
-                        dist = MathF.Sqrt(dx * dx + dy * dy) - 0.5f;
+                        dist = MathF.Sqrt((dx * dx) + (dy * dy)) - 0.5f;
                         break;
 
                     case DietType.Omnivore: // Diplococcus (Peanut)
                         // Two circles blended
-                        float d1 = MathF.Sqrt((u + 0.3f) * (u + 0.3f) + v * v) - 0.45f;
-                        float d2 = MathF.Sqrt((u - 0.3f) * (u - 0.3f) + v * v) - 0.45f;
-                        
+                        float d1 = MathF.Sqrt(((u + 0.3f) * (u + 0.3f)) + (v * v)) - 0.45f;
+                        float d2 = MathF.Sqrt(((u - 0.3f) * (u - 0.3f)) + (v * v)) - 0.45f;
+
                         // Smooth Min (Polynomial)
-                        float k = 0.15f;
-                        float h = Math.Clamp(0.5f + 0.5f * (d2 - d1) / k, 0.0f, 1.0f);
-                        dist = MathHelper.Lerp(d2, d1, h) - k * h * (1.0f - h);
+                        const float k = 0.15f;
+                        float h = Math.Clamp(0.5f + (0.5f * (d2 - d1) / k), 0.0f, 1.0f);
+                        dist = MathHelper.Lerp(d2, d1, h) - (k * h * (1.0f - h));
                         break;
 
                     case DietType.Carnivore: // Virus / Spiky
                         // Radial distance with noise/sine
-                        float len = MathF.Sqrt(u * u + v * v);
+                        float len = MathF.Sqrt((u * u) + (v * v));
                         float angle = MathF.Atan2(v, u);
                         // 12 spikes
-                        float r = 0.55f + 0.15f * MathF.Sin(12 * angle);
+                        float r = 0.55f + (0.15f * MathF.Sin(12 * angle));
                         dist = len - r;
                         break;
                 }
@@ -529,7 +529,7 @@ public static class TextureGenerator
                 {
                     // Alpha for the outer edge AA
                     float alpha = Math.Clamp(1.0f - distPx, 0f, 1f);
-                    
+
                     if (distPx > -borderThickness)
                     {
                         // Border Area (including outer AA)

@@ -10,7 +10,7 @@ namespace Vivarium.Biology;
 public class GenomeFamily
 {
     public GenomeVariant Representative; // The seed variant
-    public List<GenomeVariant> Variants = new List<GenomeVariant>();
+    public List<GenomeVariant> Variants = [];
     public int TotalCount;
     public int Rank;
     public DietType Diet;
@@ -32,7 +32,7 @@ public class GenomeVariant
 
 public class GenomeCensus
 {
-    public List<GenomeFamily> TopFamilies { get; private set; } = new List<GenomeFamily>();
+    public List<GenomeFamily> TopFamilies { get; private set; } = [];
 
     public void AnalyzePopulation(Agent[] agents)
     {
@@ -45,18 +45,18 @@ public class GenomeCensus
 
             ulong hash = Genetics.CalculateGenomeHash(agent.Genome);
 
-            if (!variants.ContainsKey(hash))
+            if (!variants.TryGetValue(hash, out GenomeVariant entry))
             {
-                variants[hash] = new GenomeVariant
+                entry = new GenomeVariant
                 {
                     Hash = hash,
                     Count = 0,
                     Representative = agent,
                     Diet = agent.Diet
                 };
+                variants[hash] = entry;
             }
 
-            var entry = variants[hash];
             entry.Count++;
             variants[hash] = entry;
         }

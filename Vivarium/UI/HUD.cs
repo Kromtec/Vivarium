@@ -27,7 +27,7 @@ public class HUD
         _genePoolWindow = genePoolWindow;
 
         _pixelTexture = new Texture2D(graphics, 1, 1);
-        _pixelTexture.SetData(new[] { Color.White });
+        _pixelTexture.SetData([Color.White]);
     }
 
     public void UpdateInput()
@@ -54,13 +54,13 @@ public class HUD
     public void Draw(SpriteBatch spriteBatch, long tickCount, int agents, int herbs, int omnis, int carnis, int plants, int structures)
     {
         // 1. Calculate Layout
-        int width = 300;
-        int startX = 20;
-        int startY = 20;
+        const int width = 300;
+        const int startX = 20;
+        const int startY = 20;
         int contentHeight = UITheme.Padding;
 
-        int graphHeight = 100;
-        int graphPadding = 10;
+        const int graphHeight = 100;
+        const int graphPadding = 10;
 
         // Header
         contentHeight += 30;
@@ -101,7 +101,7 @@ public class HUD
 
         // -- GRAPH --
         _cursorY += graphPadding;
-        Rectangle graphBounds = new Rectangle(leftX, _cursorY, _panelRect.Width - (UITheme.Padding * 2), graphHeight);
+        Rectangle graphBounds = new(leftX, _cursorY, _panelRect.Width - (UITheme.Padding * 2), graphHeight);
         _simGraph.SetBounds(graphBounds);
         _simGraph.Draw(spriteBatch);
         _cursorY += graphHeight + graphPadding;
@@ -111,8 +111,8 @@ public class HUD
         spriteBatch.DrawString(_font, "POPULATION", new Vector2(leftX, _cursorY + 3), UITheme.HeaderColor);
 
         // Gene Button
-        int buttonWidth = 60;
-        int buttonHeight = 24;
+        const int buttonWidth = 60;
+        const int buttonHeight = 24;
 
         Vector2 headerSize = _font.MeasureString("POPULATION");
         int buttonY = _cursorY + (int)((headerSize.Y - buttonHeight) / 2);

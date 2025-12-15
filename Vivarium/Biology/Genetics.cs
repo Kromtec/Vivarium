@@ -73,7 +73,7 @@ public static partial class Genetics
             int sink = rng.Next(BrainConfig.NeuronCount);
 
             // 2. "Evenly Distributed" Weights
-            float weight = (float)(rng.NextDouble() * 8.0 - 4.0);
+            float weight = (float)((rng.NextDouble() * 8.0) - 4.0);
 
             initialGenome[g] = Gene.CreateConnection(source, sink, weight);
         }
@@ -100,7 +100,7 @@ public static partial class Genetics
         // Map traitIndex 0 -> last pair. Compute base index accordingly.
         // Example: TraitStartIndex=52, pairs=6 => pairs cover indices 52..63
         // traitIndex 0 => base = 52 + (pairs-1 - 0)*2 = 52 + 10 = 62
-        int baseIdx = TraitStartIndex + (pairs - 1 - traitIndex) * 2;
+        int baseIdx = TraitStartIndex + ((pairs - 1 - traitIndex) * 2);
 
         int idxA = Math.Clamp(baseIdx, 0, genome.Length - 1);
         int idxB = Math.Clamp(baseIdx + 1, 0, genome.Length - 1);

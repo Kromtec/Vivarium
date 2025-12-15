@@ -38,7 +38,7 @@ public class GenePoolWindow
     private Rectangle _windowRect;
 
     // Data
-    private GenomeCensus _census; // Use shared census
+    private readonly GenomeCensus _census; // Use shared census
     private GenomeFamily _selectedFamily;
     private int _selectedVariantIndex = 0;
     private DietType? _filterDiet = null; // null = All
@@ -51,8 +51,8 @@ public class GenePoolWindow
     private MouseState _previousMouseState;
 
     // Texture Cache
-    private readonly Dictionary<ulong, Texture2D> _helixCache = new Dictionary<ulong, Texture2D>();
-    private readonly Dictionary<ulong, Texture2D> _gridCache = new Dictionary<ulong, Texture2D>();
+    private readonly Dictionary<ulong, Texture2D> _helixCache = [];
+    private readonly Dictionary<ulong, Texture2D> _gridCache = [];
 
     public GenePoolWindow(GraphicsDevice graphics, SpriteFont font, GenomeCensus census)
     {
@@ -60,7 +60,7 @@ public class GenePoolWindow
         _font = font;
         _census = census;
         _pixelTexture = new Texture2D(graphics, 1, 1);
-        _pixelTexture.SetData(new[] { Color.White });
+        _pixelTexture.SetData([Color.White]);
         _dotTexture = TextureGenerator.CreateCircle(graphics, 32);
     }
 
@@ -194,7 +194,7 @@ public class GenePoolWindow
             Point mousePos = mouse.Position;
 
             // Filter Buttons
-            int buttonHeight = 24;
+            const int buttonHeight = 24;
             int filterY = _windowRect.Y + 45;
             int filterX = _windowRect.X + UITheme.Padding;
 
@@ -226,7 +226,7 @@ public class GenePoolWindow
             // List Area
             int listY = _windowRect.Y + 80;
             int listHeight = _windowRect.Height - 90;
-            Rectangle listRect = new Rectangle(_windowRect.X + UITheme.Padding, listY, ListWidth, listHeight);
+            Rectangle listRect = new(_windowRect.X + UITheme.Padding, listY, ListWidth, listHeight);
 
             if (listRect.Contains(mousePos))
             {
@@ -250,7 +250,7 @@ public class GenePoolWindow
                 int detailsY = _windowRect.Y + 50 + 30; // Header + Padding
 
                 // Info block is now right aligned
-                int infoWidth = 250;
+                const int infoWidth = 250;
                 int infoX = _windowRect.Right - UITheme.Padding - infoWidth;
                 int infoY = detailsY + 75; // ID (40) + Diet (35) spacing
 
@@ -270,8 +270,8 @@ public class GenePoolWindow
             }
 
             // Close Button
-            int closeBtnSize = 20;
-            Rectangle closeRect = new Rectangle(_windowRect.Right - closeBtnSize - UITheme.Padding, _windowRect.Y + UITheme.Padding, closeBtnSize, closeBtnSize);
+            const int closeBtnSize = 20;
+            Rectangle closeRect = new(_windowRect.Right - closeBtnSize - UITheme.Padding, _windowRect.Y + UITheme.Padding, closeBtnSize, closeBtnSize);
             if (closeRect.Contains(mousePos))
             {
                 IsVisible = false;
@@ -291,8 +291,8 @@ public class GenePoolWindow
         if (!IsVisible) return;
 
         // Center Window
-        int width = 1280;
-        int height = 600;
+        const int width = 1280;
+        const int height = 600;
         _windowRect = new Rectangle(
             (_graphics.Viewport.Width - width) / 2,
             (_graphics.Viewport.Height - height) / 2,
@@ -304,12 +304,12 @@ public class GenePoolWindow
         UIComponents.DrawPanel(spriteBatch, _windowRect, _pixelTexture);
 
         // Header
-        Vector2 headerPos = new Vector2(_windowRect.X + UITheme.Padding, _windowRect.Y + UITheme.Padding);
-        string headerText = "GENOME CENSUS (TOP 20 FAMILIES)";
+        Vector2 headerPos = new(_windowRect.X + UITheme.Padding, _windowRect.Y + UITheme.Padding);
+        const string headerText = "GENOME CENSUS (TOP 20 FAMILIES)";
         spriteBatch.DrawString(_font, headerText, new Vector2(headerPos.X, headerPos.Y + 3), UITheme.HeaderColor);
 
         // Filter Buttons
-        int buttonHeight = 24;
+        const int buttonHeight = 24;
         int filterY = _windowRect.Y + 45;
         int filterX = _windowRect.X + UITheme.Padding;
 
@@ -319,8 +319,8 @@ public class GenePoolWindow
         DrawFilterButton(spriteBatch, "C", DietType.Carnivore, filterX + 130, filterY, buttonHeight);
 
         // Close Button
-        int closeBtnSize = 20;
-        Rectangle closeBtnRect = new Rectangle(_windowRect.Right - closeBtnSize - UITheme.Padding, _windowRect.Y + UITheme.Padding, closeBtnSize, closeBtnSize);
+        const int closeBtnSize = 20;
+        Rectangle closeBtnRect = new(_windowRect.Right - closeBtnSize - UITheme.Padding, _windowRect.Y + UITheme.Padding, closeBtnSize, closeBtnSize);
 
         // Use UIComponents for Close Button? It's a bit custom with the 'X'.
         // But we can use DrawButton logic partially or just keep it as is for now to avoid breaking the 'X' centering logic which is specific.
@@ -339,7 +339,7 @@ public class GenePoolWindow
 
         // Scissor Test
         Rectangle currentScissor = _graphics.ScissorRectangle;
-        Rectangle listClipRect = new Rectangle(listX, listY, ListWidth, listHeight);
+        Rectangle listClipRect = new(listX, listY, ListWidth, listHeight);
 
         listClipRect = Rectangle.Intersect(listClipRect, _graphics.Viewport.Bounds);
 
@@ -347,7 +347,7 @@ public class GenePoolWindow
 
         _graphics.ScissorRectangle = listClipRect;
 
-        RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
+        RasterizerState rasterizerState = new() { ScissorTestEnable = true };
         spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, rasterizerState);
 
         var topFamilies = GetFilteredFamilies();
@@ -367,7 +367,7 @@ public class GenePoolWindow
             }
 
             // Identicon (Family Representative)
-            Rectangle iconRect = new Rectangle(listX + 5, itemY + 5, 60, 30);
+            Rectangle iconRect = new(listX + 5, itemY + 5, 60, 30);
             spriteBatch.Draw(family.Identicon, iconRect, Color.White);
 
             // Draw Family Indicator (Dots) if multiple variants
@@ -406,7 +406,7 @@ public class GenePoolWindow
         int totalContentHeight = topFamilies.Count * ItemHeight;
         if (totalContentHeight > listHeight)
         {
-            int scrollbarWidth = 6;
+            const int scrollbarWidth = 6;
             int scrollbarX = listX + ListWidth - scrollbarWidth;
 
             // Track
@@ -431,7 +431,7 @@ public class GenePoolWindow
         {
             int detailsX = listX + ListWidth + 30;
             int detailsY = _windowRect.Y + 50;
-            int detailsWidth = _windowRect.Width - (ListWidth + 30 + UITheme.Padding * 2);
+            int detailsWidth = _windowRect.Width - (ListWidth + 30 + (UITheme.Padding * 2));
 
             // Get the currently selected variant within the family
             if (_selectedVariantIndex >= _selectedFamily.Variants.Count) _selectedVariantIndex = 0;
@@ -441,7 +441,7 @@ public class GenePoolWindow
             detailsY += 30;
 
             // Helix (Variant)
-            Rectangle bigIconRect = new Rectangle(detailsX, detailsY, 256, 128);
+            Rectangle bigIconRect = new(detailsX, detailsY, 256, 128);
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
             spriteBatch.Draw(variant.Identicon, bigIconRect, Color.White);
@@ -449,7 +449,7 @@ public class GenePoolWindow
             spriteBatch.Begin();
 
             // Info Block (Right Aligned)
-            int infoWidth = 250;
+            const int infoWidth = 250;
             int infoX = _windowRect.Right - UITheme.Padding - infoWidth;
             int infoY = detailsY;
 
@@ -479,7 +479,7 @@ public class GenePoolWindow
             if (_selectedFamily.Variants.Count > 1)
             {
                 // Next Button (Rightmost)
-                Rectangle nextRect = new Rectangle(infoX + infoWidth - 30, infoY, 30, 20);
+                Rectangle nextRect = new(infoX + infoWidth - 30, infoY, 30, 20);
                 bool nextHover = nextRect.Contains(mouse.Position);
                 bool nextPress = nextHover && mouse.LeftButton == ButtonState.Pressed;
                 UIComponents.DrawButton(spriteBatch, _font, nextRect, ">", _pixelTexture, nextHover, nextPress);
@@ -488,13 +488,13 @@ public class GenePoolWindow
                 string varInfo = $"({_selectedVariantIndex + 1} / {_selectedFamily.Variants.Count})";
                 Vector2 infoSize = _font.MeasureString(varInfo);
 
-                int textAreaWidth = 150;
-                float textX = nextRect.X - textAreaWidth + (textAreaWidth - infoSize.X) / 2;
+                const int textAreaWidth = 150;
+                float textX = nextRect.X - textAreaWidth + ((textAreaWidth - infoSize.X) / 2);
 
                 spriteBatch.DrawString(_font, varInfo, new Vector2(textX, infoY + 2), UITheme.TextColorPrimary);
 
                 // Prev Button
-                Rectangle prevRect = new Rectangle(nextRect.X - textAreaWidth - 30, infoY, 30, 20);
+                Rectangle prevRect = new(nextRect.X - textAreaWidth - 30, infoY, 30, 20);
                 bool prevHover = prevRect.Contains(mouse.Position);
                 bool prevPress = prevHover && mouse.LeftButton == ButtonState.Pressed;
                 UIComponents.DrawButton(spriteBatch, _font, prevRect, "<", _pixelTexture, prevHover, prevPress);
@@ -528,7 +528,7 @@ public class GenePoolWindow
                 int gridWidth = variant.GenomeGrid.Width;
                 int gridHeight = variant.GenomeGrid.Height;
 
-                int gridX = detailsX + (detailsWidth - gridWidth) / 2;
+                int gridX = detailsX + ((detailsWidth - gridWidth) / 2);
                 int gridY = _windowRect.Bottom - UITheme.Padding - gridHeight;
 
                 spriteBatch.Draw(variant.GenomeGrid, new Vector2(gridX, gridY), Color.White);
@@ -543,9 +543,9 @@ public class GenePoolWindow
 
     private void DrawFamilyDots(SpriteBatch sb, Rectangle iconRect)
     {
-        int dotSize = 6;
-        int spacing = 2;
-        int totalWidth = (dotSize * 3) + (spacing * 2);
+        const int dotSize = 6;
+        const int spacing = 2;
+        const int totalWidth = (dotSize * 3) + (spacing * 2);
 
         int startX = iconRect.Right - totalWidth - 2;
         int startY = iconRect.Bottom - dotSize - 2;
@@ -568,7 +568,7 @@ public class GenePoolWindow
     private void DrawFilterButton(SpriteBatch sb, string label, DietType? type, int x, int y, int height, int width = 35)
     {
         bool isSelected = _filterDiet == type;
-        Rectangle rect = new Rectangle(x, y, width, height);
+        Rectangle rect = new(x, y, width, height);
 
         Color? overrideColor = null;
         if (type.HasValue && isSelected)
@@ -595,8 +595,8 @@ public class GenePoolWindow
     {
         sb.DrawString(_font, label, new Vector2(x, y), UITheme.TextColorSecondary);
 
-        int barWidth = 150;
-        int barHeight = 10;
+        const int barWidth = 150;
+        const int barHeight = 10;
 
         int windowRight = _windowRect.Right - UITheme.Padding;
         int barX = windowRight - barWidth;

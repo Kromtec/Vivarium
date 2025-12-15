@@ -5,7 +5,7 @@ using Vivarium.World;
 
 namespace Vivarium.Engine;
 
-public class Simulation
+public class Simulation(int seed = 64)
 {
     // Simulation Constants
     public const int GridHeight = 96;
@@ -15,25 +15,16 @@ public class Simulation
     public const int PlantCount = GridWidth * GridHeight / 8;
     public const int StructureCount = GridWidth * GridHeight / 32;
 
-    public Agent[] AgentPopulation { get; private set; }
-    public Plant[] PlantPopulation { get; private set; }
-    public Structure[] StructurePopulation { get; private set; }
-    public GridCell[,] GridMap { get; private set; }
-    public Random Rng { get; private set; }
+    public Agent[] AgentPopulation { get; private set; } = new Agent[AgentCount];
+    public Plant[] PlantPopulation { get; private set; } = new Plant[PlantCount];
+    public Structure[] StructurePopulation { get; private set; } = new Structure[StructureCount];
+    public GridCell[,] GridMap { get; private set; } = new GridCell[GridWidth, GridHeight];
+    public Random Rng { get; private set; } = new Random(seed);
     public long TickCount { get; private set; }
 
     public int AliveAgents { get; private set; }
     public int AlivePlants { get; private set; }
     public int AliveStructures { get; private set; }
-
-    public Simulation(int seed = 64)
-    {
-        Rng = new Random(seed);
-        AgentPopulation = new Agent[AgentCount];
-        PlantPopulation = new Plant[PlantCount];
-        StructurePopulation = new Structure[StructureCount];
-        GridMap = new GridCell[GridWidth, GridHeight];
-    }
 
     public void Initialize()
     {

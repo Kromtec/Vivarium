@@ -150,7 +150,7 @@ public static class WorldSensor
             for (int dx = -radius; dx <= radius; dx++)
             {
                 if (dx == 0 && dy == 0) continue;
-                
+
                 int nx = centerX + dx;
                 if (nx < 0) nx += gridWidth;
                 else if (nx >= gridWidth) nx -= gridWidth;
@@ -261,8 +261,8 @@ public static class WorldSensor
                     localCells++;
                     switch (cell.Type)
                     {
-                        case EntityType.Agent: 
-                            localAgents++; 
+                        case EntityType.Agent:
+                            localAgents++;
                             // Threat Detection (integrated into scan)
                             if (!threatDetected && agentPopulation != null)
                             {
@@ -337,7 +337,7 @@ public static class WorldSensor
         float angle = MathF.Atan2(dy, dx);
 
         // Rotate so North (-PI/2) becomes 0.
-        float rotated = angle + MathF.PI / 2f;
+        float rotated = angle + (MathF.PI / 2f);
 
         // Wrap to 0..2PI range
         if (rotated < 0) rotated += 2f * MathF.PI;

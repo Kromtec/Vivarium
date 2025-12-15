@@ -9,9 +9,9 @@ using Vivarium.World;
 
 namespace Vivarium.Visuals;
 
-public class WorldRenderer
+public class WorldRenderer(GraphicsDevice graphicsDevice)
 {
-    private readonly GraphicsDevice _graphicsDevice;
+    private readonly GraphicsDevice _graphicsDevice = graphicsDevice;
     private SpriteBatch _spriteBatch;
 
     // Textures
@@ -26,11 +26,6 @@ public class WorldRenderer
     private Texture2D[] _structureTextures; // Array for 16 variations
     private Texture2D[] _plantTextures; // Array for plant variations
     private Texture2D[,] _agentTextures; // [DietType, TraitIndex]
-
-    public WorldRenderer(GraphicsDevice graphicsDevice)
-    {
-        _graphicsDevice = graphicsDevice;
-    }
 
     public void LoadContent()
     {
@@ -59,7 +54,7 @@ public class WorldRenderer
 
         // Generate Plant Textures (Variations)
         _plantTextures = new Texture2D[4];
-        int plantBorder = 10; // Much thicker outline
+        const int plantBorder = 10; // Much thicker outline
         _plantTextures[0] = TextureGenerator.CreateOrganicShape(_graphicsDevice, 64, 5, 0.2f, plantBorder); // Standard Flower
         _plantTextures[1] = TextureGenerator.CreateOrganicShape(_graphicsDevice, 64, 3, 0.15f, plantBorder); // Triangle/Tulip
         _plantTextures[2] = TextureGenerator.CreateOrganicShape(_graphicsDevice, 64, 6, 0.25f, plantBorder); // Complex Flower
@@ -96,12 +91,12 @@ public class WorldRenderer
         // Calculate visible area in world coordinates
         Vector2 topLeft = camera.ScreenToWorld(Vector2.Zero);
         Vector2 bottomRight = camera.ScreenToWorld(new Vector2(_graphicsDevice.Viewport.Width, _graphicsDevice.Viewport.Height));
-        Rectangle viewRect = new Rectangle((int)topLeft.X, (int)topLeft.Y, (int)(bottomRight.X - topLeft.X), (int)(bottomRight.Y - topLeft.Y));
+        Rectangle viewRect = new((int)topLeft.X, (int)topLeft.Y, (int)(bottomRight.X - topLeft.X), (int)(bottomRight.Y - topLeft.Y));
 
         // Determine which copies of the world we need to draw
-        int[] offsets = { -1, 0, 1 };
+        int[] offsets = [-1, 0, 1];
 
-        RenderStats stats = new RenderStats();
+        RenderStats stats = new();
         bool statsCaptured = false;
 
         foreach (int ox in offsets)
@@ -112,7 +107,7 @@ public class WorldRenderer
                 int worldOffsetX = ox * worldWidth;
                 int worldOffsetY = oy * worldHeight;
 
-                Rectangle worldRect = new Rectangle(worldOffsetX, worldOffsetY, worldWidth, worldHeight);
+                Rectangle worldRect = new(worldOffsetX, worldOffsetY, worldWidth, worldHeight);
 
                 if (viewRect.Intersects(worldRect))
                 {
@@ -247,7 +242,7 @@ public class WorldRenderer
             if (index >= 0 && index < agents.Length && agents[index].Id == inspector.SelectedEntityId && agents[index].IsAlive)
             {
                 ref Agent agent = ref agents[index];
-                
+
                 // Interpolation Logic
                 float offsetX = 0;
                 float offsetY = 0;
@@ -321,7 +316,7 @@ public class WorldRenderer
         float halfCellSize = cellSize * 0.5f;
         Span<Structure> structurePopulationSpan = structures.AsSpan();
         livingStructures = structurePopulationSpan.Length;
-        
+
         int gridWidth = gridMap.GetLength(0);
         int gridHeight = gridMap.GetLength(1);
 
@@ -354,9 +349,9 @@ public class WorldRenderer
             float structScale = ((float)cellSize / texture.Width);
 
             // Calculate screen position
-            Vector2 position = new Vector2(
-                structure.X * cellSize + halfCellSize,
-                structure.Y * cellSize + halfCellSize
+            Vector2 position = new(
+                (structure.X * cellSize) + halfCellSize,
+                (structure.Y * cellSize) + halfCellSize
             );
             _spriteBatch.Draw(
                 texture,
@@ -400,9 +395,9 @@ public class WorldRenderer
             float finalScale = baseScale * (0.3f + (0.7f * ageRatio));
 
             // Calculate screen position
-            Vector2 position = new Vector2(
-                plant.X * cellSize + halfCellSize,
-                plant.Y * cellSize + halfCellSize
+            Vector2 position = new(
+                (plant.X * cellSize) + halfCellSize,
+                (plant.Y * cellSize) + halfCellSize
             );
 
             // Select variant based on index (deterministic variation)
@@ -432,7 +427,7 @@ public class WorldRenderer
         // Calculate the center of our source texture (needed for pivot point)
         // Assuming all agent textures are 64x64
         var textureCenter = new Vector2(32, 32);
-        
+
         float baseScale = (float)cellSize / 64f; // 64 is texture size
         float halfCellSize = cellSize * 0.5f;
 
@@ -472,21 +467,21 @@ public class WorldRenderer
             // 0: Strength, 1: Bravery, 2: Metabolism, 3: Perception, 4: Speed, 5: Constitution
             int traitIndex = 0;
             float maxVal = Math.Abs(agent.Strength);
-            
+
             if (Math.Abs(agent.Bravery) > maxVal) { maxVal = Math.Abs(agent.Bravery); traitIndex = 1; }
             if (Math.Abs(agent.MetabolicEfficiency) > maxVal) { maxVal = Math.Abs(agent.MetabolicEfficiency); traitIndex = 2; }
             if (Math.Abs(agent.Perception) > maxVal) { maxVal = Math.Abs(agent.Perception); traitIndex = 3; }
             if (Math.Abs(agent.Speed) > maxVal) { maxVal = Math.Abs(agent.Speed); traitIndex = 4; }
-            if (Math.Abs(agent.Constitution) > maxVal) { maxVal = Math.Abs(agent.Constitution); traitIndex = 5; }
+            if (Math.Abs(agent.Constitution) > maxVal) { traitIndex = 5; }
 
             // Scale Modifiers
             // Strength/Constitution -> Bigger
             float sizeMod = 1.0f + (agent.Strength * 0.2f) + (agent.Constitution * 0.1f);
-            
+
             // Speed -> Elongation (Scale X vs Y)
-            float stretch = 1.0f + (Math.Max(0, agent.Speed) * 0.5f); 
-            
-            Vector2 scale = new Vector2(baseScale * growthFactor * sizeMod * stretch, baseScale * growthFactor * sizeMod);
+            float stretch = 1.0f + (Math.Max(0, agent.Speed) * 0.5f);
+
+            Vector2 scale = new(baseScale * growthFactor * sizeMod * stretch, baseScale * growthFactor * sizeMod);
 
             // --- ROTATION LOGIC ---
             float rotation = 0f;
@@ -512,18 +507,18 @@ public class WorldRenderer
             {
                 // t goes from 1.0 (start of move) to 0.0 (end of move)
                 float t = (float)agent.MovementCooldown / agent.TotalMovementCooldown;
-                
+
                 // We want to draw at: CurrentPos - (MoveVector * t)
                 // MoveVector is (dx, dy) * cellSize
-                
+
                 offsetX = -(dx * cellSize * t);
                 offsetY = -(dy * cellSize * t);
             }
 
             // Calculate screen position
-            Vector2 position = new Vector2(
-                (agent.X * cellSize + halfCellSize) + offsetX,
-                (agent.Y * cellSize + halfCellSize) + offsetY
+            Vector2 position = new(
+                (agent.X * cellSize) + halfCellSize + offsetX,
+                (agent.Y * cellSize) + halfCellSize + offsetY
             );
 
             Texture2D texture = _agentTextures[(int)agent.Diet, traitIndex];
@@ -587,12 +582,12 @@ public class WorldRenderer
                 offsetY = -(dy * cellSize * t);
             }
 
-            Vector2 position = new Vector2(
-                (agent.X * cellSize + halfCellSize) + offsetX,
-                (agent.Y * cellSize + halfCellSize) + offsetY
+            Vector2 position = new(
+                (agent.X * cellSize) + halfCellSize + offsetX,
+                (agent.Y * cellSize) + halfCellSize + offsetY
             );
 
-            float indicatorOffset = (cellSize * 0.85f) * growthFactor;
+            float indicatorOffset = cellSize * 0.85f * growthFactor;
             float indicatorScaleFactor = 0.65f + (0.35f * ageRatio);
 
             // --- ATTACK VISUALIZATION ---
@@ -601,7 +596,7 @@ public class WorldRenderer
                 float alpha = agent.AttackVisualTimer / 15f; // Fade out
                 float rotation = MathF.Atan2(agent.LastAttackDirY, agent.LastAttackDirX);
 
-                Vector2 dir = new Vector2(agent.LastAttackDirX, agent.LastAttackDirY);
+                Vector2 dir = new(agent.LastAttackDirX, agent.LastAttackDirY);
                 if (dir != Vector2.Zero) dir.Normalize();
 
                 Vector2 offset = dir * indicatorOffset;
@@ -624,7 +619,7 @@ public class WorldRenderer
             {
                 float alpha = agent.FleeVisualTimer / 15f; // Fade out
 
-                Vector2 dir = new Vector2(agent.LastFleeDirX, agent.LastFleeDirY);
+                Vector2 dir = new(agent.LastFleeDirX, agent.LastFleeDirY);
                 if (dir != Vector2.Zero) dir.Normalize();
 
                 Vector2 offset = dir * indicatorOffset;
@@ -682,14 +677,14 @@ public class WorldRenderer
         float halfCellSize = cellSize * 0.5f;
 
         // Calculate center and radius for selected agent
-        Vector2 selectedCenter = new Vector2(
+        Vector2 selectedCenter = new(
             (selectedAgent.X * cellSize) + halfCellSize,
             (selectedAgent.Y * cellSize) + halfCellSize
         );
 
         float selectedAgeRatio = Math.Min(selectedAgent.Age * agentAgeGrowthFactor, 1.0f);
         float selectedGrowth = 0.3f + (0.7f * selectedAgeRatio);
-        float selectedRadius = (cellSize * selectedGrowth) * 0.5f;
+        float selectedRadius = cellSize * selectedGrowth * 0.5f;
 
         Span<Agent> agentPopulationSpan = agents.AsSpan();
         for (int i = 0; i < agentPopulationSpan.Length; i++)
@@ -700,14 +695,14 @@ public class WorldRenderer
             // Check Kinship
             if (selectedAgent.IsDirectlyRelatedTo(ref other))
             {
-                Vector2 otherCenter = new Vector2(
+                Vector2 otherCenter = new(
                     (other.X * cellSize) + halfCellSize,
                     (other.Y * cellSize) + halfCellSize
                 );
 
                 float otherAgeRatio = Math.Min(other.Age * agentAgeGrowthFactor, 1.0f);
                 float otherGrowth = 0.3f + (0.7f * otherAgeRatio);
-                float otherRadius = (cellSize * otherGrowth) * 0.5f;
+                float otherRadius = cellSize * otherGrowth * 0.5f;
 
                 // Calculate direction and distance
                 Vector2 direction = otherCenter - selectedCenter;

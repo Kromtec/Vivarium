@@ -4,11 +4,11 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Vivarium.Engine;
 
-public class Camera2D
+public class Camera2D(GraphicsDevice graphicsDevice)
 {
-    private readonly GraphicsDevice _graphicsDevice;
+    private readonly GraphicsDevice _graphicsDevice = graphicsDevice;
 
-    public Vector2 Position { get; set; }
+    public Vector2 Position { get; set; } = Vector2.Zero;
 
     public float Zoom { get; set; } = 1.0f;
 
@@ -19,12 +19,6 @@ public class Camera2D
     private bool _isDragging;
 
     private int _previousScrollValue;
-
-    public Camera2D(GraphicsDevice graphicsDevice)
-    {
-        _graphicsDevice = graphicsDevice;
-        Position = Vector2.Zero;
-    }
 
     public Matrix GetTransformation()
     {
@@ -53,7 +47,7 @@ public class Camera2D
                 Zoom = MathHelper.Clamp(Zoom, MinZoom, MaxZoom);
             }
 
-            Vector2 currentMousePos = new Vector2(mouseState.X, mouseState.Y);
+            Vector2 currentMousePos = new(mouseState.X, mouseState.Y);
 
             if (mouseState.RightButton == ButtonState.Pressed || mouseState.MiddleButton == ButtonState.Pressed)
             {

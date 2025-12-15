@@ -12,7 +12,7 @@ public static class ActivityLog
         public long Tick;
     }
 
-    private static readonly List<LogEntry> _entries = new List<LogEntry>();
+    private static readonly List<LogEntry> _entries = [];
     private static long _targetAgentId = -1;
     private static bool _isLoggingEnabled = false;
     private static long _currentTick = 0;
@@ -58,17 +58,17 @@ public static class ActivityLog
     {
         if (_entries.Count == 0) return;
 
-        int width = 600;
-        int lineHeight = 20;
-        int height = (MaxEntries * lineHeight) + 20;
+        const int width = 600;
+        const int lineHeight = 20;
+        const int height = (MaxEntries * lineHeight) + 20;
         int x = (graphics.Viewport.Width - width) / 2;
         int y = graphics.Viewport.Height - height - 50;
 
         // Draw Background
-        Texture2D pixel = new Texture2D(graphics, 1, 1);
-        pixel.SetData(new[] { Color.White });
+        Texture2D pixel = new(graphics, 1, 1);
+        pixel.SetData([Color.White]);
 
-        Rectangle bgRect = new Rectangle(x, y, width, height);
+        Rectangle bgRect = new(x, y, width, height);
         sb.Draw(pixel, bgRect, Color.Black * 0.7f);
         // Removed Border
 

@@ -4,15 +4,10 @@ namespace Vivarium.Biology;
 
 // A Gene is essentially a connection in the neural network.
 // It is encoded into a single 32-bit integer for maximum performance and easy mutation.
-public readonly struct Gene
+public readonly struct Gene(uint dna)
 {
     // The raw genetic data
-    public readonly uint Dna;
-
-    public Gene(uint dna)
-    {
-        Dna = dna;
-    }
+    public readonly uint Dna = dna;
 
     // --- DECODING THE DNA ---
 

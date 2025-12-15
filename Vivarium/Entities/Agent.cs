@@ -43,7 +43,7 @@ public struct Agent : IGridEntity
 
     public Color OriginalColor
     {
-        get => originalColor;
+        readonly get => originalColor;
         set
         {
             originalColor = value;
@@ -524,8 +524,7 @@ public struct Agent : IGridEntity
                 int victimIndex = gridMap[nx, ny].Index;
                 ref Agent victim = ref agentPopulation[victimIndex];
 
-                float damageDealt, selfDamage;
-                if (TryAttackAgent(ref victim, gridMap, dx, dy, out damageDealt, out selfDamage))
+                if (TryAttackAgent(ref victim, gridMap, dx, dy, out float damageDealt, out float selfDamage))
                 {
                     ChangeEnergy(-0.5f, gridMap); // Reduced cost for hunting
                     AttackCooldown = 30; // Slightly slower attacks to give prey a chance
@@ -544,8 +543,7 @@ public struct Agent : IGridEntity
                 int plantIndex = gridMap[nx, ny].Index;
                 ref Plant plant = ref plantPopulation[plantIndex];
 
-                float damageDealt;
-                if (TryAttackPlant(ref plant, gridMap, dx, dy, out damageDealt))
+                if (TryAttackPlant(ref plant, gridMap, dx, dy, out float damageDealt))
                 {
                     ChangeEnergy(-2.0f, gridMap);
                     AttackCooldown = 60;

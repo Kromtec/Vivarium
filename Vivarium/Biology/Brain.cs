@@ -48,7 +48,6 @@ public static class Brain
         // --- OPTIMIZATION: Combined Scan ---
         // We scan both local area (radius 2) and directional area (variable) in one pass.
         // Also detects threats to avoid a third pass.
-        bool threatDetected;
         WorldSensor.ScanSensors(
             gridMap,
             agent.X,
@@ -64,7 +63,7 @@ public static class Brain
             localStructIdx: (int)SensorType.StructureDensity,
             self: ref agent,
             agentPopulation: agentPopulation,
-            threatDetected: out threatDetected
+            threatDetected: out bool threatDetected
         );
 
         // Trait sensors (derived from genome and precomputed on the Agent)
@@ -358,8 +357,7 @@ public static class Brain
             {
                 ref Plant plant = ref plantPopulationSpan[gridMap[pendingX, pendingY].Index];
 
-                float damageDealt;
-                agent.TryAttackPlant(ref plant, gridMap, moveX, moveY, out damageDealt);
+                agent.TryAttackPlant(ref plant, gridMap, moveX, moveY, out float damageDealt);
                 var actionText = agent.Diet != DietType.Carnivore ? "Ate" : "Trampled";
                 ActivityLog.Log(agent.Id, $"Action: {actionText} Plant #{plant.Id} in the {dirText} and made {damageDealt:F1} damage.");
 
@@ -378,8 +376,7 @@ public static class Brain
                 int victimIndex = gridMap[pendingX, pendingY].Index;
                 ref Agent victim = ref agentPopulationSpan[victimIndex];
 
-                float damageDealt, selfDamage;
-                agent.TryAttackAgent(ref victim, gridMap, moveX, moveY, out damageDealt, out selfDamage);
+                agent.TryAttackAgent(ref victim, gridMap, moveX, moveY, out float damageDealt, out float selfDamage);
 
                 // Log for Victim
                 ActivityLog.Log(victim.Id, $"Event: Attacked by Agent #{agent.Id} for {damageDealt:F1} damage.");

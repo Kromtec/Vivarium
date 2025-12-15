@@ -23,7 +23,7 @@ public struct Plant : IGridEntity
     private Color originalColor;
     public Color OriginalColor
     {
-        get => originalColor;
+        readonly get => originalColor;
         set
         {
             originalColor = value;

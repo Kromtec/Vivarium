@@ -66,14 +66,14 @@ public static class Program
         simulation.Initialize();
 
         // Setup Logging
-        string logDir = "Logs";
+        const string logDir = "Logs";
         if (!Directory.Exists(logDir))
         {
             Directory.CreateDirectory(logDir);
         }
         string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
         string logFile = Path.Combine(logDir, $"simulation_run_{timestamp}_{seed}_{durationTicks}.csv");
-        
+
         // Header
         File.WriteAllText(logFile, "Tick,Agents,Herbivores,Omnivores,Carnivores,Plants,Structures" + Environment.NewLine);
 

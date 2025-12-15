@@ -12,7 +12,7 @@ public class SimulationGraph
     private readonly Queue<float> _plantHistory = new();
     private readonly int _maxHistoryPoints = 200;
 
-    private Texture2D _pixelTexture;
+    private readonly Texture2D _pixelTexture;
     private Rectangle _bounds;
     private float _timer;
     private const float UpdateInterval = 0.1f;
@@ -20,7 +20,7 @@ public class SimulationGraph
     public SimulationGraph(GraphicsDevice graphicsDevice, SpriteFont font)
     {
         _pixelTexture = new Texture2D(graphicsDevice, 1, 1);
-        _pixelTexture.SetData(new[] { Color.White });
+        _pixelTexture.SetData([Color.White]);
     }
 
     public void SetBounds(Rectangle bounds)

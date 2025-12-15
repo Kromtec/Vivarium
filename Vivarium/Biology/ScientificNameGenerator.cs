@@ -26,15 +26,15 @@ public static class ScientificNameGenerator
         { "Constitution", (new[] { "aeternus", "solidus", "perennis" }, new[] { "fragilis", "caducus", "mortalis" }, "Enduring", "Fragile") }
     };
 
-    private static readonly string[] GenericSpeciesNames = {
+    private static readonly string[] GenericSpeciesNames = [
         "vulgaris", "communis", "simplex", "variabilis", "mirabilis", "notabilis", "modestus"
-    };
+    ];
 
     public static (string ScientificName, string Translation) GenerateFamilyName(Agent agent)
     {
         // Deterministic RNG based on genome hash
         ulong hash = Genetics.CalculateGenomeHash(agent.Genome);
-        Random rng = new Random((int)(hash & 0xFFFFFFFF));
+        Random rng = new((int)(hash & 0xFFFFFFFF));
 
         // 1. Genus (Diet + Primary Trait)
         var dietData = DietPrefixes[agent.Diet];
@@ -46,12 +46,11 @@ public static class ScientificNameGenerator
         string suffix = "morphus";
         string traitMeaning = "Form";
 
-        if (TraitSuffixes.ContainsKey(traitName))
+        if (TraitSuffixes.TryGetValue(traitName, out (string[] Pos, string[] Neg, string PosMeaning, string NegMeaning) traitDataPrimary))
         {
-            var traitData = TraitSuffixes[traitName];
-            var roots = isPositive ? traitData.Pos : traitData.Neg;
+            var roots = isPositive ? traitDataPrimary.Pos : traitDataPrimary.Neg;
             suffix = roots[rng.Next(roots.Length)];
-            traitMeaning = isPositive ? traitData.PosMeaning : traitData.NegMeaning;
+            traitMeaning = isPositive ? traitDataPrimary.PosMeaning : traitDataPrimary.NegMeaning;
         }
 
         // Combine to form Genus (e.g., Carnovelox)
@@ -63,12 +62,11 @@ public static class ScientificNameGenerator
 
         var (secTraitName, secIsPositive, secIntensity) = GetDominantTrait(agent, 1); // 1 = Second most dominant
 
-        if (secIntensity > 0.1f && TraitSuffixes.ContainsKey(secTraitName))
+        if (secIntensity > 0.1f && TraitSuffixes.TryGetValue(secTraitName, out (string[] Pos, string[] Neg, string PosMeaning, string NegMeaning) traitDataSecondary))
         {
-            var traitData = TraitSuffixes[secTraitName];
-            var roots = secIsPositive ? traitData.Pos : traitData.Neg;
+            var roots = secIsPositive ? traitDataSecondary.Pos : traitDataSecondary.Neg;
             species = roots[rng.Next(roots.Length)];
-            speciesMeaning = secIsPositive ? traitData.PosMeaning : traitData.NegMeaning;
+            speciesMeaning = secIsPositive ? traitDataSecondary.PosMeaning : traitDataSecondary.NegMeaning;
         }
         else
         {
@@ -83,11 +81,11 @@ public static class ScientificNameGenerator
 
     public static string GenerateVariantName(int variantIndex)
     {
-        string[] greekLetters = {
+        string[] greekLetters = [
             "alpha", "beta", "gamma", "delta", "epsilon",
             "zeta", "eta", "theta", "iota", "kappa",
             "lambda", "mu", "nu", "xi", "omicron"
-        };
+        ];
 
         if (variantIndex < greekLetters.Length)
         {

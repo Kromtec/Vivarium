@@ -32,9 +32,9 @@ public static class UIComponents
         if (!string.IsNullOrEmpty(text))
         {
             Vector2 size = font.MeasureString(text);
-            Vector2 pos = new Vector2(
-                rect.X + (rect.Width - size.X) / 2,
-                rect.Y + (rect.Height - size.Y) / 2 + 2 // +2 for vertical centering adjustment
+            Vector2 pos = new(
+                rect.X + ((rect.Width - size.X) / 2),
+                rect.Y + ((rect.Height - size.Y) / 2) + 2 // +2 for vertical centering adjustment
             );
             sb.DrawString(font, text, pos, Color.White);
         }
@@ -49,12 +49,12 @@ public static class UIComponents
         }
 
         // Bar Area
-        int barHeight = 10;
+        const int barHeight = 10;
         int barY = rect.Y + 5; // Offset from label
         if (string.IsNullOrEmpty(label)) barY = rect.Y; // If no label, start at top
 
         // Background
-        Rectangle barRect = new Rectangle(rect.X + (string.IsNullOrEmpty(label) ? 0 : 100), barY, rect.Width - (string.IsNullOrEmpty(label) ? 0 : 100), barHeight);
+        Rectangle barRect = new(rect.X + (string.IsNullOrEmpty(label) ? 0 : 100), barY, rect.Width - (string.IsNullOrEmpty(label) ? 0 : 100), barHeight);
         // If label is present, we assume a fixed width for label area or passed rect includes it.
         // The Inspector uses a fixed layout: Label at X, Bar at Right-100.
         // Let's make this flexible. If label is provided, we draw it and push bar to right.

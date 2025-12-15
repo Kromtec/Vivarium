@@ -13,8 +13,8 @@ public static class GenomeHelper
     /// </summary>
     public static Texture2D GenerateHelixTexture(GraphicsDevice graphics, Agent agent)
     {
-        int width = 256; // Increased resolution
-        int height = 128;
+        const int width = 256; // Increased resolution
+        const int height = 128;
         var texture = new Texture2D(graphics, width, height);
         var colors = new Color[width * height];
 
@@ -25,7 +25,7 @@ public static class GenomeHelper
 
         // Traits to visualize as bonds
         // Added TrophicBias back to have 7 traits for the new layout
-        float[] traits = new float[] {
+        float[] traits = [
             agent.Strength,
             agent.Bravery,
             agent.MetabolicEfficiency,
@@ -33,20 +33,20 @@ public static class GenomeHelper
             agent.Speed,
             agent.TrophicBias,
             agent.Constitution
-        };
+        ];
 
-        float amplitude = (height / 2f) - 16; // More padding
-        float centerY = height / 2f;
+        const float amplitude = (height / 2f) - 16; // More padding
+        const float centerY = height / 2f;
 
         // Range: PI/2 to 5PI/2 (2 PI total width)
         // This gives: Open Start -> Twist -> Bubble -> Twist -> Open End
-        float totalPhase = 2f * MathF.PI;
-        float frequency = totalPhase / width;
-        float phaseShift = MathF.PI / 2;
+        const float totalPhase = 2f * MathF.PI;
+        const float frequency = totalPhase / width;
+        const float phaseShift = MathF.PI / 2;
 
         // 1. Draw Bonds (Rungs)
         // 2 in Start, 3 in Middle, 2 in End
-        float[] bondPhases = new float[] {
+        float[] bondPhases = [
             // Start (Open)
             0.66f * MathF.PI,
             0.83f * MathF.PI,
@@ -57,7 +57,7 @@ public static class GenomeHelper
             // End (Open)
             2.16f * MathF.PI,
             2.33f * MathF.PI
-        };
+        ];
 
         for (int i = 0; i < traits.Length; i++)
         {
@@ -69,17 +69,17 @@ public static class GenomeHelper
             float val = traits[i];
 
             // Desaturated colors
-            Color bondColor = new Color(200, 200, 200);
+            Color bondColor = new(200, 200, 200);
             if (val > 0.3f) bondColor = new Color(110, 190, 110); // Muted Green
             else if (val < -0.3f) bondColor = new Color(210, 90, 90); // Muted Red
 
             float angle = (x * frequency) + phaseShift;
-            float y1 = centerY + MathF.Sin(angle) * amplitude;
-            float y2 = centerY + MathF.Sin(angle + MathF.PI) * amplitude;
+            float y1 = centerY + (MathF.Sin(angle) * amplitude);
+            float y2 = centerY + (MathF.Sin(angle + MathF.PI) * amplitude);
 
             // We attach to Strand 1 (y1)
             // Consistent gap calculation
-            float gapSize = 14f; // Fixed gap in pixels
+            const float gapSize = 14f; // Fixed gap in pixels
             float dist = Math.Abs(y2 - y1);
 
             // Ensure we have enough space
@@ -90,22 +90,22 @@ public static class GenomeHelper
             float yEnd = y2 - (dir * gapSize);
 
             // Draw rounded bond (Capsule)
-            int bondRadius = 4; // Increased width to ensure consistent rendering
+            const int bondRadius = 4; // Increased width to ensure consistent rendering
             DrawVerticalCapsule(colors, width, height, x, (int)y1, (int)yEnd, bondColor, bondRadius);
         }
 
         // 2. Draw Strands (Sine Waves) - Thicker
-        int thicknessRadius = 5; // Increased to 5 to cover bond connections (was 3)
+        const int thicknessRadius = 5; // Increased to 5 to cover bond connections (was 3)
         for (int x = 0; x < width; x++)
         {
             float angle = (x * frequency) + phaseShift;
 
             // Strand 1
-            float y1 = centerY + MathF.Sin(angle) * amplitude;
+            float y1 = centerY + (MathF.Sin(angle) * amplitude);
             DrawCircle(colors, width, height, x, (int)y1, strandColor, thicknessRadius);
 
             // Strand 2
-            float y2 = centerY + MathF.Sin(angle + MathF.PI) * amplitude;
+            float y2 = centerY + (MathF.Sin(angle + MathF.PI) * amplitude);
             DrawCircle(colors, width, height, x, (int)y2, strandColor, thicknessRadius);
         }
 
@@ -125,8 +125,8 @@ public static class GenomeHelper
         const int gap = 2;
         const int totalCellSize = cellSize + gap;
 
-        int width = cols * totalCellSize;
-        int height = rows * totalCellSize;
+        const int width = cols * totalCellSize;
+        const int height = rows * totalCellSize;
 
         var texture = new Texture2D(graphics, width, height);
         var colors = new Color[width * height];
@@ -140,7 +140,7 @@ public static class GenomeHelper
         {
             for (int x = 0; x < cols; x++)
             {
-                int geneIndex = y * cols + x;
+                int geneIndex = (y * cols) + x;
                 Color cellColor = UITheme.WeightNeutral;
 
                 if (geneIndex < genome.Length)
@@ -157,7 +157,7 @@ public static class GenomeHelper
                 {
                     for (int px = 0; px < cellSize; px++)
                     {
-                        colors[(pyStart + py) * width + (pxStart + px)] = cellColor;
+                        colors[((pyStart + py) * width) + (pxStart + px)] = cellColor;
                     }
                 }
             }
@@ -180,7 +180,7 @@ public static class GenomeHelper
                 int px = cx + dx;
                 if (px >= 0 && px < w && y >= 0 && y < h)
                 {
-                    colors[y * w + px] = c;
+                    colors[(y * w) + px] = c;
                 }
             }
         }
@@ -196,13 +196,13 @@ public static class GenomeHelper
         {
             for (int dx = -radius; dx <= radius; dx++)
             {
-                if (dx * dx + dy * dy <= radius * radius)
+                if ((dx * dx) + (dy * dy) <= radius * radius)
                 {
                     int x = cx + dx;
                     int y = cy + dy;
                     if (x >= 0 && x < w && y >= 0 && y < h)
                     {
-                        colors[y * w + x] = c;
+                        colors[(y * w) + x] = c;
                     }
                 }
             }

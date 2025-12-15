@@ -14,7 +14,7 @@ public class TitleScreen
     private Texture2D[] _structureTextures;
     private Texture2D[] _plantTextures;
     private Texture2D _pixelTexture;
-    
+
     private struct PlantDecoration
     {
         public Vector2 RelativePosition;
@@ -24,76 +24,76 @@ public class TitleScreen
         public Color Color;
     }
 
-    private List<PlantDecoration> _decorations = new();
+    private readonly List<PlantDecoration> _decorations = [];
 
     // Letter definitions (7x9 grids)
     private static readonly Dictionary<char, string[]> Letters = new()
     {
-        {'V', new[] { 
-            "1000001", 
-            "1000001", 
-            "1000001", 
-            "1000001", 
-            "0100010", 
-            "0100010", 
-            "0010100", 
-            "0010100", 
-            "0001000" 
+        {'V', new[] {
+            "1000001",
+            "1000001",
+            "1000001",
+            "1000001",
+            "0100010",
+            "0100010",
+            "0010100",
+            "0010100",
+            "0001000"
         }},
-        {'I', new[] { 
-            "0111110", 
-            "0001000", 
-            "0001000", 
-            "0001000", 
-            "0001000", 
-            "0001000", 
-            "0001000", 
-            "0001000", 
-            "0111110" 
+        {'I', new[] {
+            "0111110",
+            "0001000",
+            "0001000",
+            "0001000",
+            "0001000",
+            "0001000",
+            "0001000",
+            "0001000",
+            "0111110"
         }},
-        {'A', new[] { 
-            "0011100", 
-            "0100010", 
-            "1000001", 
-            "1000001", 
-            "1111111", 
-            "1000001", 
-            "1000001", 
-            "1000001", 
-            "1000001" 
+        {'A', new[] {
+            "0011100",
+            "0100010",
+            "1000001",
+            "1000001",
+            "1111111",
+            "1000001",
+            "1000001",
+            "1000001",
+            "1000001"
         }},
-        {'R', new[] { 
-            "1111110", 
-            "1000001", 
-            "1000001", 
-            "1000001", 
-            "1111110", 
-            "1001000", 
-            "1000100", 
-            "1000010", 
-            "1000001" 
+        {'R', new[] {
+            "1111110",
+            "1000001",
+            "1000001",
+            "1000001",
+            "1111110",
+            "1001000",
+            "1000100",
+            "1000010",
+            "1000001"
         }},
-        {'U', new[] { 
-            "1000001", 
-            "1000001", 
-            "1000001", 
-            "1000001", 
-            "1000001", 
-            "1000001", 
-            "1000001", 
-            "0111110", 
-            "0011100" 
+        {'U', new[] {
+            "1000001",
+            "1000001",
+            "1000001",
+            "1000001",
+            "1000001",
+            "1000001",
+            "1000001",
+            "0111110",
+            "0011100"
         }},
-        {'M', new[] { 
-            "1000001", 
-            "1100011", 
-            "1010101", 
-            "1001001", 
-            "1000001", 
-            "1000001", 
-            "1000001", 
-            "1000001", 
-            "1000001" 
+        {'M', new[] {
+            "1000001",
+            "1100011",
+            "1010101",
+            "1001001",
+            "1000001",
+            "1000001",
+            "1000001",
+            "1000001",
+            "1000001"
         }}
     };
 
@@ -121,14 +121,14 @@ public class TitleScreen
 
         // Generate Plant Textures (Variations)
         _plantTextures = new Texture2D[4];
-        int plantBorder = 10; 
+        const int plantBorder = 10;
         _plantTextures[0] = TextureGenerator.CreateOrganicShape(_graphicsDevice, 64, 5, 0.2f, plantBorder); // Standard Flower
         _plantTextures[1] = TextureGenerator.CreateOrganicShape(_graphicsDevice, 64, 3, 0.15f, plantBorder); // Triangle/Tulip
         _plantTextures[2] = TextureGenerator.CreateOrganicShape(_graphicsDevice, 64, 6, 0.25f, plantBorder); // Complex Flower
         _plantTextures[3] = TextureGenerator.CreateOrganicShape(_graphicsDevice, 64, 4, 0.2f, plantBorder); // Clover
-        
+
         _pixelTexture = new Texture2D(_graphicsDevice, 1, 1);
-        _pixelTexture.SetData(new[] { Color.White });
+        _pixelTexture.SetData([Color.White]);
     }
 
     private void GenerateDecorations()
@@ -136,33 +136,32 @@ public class TitleScreen
         _decorations.Clear();
         var rng = new Random(12345); // Fixed seed for consistency
 
-        string title = "VIVARIUM";
-        
+        const string title = "VIVARIUM";
+
         // Layout parameters for generation (must match Draw)
-        float blockSize = 28f; 
-        float spacing = 0f; 
-        
-        float letterSpacing = 14f;
-        
-        List<Vector2> occupiedBlocks = new();
-        
+        const float blockSize = 28f;
+        const float spacing = 0f;
+
+        const float letterSpacing = 14f;
+
+        List<Vector2> occupiedBlocks = [];
+
         float currentX = 0;
-        float cursorY = 0;
+        const float cursorY = 0;
 
         // 1. Calculate occupied positions
         foreach (char c in title)
         {
-            if (Letters.ContainsKey(c))
+            if (Letters.TryGetValue(c, out string[] grid))
             {
-                string[] grid = Letters[c];
                 for (int row = 0; row < 9; row++)
                 {
                     for (int col = 0; col < 7; col++)
                     {
                         if (grid[row][col] == '1')
                         {
-                            float bx = currentX + col * (blockSize + spacing);
-                            float by = cursorY + row * (blockSize + spacing);
+                            float bx = currentX + (col * (blockSize + spacing));
+                            float by = cursorY + (row * (blockSize + spacing));
                             occupiedBlocks.Add(new Vector2(bx, by));
                         }
                     }
@@ -173,26 +172,24 @@ public class TitleScreen
 
         // Center the decorations relative to the title block
         float totalWidth = currentX - letterSpacing;
-        float totalHeight = 9 * blockSize;
-        Vector2 centerOffset = new Vector2(totalWidth / 2f, totalHeight / 2f);
 
         // 2. Generate plants around title
-        int plantCount = 180; 
-        for(int i=0; i<plantCount; i++)
+        const int plantCount = 180;
+        for (int i = 0; i < plantCount; i++)
         {
             // Pick a random occupied block
             if (occupiedBlocks.Count == 0) break;
             Vector2 anchor = occupiedBlocks[rng.Next(occupiedBlocks.Count)];
-            
+
             // Pick a random offset
             float angle = (float)(rng.NextDouble() * Math.PI * 2);
-            float dist = blockSize * (0.5f + (float)rng.NextDouble() * 0.8f); 
-            
+            float dist = blockSize * (0.5f + ((float)rng.NextDouble() * 0.8f));
+
             Vector2 plantPos = anchor + new Vector2(MathF.Cos(angle) * dist, MathF.Sin(angle) * dist);
-            
+
             // Check collision with blocks (don't draw on top of blocks)
             bool collides = false;
-            foreach(var block in occupiedBlocks)
+            foreach (var block in occupiedBlocks)
             {
                 // Simple circle collision
                 if (Vector2.Distance(block, plantPos) < blockSize * 0.6f)
@@ -201,7 +198,7 @@ public class TitleScreen
                     break;
                 }
             }
-            
+
             if (!collides)
             {
                 // Add decoration
@@ -210,7 +207,7 @@ public class TitleScreen
                 {
                     RelativePosition = plantPos,
                     TextureIndex = rng.Next(_plantTextures.Length),
-                    Scale = 0.3f + (float)rng.NextDouble() * 0.4f, // Random scale
+                    Scale = 0.3f + ((float)rng.NextDouble() * 0.4f), // Random scale
                     Rotation = (float)(rng.NextDouble() * Math.PI * 2),
                     Color = Color.Lerp(VivariumColors.Plant, Color.DarkGreen, (float)rng.NextDouble() * 0.3f)
                 });
@@ -221,45 +218,45 @@ public class TitleScreen
         // We need screen dimensions for this. Since we are in constructor/init, we use viewport.
         int screenW = _graphicsDevice.Viewport.Width;
         int screenH = _graphicsDevice.Viewport.Height;
-        
+
         // Calculate where the title starts on screen (approximate based on Draw logic)
         int startX = (screenW - (int)totalWidth) / 2;
         int startY = (screenH / 2) - 200;
 
         // Version Text Safe Zone
-        string versionText = "v1.0 - .NET 10 / C# 14";
+        const string versionText = "v1.0 - .NET 10 / C# 14";
         Vector2 verSize = _font.MeasureString(versionText);
         // Define a rectangle for the text area with some padding
-        Rectangle versionRect = new Rectangle(
-            (int)(screenW - verSize.X - 40), 
+        Rectangle versionRect = new(
+            (int)(screenW - verSize.X - 40),
             (int)(screenH - verSize.Y - 40),
             (int)verSize.X + 50,
             (int)verSize.Y + 50
         );
 
-        int clusterCount = 32; // Number of patches along edges
-        
+        const int clusterCount = 32; // Number of patches along edges
+
         for (int c = 0; c < clusterCount; c++)
         {
             // Pick a random edge for the cluster center
             int edge = rng.Next(4); // 0: Top, 1: Right, 2: Bottom, 3: Left
             float clusterPos = (float)rng.NextDouble(); // 0.0 to 1.0 along the edge
-            
+
             int plantsInCluster = rng.Next(6, 16);
-            
+
             for (int p = 0; p < plantsInCluster; p++)
             {
                 float px = 0, py = 0;
-                
+
                 // Spread within cluster
-                float localSpread = 180f; // How wide the patch is along the edge
-                float depthSpread = 180f; // How deep it grows into screen
-                
+                const float localSpread = 180f; // How wide the patch is along the edge
+                const float depthSpread = 180f; // How deep it grows into screen
+
                 // Randomize position within patch
                 float offsetAlong = (float)(rng.NextDouble() - 0.5f) * localSpread;
                 float depth = (float)rng.NextDouble() * depthSpread;
-                
-                switch(edge)
+
+                switch (edge)
                 {
                     case 0: // Top
                         px = (clusterPos * screenW) + offsetAlong;
@@ -286,15 +283,15 @@ public class TitleScreen
                 }
 
                 // Convert screen position to relative position from title start
-                Vector2 relPos = new Vector2(px - startX, py - startY);
+                Vector2 relPos = new(px - startX, py - startY);
 
                 _decorations.Add(new PlantDecoration
                 {
                     RelativePosition = relPos,
                     TextureIndex = rng.Next(_plantTextures.Length),
-                    Scale = 0.4f + (float)rng.NextDouble() * 0.6f, // Slightly larger for edges
+                    Scale = 0.4f + ((float)rng.NextDouble() * 0.6f), // Slightly larger for edges
                     Rotation = (float)(rng.NextDouble() * Math.PI * 2),
-                    Color = Color.Lerp(VivariumColors.Plant, Color.DarkGreen, 0.2f + (float)rng.NextDouble() * 0.4f) // Darker for background feel
+                    Color = Color.Lerp(VivariumColors.Plant, Color.DarkGreen, 0.2f + ((float)rng.NextDouble() * 0.4f)) // Darker for background feel
                 });
             }
         }
@@ -311,11 +308,11 @@ public class TitleScreen
         int screenWidth = _graphicsDevice.Viewport.Width;
         int screenHeight = _graphicsDevice.Viewport.Height;
 
-        int btnWidth = 200;
-        int btnHeight = 50;
-        Rectangle startBtnRect = new Rectangle(
+        const int btnWidth = 200;
+        const int btnHeight = 50;
+        Rectangle startBtnRect = new(
             (screenWidth - btnWidth) / 2,
-            (screenHeight - btnHeight) / 2 + 150,
+            ((screenHeight - btnHeight) / 2) + 150,
             btnWidth,
             btnHeight
         );
@@ -334,11 +331,11 @@ public class TitleScreen
         int screenHeight = _graphicsDevice.Viewport.Height;
 
         // Draw "VIVARIUM"
-        string title = "VIVARIUM";
-        int blockSize = 28; // Bigger blocks
-        int spacing = 0; // No spacing to connect textures
-        int letterSpacing = 14;
-        
+        const string title = "VIVARIUM";
+        const int blockSize = 28; // Bigger blocks
+        const int spacing = 0; // No spacing to connect textures
+        const int letterSpacing = 14;
+
         // Calculate total width
         int totalWidth = 0;
         foreach (char c in title)
@@ -355,13 +352,13 @@ public class TitleScreen
         {
             Texture2D tex = _plantTextures[deco.TextureIndex];
             Vector2 pos = new Vector2(startX, startY) + deco.RelativePosition;
-            Vector2 origin = new Vector2(tex.Width / 2f, tex.Height / 2f);
-            
+            Vector2 origin = new(tex.Width / 2f, tex.Height / 2f);
+
             // Offset pos to center of block (since RelativePosition was based on block top-left)
             // Actually in GenerateDecorations: bx = col * size. This is top-left of block.
             // So plantPos is relative to top-left of blocks.
             // We want to draw centered.
-            Vector2 drawPos = pos + new Vector2(blockSize/2f, blockSize/2f);
+            Vector2 drawPos = pos + new Vector2(blockSize / 2f, blockSize / 2f);
 
             spriteBatch.Draw(tex, drawPos, null, deco.Color, deco.Rotation, origin, deco.Scale, SpriteEffects.None, 0f);
         }
@@ -375,11 +372,11 @@ public class TitleScreen
         }
 
         // Draw Start Button
-        int btnWidth = 200;
-        int btnHeight = 50;
-        Rectangle startBtnRect = new Rectangle(
+        const int btnWidth = 200;
+        const int btnHeight = 50;
+        Rectangle startBtnRect = new(
             (screenWidth - btnWidth) / 2,
-            (screenHeight - btnHeight) / 2 + 150,
+            ((screenHeight - btnHeight) / 2) + 150,
             btnWidth,
             btnHeight
         );
@@ -391,7 +388,7 @@ public class TitleScreen
         UIComponents.DrawButton(spriteBatch, _font, startBtnRect, "START", _pixelTexture, isHovered, isPressed);
 
         // Draw Version
-        string versionText = "v1.0 - .NET 10 / C# 14";
+        const string versionText = "v1.0 - .NET 10 / C# 14";
         Vector2 verSize = _font.MeasureString(versionText);
         spriteBatch.DrawString(_font, versionText, new Vector2(screenWidth - verSize.X - 10, screenHeight - verSize.Y - 10), UITheme.TextColorSecondary);
 
@@ -400,9 +397,7 @@ public class TitleScreen
 
     private void DrawLetter(SpriteBatch sb, char c, int x, int y, int size, int spacing)
     {
-        if (!Letters.ContainsKey(c)) return;
-
-        string[] grid = Letters[c];
+        if (!Letters.TryGetValue(c, out string[] grid)) return;
         for (int row = 0; row < 9; row++)
         {
             for (int col = 0; col < 7; col++)
@@ -416,8 +411,8 @@ public class TitleScreen
                     bool right = (col < 6) && (grid[row][col + 1] == '1');
 
                     int index = (left ? 8 : 0) + (bottom ? 4 : 0) + (right ? 2 : 0) + (top ? 1 : 0);
-                    
-                    sb.Draw(_structureTextures[index], new Rectangle(x + col * (size + spacing), y + row * (size + spacing), size, size), VivariumColors.Structure);
+
+                    sb.Draw(_structureTextures[index], new Rectangle(x + (col * (size + spacing)), y + (row * (size + spacing)), size, size), VivariumColors.Structure);
                 }
             }
         }
