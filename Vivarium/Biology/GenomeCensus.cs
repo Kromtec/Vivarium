@@ -15,6 +15,7 @@ public class GenomeFamily
     public int Rank;
     public DietType Diet;
     public Texture2D Identicon;
+    public Texture2D AgentTexture; // Added for list view
     public string ScientificName;
     public string ScientificNameTranslation;
 }

@@ -53,6 +53,7 @@ public class GenePoolWindow
     // Texture Cache
     private readonly Dictionary<ulong, Texture2D> _helixCache = [];
     private readonly Dictionary<ulong, Texture2D> _gridCache = [];
+    private readonly Dictionary<ulong, Texture2D> _agentTextureCache = [];
 
     public GenePoolWindow(GraphicsDevice graphics, SpriteFont font, GenomeCensus census)
     {
@@ -78,6 +79,12 @@ public class GenePoolWindow
             if (family.Identicon == null)
             {
                 family.Identicon = GetOrGenerateHelix(family.Representative.Representative);
+            }
+            
+            // Generate Agent Texture for list view
+            if (family.AgentTexture == null)
+            {
+                family.AgentTexture = GetOrGenerateAgentTexture(family.Representative.Representative);
             }
 
             // Generate textures for variants
@@ -141,6 +148,28 @@ public class GenePoolWindow
         {
             texture = GenomeHelper.GenerateHelixTexture(_graphics, agent);
             _helixCache[hash] = texture;
+        }
+        return texture;
+    }
+
+    private Texture2D GetOrGenerateAgentTexture(Agent agent)
+    {
+        ulong hash = Genetics.CalculateGenomeHash(agent.Genome);
+        if (!_agentTextureCache.TryGetValue(hash, out var texture))
+        {
+            // Determine dominant trait for texture selection
+            // 0: Strength, 1: Bravery, 2: Metabolism, 3: Perception, 4: Speed, 5: Constitution
+            int traitIndex = 0;
+            float maxVal = Math.Abs(agent.Strength);
+
+            if (Math.Abs(agent.Bravery) > maxVal) { maxVal = Math.Abs(agent.Bravery); traitIndex = 1; }
+            if (Math.Abs(agent.MetabolicEfficiency) > maxVal) { maxVal = Math.Abs(agent.MetabolicEfficiency); traitIndex = 2; }
+            if (Math.Abs(agent.Perception) > maxVal) { maxVal = Math.Abs(agent.Perception); traitIndex = 3; }
+            if (Math.Abs(agent.Speed) > maxVal) { maxVal = Math.Abs(agent.Speed); traitIndex = 4; }
+            if (Math.Abs(agent.Constitution) > maxVal) { traitIndex = 5; }
+
+            texture = TextureGenerator.CreateAgentTexture(_graphics, 64, agent.Diet, traitIndex);
+            _agentTextureCache[hash] = texture;
         }
         return texture;
     }
@@ -367,8 +396,13 @@ public class GenePoolWindow
             }
 
             // Identicon (Family Representative)
-            Rectangle iconRect = new(listX + 5, itemY + 5, 60, 30);
-            spriteBatch.Draw(family.Identicon, iconRect, Color.White);
+            Rectangle iconRect = new(listX + 5, itemY + 5, 30, 30); // Square for agent texture
+            
+            // Draw Agent Texture
+            if (family.AgentTexture != null)
+            {
+                spriteBatch.Draw(family.AgentTexture, iconRect, family.Representative.Representative.Color);
+            }
 
             // Draw Family Indicator (Dots) if multiple variants
             if (family.Variants.Count > 1)
@@ -378,11 +412,11 @@ public class GenePoolWindow
 
             // Text
             string rankText = $"#{family.Rank}";
-            spriteBatch.DrawString(_font, rankText, new Vector2(listX + 70, itemY + 8), UITheme.TextColorPrimary);
+            spriteBatch.DrawString(_font, rankText, new Vector2(listX + 50, itemY + 8), UITheme.TextColorPrimary);
 
             // Scientific Name
             Vector2 rankSize = _font.MeasureString(rankText);
-            spriteBatch.DrawString(_font, family.ScientificName, new Vector2(listX + 70 + rankSize.X + 10, itemY + 8), UITheme.TextColorPrimary);
+            spriteBatch.DrawString(_font, family.ScientificName, new Vector2(listX + 50 + rankSize.X + 10, itemY + 8), UITheme.TextColorPrimary);
 
             // Count Text
             string countText = $"{family.TotalCount}";
