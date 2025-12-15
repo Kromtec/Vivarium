@@ -11,17 +11,25 @@ using Vivarium.World;
 
 namespace Vivarium;
 
+public enum GameState
+{
+    TitleScreen,
+    Simulation
+}
+
 public class VivariumGame : Game
 {
     public static long NextEntityId { get; set; } = 1;
 
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+    private Texture2D _pixel;
 
     // Simulation Constants
     public const double FramesPerSecond = 60d;
 
     private Simulation _simulation;
+    private GameState _gameState = GameState.TitleScreen;
 
     private double _fpsTimer;
     private int _framesCounter;
@@ -32,6 +40,7 @@ public class VivariumGame : Game
     private Camera2D _camera;
     private Inspector _inspector;
     private HUD _hud;
+    private TitleScreen _titleScreen;
     private GenePoolWindow _genePoolWindow;
     private GenomeCensus _genomeCensus; // New shared service
     private SpriteFont _sysFont;
@@ -97,6 +106,11 @@ public class VivariumGame : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         _sysFont = Content.Load<SpriteFont>("SystemFont");
+        
+        _pixel = new Texture2D(GraphicsDevice, 1, 1);
+        _pixel.SetData(new[] { Color.White });
+
+        _titleScreen = new TitleScreen(GraphicsDevice, _sysFont);
 
         _genomeCensus = new GenomeCensus(); // Initialize Census
 
@@ -112,6 +126,15 @@ public class VivariumGame : Game
     {
         // Input
         var keyboardState = Keyboard.GetState();
+        var mouseState = Mouse.GetState();
+
+        if (_gameState == GameState.TitleScreen)
+        {
+            _titleScreen.Update(mouseState, keyboardState, _previousKeyboardState, ref _gameState, Exit);
+            _previousKeyboardState = keyboardState;
+            base.Update(gameTime);
+            return;
+        }
 
         // ESC
         if (keyboardState.IsKeyDown(Keys.Escape) && !_previousKeyboardState.IsKeyDown(Keys.Escape))
@@ -187,7 +210,6 @@ public class VivariumGame : Game
         }
 
         // Input Blocking
-        var mouseState = Mouse.GetState();
         bool uiCapturesMouse = _hud.IsMouseOver(mouseState.Position) || _genePoolWindow.IsVisible;
 
         if (!effectivePause || singleStep)
@@ -253,6 +275,13 @@ public class VivariumGame : Game
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Black);
+
+        if (_gameState == GameState.TitleScreen)
+        {
+            _titleScreen.Draw(_spriteBatch);
+            base.Draw(gameTime);
+            return;
+        }
 
         // Draw World
         RenderStats stats = _worldRenderer.Draw(
@@ -322,15 +351,13 @@ public class VivariumGame : Game
             height
         );
 
-        Texture2D pixel = new Texture2D(GraphicsDevice, 1, 1);
-        pixel.SetData(new[] { Color.White });
-
-        _spriteBatch.Draw(pixel, new Rectangle(rect.X + 4, rect.Y + 4, width, height), Color.Black * 0.5f);
-        _spriteBatch.Draw(pixel, rect, UITheme.PanelBgColor);
-        _spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, width, 2), UITheme.BorderColor);
-        _spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y + height - 2, width, 2), UITheme.BorderColor);
-        _spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, 2, height), UITheme.BorderColor);
-        _spriteBatch.Draw(pixel, new Rectangle(rect.X + width - 2, rect.Y, 2, height), UITheme.BorderColor);
+        // Use shared pixel texture
+        _spriteBatch.Draw(_pixel, new Rectangle(rect.X + 4, rect.Y + 4, width, height), Color.Black * 0.5f);
+        _spriteBatch.Draw(_pixel, rect, UITheme.PanelBgColor);
+        _spriteBatch.Draw(_pixel, new Rectangle(rect.X, rect.Y, width, 2), UITheme.BorderColor);
+        _spriteBatch.Draw(_pixel, new Rectangle(rect.X, rect.Y + height - 2, width, 2), UITheme.BorderColor);
+        _spriteBatch.Draw(_pixel, new Rectangle(rect.X, rect.Y, 2, height), UITheme.BorderColor);
+        _spriteBatch.Draw(_pixel, new Rectangle(rect.X + width - 2, rect.Y, 2, height), UITheme.BorderColor);
 
         string title = "EXIT APPLICATION?";
         string subtitle = "Press ENTER to Confirm or ESC to Cancel";

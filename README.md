@@ -24,6 +24,7 @@ The project simulates an ecosystem of autonomous agents ("Creatures") interactin
 * **Left Click:** Select Agent/Entity (View details in Inspector)
 * **Right Click:** Deselect
 * **Space:** Pause/Resume Simulation
+* **.(Dot):** Step Forward One Tick (when paused)
 
 ## 🚀 Running the Simulation
 
@@ -43,7 +44,8 @@ dotnet run --project Vivarium/Vivarium.csproj -c Release -- --headless --duratio
 *   `--duration <ticks>`: Sets the simulation duration (60 ticks = 1 second). Default is 3600 (1 minute).
 *   `--seed <int>`: (Optional) Set a specific random seed for reproducibility.
 
-Logs are saved to the `Logs/` directory in CSV format.
+Logs are saved to the `Logs/` directory in CSV format. Log file names include timestamps and seed information for easy identification.
+```Logs/simulation_run_<timestamp>_<seed>_<duration>.csv```
 
 ## 🛠️ Tech Stack
 
