@@ -58,6 +58,11 @@ public class Inspector
         _selectedEntityId = -1;
     }
 
+    public bool IsMouseOver(Point mousePos)
+    {
+        return IsEntitySelected && _panelRect.Contains(mousePos);
+    }
+
     public void UpdateInput(Camera2D camera, GridCell[,] gridMap, Agent[] agents, Plant[] plants, Structure[] structures, int cellSize)
     {
         var mouseState = Mouse.GetState();

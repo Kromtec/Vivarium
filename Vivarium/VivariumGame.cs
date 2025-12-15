@@ -211,6 +211,7 @@ public class VivariumGame : Game
 
         // Input Blocking
         bool uiCapturesMouse = _hud.IsMouseOver(mouseState.Position) || _genePoolWindow.IsVisible;
+        bool inspectorCapturesMouse = _inspector.IsMouseOver(mouseState.Position);
 
         if (!effectivePause || singleStep)
         {
@@ -266,8 +267,8 @@ public class VivariumGame : Game
         }
 
         // Camera
-        Rectangle worldBounds = new(0, 0, Simulation.GridWidth * Simulation.CellSize, Simulation.GridHeight * Simulation.CellSize);
-        _camera.HandleInput(Mouse.GetState(), Keyboard.GetState(), !uiCapturesMouse, worldBounds);
+        Rectangle worldBounds = new Rectangle(0, 0, Simulation.GridWidth * Simulation.CellSize, Simulation.GridHeight * Simulation.CellSize);
+        _camera.HandleInput(Mouse.GetState(), Keyboard.GetState(), !(uiCapturesMouse || inspectorCapturesMouse), worldBounds);
 
         base.Update(gameTime);
     }
