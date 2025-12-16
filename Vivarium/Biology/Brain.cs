@@ -39,7 +39,7 @@ public static class Brain
         neurons[(int)SensorType.LocationY] = ((float)agent.Y / gridHeight * 2) - 1.0f;                       // -1 .. +1
         neurons[(int)SensorType.Random] = ((float)rng.NextDouble() * 2) - 1.0f;                              // -1 .. +1
         neurons[(int)SensorType.Energy] = ((float)agent.Energy / agent.MaxEnergy * 2) - 1.0f;                // -1 .. +1
-        neurons[(int)SensorType.Age] = (Math.Clamp((float)agent.Age / Agent.MaturityAge, 0, 1f) * 2) -1.0f;  // -1 .. +1
+        neurons[(int)SensorType.Age] = (Math.Clamp((float)agent.Age / Agent.MaturityAge, 0, 1f) * 2) - 1.0f;  // -1 .. +1
         neurons[(int)SensorType.Oscillator] = MathF.Sin(agent.Age * 0.1f);
 
         // Directional sensors (8-way). Perception influences effective radius.
@@ -87,8 +87,8 @@ public static class Brain
             // We skip the [Actions] block which sits in the middle of the array.
             // This prevents Actions from driving other neurons, simplifying the network flow.
             int rawSource = gene.SourceId % validSourceCount;
-            int sourceIdx = (rawSource < BrainConfig.SensorCount) 
-                ? rawSource 
+            int sourceIdx = (rawSource < BrainConfig.SensorCount)
+                ? rawSource
                 : rawSource + BrainConfig.ActionCount;
 
             // SINK RESTRICTION: Actions or Hidden only.
@@ -102,7 +102,7 @@ public static class Brain
         // --- 3.5 INSTINCTS (Biological Overrides)
         // We apply strong biases based on critical survival needs.
         // These are applied BEFORE activation, so they can be modulated by the network but provide a strong baseline.
-        ApplyInstincts(ref agent, gridMap, rng, neurons, agentPopulation, threatDetected);
+        ApplyInstincts(ref agent, rng, neurons, threatDetected);
 
         // --- 4. ACTIVATION ---
         // Apply Tanh to everything AFTER the sensors (Actions + Hidden)
@@ -112,7 +112,7 @@ public static class Brain
         }
     }
 
-    private static void ApplyInstincts(ref Agent agent, GridCell[,] gridMap, Random rng, float[] neurons, Agent[] agentPopulation, bool threatDetected)
+    private static void ApplyInstincts(ref Agent agent, Random rng, float[] neurons,bool threatDetected)
     {
         var cfg = ConfigProvider.Brain;
         float instinctBias = cfg.InstinctBiasStrength;
@@ -237,7 +237,7 @@ public static class Brain
         if (agent.Energy > agent.MaxEnergy * cfg.ReproductionInstinctThreshold && agent.Age > Agent.MaturityAge && agent.ReproductionCooldown == 0)
         {
             ApplyDominantBias(ActionType.Reproduce, instinctBias);
-            ActivityLog.Log(agent.Id, $"Instinct: Libido. Healthy & Mature. Urge to reproduce.");
+            ActivityLog.Log(agent.Id, "Instinct: Libido. Healthy & Mature. Urge to reproduce.");
         }
     }
 

@@ -18,7 +18,7 @@ public static class Program
         bool headless = false;
         int duration = 3600; // Default 1 minute (60 fps * 60 sec)
         int seed = 64;
-        string? configFile = null;
+        string configFile = string.Empty;
 
         for (int i = 0; i < args.Length; i++)
         {
@@ -125,7 +125,7 @@ public static class Program
             if (i % 60 == 0)
             {
                 StatsLogger.LogStats(simulation, logFile);
-                
+
                 // Count diets for tracking
                 int herbs = 0, omnis = 0, carnis = 0;
                 foreach (var agent in simulation.AgentPopulation)
@@ -140,7 +140,7 @@ public static class Program
                         }
                     }
                 }
-                
+
                 minHerb = Math.Min(minHerb, herbs); maxHerb = Math.Max(maxHerb, herbs); finalHerb = herbs;
                 minOmni = Math.Min(minOmni, omnis); maxOmni = Math.Max(maxOmni, omnis); finalOmni = omnis;
                 minCarni = Math.Min(minCarni, carnis); maxCarni = Math.Max(maxCarni, carnis); finalCarni = carnis;
@@ -155,25 +155,21 @@ public static class Program
         var realDuration = endTime - startTime;
         var simulatedSeconds = durationTicks / 60.0;
 
-        Console.WriteLine($"Simulation Complete.");
-        Console.WriteLine($"Simulated {durationTicks} ticks ({simulatedSeconds} seconds) in {realDuration.TotalSeconds:F2} seconds real time.");
-        Console.WriteLine($"Speedup: {durationTicks / 60.0 / realDuration.TotalSeconds:F2}x real-time.");
-        Console.WriteLine($"Log saved to: {logFile}");
-
         // Write summary to file
         var summary = new System.Text.StringBuilder();
-        summary.AppendLine($"Simulation Complete.");
+        summary.AppendLine("=== SIMULATION COMPLETE ===");
         summary.AppendLine($"Seed: {seed}");
         summary.AppendLine($"Duration: {durationTicks} ticks ({simulatedSeconds} seconds)");
         summary.AppendLine($"Real time: {realDuration.TotalSeconds:F2} seconds");
         summary.AppendLine($"Speedup: {durationTicks / 60.0 / realDuration.TotalSeconds:F2}x real-time.");
+        summary.AppendLine($"Log saved to: {logFile}");
         summary.AppendLine();
-        summary.AppendLine("=== POPULATION SUMMARY ===");
+        summary.AppendLine("===  POPULATION SUMMARY  ===");
         summary.AppendLine($"Herbivores: Min={minHerb}, Max={maxHerb}, Final={finalHerb}");
         summary.AppendLine($"Omnivores:  Min={minOmni}, Max={maxOmni}, Final={finalOmni}");
         summary.AppendLine($"Carnivores: Min={minCarni}, Max={maxCarni}, Final={finalCarni}");
         summary.AppendLine($"Total Final: {finalHerb + finalOmni + finalCarni}");
-        
+
         // Indicate stability
         bool herbStable = finalHerb > 10;
         bool omniStable = finalOmni > 10;
@@ -188,7 +184,7 @@ public static class Program
         {
             summary.AppendLine("NEEDS BALANCING: One or more diet types went extinct or near-extinct.");
         }
-        
+
         File.WriteAllText(summaryFile, summary.ToString());
         Console.WriteLine(summary.ToString());
         Console.WriteLine($"Summary saved to: {summaryFile}");

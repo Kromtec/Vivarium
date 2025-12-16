@@ -242,7 +242,7 @@ public struct Agent : IGridEntity
     private static Agent ConstructAgent(int index, int x, int y, Gene[] genome, Agent? parent = null, float? initialEnergy = null)
     {
         var cfg = ConfigProvider.Agent;
-        
+
         // Extract traits and assign individually
         float strength = Genetics.ExtractTrait(genome, Genetics.TraitType.Strength);
         float bravery = Genetics.ExtractTrait(genome, Genetics.TraitType.Bravery);
@@ -367,7 +367,7 @@ public struct Agent : IGridEntity
     public bool TryReproduce(Span<Agent> population, GridCell[,] gridMap, Random rng)
     {
         var cfg = ConfigProvider.Agent;
-        
+
         // 1. Biological Checks
         // Calculate costs based on physiology
         float childEnergy = MaxEnergy * 0.5f;

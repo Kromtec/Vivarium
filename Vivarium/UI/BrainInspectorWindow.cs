@@ -94,7 +94,7 @@ public class BrainInspectorWindow
         int winW = (int)(screenW * 0.9f);
         int winH = (int)(screenH * 0.9f);
 
-        Rectangle newRect = new Rectangle((screenW - winW) / 2, (screenH - winH) / 2, winW, winH);
+        Rectangle newRect = new((screenW - winW) / 2, (screenH - winH) / 2, winW, winH);
         if (_windowRect != newRect)
         {
             _windowRect = newRect;
@@ -105,7 +105,7 @@ public class BrainInspectorWindow
         _dropdownRect = new Rectangle(_windowRect.Right - 200 - 60, _windowRect.Y + 15, 200, 25);
 
         // Close Button Logic
-        Rectangle closeRect = new Rectangle(_windowRect.Right - 30, _windowRect.Y + 10, 20, 20);
+        Rectangle closeRect = new(_windowRect.Right - 30, _windowRect.Y + 10, 20, 20);
         if (closeRect.Contains(mouseState.Position) &&
             mouseState.LeftButton == ButtonState.Pressed &&
             prevMouseState.LeftButton == ButtonState.Released)
@@ -120,7 +120,7 @@ public class BrainInspectorWindow
             // Calculate list rect
             int itemHeight = 25;
             int listHeight = itemHeight * _actionOptions.Length;
-            Rectangle listRect = new Rectangle(_dropdownRect.X, _dropdownRect.Bottom, _dropdownRect.Width, listHeight);
+            Rectangle listRect = new(_dropdownRect.X, _dropdownRect.Bottom, _dropdownRect.Width, listHeight);
 
             if (listRect.Contains(mouseState.Position))
             {
@@ -418,7 +418,7 @@ public class BrainInspectorWindow
         int winW = (int)(screenW * 0.9f);
         int winH = (int)(screenH * 0.9f);
 
-        Rectangle newRect = new Rectangle((screenW - winW) / 2, (screenH - winH) / 2, winW, winH);
+        Rectangle newRect = new((screenW - winW) / 2, (screenH - winH) / 2, winW, winH);
         if (_windowRect != newRect)
         {
             _windowRect = newRect;
@@ -455,15 +455,15 @@ public class BrainInspectorWindow
         int laneHeight = _windowRect.Height - 50; // Leave some bottom padding
 
         // Lane 1 (Sensors) - Darker
-        Rectangle lane1 = new Rectangle(_windowRect.X + 5, laneTop, laneWidth - 5, laneHeight);
+        Rectangle lane1 = new(_windowRect.X + 5, laneTop, laneWidth - 5, laneHeight);
         spriteBatch.Draw(_pixelTexture, lane1, Color.Gainsboro * 0.05f);
 
         // Lane 2 (Hidden) - Lighter
-        Rectangle lane2 = new Rectangle(_windowRect.X + laneWidth, laneTop, laneWidth, laneHeight);
+        Rectangle lane2 = new(_windowRect.X + laneWidth, laneTop, laneWidth, laneHeight);
         //spriteBatch.Draw(_pixelTexture, lane2, Color.Thistle * 0.05f);
 
         // Lane 3 (Actions) - Darker
-        Rectangle lane3 = new Rectangle(_windowRect.X + laneWidth * 2, laneTop, laneWidth - 5, laneHeight);
+        Rectangle lane3 = new(_windowRect.X + laneWidth * 2, laneTop, laneWidth - 5, laneHeight);
         spriteBatch.Draw(_pixelTexture, lane3, Color.Gainsboro * 0.05f);
 
         // Header
@@ -510,7 +510,7 @@ public class BrainInspectorWindow
         // Draw Nodes
         foreach (var node in _nodes)
         {
-            Vector2 origin = new Vector2(NodeRadius, NodeRadius);
+            Vector2 origin = new(NodeRadius, NodeRadius);
             if (node.Type == NodeType.HiddenCluster)
             {
                 // Draw Blackbox
@@ -537,12 +537,12 @@ public class BrainInspectorWindow
 
                 void DrawRow(int yOffset, Color color, int count)
                 {
-                    Vector2 dotPos = new Vector2(dotX, centerY + yOffset);
+                    Vector2 dotPos = new(dotX, centerY + yOffset);
                     spriteBatch.Draw(_circleTexture, dotPos, null, color, 0f, origin, 1f, SpriteEffects.None, 0f);
 
                     string text = count.ToString();
                     Vector2 textSize = _font.MeasureString(text);
-                    Vector2 textPos = new Vector2(numberRightX - textSize.X, centerY + yOffset - textSize.Y / 2 + 3);
+                    Vector2 textPos = new(numberRightX - textSize.X, centerY + yOffset - textSize.Y / 2 + 3);
                     spriteBatch.DrawString(_font, text, textPos, Color.White);
                 }
 
@@ -573,7 +573,7 @@ public class BrainInspectorWindow
                 Vector2 labelPos = node.Position;
                 if (node.Type == NodeType.Sensor) labelPos.X -= size.X + NodeRadius + 5;
                 else labelPos.X += NodeRadius + 5;
-                
+
                 labelPos.Y -= size.Y / 2;
                 labelPos.Y += 3;
                 spriteBatch.DrawString(_font, node.Label, labelPos, Color.White);
@@ -581,7 +581,7 @@ public class BrainInspectorWindow
         }
 
         // Close Button
-        Rectangle closeRect = new Rectangle(_windowRect.Right - 30, _windowRect.Y + 10, 20, 20);
+        Rectangle closeRect = new(_windowRect.Right - 30, _windowRect.Y + 10, 20, 20);
         bool hover = closeRect.Contains(mouseState.Position);
         // Click handled in UpdateInput
         UIComponents.DrawButton(spriteBatch, _font, closeRect, "X", _pixelTexture, hover, false, UITheme.BadColor);
@@ -591,7 +591,7 @@ public class BrainInspectorWindow
         {
             int itemHeight = 25;
             int listHeight = itemHeight * _actionOptions.Length;
-            Rectangle listRect = new Rectangle(_dropdownRect.X, _dropdownRect.Bottom, _dropdownRect.Width, listHeight);
+            Rectangle listRect = new(_dropdownRect.X, _dropdownRect.Bottom, _dropdownRect.Width, listHeight);
 
             int hoveredIndex = -1;
             if (listRect.Contains(mouseState.Position))

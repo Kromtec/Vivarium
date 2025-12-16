@@ -35,7 +35,7 @@ public static class UIComponents
 
         // Text
         Vector2 size = font.MeasureString(text);
-        Vector2 pos = new Vector2(rect.X + (rect.Width - size.X) / 2, rect.Y + (rect.Height - size.Y) / 2);
+        Vector2 pos = new(rect.X + (rect.Width - size.X) / 2, rect.Y + (rect.Height - size.Y) / 2);
         sb.DrawString(font, text, pos, UITheme.TextColorPrimary);
     }
 
@@ -53,8 +53,8 @@ public static class UIComponents
         // Truncate if too long?
         Vector2 size = font.MeasureString(currentText);
         // Left align with padding
-        Vector2 pos = new Vector2(rect.X + 5, rect.Y + (rect.Height - size.Y) / 2);
-        
+        Vector2 pos = new(rect.X + 5, rect.Y + (rect.Height - size.Y) / 2);
+
         // Clip text if needed (simple scissor or just draw)
         // For now just draw
         sb.DrawString(font, currentText, pos, UITheme.TextColorPrimary);
@@ -75,15 +75,15 @@ public static class UIComponents
 
         for (int i = 0; i < items.Length; i++)
         {
-            Rectangle itemRect = new Rectangle(rect.X, rect.Y + (i * itemHeight), rect.Width, itemHeight);
-            
+            Rectangle itemRect = new(rect.X, rect.Y + (i * itemHeight), rect.Width, itemHeight);
+
             if (i == hoveredIndex)
             {
                 sb.Draw(pixel, itemRect, UITheme.ButtonColor * 0.5f);
             }
 
             Vector2 size = font.MeasureString(items[i]);
-            Vector2 pos = new Vector2(itemRect.X + 5, itemRect.Y + (itemRect.Height - size.Y) / 2);
+            Vector2 pos = new(itemRect.X + 5, itemRect.Y + (itemRect.Height - size.Y) / 2);
             sb.DrawString(font, items[i], pos, UITheme.TextColorPrimary);
         }
     }

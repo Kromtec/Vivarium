@@ -80,7 +80,7 @@ public class GenePoolWindow
             {
                 family.Identicon = GetOrGenerateHelix(family.Representative.Representative);
             }
-            
+
             // Generate Agent Texture for list view
             if (family.AgentTexture == null)
             {
@@ -397,7 +397,7 @@ public class GenePoolWindow
 
             // Identicon (Family Representative)
             Rectangle iconRect = new(listX + 5, itemY + 5, 30, 30); // Square for agent texture
-            
+
             // Draw Agent Texture
             if (family.AgentTexture != null)
             {

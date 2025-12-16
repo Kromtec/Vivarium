@@ -18,7 +18,7 @@ public static partial class Genetics
     public static void Mutate(ref Gene[] genome, Random rng)
     {
         double mutationRate = MutationRate;
-        
+
         // Use Span for performance when iterating the genome array
         Span<Gene> genomeSpan = genome.AsSpan();
 
@@ -61,7 +61,7 @@ public static partial class Genetics
     {
         int genomeLength = GenomeLength;
         float weightRange = ConfigProvider.Genetics.InitialWeightRange;
-        
+
         var initialGenome = new Gene[genomeLength];
 
         for (int g = 0; g < genomeLength; g++)

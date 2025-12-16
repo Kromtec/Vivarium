@@ -284,7 +284,7 @@ public class VivariumGame : Game
         }
 
         // Camera
-        Rectangle worldBounds = new Rectangle(0, 0, _simulation.GridWidth * _simulation.CellSize, _simulation.GridHeight * _simulation.CellSize);
+        Rectangle worldBounds = new(0, 0, _simulation.GridWidth * _simulation.CellSize, _simulation.GridHeight * _simulation.CellSize);
         _camera.HandleInput(Mouse.GetState(), Keyboard.GetState(), !(uiCapturesMouse || inspectorCapturesMouse), worldBounds);
 
         base.Update(gameTime);

@@ -7,7 +7,7 @@ namespace Vivarium.Config;
 public sealed class AgentConfig
 {
     // --- Reproduction ---
-    
+
     /// <summary>Percentage of MaxEnergy lost as overhead when reproducing (0.30 = 30%).</summary>
     public float ReproductionOverheadPct { get; set; } = 0.30f;
 

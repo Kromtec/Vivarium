@@ -15,7 +15,7 @@ public static class ConfigProvider
     /// Gets the current simulation configuration.
     /// </summary>
     /// <exception cref="InvalidOperationException">If configuration has not been initialized.</exception>
-    public static SimulationConfig Current => _current 
+    public static SimulationConfig Current => _current
         ?? throw new InvalidOperationException("ConfigProvider has not been initialized. Call Initialize() first.");
 
     /// <summary>

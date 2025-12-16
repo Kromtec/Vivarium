@@ -42,7 +42,7 @@ public class Inspector
     private long _cachedGenomeAgentId = -1;
 
     private readonly GenomeCensus _census; // Use shared census
-    
+
     // Brain Inspector Request
     public bool WantsToOpenBrainInspector { get; private set; }
     public Agent BrainInspectorTarget { get; private set; }
@@ -316,13 +316,13 @@ public class Inspector
                         AddProgressBar("Attack", agent.AttackCooldown, 60f, UITheme.WarningColor, ref contentHeight);
                         AddProgressBar("Move", agent.MovementCooldown, 5f, UITheme.CooldownMoveColor, ref contentHeight);
                         AddProgressBar("Breed", agent.ReproductionCooldown, 600f, UITheme.CooldownBreedColor, ref contentHeight);
-                        
+
                         // Brain Inspector Button
                         AddSeparator(ref contentHeight);
-                        
+
                         // Capture by value for lambda
                         Agent targetAgent = agent;
-                        AddButton("VIEW NEURAL NETWORK", () => 
+                        AddButton("VIEW NEURAL NETWORK", () =>
                         {
                             WantsToOpenBrainInspector = true;
                             BrainInspectorTarget = targetAgent;
@@ -389,13 +389,13 @@ public class Inspector
 
         // Setup Scissor
         spriteBatch.End();
-        
+
         Rectangle previousScissor = _graphics.ScissorRectangle;
         // Clip to panel content area (excluding borders if possible, but panel rect is fine)
         Rectangle clipRect = Rectangle.Intersect(_panelRect, _graphics.Viewport.Bounds);
         _graphics.ScissorRectangle = clipRect;
 
-        RasterizerState rs = new RasterizerState { ScissorTestEnable = true };
+        RasterizerState rs = new() { ScissorTestEnable = true };
         spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, rs);
 
         // Execute Commands
@@ -537,7 +537,7 @@ public class Inspector
             // Pixel art scaling
             sb.End();
             // Enable Scissor for this batch too
-            RasterizerState rs = new RasterizerState { ScissorTestEnable = true, CullMode = CullMode.CullCounterClockwiseFace };
+            RasterizerState rs = new() { ScissorTestEnable = true, CullMode = CullMode.CullCounterClockwiseFace };
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, rs);
 
             sb.Draw(_texture, new Rectangle(x, y, _width, _height), Color.White);
@@ -646,7 +646,7 @@ public class Inspector
         {
             int x = inspector._panelRect.X + UITheme.Padding;
             int width = inspector._panelRect.Width - (UITheme.Padding * 2);
-            Rectangle rect = new Rectangle(x, inspector._cursorY, width, 30);
+            Rectangle rect = new(x, inspector._cursorY, width, 30);
 
             var mouse = Mouse.GetState();
             bool hover = rect.Contains(mouse.Position);

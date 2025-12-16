@@ -16,11 +16,11 @@ public class Simulation
     public int PlantCount => ConfigProvider.World.PlantPoolSize;
     public int StructureCount => ConfigProvider.World.StructurePoolSize;
 
-    public Agent[] AgentPopulation { get; private set; }
-    public Plant[] PlantPopulation { get; private set; }
-    public Structure[] StructurePopulation { get; private set; }
-    public GridCell[,] GridMap { get; private set; }
-    public Random Rng { get; private set; }
+    public Agent[] AgentPopulation { get; }
+    public Plant[] PlantPopulation { get; }
+    public Structure[] StructurePopulation { get; }
+    public GridCell[,] GridMap { get; }
+    public Random Rng { get; }
     public long TickCount { get; private set; }
 
     public int AliveAgents { get; private set; }
