@@ -106,11 +106,17 @@ public static class Program
         }
         string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
         string logFile = Path.Combine(logDir, $"simulation_run_{timestamp}_{seed}_{durationTicks}.csv");
+        string summaryFile = Path.Combine(logDir, $"summary_{timestamp}_{seed}_{durationTicks}.txt");
 
         // Header
         File.WriteAllText(logFile, "Tick,Agents,Herbivores,Omnivores,Carnivores,Plants,Structures" + Environment.NewLine);
 
         var startTime = DateTime.Now;
+
+        // Track min/max/final for each diet type
+        int minHerb = int.MaxValue, maxHerb = 0, finalHerb = 0;
+        int minOmni = int.MaxValue, maxOmni = 0, finalOmni = 0;
+        int minCarni = int.MaxValue, maxCarni = 0, finalCarni = 0;
 
         for (long i = 0; i < durationTicks; i++)
         {
@@ -119,10 +125,29 @@ public static class Program
             if (i % 60 == 0)
             {
                 StatsLogger.LogStats(simulation, logFile);
-                if (i % 600 == 0)
+                
+                // Count diets for tracking
+                int herbs = 0, omnis = 0, carnis = 0;
+                foreach (var agent in simulation.AgentPopulation)
                 {
-                    Console.WriteLine($"Progress: {i}/{durationTicks} ticks ({(double)i / durationTicks * 100:F1}%)");
+                    if (agent.IsAlive)
+                    {
+                        switch (agent.Diet)
+                        {
+                            case Biology.DietType.Herbivore: herbs++; break;
+                            case Biology.DietType.Omnivore: omnis++; break;
+                            case Biology.DietType.Carnivore: carnis++; break;
+                        }
+                    }
                 }
+                
+                minHerb = Math.Min(minHerb, herbs); maxHerb = Math.Max(maxHerb, herbs); finalHerb = herbs;
+                minOmni = Math.Min(minOmni, omnis); maxOmni = Math.Max(maxOmni, omnis); finalOmni = omnis;
+                minCarni = Math.Min(minCarni, carnis); maxCarni = Math.Max(maxCarni, carnis); finalCarni = carnis;
+            }
+            if (i % 600 == 0)
+            {
+                Console.WriteLine(durationTicks > 600 ? $"Progress: {i * 100 / durationTicks}%" : $"Tick: {i}");
             }
         }
 
@@ -134,5 +159,38 @@ public static class Program
         Console.WriteLine($"Simulated {durationTicks} ticks ({simulatedSeconds} seconds) in {realDuration.TotalSeconds:F2} seconds real time.");
         Console.WriteLine($"Speedup: {durationTicks / 60.0 / realDuration.TotalSeconds:F2}x real-time.");
         Console.WriteLine($"Log saved to: {logFile}");
+
+        // Write summary to file
+        var summary = new System.Text.StringBuilder();
+        summary.AppendLine($"Simulation Complete.");
+        summary.AppendLine($"Seed: {seed}");
+        summary.AppendLine($"Duration: {durationTicks} ticks ({simulatedSeconds} seconds)");
+        summary.AppendLine($"Real time: {realDuration.TotalSeconds:F2} seconds");
+        summary.AppendLine($"Speedup: {durationTicks / 60.0 / realDuration.TotalSeconds:F2}x real-time.");
+        summary.AppendLine();
+        summary.AppendLine("=== POPULATION SUMMARY ===");
+        summary.AppendLine($"Herbivores: Min={minHerb}, Max={maxHerb}, Final={finalHerb}");
+        summary.AppendLine($"Omnivores:  Min={minOmni}, Max={maxOmni}, Final={finalOmni}");
+        summary.AppendLine($"Carnivores: Min={minCarni}, Max={maxCarni}, Final={finalCarni}");
+        summary.AppendLine($"Total Final: {finalHerb + finalOmni + finalCarni}");
+        
+        // Indicate stability
+        bool herbStable = finalHerb > 10;
+        bool omniStable = finalOmni > 10;
+        bool carniStable = finalCarni > 10;
+        summary.AppendLine();
+        summary.AppendLine($"Stability: Herb={herbStable}, Omni={omniStable}, Carni={carniStable}");
+        if (herbStable && omniStable && carniStable)
+        {
+            summary.AppendLine("SUCCESS: All three diet types are stable!");
+        }
+        else
+        {
+            summary.AppendLine("NEEDS BALANCING: One or more diet types went extinct or near-extinct.");
+        }
+        
+        File.WriteAllText(summaryFile, summary.ToString());
+        Console.WriteLine(summary.ToString());
+        Console.WriteLine($"Summary saved to: {summaryFile}");
     }
 }

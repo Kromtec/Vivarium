@@ -21,13 +21,13 @@ public sealed class AgentConfig
     public int ReproductionCooldownFrames { get; set; } = 600; // 10 seconds at 60 FPS
 
     /// <summary>Reproduction overhead multiplier for Herbivores.</summary>
-    public float HerbivoreReproductionMultiplier { get; set; } = 0.1f;
+    public float HerbivoreReproductionMultiplier { get; set; } = 0.4f;
 
     /// <summary>Reproduction overhead multiplier for Carnivores.</summary>
-    public float CarnivoreReproductionMultiplier { get; set; } = 0.5f;
+    public float CarnivoreReproductionMultiplier { get; set; } = 0.3f; // Reduced to help carnivores breed
 
     /// <summary>Reproduction overhead multiplier for Omnivores.</summary>
-    public float OmnivoreReproductionMultiplier { get; set; } = 1.5f;
+    public float OmnivoreReproductionMultiplier { get; set; } = 0.6f; // Middle ground
 
     // --- Movement ---
 
@@ -60,13 +60,13 @@ public sealed class AgentConfig
     public float BaseMetabolismRate { get; set; } = 0.01f;
 
     /// <summary>Metabolism multiplier for Herbivores.</summary>
-    public float HerbivoreMetabolismMultiplier { get; set; } = 0.65f;
+    public float HerbivoreMetabolismMultiplier { get; set; } = 0.70f;
 
     /// <summary>Metabolism multiplier for Carnivores.</summary>
-    public float CarnivoreMetabolismMultiplier { get; set; } = 0.80f;
+    public float CarnivoreMetabolismMultiplier { get; set; } = 0.65f; // Reduced to help carnivores survive
 
     /// <summary>Metabolism multiplier for Omnivores.</summary>
-    public float OmnivoreMetabolismMultiplier { get; set; } = 1.4f;
+    public float OmnivoreMetabolismMultiplier { get; set; } = 0.90f; // Balanced
 
     // --- Diet Classification ---
 
