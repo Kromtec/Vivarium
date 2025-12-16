@@ -1,36 +1,31 @@
 ﻿using System;
+using Vivarium.Config;
 using Vivarium.Entities;
 
 namespace Vivarium.Biology;
 
 public static partial class Genetics
 {
-    // The probability that a single gene will mutate.
-    private const double MutationRate = 0.001d;
-
-    // Genome layout constants
-    public const int GenomeLength = 512;
-
-    // Reserve a tail region of the genome for trait genes.
-    // We allocate 14 genes (7 traits * 2 genes per trait) by default.
-    public const int TraitGeneCount = 14;
-    public const int TraitStartIndex = GenomeLength - TraitGeneCount;
-
-    // Legacy index (kept for compatibility, but DetermineDiet now uses trait extraction)
-    public const int DietGeneIndex = 0;
+    // Read from config at runtime
+    public static double MutationRate => ConfigProvider.Genetics.MutationRate;
+    public static int GenomeLength => ConfigProvider.Genetics.GenomeLength;
+    public static int TraitGeneCount => ConfigProvider.Genetics.TraitGeneCount;
+    public static int TraitStartIndex => ConfigProvider.Genetics.TraitStartIndex;
 
     /// <summary>
     /// Applies mutations to an agent's genome in place.
     /// </summary>
     public static void Mutate(ref Gene[] genome, Random rng)
     {
+        double mutationRate = MutationRate;
+        
         // Use Span for performance when iterating the genome array
         Span<Gene> genomeSpan = genome.AsSpan();
 
         for (int i = 0; i < genomeSpan.Length; i++)
         {
             // Check if this specific gene should mutate
-            if (rng.NextDouble() < MutationRate)
+            if (rng.NextDouble() < mutationRate)
             {
                 // 1. Pick a random bit to flip (0 to 31)
                 int bitIndex = rng.Next(0, 32);
@@ -64,16 +59,19 @@ public static partial class Genetics
 
     public static Gene[] CreateGenome(Random rng)
     {
-        var initialGenome = new Gene[GenomeLength];
+        int genomeLength = GenomeLength;
+        float weightRange = ConfigProvider.Genetics.InitialWeightRange;
+        
+        var initialGenome = new Gene[genomeLength];
 
-        for (int g = 0; g < GenomeLength; g++)
+        for (int g = 0; g < genomeLength; g++)
         {
             // 1. Random Topology (Any Sensor -> Any Neuron)
             int source = rng.Next(BrainConfig.NeuronCount);
             int sink = rng.Next(BrainConfig.NeuronCount);
 
             // 2. "Evenly Distributed" Weights
-            float weight = (float)((rng.NextDouble() * 8.0) - 4.0);
+            float weight = (float)((rng.NextDouble() * weightRange * 2) - weightRange);
 
             initialGenome[g] = Gene.CreateConnection(source, sink, weight);
         }
@@ -91,16 +89,18 @@ public static partial class Genetics
         if (genome == null || genome.Length == 0)
             return 0f;
 
-        const int pairs = TraitGeneCount / 2;
+        int traitGeneCount = TraitGeneCount;
+        int traitStartIndex = TraitStartIndex;
+        float normalizer = ConfigProvider.Genetics.TraitNormalizer;
+
+        const int pairs = 14 / 2; // TraitGeneCount / 2
         int traitIndex = (int)trait;
 
         // Clamp traitIndex
         traitIndex = Math.Clamp(traitIndex, 0, pairs - 1);
 
         // Map traitIndex 0 -> last pair. Compute base index accordingly.
-        // Example: TraitStartIndex=52, pairs=6 => pairs cover indices 52..63
-        // traitIndex 0 => base = 52 + (pairs-1 - 0)*2 = 52 + 10 = 62
-        int baseIdx = TraitStartIndex + ((pairs - 1 - traitIndex) * 2);
+        int baseIdx = traitStartIndex + ((pairs - 1 - traitIndex) * 2);
 
         int idxA = Math.Clamp(baseIdx, 0, genome.Length - 1);
         int idxB = Math.Clamp(baseIdx + 1, 0, genome.Length - 1);
@@ -109,9 +109,6 @@ public static partial class Genetics
         float b = genome[idxB].Weight;
 
         float avg = (a + b) * 0.5f;
-
-        // Normalize (Gene.Weight ranges roughly in [-4, +4]) to approx [-1, +1]
-        const float normalizer = 4f;
 
         return Math.Clamp(avg / normalizer, -1f, 1f);
     }

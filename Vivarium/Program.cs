@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using Vivarium.Config;
 using Vivarium.Engine;
 
 namespace Vivarium;
@@ -17,6 +18,7 @@ public static class Program
         bool headless = false;
         int duration = 3600; // Default 1 minute (60 fps * 60 sec)
         int seed = 64;
+        string? configFile = null;
 
         for (int i = 0; i < args.Length; i++)
         {
@@ -40,7 +42,36 @@ public static class Program
                     i++;
                 }
             }
+            else if (args[i] == "--config" && i + 1 < args.Length)
+            {
+                configFile = args[i + 1];
+                i++;
+            }
         }
+
+        // Initialize configuration
+        SimulationConfig config;
+        if (!string.IsNullOrEmpty(configFile))
+        {
+            config = SimulationConfig.LoadFromFileOrDefault(configFile, seed);
+            // Override seed from command line if specified and different from file
+            // Note: We create a new config with the seed override using the factory
+            if (config.World.Seed != seed)
+            {
+                config = SimulationConfig.CreateDefault(seed);
+                // Try to reload mutable settings from file
+                var fileConfig = SimulationConfig.LoadFromFileOrDefault(configFile, seed);
+                config.Agent = fileConfig.Agent;
+                config.Plant = fileConfig.Plant;
+                config.Brain = fileConfig.Brain;
+            }
+        }
+        else
+        {
+            config = SimulationConfig.CreateDefault(seed);
+        }
+
+        ConfigProvider.Initialize(config);
 
         if (headless)
         {
@@ -49,20 +80,22 @@ public static class Program
             {
                 AttachConsole(ATTACH_PARENT_PROCESS);
             }
-            RunHeadless(duration, seed);
+            RunHeadless(duration);
         }
         else
         {
-            using var game = new VivariumGame(seed);
+            using var game = new VivariumGame();
             game.Run();
         }
     }
 
-    static void RunHeadless(int durationTicks, int seed)
+    static void RunHeadless(int durationTicks)
     {
+        int seed = ConfigProvider.World.Seed;
+
         Console.WriteLine($"Starting Headless Simulation for {durationTicks} ticks with seed {seed}...");
 
-        var simulation = new Simulation(seed);
+        var simulation = new Simulation();
         simulation.Initialize();
 
         // Setup Logging

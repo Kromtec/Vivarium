@@ -1,30 +1,41 @@
 using System;
 using Vivarium.Biology;
+using Vivarium.Config;
 using Vivarium.Entities;
 using Vivarium.World;
 
 namespace Vivarium.Engine;
 
-public class Simulation(int seed = 64)
+public class Simulation
 {
-    // Simulation Constants
-    public const int GridHeight = 96;
-    public const int GridWidth = (int)((GridHeight / 9) * 16);
-    public const int CellSize = 1280 / GridHeight;
-    public const int AgentCount = GridWidth * GridHeight / 18; // Increased from /20 to /18 (~853 agents)
-    public const int PlantCount = GridWidth * GridHeight / 8;
-    public const int StructureCount = GridWidth * GridHeight / 32;
+    // Read from config
+    public int GridHeight => ConfigProvider.World.GridHeight;
+    public int GridWidth => ConfigProvider.World.GridWidth;
+    public int CellSize => ConfigProvider.World.CellSize;
+    public int AgentCount => ConfigProvider.World.AgentPoolSize;
+    public int PlantCount => ConfigProvider.World.PlantPoolSize;
+    public int StructureCount => ConfigProvider.World.StructurePoolSize;
 
-    public Agent[] AgentPopulation { get; private set; } = new Agent[AgentCount];
-    public Plant[] PlantPopulation { get; private set; } = new Plant[PlantCount];
-    public Structure[] StructurePopulation { get; private set; } = new Structure[StructureCount];
-    public GridCell[,] GridMap { get; private set; } = new GridCell[GridWidth, GridHeight];
-    public Random Rng { get; private set; } = new Random(seed);
+    public Agent[] AgentPopulation { get; private set; }
+    public Plant[] PlantPopulation { get; private set; }
+    public Structure[] StructurePopulation { get; private set; }
+    public GridCell[,] GridMap { get; private set; }
+    public Random Rng { get; private set; }
     public long TickCount { get; private set; }
 
     public int AliveAgents { get; private set; }
     public int AlivePlants { get; private set; }
     public int AliveStructures { get; private set; }
+
+    public Simulation()
+    {
+        var world = ConfigProvider.World;
+        AgentPopulation = new Agent[world.AgentPoolSize];
+        PlantPopulation = new Plant[world.PlantPoolSize];
+        StructurePopulation = new Structure[world.StructurePoolSize];
+        GridMap = new GridCell[world.GridWidth, world.GridHeight];
+        Rng = new Random(world.Seed);
+    }
 
     public void Initialize()
     {

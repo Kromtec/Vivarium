@@ -375,7 +375,7 @@ public class WorldRenderer(GraphicsDevice graphicsDevice)
         float baseScale = (float)cellSize / _plantTextures[0].Width;
         float halfCellSize = cellSize * 0.5f;
 
-        const float plantAgeGrowthFactor = 1.0f / Plant.MaturityAge;
+        float plantAgeGrowthFactor = 1.0f / Plant.MaturityAge;
 
         Span<Plant> plantPopulationSpan = plants.AsSpan();
         for (int i = 0; i < plantPopulationSpan.Length; i++)
@@ -431,7 +431,7 @@ public class WorldRenderer(GraphicsDevice graphicsDevice)
         float baseScale = (float)cellSize / 64f; // 64 is texture size
         float halfCellSize = cellSize * 0.5f;
 
-        const float agentAgeGrowthFactor = 1.0f / Agent.MaturityAge;
+        float agentAgeGrowthFactor = 1.0f / Agent.MaturityAge;
 
         Span<Agent> agentPopulationSpan = agents.AsSpan();
 
@@ -548,7 +548,7 @@ public class WorldRenderer(GraphicsDevice graphicsDevice)
         float ringBaseScale = (float)cellSize / _ringTexture.Width;
         float halfCellSize = cellSize * 0.5f;
 
-        const float agentAgeGrowthFactor = 1.0f / Agent.MaturityAge;
+        float agentAgeGrowthFactor = 1.0f / Agent.MaturityAge;
 
         Span<Agent> agentPopulationSpan = agents.AsSpan();
 
@@ -673,7 +673,7 @@ public class WorldRenderer(GraphicsDevice graphicsDevice)
         if (!selectedAgent.IsAlive) return;
 
         const int BorderThickness = 2;
-        const float agentAgeGrowthFactor = 1.0f / Agent.MaturityAge;
+        float agentAgeGrowthFactor = 1.0f / Agent.MaturityAge;
         float halfCellSize = cellSize * 0.5f;
 
         // Calculate center and radius for selected agent

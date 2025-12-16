@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using Vivarium.Biology;
+using Vivarium.Config;
 using Vivarium.World;
 using Vivarium.UI;
 
@@ -8,22 +9,19 @@ namespace Vivarium.Entities;
 
 public struct Agent : IGridEntity
 {
-    // Reproduction Thermodynamics
-    public const float ReproductionOverheadPct = 0.30f; // 30% of MaxEnergy wasted as effort (Harder to breed)
-    // Buffer to ensure parent survives the process
-    public const float MinEnergyBuffer = 5.0f;
+    // Read from config at runtime
+    public static float ReproductionOverheadPct => ConfigProvider.Agent.ReproductionOverheadPct;
+    public static float MinEnergyBuffer => ConfigProvider.Agent.MinEnergyBuffer;
+    public static float BaseAttackThreshold => ConfigProvider.Agent.BaseAttackThreshold;
+    public static float BaseMovementThreshold => ConfigProvider.Agent.BaseMovementThreshold;
+    public static float BaseMetabolismRate => ConfigProvider.Agent.BaseMetabolismRate;
+    public static int BaseMovementCooldown => ConfigProvider.Agent.BaseMovementCooldown;
+    public static float MovementCost => ConfigProvider.Agent.MovementCost;
+    public static float OrthogonalMovementCost => MovementCost;
+    public static float DiagonalMovementCost => MovementCost * ConfigProvider.Agent.DiagonalMovementMultiplier;
+    public static float FleeCost => MovementCost * ConfigProvider.Agent.FleeMovementMultiplier;
+    public static int MaturityAge => ConfigProvider.Agent.MaturityAge;
 
-    private const float BaseAttackThreshold = 0.5f;
-    private const float BaseMovementThreshold = 0.1f;
-    private const float BaseMetabolismRate = 0.01f; // Energy lost per frame (Reduced from 0.02f)
-    private const int BaseMovementCooldown = 10; // Base cooldown for moving
-
-    public const float MovementCost = 0.25f;   // Base cost for moving
-    public const float OrthogonalMovementCost = MovementCost; // Extra cost for non-cardinal moves
-    public const float DiagonalMovementCost = MovementCost * 1.414f; // Extra cost for diagonal moves
-    public const float FleeCost = MovementCost * 2f; // High cost for panic running
-
-    public const int MaturityAge = 60 * 10; // Frames until agent can reproduce after birth (10 seconds at 60 FPS)
     public int ReproductionCooldown;        // Frames until next possible reproduction
     public int MovementCooldown;            // Frames until next possible movement
     public int TotalMovementCooldown;       // The total duration of the current movement cooldown (for interpolation)
@@ -204,10 +202,11 @@ public struct Agent : IGridEntity
 
     public static DietType DetermineDiet(float trophicBias)
     {
+        var cfg = ConfigProvider.Agent;
         return trophicBias switch
         {
-            < -0.55f => DietType.Carnivore, // Adjusted from -0.60f to give slightly more carnivores
-            > 0.0f => DietType.Herbivore,
+            _ when trophicBias < cfg.CarnivoreTrophicThreshold => DietType.Carnivore,
+            _ when trophicBias > cfg.HerbivoreTrophicThreshold => DietType.Herbivore,
             _ => DietType.Omnivore,
         };
     }
@@ -242,6 +241,8 @@ public struct Agent : IGridEntity
 
     private static Agent ConstructAgent(int index, int x, int y, Gene[] genome, Agent? parent = null, float? initialEnergy = null)
     {
+        var cfg = ConfigProvider.Agent;
+        
         // Extract traits and assign individually
         float strength = Genetics.ExtractTrait(genome, Genetics.TraitType.Strength);
         float bravery = Genetics.ExtractTrait(genome, Genetics.TraitType.Bravery);
@@ -254,21 +255,18 @@ public struct Agent : IGridEntity
         DietType dietType = DetermineDiet(trophicBias);
 
         // Metabolism Multipliers based on Diet
-        // Carnivores: Efficient hunters (0.8x)
-        // Herbivores: Standard (1.0x)
-        // Omnivores: High maintenance (1.2x)
         float metabolismMultiplier = dietType switch
         {
-            DietType.Carnivore => 0.80f,
-            DietType.Omnivore => 1.4f,
-            _ => 0.65f
+            DietType.Carnivore => cfg.CarnivoreMetabolismMultiplier,
+            DietType.Omnivore => cfg.OmnivoreMetabolismMultiplier,
+            _ => cfg.HerbivoreMetabolismMultiplier
         };
 
         return new Agent()
         {
             Id = VivariumGame.NextEntityId++,
             // Initialize MaxEnergy FIRST so Energy clamp works correctly
-            MaxEnergy = 100f * (1.0f + (constitution * 0.5f)),
+            MaxEnergy = cfg.BaseMaxEnergy * (1.0f + (constitution * cfg.ConstitutionEnergyScale)),
             Index = index,
             X = x,
             Y = y,
@@ -278,12 +276,12 @@ public struct Agent : IGridEntity
             OriginalColor = GetColorBasedOnDietType(dietType),
             IsAlive = true,
             Diet = dietType,
-            Energy = initialEnergy ?? 100f,
+            Energy = initialEnergy ?? cfg.BaseMaxEnergy,
             Genome = genome,
             NeuronActivations = new float[BrainConfig.NeuronCount],
             Strength = strength,
-            Power = 1.0f + (strength * 0.5f),
-            Resilience = (1.0f + (constitution * 0.5f)) * (dietType == DietType.Herbivore ? 1.5f : 1.0f),
+            Power = 1.0f + (strength * cfg.StrengthPowerScale),
+            Resilience = (1.0f + (constitution * cfg.ConstitutionEnergyScale)) * (dietType == DietType.Herbivore ? cfg.HerbivoreResilienceMultiplier : 1.0f),
             Bravery = bravery,
             AttackThreshold = BaseAttackThreshold * (1.0f + (bravery * 0.5f)),
             MetabolicEfficiency = metabolicEfficiency,
@@ -368,26 +366,21 @@ public struct Agent : IGridEntity
 
     public bool TryReproduce(Span<Agent> population, GridCell[,] gridMap, Random rng)
     {
+        var cfg = ConfigProvider.Agent;
+        
         // 1. Biological Checks
         // Calculate costs based on physiology
         float childEnergy = MaxEnergy * 0.5f;
         float overhead = MaxEnergy * ReproductionOverheadPct;
 
-        // Omnivores have higher reproduction overhead (Population Control)
-        if (Diet == DietType.Omnivore)
+        // Diet-based reproduction overhead multipliers from config
+        overhead *= Diet switch
         {
-            overhead *= 1.5f;
-        }
-        // Herbivores have lower reproduction overhead (Buff)
-        else if (Diet == DietType.Herbivore)
-        {
-            overhead *= 0.1f;
-        }
-        // Carnivores have lower reproduction overhead (Buff)
-        else if (Diet == DietType.Carnivore)
-        {
-            overhead *= 0.5f;
-        }
+            DietType.Omnivore => cfg.OmnivoreReproductionMultiplier,
+            DietType.Herbivore => cfg.HerbivoreReproductionMultiplier,
+            DietType.Carnivore => cfg.CarnivoreReproductionMultiplier,
+            _ => 1.0f
+        };
 
         float totalCost = childEnergy + overhead;
 
@@ -472,7 +465,7 @@ public struct Agent : IGridEntity
         gridMap[childX, childY] = new(EntityType.Agent, childIndex);
 
         // Set reproduction cooldown (Prevent rapid-fire breeding)
-        ReproductionCooldown = 600; // 10 seconds at 60 FPS
+        ReproductionCooldown = cfg.ReproductionCooldownFrames;
 
         // Visual Feedback
         ReproductionVisualTimer = 30; // Show for 0.5 seconds (longer than attack)

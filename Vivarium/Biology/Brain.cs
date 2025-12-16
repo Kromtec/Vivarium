@@ -1,4 +1,5 @@
 ﻿using System;
+using Vivarium.Config;
 using Vivarium.Entities;
 using Vivarium.World;
 using Vivarium.UI;
@@ -9,6 +10,7 @@ public static class Brain
 {
     public static void Think(ref Agent agent, GridCell[,] gridMap, Random rng, Agent[] agentPopulation)
     {
+        var cfg = ConfigProvider.Brain;
         int gridWidth = gridMap.GetLength(0);
         int gridHeight = gridMap.GetLength(1);
 
@@ -21,7 +23,7 @@ public static class Brain
         // Instead of keeping them 100% (Infinite Accumulation) or clearing them 0% (No Memory),
         // we multiply them by a factor.
         // 0.0 = No Memory (Reactive), 0.9 = Long Memory, 0.5 = Balanced
-        const float decayFactor = 0.5f;
+        float decayFactor = cfg.HiddenNeuronDecayFactor;
         // Iterate from HiddenStart to end of array
         for (int i = BrainConfig.HiddenStart; i < BrainConfig.NeuronCount; i++)
         {
@@ -41,8 +43,8 @@ public static class Brain
         neurons[(int)SensorType.Oscillator] = MathF.Sin(agent.Age * 0.1f);
 
         // Directional sensors (8-way). Perception influences effective radius.
-        const int baseRadius = 2;
-        const int extraRange = 2; // max additional radius from perception
+        int baseRadius = cfg.BasePerceptionRadius;
+        int extraRange = cfg.MaxExtraPerceptionRadius;
         int dirRadius = Math.Clamp(baseRadius + (int)MathF.Round(agent.Perception * extraRange), 1, 6);
 
         // --- OPTIMIZATION: Combined Scan ---
@@ -52,7 +54,7 @@ public static class Brain
             gridMap,
             agent.X,
             agent.Y,
-            localRadius: 2,
+            localRadius: cfg.LocalScanRadius,
             dirRadius: dirRadius,
             neuronOutput: neurons,
             agentOffset: (int)SensorType.AgentDensity_N,
@@ -112,6 +114,9 @@ public static class Brain
 
     private static void ApplyInstincts(ref Agent agent, GridCell[,] gridMap, Random rng, float[] neurons, Agent[] agentPopulation, bool threatDetected)
     {
+        var cfg = ConfigProvider.Brain;
+        float instinctBias = cfg.InstinctBiasStrength;
+
         // Helper to add bias to one action and suppress all others
         void ApplyDominantBias(ActionType targetType, float amount)
         {
@@ -137,29 +142,23 @@ public static class Brain
         // We do a quick scan for threats.
         if (threatDetected)
         {
-            ApplyDominantBias(ActionType.Flee, 2.0f);
+            ApplyDominantBias(ActionType.Flee, instinctBias);
             ActivityLog.Log(agent.Id, "Instinct: Panic! Threat detected nearby. Urge to flee.");
             return; // Priority 1: Survival overrides everything
         }
 
         // 2. FEEDING INSTINCT (Energy)
         // If low energy, seek food.
-        if (agent.Energy < agent.MaxEnergy * 0.6f)
+        if (agent.Energy < agent.MaxEnergy * cfg.FeedingInstinctThreshold)
         {
             var dietDecision = rng.NextDouble();
-            // Omnivores prefer plants (75% chance) to reduce pressure on herbivores
-            if (agent.Diet == DietType.Herbivore || (agent.Diet == DietType.Omnivore && dietDecision >= 0.25f))
+            // Omnivores prefer plants based on config
+            if (agent.Diet == DietType.Herbivore || (agent.Diet == DietType.Omnivore && dietDecision < cfg.OmnivorePlantPreference))
             {
                 // Move towards plants
-                // We check the directional sensors we just populated.
-                // Note: This assumes the sensors are populated in the standard order (N, NE, E...)
-                // We find the direction with the highest plant density.
-
                 int bestDir = -1;
                 float maxDensity = 0f;
 
-                // Check cardinal directions first for simple movement
-                // N=0, E=2, S=4, W=6 in the 8-way array
                 float n = neurons[(int)SensorType.PlantDensity_N];
                 float e = neurons[(int)SensorType.PlantDensity_E];
                 float s = neurons[(int)SensorType.PlantDensity_S];
@@ -173,36 +172,34 @@ public static class Brain
                 string biasDir = "Randomly";
                 if (bestDir == -1)
                 {
-                    bestDir = rng.Next(0, 4); // Random direction if no food detected
+                    bestDir = rng.Next(0, 4);
                 }
                 else
                 {
-                    // Map bestDir index to cardinal direction name
                     if (bestDir == 0) biasDir = "North";
                     else if (bestDir == 1) biasDir = "East";
                     else if (bestDir == 2) biasDir = "South";
                     else if (bestDir == 3) biasDir = "West";
                 }
 
-                if (bestDir == 0) ApplyDominantBias(ActionType.MoveN, 2.0f);
-                else if (bestDir == 1) ApplyDominantBias(ActionType.MoveE, 2.0f);
-                else if (bestDir == 2) ApplyDominantBias(ActionType.MoveS, 2.0f);
-                else if (bestDir == 3) ApplyDominantBias(ActionType.MoveW, 2.0f);
+                if (bestDir == 0) ApplyDominantBias(ActionType.MoveN, instinctBias);
+                else if (bestDir == 1) ApplyDominantBias(ActionType.MoveE, instinctBias);
+                else if (bestDir == 2) ApplyDominantBias(ActionType.MoveS, instinctBias);
+                else if (bestDir == 3) ApplyDominantBias(ActionType.MoveW, instinctBias);
 
                 ActivityLog.Log(agent.Id, $"Instinct: Low Energy. Seeking Plants towards {biasDir}.");
-                return; // Priority 2: Food
+                return;
             }
-            else if (agent.Diet == DietType.Carnivore || (agent.Diet == DietType.Omnivore && dietDecision < 0.25f))
+            else if (agent.Diet == DietType.Carnivore || (agent.Diet == DietType.Omnivore && dietDecision >= cfg.OmnivorePlantPreference))
             {
                 // Move towards prey (Agents)
-                // Similar logic but for AgentDensity
+                int bestDir = -1;
+                float maxDensity = 0f;
+
                 float n = neurons[(int)SensorType.AgentDensity_N];
                 float e = neurons[(int)SensorType.AgentDensity_E];
                 float s = neurons[(int)SensorType.AgentDensity_S];
                 float w = neurons[(int)SensorType.AgentDensity_W];
-
-                int bestDir = -1;
-                float maxDensity = 0f;
 
                 if (n > maxDensity) { maxDensity = n; bestDir = 0; }
                 if (e > maxDensity) { maxDensity = e; bestDir = 1; }
@@ -212,7 +209,7 @@ public static class Brain
                 string biasDir = "Randomly";
                 if (bestDir == -1)
                 {
-                    bestDir = rng.Next(0, 4); // Random direction if no plants detected
+                    bestDir = rng.Next(0, 4);
                 }
                 else
                 {
@@ -222,25 +219,24 @@ public static class Brain
                     else if (bestDir == 3) biasDir = "West";
                 }
 
-                if (bestDir == 0) ApplyDominantBias(ActionType.MoveN, 2.0f);
-                else if (bestDir == 1) ApplyDominantBias(ActionType.MoveE, 2.0f);
-                else if (bestDir == 2) ApplyDominantBias(ActionType.MoveS, 2.0f);
-                else if (bestDir == 3) ApplyDominantBias(ActionType.MoveW, 2.0f);
+                if (bestDir == 0) ApplyDominantBias(ActionType.MoveN, instinctBias);
+                else if (bestDir == 1) ApplyDominantBias(ActionType.MoveE, instinctBias);
+                else if (bestDir == 2) ApplyDominantBias(ActionType.MoveS, instinctBias);
+                else if (bestDir == 3) ApplyDominantBias(ActionType.MoveW, instinctBias);
 
                 // Also encourage attacking if we smell food
-                // We need to counteract the suppression (-2.0) and add bias (+2.0) -> +4.0 total
-                neurons[BrainConfig.GetActionIndex(ActionType.Attack)] += 4.0f;
+                neurons[BrainConfig.GetActionIndex(ActionType.Attack)] += cfg.HuntingAttackBias;
 
                 ActivityLog.Log(agent.Id, $"Instinct: Low Energy. Hunting Prey towards {biasDir}.");
-                return; // Priority 2: Food
+                return;
             }
         }
 
         // 3. REPRODUCTION INSTINCT (Libido)
         // If healthy and mature, try to reproduce.
-        if (agent.Energy > agent.MaxEnergy * 0.9f && agent.Age > Agent.MaturityAge && agent.ReproductionCooldown == 0)
+        if (agent.Energy > agent.MaxEnergy * cfg.ReproductionInstinctThreshold && agent.Age > Agent.MaturityAge && agent.ReproductionCooldown == 0)
         {
-            ApplyDominantBias(ActionType.Reproduce, 2.0f);
+            ApplyDominantBias(ActionType.Reproduce, instinctBias);
             ActivityLog.Log(agent.Id, $"Instinct: Libido. Healthy & Mature. Urge to reproduce.");
         }
     }
@@ -250,6 +246,7 @@ public static class Brain
         Span<Agent> agentPopulationSpan,
         Span<Plant> plantPopulationSpan)
     {
+        var cfg = ConfigProvider.Brain;
 
         // Metabolize energy (Entropy)
         // Constant energy loss per frame
@@ -274,7 +271,7 @@ public static class Brain
         }
 
         // 2. SPECIAL ACTIONS
-        if (GetAction(ActionType.Suicide) > 0.9f && agent.Age > Agent.MaturityAge * 2)
+        if (GetAction(ActionType.Suicide) > cfg.SuicideActivationThreshold && agent.Age > Agent.MaturityAge * cfg.SuicideAgeMultiplier)
         {
             agent.ChangeEnergy(-100f, gridMap);
             ActivityLog.Log(agent.Id, "Action: Committed Suicide (Old Age).");

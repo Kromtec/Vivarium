@@ -1,17 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using Vivarium.Config;
 using Vivarium.World;
 
 namespace Vivarium.Entities;
 
 public struct Plant : IGridEntity
 {
-    public const float ShrivelRate = 0.4f; // Energy lost per frame (Aging)
-    public const float PhotosynthesisRate = 0.50f; // Energy gained per frame from sun (Buffed from 0.35f)
-    public const int MaturityAge = 60 * 10; // 10 Seconds to mature
-
-    public const float ReproductionCost = 20.0f; // Reduced cost (was 30.0f)
-    public const float MinEnergyToReproduce = 30.0f; // Easier to reproduce (was 40.0f)
+    // Read from config at runtime
+    public static float ShrivelRate => ConfigProvider.Plant.ShrivelRate;
+    public static float PhotosynthesisRate => ConfigProvider.Plant.PhotosynthesisRate;
+    public static int MaturityAge => ConfigProvider.Plant.MaturityAge;
+    public static float ReproductionCost => ConfigProvider.Plant.ReproductionCost;
+    public static float MinEnergyToReproduce => ConfigProvider.Plant.MinEnergyToReproduce;
+    public static float MaxEnergy => ConfigProvider.Plant.MaxEnergy;
 
     public long Id { get; set; } // Unique identifier for tracking across generations
     public int Index { get; set; }
@@ -38,7 +40,7 @@ public struct Plant : IGridEntity
         private set
         {
             // C# 14 field keyword
-            field = Math.Clamp(value, 0f, 100f);
+            field = Math.Clamp(value, 0f, MaxEnergy);
 
             // If energy hits zero, the plant dies.
             if (field <= 0)
@@ -79,13 +81,13 @@ public struct Plant : IGridEntity
 
         // Photosynthesis
         // Grow if not full
-        if (Energy < 100f)
+        if (Energy < MaxEnergy)
         {
             ChangeEnergy(PhotosynthesisRate, gridMap);
         }
 
         // Color Update
-        Color = Color.Lerp(Color.Black, OriginalColor, Math.Clamp(Energy / 100f, .25f, 1f));
+        Color = Color.Lerp(Color.Black, OriginalColor, Math.Clamp(Energy / MaxEnergy, .25f, 1f));
     }
 
     public static Plant Create(int index, int x, int y, Random rng)
@@ -93,7 +95,7 @@ public struct Plant : IGridEntity
         var plant = ConstructPlant(index, x, y);
         // Randomize age for initial spawn to avoid synchronization
         plant.Age = rng.Next(0, MaturityAge);
-        plant.Energy = rng.Next(50, 100);
+        plant.Energy = rng.Next(50, (int)MaxEnergy);
         return plant;
     }
 

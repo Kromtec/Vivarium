@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using Vivarium.Biology;
+using Vivarium.Config;
 using Vivarium.Engine;
 using Vivarium.Entities;
 using Vivarium.UI;
@@ -25,8 +26,8 @@ public class VivariumGame : Game
     private SpriteBatch _spriteBatch;
     private Texture2D _pixel;
 
-    // Simulation Constants
-    public const double FramesPerSecond = 60d;
+    // Simulation Constants (read from config)
+    public static double FramesPerSecond => ConfigProvider.FramesPerSecond;
 
     private Simulation _simulation;
     private GameState _gameState = GameState.TitleScreen;
@@ -51,11 +52,9 @@ public class VivariumGame : Game
 
     private bool _isPaused = false;
     private bool _showExitConfirmation = false;
-    private readonly int _seed;
 
-    public VivariumGame(int seed = 64)
+    public VivariumGame()
     {
-        _seed = seed;
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -80,14 +79,14 @@ public class VivariumGame : Game
         _graphics.SynchronizeWithVerticalRetrace = true;
         _graphics.ApplyChanges();
 
-        _simulation = new Simulation(_seed);
+        _simulation = new Simulation();
         _simulation.Initialize();
 
         _camera = new Camera2D(GraphicsDevice);
 
         // Calculate zoom to fit the grid on screen
-        const float gridPixelWidth = Simulation.GridWidth * Simulation.CellSize;
-        const float gridPixelHeight = Simulation.GridHeight * Simulation.CellSize;
+        float gridPixelWidth = _simulation.GridWidth * _simulation.CellSize;
+        float gridPixelHeight = _simulation.GridHeight * _simulation.CellSize;
 
         _camera.MinZoom = screenHeight / gridPixelHeight;
 
@@ -96,7 +95,7 @@ public class VivariumGame : Game
         float initialZoom = Math.Min(zoomX, zoomY); // Fit entire grid
 
         _camera.Zoom = Math.Max(initialZoom, _camera.MinZoom);
-        _camera.CenterOnGrid(Simulation.GridWidth, Simulation.GridHeight, Simulation.CellSize);
+        _camera.CenterOnGrid(_simulation.GridWidth, _simulation.GridHeight, _simulation.CellSize);
 
         _simGraph = new SimulationGraph(GraphicsDevice, _sysFont);
 
@@ -281,11 +280,11 @@ public class VivariumGame : Game
         // Inspector Input
         if (!uiCapturesMouse)
         {
-            _inspector.UpdateInput(mouseState, _previousMouseState, _camera, _simulation.GridMap, _simulation.AgentPopulation, _simulation.PlantPopulation, _simulation.StructurePopulation, Simulation.CellSize);
+            _inspector.UpdateInput(mouseState, _previousMouseState, _camera, _simulation.GridMap, _simulation.AgentPopulation, _simulation.PlantPopulation, _simulation.StructurePopulation, _simulation.CellSize);
         }
 
         // Camera
-        Rectangle worldBounds = new Rectangle(0, 0, Simulation.GridWidth * Simulation.CellSize, Simulation.GridHeight * Simulation.CellSize);
+        Rectangle worldBounds = new Rectangle(0, 0, _simulation.GridWidth * _simulation.CellSize, _simulation.GridHeight * _simulation.CellSize);
         _camera.HandleInput(Mouse.GetState(), Keyboard.GetState(), !(uiCapturesMouse || inspectorCapturesMouse), worldBounds);
 
         base.Update(gameTime);
@@ -312,7 +311,7 @@ public class VivariumGame : Game
             _simulation.PlantPopulation,
             _simulation.StructurePopulation,
             _inspector,
-            Simulation.CellSize
+            _simulation.CellSize
         );
 
         // Screen Space
@@ -436,8 +435,8 @@ public class VivariumGame : Game
         }
         else
         {
-            _graphics.PreferredBackBufferWidth = Simulation.GridWidth * Simulation.CellSize;
-            _graphics.PreferredBackBufferHeight = Simulation.GridHeight * Simulation.CellSize;
+            _graphics.PreferredBackBufferWidth = _simulation.GridWidth * _simulation.CellSize;
+            _graphics.PreferredBackBufferHeight = _simulation.GridHeight * _simulation.CellSize;
         }
 
         _graphics.ApplyChanges();
