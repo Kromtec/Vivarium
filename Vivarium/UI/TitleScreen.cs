@@ -25,6 +25,8 @@ public class TitleScreen
     }
 
     private readonly List<PlantDecoration> _decorations = [];
+    private int _lastScreenWidth;
+    private int _lastScreenHeight;
 
     // Letter definitions (7x9 grids)
     private static readonly Dictionary<char, string[]> Letters = new()
@@ -105,6 +107,23 @@ public class TitleScreen
         GenerateDecorations();
     }
 
+    private (int blockSize, int letterSpacing) GetLayoutParameters(int screenWidth)
+    {
+        // Target ~65% of screen width
+        // Total Width approx = 8 chars * 7 blocks + 7 spaces * 0.5 blocks = 59.5 blocks
+        // Original reference: 28 block size on ~1920 width (approx 0.85 ratio)
+
+        float targetWidth = screenWidth * 0.65f;
+        int blockSize = (int)(targetWidth / 59.5f);
+
+        // Clamp min size to avoid tiny text
+        if (blockSize < 4) blockSize = 4;
+
+        int letterSpacing = blockSize / 2;
+
+        return (blockSize, letterSpacing);
+    }
+
     private void LoadContent()
     {
         // Generate Structure Textures (16 variations) matching in-game parameters
@@ -133,16 +152,24 @@ public class TitleScreen
 
     private void GenerateDecorations()
     {
+        int screenW = _graphicsDevice.Viewport.Width;
+        int screenH = _graphicsDevice.Viewport.Height;
+        _lastScreenWidth = screenW;
+        _lastScreenHeight = screenH;
+
         _decorations.Clear();
         var rng = new Random(12345); // Fixed seed for consistency
 
         const string title = "VIVARIUM";
 
         // Layout parameters for generation (must match Draw)
-        const float blockSize = 28f;
+        var (blockSizeInt, letterSpacingInt) = GetLayoutParameters(screenW);
+        float blockSize = blockSizeInt;
         const float spacing = 0f;
+        float letterSpacing = letterSpacingInt;
 
-        const float letterSpacing = 14f;
+        // Scale factor for decorations relative to original design (28px blocks)
+        float scaleFactor = blockSize / 28f;
 
         List<Vector2> occupiedBlocks = [];
 
@@ -207,7 +234,7 @@ public class TitleScreen
                 {
                     RelativePosition = plantPos,
                     TextureIndex = rng.Next(_plantTextures.Length),
-                    Scale = 0.3f + ((float)rng.NextDouble() * 0.4f), // Random scale
+                    Scale = (0.3f + ((float)rng.NextDouble() * 0.4f)) * scaleFactor, // Scale with resolution
                     Rotation = (float)(rng.NextDouble() * Math.PI * 2),
                     Color = Color.Lerp(VivariumColors.Plant, Color.DarkGreen, (float)rng.NextDouble() * 0.3f)
                 });
@@ -215,13 +242,11 @@ public class TitleScreen
         }
 
         // 3. Generate plants around screen edges (Patchy & Irregular)
-        // We need screen dimensions for this. Since we are in constructor/init, we use viewport.
-        int screenW = _graphicsDevice.Viewport.Width;
-        int screenH = _graphicsDevice.Viewport.Height;
 
         // Calculate where the title starts on screen (approximate based on Draw logic)
+        // Scale vertical offset based on block size relative to original 28
+        int startY = (screenH / 2) - (int)(200 * scaleFactor);
         int startX = (screenW - (int)totalWidth) / 2;
-        int startY = (screenH / 2) - 200;
 
         // Version Text Safe Zone
         const string versionText = "v1.0 - .NET 10 / C# 14";
@@ -289,7 +314,7 @@ public class TitleScreen
                 {
                     RelativePosition = relPos,
                     TextureIndex = rng.Next(_plantTextures.Length),
-                    Scale = 0.4f + ((float)rng.NextDouble() * 0.6f), // Slightly larger for edges
+                    Scale = (0.4f + ((float)rng.NextDouble() * 0.6f)) * scaleFactor, // Scale with resolution
                     Rotation = (float)(rng.NextDouble() * Math.PI * 2),
                     Color = Color.Lerp(VivariumColors.Plant, Color.DarkGreen, 0.2f + ((float)rng.NextDouble() * 0.4f)) // Darker for background feel
                 });
@@ -325,16 +350,22 @@ public class TitleScreen
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-
         int screenWidth = _graphicsDevice.Viewport.Width;
         int screenHeight = _graphicsDevice.Viewport.Height;
 
+        // Regenerate decorations if resolution changed
+        if (screenWidth != _lastScreenWidth || screenHeight != _lastScreenHeight)
+        {
+            GenerateDecorations();
+        }
+
+        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
         // Draw "VIVARIUM"
         const string title = "VIVARIUM";
-        const int blockSize = 28; // Bigger blocks
+
+        var (blockSize, letterSpacing) = GetLayoutParameters(screenWidth);
         const int spacing = 0; // No spacing to connect textures
-        const int letterSpacing = 14;
 
         // Calculate total width
         int totalWidth = 0;
@@ -344,8 +375,9 @@ public class TitleScreen
         }
         totalWidth -= letterSpacing; // Remove last spacing
 
+        float scaleFactor = blockSize / 28f;
         int startX = (screenWidth - totalWidth) / 2;
-        int startY = (screenHeight / 2) - 200; // Moved up slightly more to accommodate taller letters
+        int startY = (screenHeight / 2) - (int)(200 * scaleFactor);
 
         // Draw Decorations (Plants) first (behind)
         foreach (var deco in _decorations)
