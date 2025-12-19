@@ -45,9 +45,6 @@ dotnet run --project Vivarium/Vivarium.csproj -c Release -- --headless --duratio
 *   `--seed <int>`: (Optional) Set a specific random seed for reproducibility.
 *   `--config <path>`: (Optional) Load simulation configuration from a JSON file.
 
-Logs are saved to the `Logs/` directory in CSV format. Log file names include timestamps and seed information for easy identification.
-```Logs/simulation_run_<timestamp>_<seed>_<duration>.csv```
-
 ## ⚙️ Configuration System
 
 The simulation uses a modular configuration system that allows balancing parameters to be tweaked without code changes.

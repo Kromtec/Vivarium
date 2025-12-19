@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using Vivarium.Biology;
 using Vivarium.Entities;
 
@@ -7,7 +6,14 @@ namespace Vivarium.Engine;
 
 public static class StatsLogger
 {
-    public static void LogStats(Simulation simulation, string logFilePath)
+    public struct DietCounts
+    {
+        public int Herbivores;
+        public int Omnivores;
+        public int Carnivores;
+    }
+
+    public static DietCounts LogStats(Simulation simulation)
     {
         int herbs = 0;
         int omnis = 0;
@@ -26,10 +32,6 @@ public static class StatsLogger
                 }
             }
         }
-
-        string line = $"{simulation.TickCount},{simulation.AliveAgents},{herbs},{omnis},{carnis},{simulation.AlivePlants},{simulation.AliveStructures}";
-
-        // Append to file
-        File.AppendAllText(logFilePath, line + Environment.NewLine);
+        return new DietCounts { Herbivores = herbs, Omnivores = omnis, Carnivores = carnis };
     }
 }
