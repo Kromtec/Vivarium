@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Vivarium.Config;
 using Vivarium.Entities;
 using Vivarium.World;
@@ -78,33 +80,31 @@ public static class Brain
         neurons[(int)SensorType.Constitution] = agent.Constitution;                     // -1 .. +1
 
         // --- 3. PROCESS GENOME ---
-        int validSourceCount = BrainConfig.SensorCount + BrainConfig.HiddenCount;
-        int validSinkCount = BrainConfig.ActionCount + BrainConfig.HiddenCount;
+        // The genome is now decoded once upon agent creation (or mutation), storing direct indices and pre-calculated weights.
 
-        foreach (var gene in agent.Genome)
+        ref float neuronsRef = ref MemoryMarshal.GetArrayDataReference(agent.NeuronActivations);
+
+        // Ensure DecodedGenome is ready
+        if (agent.DecodedGenome == null)
         {
-            // SOURCE RESTRICTION: Sensors or Hidden only.
-            // We skip the [Actions] block which sits in the middle of the array.
-            // This prevents Actions from driving other neurons, simplifying the network flow.
-            int rawSource = gene.SourceId % validSourceCount;
-            int sourceIdx = (rawSource < BrainConfig.SensorCount)
-                ? rawSource
-                : rawSource + BrainConfig.ActionCount;
-
-            // SINK RESTRICTION: Actions or Hidden only.
-            // We skip the [Sensors] block at the start of the array.
-            int sinkIdx = (gene.SinkId % validSinkCount) + BrainConfig.ActionsStart;
-
-            // Feed Forward
-            neurons[sinkIdx] += neurons[sourceIdx] * gene.Weight;
+            agent.RefreshDecodedGenome();
         }
 
-        // --- 3.5 INSTINCTS (Biological Overrides)
-        // We apply strong biases based on critical survival needs.
-        // These are applied BEFORE activation, so they can be modulated by the network but provide a strong baseline.
-        ApplyInstincts(ref agent, rng, neurons, threatDetected);
+        ref DecodedGene decodedRef = ref MemoryMarshal.GetArrayDataReference(agent.DecodedGenome);
+        int genomeLength = agent.DecodedGenome.Length;
 
-        // --- 4. ACTIVATION ---
+        for (int i = 0; i < genomeLength; i++)
+        {
+            ref DecodedGene dg = ref Unsafe.Add(ref decodedRef, i);
+
+            // Feed Forward
+            ref float sinkNeuron = ref Unsafe.Add(ref neuronsRef, dg.SinkIndex);
+            float sourceValue = Unsafe.Add(ref neuronsRef, dg.SourceIndex);
+
+            sinkNeuron += sourceValue * dg.Weight;
+        }
+
+        // --- 4. ACTIVATION FUNCTION (Tanh) ---
         // Apply Tanh to everything AFTER the sensors (Actions + Hidden)
         for (int i = BrainConfig.ActionsStart; i < neurons.Length; i++)
         {
@@ -112,7 +112,7 @@ public static class Brain
         }
     }
 
-    private static void ApplyInstincts(ref Agent agent, Random rng, float[] neurons,bool threatDetected)
+    private static void ApplyInstincts(ref Agent agent, Random rng, float[] neurons, bool threatDetected)
     {
         var cfg = ConfigProvider.Brain;
         float instinctBias = cfg.InstinctBiasStrength;
@@ -143,7 +143,7 @@ public static class Brain
         if (threatDetected)
         {
             ApplyDominantBias(ActionType.Flee, instinctBias);
-            ActivityLog.Log(agent.Id, "Instinct: Panic! Threat detected nearby. Urge to flee.");
+            ActivityLog.Log(agent.Id, $"Instinct: Panic! Threat detected nearby. Urge to flee.");
             return; // Priority 1: Survival overrides everything
         }
 
@@ -237,7 +237,7 @@ public static class Brain
         if (agent.Energy > agent.MaxEnergy * cfg.ReproductionInstinctThreshold && agent.Age > Agent.MaturityAge && agent.ReproductionCooldown == 0)
         {
             ApplyDominantBias(ActionType.Reproduce, instinctBias);
-            ActivityLog.Log(agent.Id, "Instinct: Libido. Healthy & Mature. Urge to reproduce.");
+            ActivityLog.Log(agent.Id, $"Instinct: Libido. Healthy & Mature. Urge to reproduce.");
         }
     }
 
@@ -266,7 +266,7 @@ public static class Brain
         // We use a threshold (0.0 means "neutral", so > 0 is "yes").
         if (GetAction(ActionType.Reproduce) > 0.0f && agent.TryReproduce(agentPopulationSpan, gridMap, rng))
         {
-            ActivityLog.Log(agent.Id, "Action: Reproduced successfully.");
+            ActivityLog.Log(agent.Id, $"Action: Reproduced successfully.");
             return;
         }
 
@@ -274,7 +274,7 @@ public static class Brain
         if (GetAction(ActionType.Suicide) > cfg.SuicideActivationThreshold && agent.Age > Agent.MaturityAge * cfg.SuicideAgeMultiplier)
         {
             agent.ChangeEnergy(-100f, gridMap);
-            ActivityLog.Log(agent.Id, "Action: Committed Suicide (Old Age).");
+            ActivityLog.Log(agent.Id, $"Action: Committed Suicide (Old Age).");
             return;
         }
 
@@ -421,7 +421,7 @@ public static class Brain
         }
         else
         {
-            ActivityLog.Log(agent.Id, "Action: Idle.");
+            ActivityLog.Log(agent.Id, $"Action: Idle.");
         }
     }
 

@@ -91,7 +91,35 @@ public struct Agent : IGridEntity
     }
 
     public Gene[] Genome { get; set; }
+    public DecodedGene[] DecodedGenome { get; set; }
     public float[] NeuronActivations { get; set; }
+
+    public void RefreshDecodedGenome()
+    {
+        if (Genome == null) return;
+        if (DecodedGenome == null || DecodedGenome.Length != Genome.Length)
+        {
+            DecodedGenome = new DecodedGene[Genome.Length];
+        }
+
+        var sourceMap = BrainConfig.SourceMap;
+        var sinkMap = BrainConfig.SinkMap;
+        const float weightScale = 1.0f / 8192.0f;
+
+        for (int i = 0; i < Genome.Length; i++)
+        {
+            uint dna = Genome[i].Dna;
+            int sourceId = (int)(dna & 0xFF);
+            int sinkId = (int)((dna >> 8) & 0xFF);
+            short rawWeight = (short)(dna >> 16);
+
+            int sourceIdx = sourceMap[sourceId];
+            int sinkIdx = sinkMap[sinkId];
+            float weight = rawWeight * weightScale;
+
+            DecodedGenome[i] = new DecodedGene(sourceIdx, sinkIdx, weight);
+        }
+    }
 
     // Traits derived from genome (normalized to [-1, +1])
     public float Strength { get; private set; }
@@ -262,7 +290,7 @@ public struct Agent : IGridEntity
             _ => cfg.HerbivoreMetabolismMultiplier
         };
 
-        return new Agent()
+        var agent = new Agent()
         {
             Id = VivariumGame.NextEntityId++,
             // Initialize MaxEnergy FIRST so Energy clamp works correctly
@@ -292,6 +320,9 @@ public struct Agent : IGridEntity
             TrophicBias = trophicBias,
             Constitution = constitution
         };
+
+        agent.RefreshDecodedGenome();
+        return agent;
     }
 
 

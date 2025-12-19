@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
+using System.Diagnostics.CodeAnalysis;
 using Vivarium.Config;
 
 namespace Vivarium.Benchmarks;
@@ -17,7 +18,8 @@ public class SimulationBenchmark
     }
 
     [Benchmark]
-    public static void RunSimulationStep()
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Needs to not be static by BenchmarkDotNet")]
+    public void RunSimulationStep()
     {
         const int duration = 3600; // Default 1 minute (60 fps * 60 sec)
         Program.RunHeadless(duration);

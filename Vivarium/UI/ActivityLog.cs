@@ -1,6 +1,8 @@
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Vivarium.UI;
 
@@ -17,6 +19,44 @@ public static class ActivityLog
     private static bool _isLoggingEnabled = false;
     private static long _currentTick = 0;
     private const int MaxEntries = 8;
+
+    public static bool IsLoggingEnabled => _isLoggingEnabled;
+    public static long TargetAgentId => _targetAgentId;
+
+    [InterpolatedStringHandler]
+    public ref struct LogHandler
+    {
+        private StringBuilder _builder;
+        public bool Enabled { get; }
+
+        public LogHandler(int literalLength, int formattedCount, long agentId, out bool handlerIsValid)
+        {
+            Enabled = ActivityLog.IsLoggingEnabled && ActivityLog.TargetAgentId == agentId;
+            handlerIsValid = Enabled;
+            if (Enabled)
+            {
+                _builder = new StringBuilder(literalLength + formattedCount * 20);
+            }
+            else
+            {
+                _builder = null;
+            }
+        }
+
+        public void AppendLiteral(string s) => _builder.Append(s);
+        public void AppendFormatted<T>(T t) => _builder.Append(t);
+        public void AppendFormatted<T>(T t, string format) => _builder.AppendFormat(null, "{0:" + format + "}", t);
+
+        public string GetFormattedText() => _builder.ToString();
+    }
+
+    public static void Log(long agentId, [InterpolatedStringHandlerArgument("agentId")] ref LogHandler handler)
+    {
+        if (handler.Enabled)
+        {
+            Log(agentId, handler.GetFormattedText());
+        }
+    }
 
     public static void SetTarget(long agentId)
     {

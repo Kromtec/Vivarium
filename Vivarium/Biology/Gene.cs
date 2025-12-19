@@ -48,3 +48,10 @@ public readonly struct Gene(uint dna)
         return $"In:{SourceId} -> Out:{SinkId} (W:{Weight:F2})";
     }
 }
+
+public readonly struct DecodedGene(int source, int sink, float weight)
+{
+    public readonly int SourceIndex = source;
+    public readonly int SinkIndex = sink;
+    public readonly float Weight = weight;
+}

@@ -26,4 +26,28 @@ public static class BrainConfig
 
     // Helper to map Action Enum to Array Index
     public static int GetActionIndex(ActionType action) => ActionsStart + (int)action;
+
+    public static readonly int[] SourceMap;
+    public static readonly int[] SinkMap;
+
+    static BrainConfig()
+    {
+        SourceMap = new int[256];
+        SinkMap = new int[256];
+
+        int validSourceCount = SensorCount + HiddenCount;
+        int validSinkCount = ActionCount + HiddenCount;
+
+        for (int i = 0; i < 256; i++)
+        {
+            // Source Map Logic
+            int rawSource = i % validSourceCount;
+            SourceMap[i] = (rawSource < SensorCount)
+                ? rawSource
+                : rawSource + ActionCount;
+
+            // Sink Map Logic
+            SinkMap[i] = (i % validSinkCount) + ActionsStart;
+        }
+    }
 }

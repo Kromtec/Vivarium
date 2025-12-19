@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Vivarium.World;
 
@@ -234,6 +236,17 @@ public static class WorldSensor
 
         int maxRadius = Math.Max(localRadius, dirRadius);
 
+        // Optimization: Get references to array data to skip bounds checks
+        ref GridCell gridBase = ref gridMap[0, 0];
+        ref int dirLookupBase = ref DirectionLookup[0, 0];
+        const int dirLookupWidth = 13; // DirectionLookup.GetLength(1)
+
+        ref Entities.Agent populationBase = ref Unsafe.NullRef<Entities.Agent>();
+        if (agentPopulation != null)
+        {
+            populationBase = ref MemoryMarshal.GetArrayDataReference(agentPopulation);
+        }
+
         for (int dy = -maxRadius; dy <= maxRadius; dy++)
         {
             int ny = centerY + dy;
@@ -253,7 +266,8 @@ public static class WorldSensor
                 if (nx < 0) nx += gridWidth;
                 else if (nx >= gridWidth) nx -= gridWidth;
 
-                var cell = gridMap[nx, ny];
+                // var cell = gridMap[nx, ny];
+                var cell = Unsafe.Add(ref gridBase, nx * gridHeight + ny);
 
                 // Local Scan
                 if (dist <= localRadius)
@@ -268,7 +282,7 @@ public static class WorldSensor
                             {
                                 if (cell.Index >= 0 && cell.Index < agentPopulation.Length)
                                 {
-                                    ref Entities.Agent other = ref agentPopulation[cell.Index];
+                                    ref Entities.Agent other = ref Unsafe.Add(ref populationBase, cell.Index);
                                     if (other.IsAlive && self.IsThreatenedBy(ref other))
                                     {
                                         threatDetected = true;
@@ -284,7 +298,7 @@ public static class WorldSensor
                 // Directional Scan
                 if (dist <= dirRadius)
                 {
-                    int dir = DirectionLookup[dx + LookupOffset, dy + LookupOffset];
+                    int dir = Unsafe.Add(ref dirLookupBase, (dx + LookupOffset) * dirLookupWidth + (dy + LookupOffset));
                     cellsPerBucket[dir]++;
                     switch (cell.Type)
                     {
