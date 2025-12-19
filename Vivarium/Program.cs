@@ -90,7 +90,7 @@ public static class Program
         }
     }
 
-    static void RunHeadless(int durationTicks)
+    public static void RunHeadless(int durationTicks)
     {
         int seed = ConfigProvider.World.Seed;
 
