@@ -267,7 +267,7 @@ public static class WorldSensor
                 else if (nx >= gridWidth) nx -= gridWidth;
 
                 // var cell = gridMap[nx, ny];
-                var cell = Unsafe.Add(ref gridBase, nx * gridHeight + ny);
+                var cell = Unsafe.Add(ref gridBase, (nx * gridHeight) + ny);
 
                 // Local Scan
                 if (dist <= localRadius)
@@ -298,7 +298,7 @@ public static class WorldSensor
                 // Directional Scan
                 if (dist <= dirRadius)
                 {
-                    int dir = Unsafe.Add(ref dirLookupBase, (dx + LookupOffset) * dirLookupWidth + (dy + LookupOffset));
+                    int dir = Unsafe.Add(ref dirLookupBase, ((dx + LookupOffset) * dirLookupWidth) + (dy + LookupOffset));
                     cellsPerBucket[dir]++;
                     switch (cell.Type)
                     {

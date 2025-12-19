@@ -26,10 +26,16 @@ public static class Brain
         // we multiply them by a factor.
         // 0.0 = No Memory (Reactive), 0.9 = Long Memory, 0.5 = Balanced
         float decayFactor = cfg.HiddenNeuronDecayFactor;
+
         // Iterate from HiddenStart to end of array
-        for (int i = BrainConfig.HiddenStart; i < BrainConfig.NeuronCount; i++)
+        // Optimized with Unsafe
+        ref float neuronsRef = ref MemoryMarshal.GetArrayDataReference(agent.NeuronActivations);
+        int hiddenStart = BrainConfig.HiddenStart;
+        const int neuronCount = BrainConfig.NeuronCount;
+
+        for (int i = hiddenStart; i < neuronCount; i++)
         {
-            agent.NeuronActivations[i] *= decayFactor;
+            Unsafe.Add(ref neuronsRef, i) *= decayFactor;
         }
 
         var neurons = agent.NeuronActivations;
@@ -37,12 +43,12 @@ public static class Brain
         // --- 2. SENSORS (Inputs) ---
         // Direct mapping since Sensors start at index 0
 
-        neurons[(int)SensorType.LocationX] = ((float)agent.X / gridWidth * 2) - 1.0f;                        // -1 .. +1
-        neurons[(int)SensorType.LocationY] = ((float)agent.Y / gridHeight * 2) - 1.0f;                       // -1 .. +1
-        neurons[(int)SensorType.Random] = ((float)rng.NextDouble() * 2) - 1.0f;                              // -1 .. +1
-        neurons[(int)SensorType.Energy] = ((float)agent.Energy / agent.MaxEnergy * 2) - 1.0f;                // -1 .. +1
-        neurons[(int)SensorType.Age] = (Math.Clamp((float)agent.Age / Agent.MaturityAge, 0, 1f) * 2) - 1.0f;  // -1 .. +1
-        neurons[(int)SensorType.Oscillator] = MathF.Sin(agent.Age * 0.1f);
+        Unsafe.Add(ref neuronsRef, (int)SensorType.LocationX) = ((float)agent.X / gridWidth * 2) - 1.0f;
+        Unsafe.Add(ref neuronsRef, (int)SensorType.LocationY) = ((float)agent.Y / gridHeight * 2) - 1.0f;
+        Unsafe.Add(ref neuronsRef, (int)SensorType.Random) = ((float)rng.NextDouble() * 2) - 1.0f;
+        Unsafe.Add(ref neuronsRef, (int)SensorType.Energy) = ((float)agent.Energy / agent.MaxEnergy * 2) - 1.0f;
+        Unsafe.Add(ref neuronsRef, (int)SensorType.Age) = (Math.Clamp((float)agent.Age / Agent.MaturityAge, 0, 1f) * 2) - 1.0f;
+        Unsafe.Add(ref neuronsRef, (int)SensorType.Oscillator) = MathF.Sin(agent.Age * 0.1f);
 
         // Directional sensors (8-way). Perception influences effective radius.
         int baseRadius = cfg.BasePerceptionRadius;
@@ -71,18 +77,18 @@ public static class Brain
         );
 
         // Trait sensors (derived from genome and precomputed on the Agent)
-        neurons[(int)SensorType.Strength] = agent.Strength;                             // -1 .. +1
-        neurons[(int)SensorType.Bravery] = agent.Bravery;                               // -1 .. +1
-        neurons[(int)SensorType.MetabolicEfficiency] = agent.MetabolicEfficiency;       // -1 .. +1
-        neurons[(int)SensorType.Perception] = agent.Perception;                         // -1 .. +1
-        neurons[(int)SensorType.Speed] = agent.Speed;                                   // -1 .. +1
-        neurons[(int)SensorType.TrophicBias] = agent.TrophicBias;                       // -1 .. +1 (carnivore->herbivore)
-        neurons[(int)SensorType.Constitution] = agent.Constitution;                     // -1 .. +1
+        Unsafe.Add(ref neuronsRef, (int)SensorType.Strength) = agent.Strength;
+        Unsafe.Add(ref neuronsRef, (int)SensorType.Bravery) = agent.Bravery;
+        Unsafe.Add(ref neuronsRef, (int)SensorType.MetabolicEfficiency) = agent.MetabolicEfficiency;
+        Unsafe.Add(ref neuronsRef, (int)SensorType.Perception) = agent.Perception;
+        Unsafe.Add(ref neuronsRef, (int)SensorType.Speed) = agent.Speed;
+        Unsafe.Add(ref neuronsRef, (int)SensorType.TrophicBias) = agent.TrophicBias;
+        Unsafe.Add(ref neuronsRef, (int)SensorType.Constitution) = agent.Constitution;
 
         // --- 3. PROCESS GENOME ---
         // The genome is now decoded once upon agent creation (or mutation), storing direct indices and pre-calculated weights.
 
-        ref float neuronsRef = ref MemoryMarshal.GetArrayDataReference(agent.NeuronActivations);
+        // ref float neuronsRef = ref MemoryMarshal.GetArrayDataReference(agent.NeuronActivations); // Already defined above
 
         // Ensure DecodedGenome is ready
         if (agent.DecodedGenome == null)
@@ -104,21 +110,29 @@ public static class Brain
             sinkNeuron += sourceValue * dg.Weight;
         }
 
+        // --- 3.5 INSTINCTS (Biological Overrides)
+        // We apply strong biases based on critical survival needs.
+        // These are applied BEFORE activation, so they can be modulated by the network but provide a strong baseline.
+        ApplyInstincts(ref agent, rng, ref neuronsRef, threatDetected);
+
         // --- 4. ACTIVATION FUNCTION (Tanh) ---
         // Apply Tanh to everything AFTER the sensors (Actions + Hidden)
-        for (int i = BrainConfig.ActionsStart; i < neurons.Length; i++)
+        int actionsStart = BrainConfig.ActionsStart;
+        for (int i = actionsStart; i < neuronCount; i++)
         {
-            neurons[i] = MathF.Tanh(neurons[i]);
+            ref float n = ref Unsafe.Add(ref neuronsRef, i);
+            n = MathF.Tanh(n);
         }
     }
 
-    private static void ApplyInstincts(ref Agent agent, Random rng, float[] neurons, bool threatDetected)
+    private static void ApplyInstincts(ref Agent agent, Random rng, ref float neuronsRef, bool threatDetected)
     {
         var cfg = ConfigProvider.Brain;
         float instinctBias = cfg.InstinctBiasStrength;
 
         // Helper to add bias to one action and suppress all others
-        void ApplyDominantBias(ActionType targetType, float amount)
+        // Optimized to use Unsafe and avoid bounds checks
+        static void ApplyDominantBias(ActionType targetType, float amount, ref float neuronsBase)
         {
             int targetIndex = BrainConfig.GetActionIndex(targetType);
             int start = BrainConfig.ActionsStart;
@@ -126,13 +140,14 @@ public static class Brain
 
             for (int i = start; i < end; i++)
             {
+                ref float neuron = ref Unsafe.Add(ref neuronsBase, i);
                 if (i == targetIndex)
                 {
-                    neurons[i] += amount;
+                    neuron += amount;
                 }
                 else
                 {
-                    neurons[i] -= amount;
+                    neuron -= amount;
                 }
             }
         }
@@ -142,8 +157,8 @@ public static class Brain
         // We do a quick scan for threats.
         if (threatDetected)
         {
-            ApplyDominantBias(ActionType.Flee, instinctBias);
-            ActivityLog.Log(agent.Id, $"Instinct: Panic! Threat detected nearby. Urge to flee.");
+            ApplyDominantBias(ActionType.Flee, instinctBias, ref neuronsRef);
+            ActivityLog.Log(agent.Id, "Instinct: Panic! Threat detected nearby. Urge to flee.");
             return; // Priority 1: Survival overrides everything
         }
 
@@ -159,35 +174,38 @@ public static class Brain
                 int bestDir = -1;
                 float maxDensity = 0f;
 
-                float n = neurons[(int)SensorType.PlantDensity_N];
-                float e = neurons[(int)SensorType.PlantDensity_E];
-                float s = neurons[(int)SensorType.PlantDensity_S];
-                float w = neurons[(int)SensorType.PlantDensity_W];
+                float n = Unsafe.Add(ref neuronsRef, (int)SensorType.PlantDensity_N);
+                float e = Unsafe.Add(ref neuronsRef, (int)SensorType.PlantDensity_E);
+                float s = Unsafe.Add(ref neuronsRef, (int)SensorType.PlantDensity_S);
+                float w = Unsafe.Add(ref neuronsRef, (int)SensorType.PlantDensity_W);
 
                 if (n > maxDensity) { maxDensity = n; bestDir = 0; }
                 if (e > maxDensity) { maxDensity = e; bestDir = 1; }
                 if (s > maxDensity) { maxDensity = s; bestDir = 2; }
                 if (w > maxDensity) { maxDensity = w; bestDir = 3; }
 
-                string biasDir = "Randomly";
                 if (bestDir == -1)
                 {
                     bestDir = rng.Next(0, 4);
                 }
-                else
+
+                if (bestDir == 0) ApplyDominantBias(ActionType.MoveN, instinctBias, ref neuronsRef);
+                else if (bestDir == 1) ApplyDominantBias(ActionType.MoveE, instinctBias, ref neuronsRef);
+                else if (bestDir == 2) ApplyDominantBias(ActionType.MoveS, instinctBias, ref neuronsRef);
+                else if (bestDir == 3) ApplyDominantBias(ActionType.MoveW, instinctBias, ref neuronsRef);
+
+                if (ActivityLog.IsLoggingEnabled && ActivityLog.TargetAgentId == agent.Id)
                 {
-                    if (bestDir == 0) biasDir = "North";
-                    else if (bestDir == 1) biasDir = "East";
-                    else if (bestDir == 2) biasDir = "South";
-                    else if (bestDir == 3) biasDir = "West";
+                    string biasDir = bestDir switch
+                    {
+                        0 => "North",
+                        1 => "East",
+                        2 => "South",
+                        3 => "West",
+                        _ => "Randomly"
+                    };
+                    ActivityLog.Log(agent.Id, $"Instinct: Low Energy. Seeking Plants towards {biasDir}.");
                 }
-
-                if (bestDir == 0) ApplyDominantBias(ActionType.MoveN, instinctBias);
-                else if (bestDir == 1) ApplyDominantBias(ActionType.MoveE, instinctBias);
-                else if (bestDir == 2) ApplyDominantBias(ActionType.MoveS, instinctBias);
-                else if (bestDir == 3) ApplyDominantBias(ActionType.MoveW, instinctBias);
-
-                ActivityLog.Log(agent.Id, $"Instinct: Low Energy. Seeking Plants towards {biasDir}.");
                 return;
             }
             else if (agent.Diet == DietType.Carnivore || (agent.Diet == DietType.Omnivore && dietDecision >= cfg.OmnivorePlantPreference))
@@ -196,38 +214,41 @@ public static class Brain
                 int bestDir = -1;
                 float maxDensity = 0f;
 
-                float n = neurons[(int)SensorType.AgentDensity_N];
-                float e = neurons[(int)SensorType.AgentDensity_E];
-                float s = neurons[(int)SensorType.AgentDensity_S];
-                float w = neurons[(int)SensorType.AgentDensity_W];
+                float n = Unsafe.Add(ref neuronsRef, (int)SensorType.AgentDensity_N);
+                float e = Unsafe.Add(ref neuronsRef, (int)SensorType.AgentDensity_E);
+                float s = Unsafe.Add(ref neuronsRef, (int)SensorType.AgentDensity_S);
+                float w = Unsafe.Add(ref neuronsRef, (int)SensorType.AgentDensity_W);
 
                 if (n > maxDensity) { maxDensity = n; bestDir = 0; }
                 if (e > maxDensity) { maxDensity = e; bestDir = 1; }
                 if (s > maxDensity) { maxDensity = s; bestDir = 2; }
                 if (w > maxDensity) { maxDensity = w; bestDir = 3; }
 
-                string biasDir = "Randomly";
                 if (bestDir == -1)
                 {
                     bestDir = rng.Next(0, 4);
                 }
-                else
-                {
-                    if (bestDir == 0) biasDir = "North";
-                    else if (bestDir == 1) biasDir = "East";
-                    else if (bestDir == 2) biasDir = "South";
-                    else if (bestDir == 3) biasDir = "West";
-                }
 
-                if (bestDir == 0) ApplyDominantBias(ActionType.MoveN, instinctBias);
-                else if (bestDir == 1) ApplyDominantBias(ActionType.MoveE, instinctBias);
-                else if (bestDir == 2) ApplyDominantBias(ActionType.MoveS, instinctBias);
-                else if (bestDir == 3) ApplyDominantBias(ActionType.MoveW, instinctBias);
+                if (bestDir == 0) ApplyDominantBias(ActionType.MoveN, instinctBias, ref neuronsRef);
+                else if (bestDir == 1) ApplyDominantBias(ActionType.MoveE, instinctBias, ref neuronsRef);
+                else if (bestDir == 2) ApplyDominantBias(ActionType.MoveS, instinctBias, ref neuronsRef);
+                else if (bestDir == 3) ApplyDominantBias(ActionType.MoveW, instinctBias, ref neuronsRef);
 
                 // Also encourage attacking if we smell food
-                neurons[BrainConfig.GetActionIndex(ActionType.Attack)] += cfg.HuntingAttackBias;
+                Unsafe.Add(ref neuronsRef, BrainConfig.GetActionIndex(ActionType.Attack)) += cfg.HuntingAttackBias;
 
-                ActivityLog.Log(agent.Id, $"Instinct: Low Energy. Hunting Prey towards {biasDir}.");
+                if (ActivityLog.IsLoggingEnabled && ActivityLog.TargetAgentId == agent.Id)
+                {
+                    string biasDir = bestDir switch
+                    {
+                        0 => "North",
+                        1 => "East",
+                        2 => "South",
+                        3 => "West",
+                        _ => "Randomly"
+                    };
+                    ActivityLog.Log(agent.Id, $"Instinct: Low Energy. Hunting Prey towards {biasDir}.");
+                }
                 return;
             }
         }
@@ -236,8 +257,8 @@ public static class Brain
         // If healthy and mature, try to reproduce.
         if (agent.Energy > agent.MaxEnergy * cfg.ReproductionInstinctThreshold && agent.Age > Agent.MaturityAge && agent.ReproductionCooldown == 0)
         {
-            ApplyDominantBias(ActionType.Reproduce, instinctBias);
-            ActivityLog.Log(agent.Id, $"Instinct: Libido. Healthy & Mature. Urge to reproduce.");
+            ApplyDominantBias(ActionType.Reproduce, instinctBias, ref neuronsRef);
+            ActivityLog.Log(agent.Id, "Instinct: Libido. Healthy & Mature. Urge to reproduce.");
         }
     }
 
@@ -266,7 +287,7 @@ public static class Brain
         // We use a threshold (0.0 means "neutral", so > 0 is "yes").
         if (GetAction(ActionType.Reproduce) > 0.0f && agent.TryReproduce(agentPopulationSpan, gridMap, rng))
         {
-            ActivityLog.Log(agent.Id, $"Action: Reproduced successfully.");
+            ActivityLog.Log(agent.Id, "Action: Reproduced successfully.");
             return;
         }
 
@@ -274,7 +295,7 @@ public static class Brain
         if (GetAction(ActionType.Suicide) > cfg.SuicideActivationThreshold && agent.Age > Agent.MaturityAge * cfg.SuicideAgeMultiplier)
         {
             agent.ChangeEnergy(-100f, gridMap);
-            ActivityLog.Log(agent.Id, $"Action: Committed Suicide (Old Age).");
+            ActivityLog.Log(agent.Id, "Action: Committed Suicide (Old Age).");
             return;
         }
 
@@ -421,7 +442,7 @@ public static class Brain
         }
         else
         {
-            ActivityLog.Log(agent.Id, $"Action: Idle.");
+            ActivityLog.Log(agent.Id, "Action: Idle.");
         }
     }
 

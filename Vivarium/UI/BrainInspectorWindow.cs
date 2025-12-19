@@ -25,7 +25,7 @@ public class BrainInspectorWindow
     // Dropdown State
     private bool _isDropdownOpen = false;
     private int _selectedActionIndex = -1; // -1 = ALL
-    private string[] _actionOptions;
+    private readonly string[] _actionOptions;
     private Rectangle _dropdownRect;
 
     // Graph Data
@@ -51,8 +51,8 @@ public class BrainInspectorWindow
         public bool IsActive; // Source is active
     }
 
-    private List<Node> _nodes = new();
-    private List<Connection> _connections = new();
+    private readonly List<Node> _nodes = new();
+    private readonly List<Connection> _connections = new();
 
     // Layout Constants
     private const int NodeRadius = 8;
@@ -118,7 +118,7 @@ public class BrainInspectorWindow
         if (_isDropdownOpen)
         {
             // Calculate list rect
-            int itemHeight = 25;
+            const int itemHeight = 25;
             int listHeight = itemHeight * _actionOptions.Length;
             Rectangle listRect = new(_dropdownRect.X, _dropdownRect.Bottom, _dropdownRect.Width, listHeight);
 
@@ -183,7 +183,7 @@ public class BrainInspectorWindow
         int height = _windowRect.Height - HeaderHeight;
         int startY = _windowRect.Y + HeaderHeight;
         int startX = _windowRect.X;
-        int availableHeight = height - Padding * 2;
+        int availableHeight = height - (Padding * 2);
         int laneWidth = width / 3;
 
         // Helper to decode genes exactly like Brain.Think
@@ -277,21 +277,21 @@ public class BrainInspectorWindow
         float sensorXOffset = maxLabelWidth + Padding;
 
         // Calculate vertical spacing and centering
-        float maxSpacing = 40f;
+        const float maxSpacing = 40f;
         float sensorSpacing = Math.Min(maxSpacing, (float)availableHeight / Math.Max(1, activeSensors));
         float totalSensorHeight = sensorSpacing * Math.Max(0, activeSensors - 1);
-        float sensorStartY = startY + Padding + (availableHeight - totalSensorHeight) / 2f;
+        float sensorStartY = startY + Padding + ((availableHeight - totalSensorHeight) / 2f);
 
         int currentSensor = 0;
         for (int i = 0; i < sensorCount; i++)
         {
             if (activeIndices.Contains(i))
             {
-                float y = sensorStartY + currentSensor * sensorSpacing;
+                float y = sensorStartY + (currentSensor * sensorSpacing);
                 _nodes.Add(new Node
                 {
                     Index = i,
-                    Position = new Vector2(startX + laneWidth / 2, y),
+                    Position = new Vector2(startX + (laneWidth / 2), y),
                     Label = ((SensorType)i).ToString(),
                     Type = NodeType.Sensor,
                     IsActive = true
@@ -312,18 +312,18 @@ public class BrainInspectorWindow
         // Calculate vertical spacing and centering for Actions
         float actionSpacing = Math.Min(maxSpacing, (float)availableHeight / Math.Max(1, activeActions));
         float totalActionHeight = actionSpacing * Math.Max(0, activeActions - 1);
-        float actionStartY = startY + Padding + (availableHeight - totalActionHeight) / 2f;
+        float actionStartY = startY + Padding + ((availableHeight - totalActionHeight) / 2f);
 
         int currentAction = 0;
         for (int i = actionStart; i < actionStart + actionCount; i++)
         {
             if (activeIndices.Contains(i))
             {
-                float y = actionStartY + currentAction * actionSpacing;
+                float y = actionStartY + (currentAction * actionSpacing);
                 _nodes.Add(new Node
                 {
                     Index = i,
-                    Position = new Vector2(startX + width - laneWidth / 2, y),
+                    Position = new Vector2(startX + width - (laneWidth / 2), y),
                     Label = ((ActionType)(i - actionStart)).ToString(),
                     Type = NodeType.Action,
                     IsActive = true
@@ -347,9 +347,9 @@ public class BrainInspectorWindow
         if (activeHiddenIndices.Count > 0)
         {
             // BLACKBOX MODE
-            float midX = startX + width / 2f;
-            float midY = startY + height / 2f;
-            int boxSize = 100;
+            float midX = startX + (width / 2f);
+            float midY = startY + (height / 2f);
+            const int boxSize = 100;
 
             var clusterNode = new Node
             {
@@ -359,7 +359,7 @@ public class BrainInspectorWindow
                 Label = "HIDDEN LAYER",
                 Type = NodeType.HiddenCluster,
                 IsActive = true,
-                Bounds = new Rectangle((int)(midX - boxSize / 2), (int)(midY - boxSize / 2), boxSize, boxSize)
+                Bounds = new Rectangle((int)(midX - (boxSize / 2)), (int)(midY - (boxSize / 2)), boxSize, boxSize)
             };
             _nodes.Add(clusterNode);
         }
@@ -463,23 +463,23 @@ public class BrainInspectorWindow
         //spriteBatch.Draw(_pixelTexture, lane2, Color.Thistle * 0.05f);
 
         // Lane 3 (Actions) - Darker
-        Rectangle lane3 = new(_windowRect.X + laneWidth * 2, laneTop, laneWidth - 5, laneHeight);
+        Rectangle lane3 = new(_windowRect.X + (laneWidth * 2), laneTop, laneWidth - 5, laneHeight);
         spriteBatch.Draw(_pixelTexture, lane3, Color.Gainsboro * 0.05f);
 
         // Header
-        spriteBatch.DrawString(_font, $"NEURAL NETWORK INSPECTOR - AGENT #{_targetAgent.Id}", new Vector2(_windowRect.X + Padding, _windowRect.Y + Padding / 2), UITheme.HeaderColor);
+        spriteBatch.DrawString(_font, $"NEURAL NETWORK INSPECTOR - AGENT #{_targetAgent.Id}", new Vector2(_windowRect.X + Padding, _windowRect.Y + (Padding / 2)), UITheme.HeaderColor);
 
         // Column Titles
         float titleY = laneTop + 10;
 
         Vector2 sensorSize = _font.MeasureString("SENSORS");
-        spriteBatch.DrawString(_font, "SENSORS", new Vector2(lane1.Center.X - sensorSize.X / 2, titleY), Color.LightGray);
+        spriteBatch.DrawString(_font, "SENSORS", new Vector2(lane1.Center.X - (sensorSize.X / 2), titleY), Color.LightGray);
 
         Vector2 hiddenSize = _font.MeasureString("HIDDEN NEURONS");
-        spriteBatch.DrawString(_font, "HIDDEN NEURONS", new Vector2(lane2.Center.X - hiddenSize.X / 2, titleY), Color.LightGray);
+        spriteBatch.DrawString(_font, "HIDDEN NEURONS", new Vector2(lane2.Center.X - (hiddenSize.X / 2), titleY), Color.LightGray);
 
         Vector2 actionSize = _font.MeasureString("ACTIONS");
-        spriteBatch.DrawString(_font, "ACTIONS", new Vector2(lane3.Center.X - actionSize.X / 2, titleY), Color.LightGray);
+        spriteBatch.DrawString(_font, "ACTIONS", new Vector2(lane3.Center.X - (actionSize.X / 2), titleY), Color.LightGray);
 
         // Dropdown
         var mouseState = Mouse.GetState();
@@ -530,7 +530,7 @@ public class BrainInspectorWindow
                 }
 
                 // Draw Symbols
-                int spacing = 28;
+                const int spacing = 28;
                 int centerY = node.Bounds.Center.Y;
                 int dotX = node.Bounds.X + 30;
                 int numberRightX = node.Bounds.Right - 30;
@@ -542,7 +542,7 @@ public class BrainInspectorWindow
 
                     string text = count.ToString();
                     Vector2 textSize = _font.MeasureString(text);
-                    Vector2 textPos = new(numberRightX - textSize.X, centerY + yOffset - textSize.Y / 2 + 3);
+                    Vector2 textPos = new(numberRightX - textSize.X, centerY + yOffset - (textSize.Y / 2) + 3);
                     spriteBatch.DrawString(_font, text, textPos, Color.White);
                 }
 
@@ -589,7 +589,7 @@ public class BrainInspectorWindow
         // Draw Dropdown List Overlay (Last to be on top)
         if (_isDropdownOpen)
         {
-            int itemHeight = 25;
+            const int itemHeight = 25;
             int listHeight = itemHeight * _actionOptions.Length;
             Rectangle listRect = new(_dropdownRect.X, _dropdownRect.Bottom, _dropdownRect.Width, listHeight);
 

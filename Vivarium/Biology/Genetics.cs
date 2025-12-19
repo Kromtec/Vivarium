@@ -93,7 +93,7 @@ public static partial class Genetics
         int traitStartIndex = TraitStartIndex;
         float normalizer = ConfigProvider.Genetics.TraitNormalizer;
 
-        const int pairs = 14 / 2; // TraitGeneCount / 2
+        int pairs = traitGeneCount / 2;
         int traitIndex = (int)trait;
 
         // Clamp traitIndex

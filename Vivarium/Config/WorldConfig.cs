@@ -35,7 +35,7 @@ public sealed class WorldConfig
         const int gridHeight = 96;
         const int gridWidth = (gridHeight / 9) * 16;
         const int cellSize = 1280 / gridHeight;
-        int totalCells = gridWidth * gridHeight;
+        const int totalCells = gridWidth * gridHeight;
 
         return new WorldConfig
         {

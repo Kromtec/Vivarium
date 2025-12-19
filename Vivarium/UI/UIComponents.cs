@@ -35,7 +35,7 @@ public static class UIComponents
 
         // Text
         Vector2 size = font.MeasureString(text);
-        Vector2 pos = new(rect.X + (rect.Width - size.X) / 2, rect.Y + (rect.Height - size.Y) / 2);
+        Vector2 pos = new(rect.X + ((rect.Width - size.X) / 2), rect.Y + ((rect.Height - size.Y) / 2));
         sb.DrawString(font, text, pos, UITheme.TextColorPrimary);
     }
 
@@ -53,7 +53,7 @@ public static class UIComponents
         // Truncate if too long?
         Vector2 size = font.MeasureString(currentText);
         // Left align with padding
-        Vector2 pos = new(rect.X + 5, rect.Y + (rect.Height - size.Y) / 2);
+        Vector2 pos = new(rect.X + 5, rect.Y + ((rect.Height - size.Y) / 2));
 
         // Clip text if needed (simple scissor or just draw)
         // For now just draw
@@ -62,7 +62,7 @@ public static class UIComponents
         // Arrow
         string arrow = isOpen ? "^" : "v";
         Vector2 arrowSize = font.MeasureString(arrow);
-        sb.DrawString(font, arrow, new Vector2(rect.Right - arrowSize.X - 5, rect.Y + (rect.Height - arrowSize.Y) / 2), UITheme.TextColorSecondary);
+        sb.DrawString(font, arrow, new Vector2(rect.Right - arrowSize.X - 5, rect.Y + ((rect.Height - arrowSize.Y) / 2)), UITheme.TextColorSecondary);
     }
 
     public static void DrawDropdownList(SpriteBatch sb, SpriteFont font, Rectangle rect, string[] items, int hoveredIndex, Texture2D pixel)
@@ -83,7 +83,7 @@ public static class UIComponents
             }
 
             Vector2 size = font.MeasureString(items[i]);
-            Vector2 pos = new(itemRect.X + 5, itemRect.Y + (itemRect.Height - size.Y) / 2);
+            Vector2 pos = new(itemRect.X + 5, itemRect.Y + ((itemRect.Height - size.Y) / 2));
             sb.DrawString(font, items[i], pos, UITheme.TextColorPrimary);
         }
     }

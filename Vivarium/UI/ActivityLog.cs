@@ -24,9 +24,9 @@ public static class ActivityLog
     public static long TargetAgentId => _targetAgentId;
 
     [InterpolatedStringHandler]
-    public ref struct LogHandler
+    public readonly ref struct LogHandler
     {
-        private StringBuilder _builder;
+        private readonly StringBuilder _builder;
         public bool Enabled { get; }
 
         public LogHandler(int literalLength, int formattedCount, long agentId, out bool handlerIsValid)
@@ -35,7 +35,7 @@ public static class ActivityLog
             handlerIsValid = Enabled;
             if (Enabled)
             {
-                _builder = new StringBuilder(literalLength + formattedCount * 20);
+                _builder = new StringBuilder(literalLength + (formattedCount * 20));
             }
             else
             {
