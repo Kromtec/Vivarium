@@ -98,20 +98,18 @@ public static class UIComponents
 
         // Bar Area
         const int barHeight = 10;
-        int barY = rect.Y + 5; // Offset from label
-        if (string.IsNullOrEmpty(label)) barY = rect.Y; // If no label, start at top
+        Rectangle barRect = new(rect.X, rect.Y + rect.Height - barHeight, rect.Width, barHeight);
 
         // Background
-        Rectangle barRect = new(rect.X + (string.IsNullOrEmpty(label) ? 0 : 100), barY, rect.Width - (string.IsNullOrEmpty(label) ? 0 : 100), barHeight);
-        // If label is present, we assume a fixed width for label area or passed rect includes it.
-        // The Inspector uses a fixed layout: Label at X, Bar at Right-100.
-        // Let's make this flexible. If label is provided, we draw it and push bar to right.
-        // But for generic usage, maybe just draw the bar in the rect provided?
-        // Let's stick to the Inspector style for now as it's the main user.
+        sb.Draw(pixel, barRect, Color.Black * 0.5f);
 
-        // Actually, let's make it simple: Draw bar in the given rect. Label drawing is caller's responsibility or separate.
-        // But the request is to refactor components.
-        // Let's support the "Label ...... [Bar]" layout.
+        // Fill
+        float t = Math.Clamp(value / max, 0f, 1f);
+        Rectangle fillRect = new(barRect.X, barRect.Y, (int)(barRect.Width * t), barRect.Height);
+        sb.Draw(pixel, fillRect, color);
+
+        // Border
+        DrawBorder(sb, barRect, 1, UITheme.BorderColor, pixel);
     }
 
     public static void DrawSimpleProgressBar(SpriteBatch sb, Rectangle rect, float ratio, Color color, Texture2D pixel)
@@ -151,5 +149,81 @@ public static class UIComponents
             else
                 sb.Draw(pixel, new Rectangle(centerX - fillWidth, rect.Y, fillWidth, rect.Height), c);
         }
+    }
+
+    public static bool DrawSlider(SpriteBatch sb, SpriteFont font, Rectangle rect, string label, ref float value, float min, float max, Texture2D pixel)
+    {
+        // Label
+        if (!string.IsNullOrEmpty(label))
+        {
+            sb.DrawString(font, label, new Vector2(rect.X, rect.Y), UITheme.TextColorSecondary);
+        }
+
+        // Slider Area
+        int sliderY = rect.Y + 20;
+        Rectangle sliderRect = new(rect.X, sliderY, rect.Width, 20);
+
+        // Track
+        Rectangle trackRect = new(sliderRect.X, sliderRect.Y + 8, sliderRect.Width, 4);
+        sb.Draw(pixel, trackRect, Color.Gray);
+
+        // Thumb
+        float t = (value - min) / (max - min);
+        int thumbX = (int)(trackRect.X + (t * trackRect.Width));
+        Rectangle thumbRect = new(thumbX - 5, sliderRect.Y, 10, 20);
+
+        var mouse = Microsoft.Xna.Framework.Input.Mouse.GetState();
+        bool isHovered = thumbRect.Contains(mouse.Position) || trackRect.Contains(mouse.Position);
+        bool isPressed = mouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed;
+        
+        bool changed = false;
+        
+        // Simple interaction: if mouse is pressed within the slider area (expanded), update value
+        // This doesn't support "drag outside" but is simple for now.
+        if (isPressed && sliderRect.Contains(mouse.Position))
+        {
+            float mouseT = (mouse.Position.X - trackRect.X) / (float)trackRect.Width;
+            mouseT = Math.Clamp(mouseT, 0f, 1f);
+            float newValue = min + (mouseT * (max - min));
+            
+            if (Math.Abs(newValue - value) > 0.0001f)
+            {
+                value = newValue;
+                changed = true;
+            }
+        }
+
+        // Draw Thumb
+        sb.Draw(pixel, thumbRect, isHovered ? Color.White : UITheme.ButtonColor);
+        DrawBorder(sb, thumbRect, 1, UITheme.BorderColor, pixel);
+
+        // Value Text
+        string valueText = value.ToString("0.00");
+        Vector2 valueSize = font.MeasureString(valueText);
+        sb.DrawString(font, valueText, new Vector2(rect.Right - valueSize.X, rect.Y), UITheme.TextColorPrimary);
+
+        return changed;
+    }
+
+    public static bool DrawSlider(SpriteBatch sb, SpriteFont font, Rectangle rect, string label, ref int value, int min, int max, Texture2D pixel)
+    {
+        float fValue = value;
+        bool changed = DrawSlider(sb, font, rect, label, ref fValue, min, max, pixel);
+        if (changed)
+        {
+            value = (int)Math.Round(fValue);
+        }
+        return changed;
+    }
+
+    public static bool DrawSlider(SpriteBatch sb, SpriteFont font, Rectangle rect, string label, ref double value, double min, double max, Texture2D pixel)
+    {
+        float fValue = (float)value;
+        bool changed = DrawSlider(sb, font, rect, label, ref fValue, (float)min, (float)max, pixel);
+        if (changed)
+        {
+            value = fValue;
+        }
+        return changed;
     }
 }

@@ -11,20 +11,23 @@ public class HUD
     private readonly Texture2D _pixelTexture;
     private readonly SimulationGraph _simGraph;
     private readonly GenePoolWindow _genePoolWindow;
+    private readonly SettingsWindow _settingsWindow;
 
     private Rectangle _panelRect;
     private int _cursorY;
     private Rectangle _geneButtonRect;
+    private Rectangle _settingsButtonRect;
     private bool _wasLeftButtonPressed = false;
 
     public Rectangle Bounds => _panelRect;
 
-    public HUD(GraphicsDevice graphics, SpriteFont font, SimulationGraph simGraph, GenePoolWindow genePoolWindow)
+    public HUD(GraphicsDevice graphics, SpriteFont font, SimulationGraph simGraph, GenePoolWindow genePoolWindow, SettingsWindow settingsWindow)
     {
         _graphics = graphics;
         _font = font;
         _simGraph = simGraph;
         _genePoolWindow = genePoolWindow;
+        _settingsWindow = settingsWindow;
 
         _pixelTexture = new Texture2D(graphics, 1, 1);
         _pixelTexture.SetData([Color.White]);
@@ -41,6 +44,10 @@ public class HUD
             {
                 _genePoolWindow.IsVisible = !_genePoolWindow.IsVisible;
             }
+            else if (_settingsButtonRect.Contains(mouse.Position))
+            {
+                _settingsWindow.IsVisible = !_settingsWindow.IsVisible;
+            }
         }
 
         _wasLeftButtonPressed = isPressed;
@@ -48,7 +55,7 @@ public class HUD
 
     public bool IsMouseOver(Point mousePos)
     {
-        return _panelRect.Contains(mousePos) || _geneButtonRect.Contains(mousePos);
+        return _panelRect.Contains(mousePos) || _geneButtonRect.Contains(mousePos) || _settingsButtonRect.Contains(mousePos);
     }
 
     public void Draw(SpriteBatch spriteBatch, long tickCount, int agents, int herbs, int omnis, int carnis, int plants, int structures)
@@ -75,6 +82,9 @@ public class HUD
         contentHeight += 30;
         contentHeight += UITheme.LineHeight * 6;
         contentHeight += UITheme.Padding;
+
+        // Buttons
+        contentHeight += 40; // Space for buttons
 
         _panelRect = new Rectangle(startX, startY, width, contentHeight);
 
@@ -107,40 +117,42 @@ public class HUD
         _cursorY += graphHeight + graphPadding;
 
         // -- POPULATION STATS --
-        _cursorY += 5;
-        spriteBatch.DrawString(_font, "POPULATION", new Vector2(leftX, _cursorY + 3), UITheme.HeaderColor);
-
-        // Gene Button
-        const int buttonWidth = 60;
-        const int buttonHeight = 24;
-
-        Vector2 headerSize = _font.MeasureString("POPULATION");
-        int buttonY = _cursorY + (int)((headerSize.Y - buttonHeight) / 2);
-
-        _geneButtonRect = new Rectangle(rightX - buttonWidth, buttonY, buttonWidth, buttonHeight);
-
-        // Use UIComponents.DrawButton
-        var mouse = Microsoft.Xna.Framework.Input.Mouse.GetState();
-        bool isHover = _geneButtonRect.Contains(mouse.Position);
-        bool isPress = isHover && mouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed;
-
-        UIComponents.DrawButton(spriteBatch, _font, _geneButtonRect, "GENES", _pixelTexture, isHover, isPress, UITheme.ButtonColor);
-
+        // -- STATS --
+        spriteBatch.DrawString(_font, "POPULATION", new Vector2(leftX, _cursorY), UITheme.HeaderColor);
         _cursorY += 30;
 
-        DrawStatRow(spriteBatch, "Total Agents", agents.ToString(), VivariumColors.Agent, leftX, rightX);
-        DrawStatRow(spriteBatch, "  Herbivores", herbs.ToString(), VivariumColors.Herbivore, leftX, rightX);
-        DrawStatRow(spriteBatch, "  Omnivores", omnis.ToString(), VivariumColors.Omnivore, leftX, rightX);
-        DrawStatRow(spriteBatch, "  Carnivores", carnis.ToString(), VivariumColors.Carnivore, leftX, rightX);
-        DrawStatRow(spriteBatch, "Plants", plants.ToString(), VivariumColors.Plant, leftX, rightX);
-        DrawStatRow(spriteBatch, "Structures", structures.ToString(), VivariumColors.Structure, leftX, rightX);
+        DrawStat(spriteBatch, "Agents", agents.ToString(), UITheme.TextColorPrimary);
+        DrawStat(spriteBatch, "Plants", plants.ToString(), UITheme.TextColorPrimary);
+        DrawStat(spriteBatch, "Herbivores", herbs.ToString(), VivariumColors.Herbivore);
+        DrawStat(spriteBatch, "Omnivores", omnis.ToString(), VivariumColors.Omnivore);
+        DrawStat(spriteBatch, "Carnivores", carnis.ToString(), VivariumColors.Carnivore);
+        DrawStat(spriteBatch, "Structures", structures.ToString(), VivariumColors.Structure);
+
+        _cursorY += 20;
+
+        // -- BUTTONS --
+        int btnWidth = (_panelRect.Width - (UITheme.Padding * 3)) / 2;
+        _geneButtonRect = new Rectangle(leftX, _cursorY, btnWidth, 30);
+        _settingsButtonRect = new Rectangle(leftX + btnWidth + UITheme.Padding, _cursorY, btnWidth, 30);
+
+        var mouse = Microsoft.Xna.Framework.Input.Mouse.GetState();
+        
+        // Gene Button
+        bool geneHover = _geneButtonRect.Contains(mouse.Position);
+        bool genePress = geneHover && mouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed;
+        UIComponents.DrawButton(spriteBatch, _font, _geneButtonRect, "GENETICS", _pixelTexture, geneHover, genePress);
+
+        // Settings Button
+        bool setHover = _settingsButtonRect.Contains(mouse.Position);
+        bool setPress = setHover && mouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed;
+        UIComponents.DrawButton(spriteBatch, _font, _settingsButtonRect, "SETTINGS", _pixelTexture, setHover, setPress);
     }
 
-    private void DrawStatRow(SpriteBatch sb, string label, string value, Color valueColor, int leftX, int rightX)
+    private void DrawStat(SpriteBatch sb, string label, string value, Color valueColor)
     {
-        sb.DrawString(_font, label, new Vector2(leftX, _cursorY), UITheme.TextColorSecondary);
-        Vector2 valSize = _font.MeasureString(value);
-        sb.DrawString(_font, value, new Vector2(rightX - valSize.X, _cursorY), valueColor);
+        sb.DrawString(_font, label, new Vector2(_panelRect.X + UITheme.Padding, _cursorY), UITheme.TextColorSecondary);
+        Vector2 size = _font.MeasureString(value);
+        sb.DrawString(_font, value, new Vector2(_panelRect.Right - UITheme.Padding - size.X, _cursorY), valueColor);
         _cursorY += UITheme.LineHeight;
     }
 }

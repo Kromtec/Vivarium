@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Vivarium.Config;
 
 /// <summary>
@@ -17,12 +19,15 @@ public sealed class GeneticsConfig
     // --- Mutable ---
 
     /// <summary>Probability that a single gene will mutate during reproduction.</summary>
+    [Range(0.0, 0.1)]
     public double MutationRate { get; set; } = 0.001;
 
-    /// <summary>Weight range for initial genome connections (±WeightRange).</summary>
+    /// <summary>Weight range for initial genome connections (WeightRange).</summary>
+    [Range(0.1f, 10.0f)]
     public float InitialWeightRange { get; set; } = 4.0f;
 
     /// <summary>Normalizer for trait extraction from gene weights.</summary>
+    [Range(0.1f, 10.0f)]
     public float TraitNormalizer { get; set; } = 4.0f;
 
     /// <summary>

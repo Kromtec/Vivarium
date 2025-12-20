@@ -44,6 +44,7 @@ public class VivariumGame : Game
     private HUD _hud;
     private TitleScreen _titleScreen;
     private GenePoolWindow _genePoolWindow;
+    private SettingsWindow _settingsWindow;
     private BrainInspectorWindow _brainInspectorWindow;
     private GenomeCensus _genomeCensus;
     private SpriteFont _sysFont;
@@ -117,7 +118,8 @@ public class VivariumGame : Game
 
         _inspector = new Inspector(GraphicsDevice, _sysFont, _genomeCensus);
         _genePoolWindow = new GenePoolWindow(GraphicsDevice, _sysFont, _genomeCensus);
-        _hud = new HUD(GraphicsDevice, _sysFont, _simGraph, _genePoolWindow);
+        _settingsWindow = new SettingsWindow(GraphicsDevice, _sysFont, ConfigProvider.Current);
+        _hud = new HUD(GraphicsDevice, _sysFont, _simGraph, _genePoolWindow, _settingsWindow);
         _brainInspectorWindow = new BrainInspectorWindow(GraphicsDevice, _sysFont);
 
         _worldRenderer = new WorldRenderer(GraphicsDevice);
@@ -198,9 +200,12 @@ public class VivariumGame : Game
         {
             _hud.UpdateInput();
             _genePoolWindow.UpdateInput();
+            
+            int scrollDelta = (mouseState.ScrollWheelValue - _previousMouseState.ScrollWheelValue);
+            _settingsWindow.HandleInput(mouseState, scrollDelta);
         }
 
-        bool effectivePause = _isPaused || _genePoolWindow.IsVisible || _showExitConfirmation;
+        bool effectivePause = _isPaused || _genePoolWindow.IsVisible || _showExitConfirmation || _settingsWindow.IsVisible;
 
         if (_genePoolWindow.IsVisible)
         {
@@ -213,7 +218,7 @@ public class VivariumGame : Game
         }
 
         // Input Blocking
-        bool uiCapturesMouse = _hud.IsMouseOver(mouseState.Position) || _genePoolWindow.IsVisible || _brainInspectorWindow.IsVisible;
+        bool uiCapturesMouse = _hud.IsMouseOver(mouseState.Position) || _genePoolWindow.IsVisible || _brainInspectorWindow.IsVisible || _settingsWindow.IsVisible;
         bool inspectorCapturesMouse = _inspector.IsMouseOver(mouseState.Position);
 
         // Handle Brain Inspector Request from Inspector
@@ -329,12 +334,13 @@ public class VivariumGame : Game
         // Gene Pool Window
         _genePoolWindow.Draw(_spriteBatch);
         _brainInspectorWindow.Draw(_spriteBatch);
+        _settingsWindow.Draw(_spriteBatch);
 
         // Activity Log
         ActivityLog.Draw(_spriteBatch, _sysFont, GraphicsDevice);
 
         // Paused Text
-        if (_isPaused || _genePoolWindow.IsVisible)
+        if (_isPaused || _genePoolWindow.IsVisible || _settingsWindow.IsVisible)
         {
             const string pausedText = "PAUSED";
             Vector2 textSize = _sysFont.MeasureString(pausedText);
@@ -348,6 +354,7 @@ public class VivariumGame : Game
         }
 
         // Exit Confirmation
+
         if (_showExitConfirmation)
         {
             DrawExitConfirmation();
