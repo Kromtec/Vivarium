@@ -121,11 +121,11 @@ public class HUD
         spriteBatch.DrawString(_font, "POPULATION", new Vector2(leftX, _cursorY), UITheme.HeaderColor);
         _cursorY += 30;
 
-        DrawStat(spriteBatch, "Agents", agents.ToString(), UITheme.TextColorPrimary);
-        DrawStat(spriteBatch, "Plants", plants.ToString(), UITheme.TextColorPrimary);
-        DrawStat(spriteBatch, "Herbivores", herbs.ToString(), VivariumColors.Herbivore);
-        DrawStat(spriteBatch, "Omnivores", omnis.ToString(), VivariumColors.Omnivore);
-        DrawStat(spriteBatch, "Carnivores", carnis.ToString(), VivariumColors.Carnivore);
+        DrawStat(spriteBatch, "Agents", agents.ToString(), VivariumColors.Agent);
+        DrawStat(spriteBatch, "- Herbivores", herbs.ToString(), VivariumColors.Herbivore);
+        DrawStat(spriteBatch, "- Omnivores", omnis.ToString(), VivariumColors.Omnivore);
+        DrawStat(spriteBatch, "- Carnivores", carnis.ToString(), VivariumColors.Carnivore);
+        DrawStat(spriteBatch, "Plants", plants.ToString(), VivariumColors.Plant);
         DrawStat(spriteBatch, "Structures", structures.ToString(), VivariumColors.Structure);
 
         _cursorY += 20;
@@ -136,7 +136,7 @@ public class HUD
         _settingsButtonRect = new Rectangle(leftX + btnWidth + UITheme.Padding, _cursorY, btnWidth, 30);
 
         var mouse = Microsoft.Xna.Framework.Input.Mouse.GetState();
-        
+
         // Gene Button
         bool geneHover = _geneButtonRect.Contains(mouse.Position);
         bool genePress = geneHover && mouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed;

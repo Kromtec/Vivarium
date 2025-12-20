@@ -9,7 +9,7 @@ namespace Vivarium.Config;
 /// </summary>
 public static class ConfigProvider
 {
-    private static SimulationConfig? _current;
+    private static SimulationConfig _current;
 
     /// <summary>
     /// Gets the current simulation configuration.

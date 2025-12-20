@@ -54,8 +54,8 @@ public class SimulationGraph
         float maxVal = Math.Max(_agentHistory.Max(), _plantHistory.Max());
         if (maxVal < 10) maxVal = 10;
 
-        DrawSeries(spriteBatch, _plantHistory, Vivarium.Visuals.VivariumColors.Plant, maxVal);
-        DrawSeries(spriteBatch, _agentHistory, Vivarium.Visuals.VivariumColors.Agent, maxVal);
+        DrawSeries(spriteBatch, _plantHistory, Visuals.VivariumColors.Plant, maxVal);
+        DrawSeries(spriteBatch, _agentHistory, Visuals.VivariumColors.Agent, maxVal);
 
         // Draw Axes
         DrawLine(spriteBatch, new Vector2(_bounds.Left, _bounds.Top), new Vector2(_bounds.Left, _bounds.Bottom), UITheme.BorderColor);

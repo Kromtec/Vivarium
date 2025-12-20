@@ -4,11 +4,12 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Vivarium.Config;
 
 namespace Vivarium.UI;
 
-public class SettingsWindow
+public partial class SettingsWindow
 {
     private readonly GraphicsDevice _graphicsDevice;
     private readonly SpriteFont _font;
@@ -20,7 +21,7 @@ public class SettingsWindow
     private Rectangle _windowRect;
     private int _currentTab = 0;
     private readonly string[] _tabs = ["Agent", "Plant", "Brain", "Genetics"];
-    
+
     private int _scrollOffset = 0;
 
     public SettingsWindow(GraphicsDevice graphicsDevice, SpriteFont font, SimulationConfig config)
@@ -50,8 +51,8 @@ public class SettingsWindow
         int screenW = _graphicsDevice.Viewport.Width;
         int screenH = _graphicsDevice.Viewport.Height;
 
-        int width = 600;
-        int height = 700;
+        const int width = 600;
+        const int height = 700;
         _windowRect = new Rectangle((screenW - width) / 2, (screenH - height) / 2, width, height);
 
         // Draw Window Background
@@ -60,7 +61,7 @@ public class SettingsWindow
         // Draw Header
         int cursorY = _windowRect.Y + UITheme.Padding;
         spriteBatch.DrawString(_font, "SIMULATION SETTINGS", new Vector2(_windowRect.X + UITheme.Padding, cursorY), UITheme.HeaderColor);
-        
+
         // Close Button (X)
         Rectangle closeRect = new(_windowRect.Right - 30, _windowRect.Y + 10, 20, 20);
         var mouse = Mouse.GetState();
@@ -80,7 +81,7 @@ public class SettingsWindow
             bool isHovered = tabRect.Contains(mouse.Position);
             bool isClicked = isHovered && mouse.LeftButton == ButtonState.Pressed;
 
-            if (isClicked) 
+            if (isClicked)
             {
                 _currentTab = i;
                 _scrollOffset = 0; // Reset scroll on tab change
@@ -94,13 +95,13 @@ public class SettingsWindow
 
         // Draw Content Area
         Rectangle contentRect = new(_windowRect.X + UITheme.Padding, cursorY, _windowRect.Width - (UITheme.Padding * 2), _windowRect.Height - (cursorY - _windowRect.Y) - UITheme.Padding);
-        
+
         // Scissor test to clip content
         Rectangle currentScissor = spriteBatch.GraphicsDevice.ScissorRectangle;
-        
+
         // End current batch to apply scissor
         spriteBatch.End();
-        
+
         spriteBatch.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(currentScissor, contentRect);
         spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, new RasterizerState { ScissorTestEnable = true });
 
@@ -117,7 +118,7 @@ public class SettingsWindow
         DrawConfigProperties(spriteBatch, targetConfig, contentRect);
 
         spriteBatch.End();
-        
+
         // Restore scissor and batch
         spriteBatch.GraphicsDevice.ScissorRectangle = currentScissor;
         spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
@@ -126,7 +127,7 @@ public class SettingsWindow
     private void DrawConfigProperties(SpriteBatch sb, object configObject, Rectangle area)
     {
         int y = area.Y - _scrollOffset;
-        int itemHeight = 50;
+        const int itemHeight = 50;
 
         PropertyInfo[] properties = configObject.GetType().GetProperties();
 
@@ -141,23 +142,23 @@ public class SettingsWindow
 
             // Optimization: Don't draw if outside view
             if (y > area.Bottom) break;
-            if (y + itemHeight < area.Top) 
+            if (y + itemHeight < area.Top)
             {
                 y += itemHeight;
                 continue;
             }
 
             Rectangle itemRect = new(area.X, y, area.Width, itemHeight);
-            
+
             // Draw Slider
             string label = SplitCamelCase(prop.Name);
-            
+
             if (prop.PropertyType == typeof(float))
             {
                 float val = (float)prop.GetValue(configObject);
                 float min = Convert.ToSingle(rangeAttr.Minimum);
                 float max = Convert.ToSingle(rangeAttr.Maximum);
-                
+
                 if (UIComponents.DrawSlider(sb, _font, itemRect, label, ref val, min, max, _pixelTexture))
                 {
                     prop.SetValue(configObject, val);
@@ -168,7 +169,7 @@ public class SettingsWindow
                 int val = (int)prop.GetValue(configObject);
                 int min = Convert.ToInt32(rangeAttr.Minimum);
                 int max = Convert.ToInt32(rangeAttr.Maximum);
-                
+
                 if (UIComponents.DrawSlider(sb, _font, itemRect, label, ref val, min, max, _pixelTexture))
                 {
                     prop.SetValue(configObject, val);
@@ -179,8 +180,11 @@ public class SettingsWindow
                 double val = (double)prop.GetValue(configObject);
                 double min = Convert.ToDouble(rangeAttr.Minimum);
                 double max = Convert.ToDouble(rangeAttr.Maximum);
-                
-                if (UIComponents.DrawSlider(sb, _font, itemRect, label, ref val, min, max, _pixelTexture))
+
+                // Use higher precision for small values (like MutationRate)
+                string format = (max - min) < 1.0 ? "0.0000" : "0.00";
+
+                if (UIComponents.DrawSlider(sb, _font, itemRect, label, ref val, min, max, _pixelTexture, format))
                 {
                     prop.SetValue(configObject, val);
                 }
@@ -190,8 +194,11 @@ public class SettingsWindow
         }
     }
 
-    private string SplitCamelCase(string input)
+    private static string SplitCamelCase(string input)
     {
-        return System.Text.RegularExpressions.Regex.Replace(input, "([A-Z])", " $1", System.Text.RegularExpressions.RegexOptions.Compiled).Trim();
+        return SplitCamelCaseRegex().Replace(input, " $1").Trim();
     }
+
+    [GeneratedRegex("([A-Z])", RegexOptions.Compiled)]
+    private static partial Regex SplitCamelCaseRegex();
 }

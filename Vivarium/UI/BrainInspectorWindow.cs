@@ -48,11 +48,10 @@ public class BrainInspectorWindow
         public Node Source;
         public Node Sink;
         public float Weight;
-        public bool IsActive; // Source is active
     }
 
-    private readonly List<Node> _nodes = new();
-    private readonly List<Connection> _connections = new();
+    private readonly List<Node> _nodes = [];
+    private readonly List<Connection> _connections = [];
 
     // Layout Constants
     private const int NodeRadius = 8;
@@ -82,7 +81,7 @@ public class BrainInspectorWindow
         _isDropdownOpen = false; // Reset dropdown
     }
 
-    public void UpdateInput(MouseState mouseState, MouseState prevMouseState, ref bool isPaused, ref bool singleStep)
+    public void UpdateInput(MouseState mouseState, MouseState prevMouseState, ref bool isPaused)
     {
         if (!IsVisible) return;
 
@@ -205,7 +204,7 @@ public class BrainInspectorWindow
         }
 
         // 1. Identify Active Nodes (Filtered)
-        HashSet<int> activeIndices = new();
+        HashSet<int> activeIndices = [];
 
         if (_selectedActionIndex == -1)
         {
@@ -227,8 +226,7 @@ public class BrainInspectorWindow
             // Backwards Traversal
             Queue<int> nodesToProcess = new();
             nodesToProcess.Enqueue(targetActionIdx);
-            HashSet<int> visited = new();
-            visited.Add(targetActionIdx);
+            HashSet<int> visited = [targetActionIdx];
 
             while (nodesToProcess.Count > 0)
             {
@@ -337,7 +335,7 @@ public class BrainInspectorWindow
         // Otherwise use standard nodes
 
         int hiddenStart = BrainConfig.HiddenStart;
-        List<int> activeHiddenIndices = new();
+        List<int> activeHiddenIndices = [];
         for (int i = hiddenStart; i < BrainConfig.NeuronCount; i++)
         {
             if (activeIndices.Contains(i)) activeHiddenIndices.Add(i);

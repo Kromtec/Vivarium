@@ -31,7 +31,7 @@ public static class ActivityLog
 
         public LogHandler(int literalLength, int formattedCount, long agentId, out bool handlerIsValid)
         {
-            Enabled = ActivityLog.IsLoggingEnabled && ActivityLog.TargetAgentId == agentId;
+            Enabled = IsLoggingEnabled && TargetAgentId == agentId;
             handlerIsValid = Enabled;
             if (Enabled)
             {

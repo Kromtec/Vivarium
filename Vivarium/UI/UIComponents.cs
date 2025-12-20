@@ -151,7 +151,7 @@ public static class UIComponents
         }
     }
 
-    public static bool DrawSlider(SpriteBatch sb, SpriteFont font, Rectangle rect, string label, ref float value, float min, float max, Texture2D pixel)
+    public static bool DrawSlider(SpriteBatch sb, SpriteFont font, Rectangle rect, string label, ref float value, float min, float max, Texture2D pixel, string format = "0.00")
     {
         // Label
         if (!string.IsNullOrEmpty(label))
@@ -175,9 +175,9 @@ public static class UIComponents
         var mouse = Microsoft.Xna.Framework.Input.Mouse.GetState();
         bool isHovered = thumbRect.Contains(mouse.Position) || trackRect.Contains(mouse.Position);
         bool isPressed = mouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed;
-        
+
         bool changed = false;
-        
+
         // Simple interaction: if mouse is pressed within the slider area (expanded), update value
         // This doesn't support "drag outside" but is simple for now.
         if (isPressed && sliderRect.Contains(mouse.Position))
@@ -185,7 +185,7 @@ public static class UIComponents
             float mouseT = (mouse.Position.X - trackRect.X) / (float)trackRect.Width;
             mouseT = Math.Clamp(mouseT, 0f, 1f);
             float newValue = min + (mouseT * (max - min));
-            
+
             if (Math.Abs(newValue - value) > 0.0001f)
             {
                 value = newValue;
@@ -198,7 +198,7 @@ public static class UIComponents
         DrawBorder(sb, thumbRect, 1, UITheme.BorderColor, pixel);
 
         // Value Text
-        string valueText = value.ToString("0.00");
+        string valueText = value.ToString(format);
         Vector2 valueSize = font.MeasureString(valueText);
         sb.DrawString(font, valueText, new Vector2(rect.Right - valueSize.X, rect.Y), UITheme.TextColorPrimary);
 
@@ -208,7 +208,7 @@ public static class UIComponents
     public static bool DrawSlider(SpriteBatch sb, SpriteFont font, Rectangle rect, string label, ref int value, int min, int max, Texture2D pixel)
     {
         float fValue = value;
-        bool changed = DrawSlider(sb, font, rect, label, ref fValue, min, max, pixel);
+        bool changed = DrawSlider(sb, font, rect, label, ref fValue, min, max, pixel, "0");
         if (changed)
         {
             value = (int)Math.Round(fValue);
@@ -216,10 +216,10 @@ public static class UIComponents
         return changed;
     }
 
-    public static bool DrawSlider(SpriteBatch sb, SpriteFont font, Rectangle rect, string label, ref double value, double min, double max, Texture2D pixel)
+    public static bool DrawSlider(SpriteBatch sb, SpriteFont font, Rectangle rect, string label, ref double value, double min, double max, Texture2D pixel, string format = "0.00")
     {
         float fValue = (float)value;
-        bool changed = DrawSlider(sb, font, rect, label, ref fValue, (float)min, (float)max, pixel);
+        bool changed = DrawSlider(sb, font, rect, label, ref fValue, (float)min, (float)max, pixel, format);
         if (changed)
         {
             value = fValue;

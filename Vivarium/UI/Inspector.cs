@@ -246,7 +246,7 @@ public class Inspector
 
                         // Scientific Name & Variant
                         var (ScientificName, Translation) = ScientificNameGenerator.GenerateFamilyName(agent);
-                        string variantName = _census.GetVariantName(Genetics.CalculateGenomeHash(agent.Genome));
+                        string variantName = _census.GetVariantName(CalculateGenomeHash(agent.Genome));
 
                         AddRow("Species", "", ref contentHeight);
                         string scientificName = ScientificName;

@@ -200,7 +200,7 @@ public class VivariumGame : Game
         {
             _hud.UpdateInput();
             _genePoolWindow.UpdateInput();
-            
+
             int scrollDelta = (mouseState.ScrollWheelValue - _previousMouseState.ScrollWheelValue);
             _settingsWindow.HandleInput(mouseState, scrollDelta);
         }
@@ -232,7 +232,7 @@ public class VivariumGame : Game
         // Brain Inspector Logic (Pause/Step)
         if (_brainInspectorWindow.IsVisible)
         {
-            _brainInspectorWindow.UpdateInput(mouseState, _previousMouseState, ref _isPaused, ref singleStep);
+            _brainInspectorWindow.UpdateInput(mouseState, _previousMouseState, ref _isPaused);
         }
 
         if (!effectivePause || singleStep)

@@ -107,7 +107,7 @@ public class TitleScreen
         GenerateDecorations();
     }
 
-    private (int blockSize, int letterSpacing) GetLayoutParameters(int screenWidth)
+    private static (int blockSize, int letterSpacing) GetLayoutParameters(int screenWidth)
     {
         // Target ~65% of screen width
         // Total Width approx = 8 chars * 7 blocks + 7 spaces * 0.5 blocks = 59.5 blocks
