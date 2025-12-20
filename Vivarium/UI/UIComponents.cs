@@ -35,7 +35,7 @@ public static class UIComponents
 
         // Text
         Vector2 size = font.MeasureString(text);
-        Vector2 pos = new(rect.X + ((rect.Width - size.X) / 2), rect.Y + ((rect.Height - size.Y) / 2));
+        Vector2 pos = new(rect.X + ((rect.Width - size.X) / 2), rect.Y + ((rect.Height - size.Y) / 2) + 3);
         sb.DrawString(font, text, pos, UITheme.TextColorPrimary);
     }
 

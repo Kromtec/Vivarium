@@ -111,7 +111,6 @@ public class TitleScreen
     {
         // Target ~65% of screen width
         // Total Width approx = 8 chars * 7 blocks + 7 spaces * 0.5 blocks = 59.5 blocks
-        // Original reference: 28 block size on ~1920 width (approx 0.85 ratio)
 
         float targetWidth = screenWidth * 0.65f;
         int blockSize = (int)(targetWidth / 59.5f);
