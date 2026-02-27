@@ -9,7 +9,7 @@
           "xml": "**/Vivarium.xml"
         }
       ],
-      "dest": "api",
+      "dest": "docs/api",
       "includePrivateMembers": false,
       "allowGeneration": true
     }
@@ -17,7 +17,7 @@
   "build": {
     "content": ["**/*.{md|yml}"],
     "resource": ["**/images/**"],
-    "dest": "_site",
+    "dest": "docs/_site",
     "siteBaseUrl": "https://kromtec.github.io/Vivarium",
     "template": [
       "default"

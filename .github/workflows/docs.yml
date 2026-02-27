@@ -43,7 +43,7 @@ jobs:
       - name: Build Documentation
         run: |
           export PATH="$PATH:$HOME/.dotnet/tools"
-          docfx docs/docfx.json
+          docfx
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
