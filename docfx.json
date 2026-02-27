@@ -3,23 +3,19 @@
     {
       "src": [
         {
-          "files": ["**/Vivarium.csproj"],
-          "exclude": ["**/obj/**", "**/bin/**"]
+          "files": [
+            "src/Simulation/Vivarium.csproj"
+          ],
+          "xml": "src/Simulation/bin/Release/net10.0/Vivarium.xml"
         }
       ],
-      "dest": "api", 
-      "includePrivateMembers": false
+      "dest": "docs/api"
     }
   ],
   "build": {
     "content": [
       {
-        "files": ["docs/**/*.md", "docs/**/*.yml", "docs/toc.yml"],
-        "exclude": ["docs/_site/**"]
-      },
-      {
-        "files": ["api/**/*.yml", "api/toc.yml"],
-        "src": "obj" 
+        "files": ["docs/**/*.md", "docs/**/*.yml"]
       }
     ],
     "resource": [
@@ -28,7 +24,7 @@
       }
     ],
     "dest": "docs/_site",
-    "template": ["modern"],
+    "template": ["default"],
     "globalMetadata": {
       "_appTitle": "Vivarium",
       "_appName": "Vivarium",

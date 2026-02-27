@@ -37,8 +37,7 @@ jobs:
 
       - name: Build Documentation
         run: |
-          # Wir rufen docfx im Root auf, damit es Zugriff auf src/ und docs/ hat
-          docfx docfx.json
+          docfx
 
       - name: Add .nojekyll
         run: touch docs/_site/.nojekyll

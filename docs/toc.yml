@@ -1,8 +1,8 @@
 - name: Home
-  href: index.html
+  href: ./index.md
 - name: User Manual
-  href: user-manual.html
+  href: ./user-manual.md
 - name: Configuration
-  href: configuration.html
+  href: ./configuration.md
 - name: API
-  href: api/index.html
+  href: api/Vivarium.yml
