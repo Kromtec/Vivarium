@@ -38,5 +38,5 @@ Logs/
 .rasputin/
 
 ## DocFX Generated (committed to repo for GitHub Pages)
-!docs/_site/
-!docs/api/
+!_site/
+!api/

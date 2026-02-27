@@ -9,7 +9,7 @@
           "xml": "src/Simulation/bin/Release/net10.0/Vivarium.xml"
         }
       ],
-      "dest": "docs/api",
+      "dest": "api",
       "includePrivateMembers": false,
       "allowGeneration": true
     }
@@ -18,8 +18,8 @@
     "content": [
       {
         "files": [
-          "docs/api/**.yml",
-          "docs/api/**.json",
+          "api/**.yml",
+          "api/**.json",
           "docs/toc.yml",
           "docs/**/*.md",
           "README.md"
@@ -33,7 +33,7 @@
         ]
       }
     ],
-    "dest": "docs/_site",
+    "dest": "_site",
     "siteBaseUrl": "https://kromtec.github.io/Vivarium",
     "template": [
       "default"
