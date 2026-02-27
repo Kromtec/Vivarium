@@ -35,7 +35,6 @@ jobs:
       - name: Build Documentation
         run: |
           export PATH="$PATH:$HOME/.dotnet/tools"
-          cd docs
           docfx
 
       - name: Setup Pages
