@@ -8,8 +8,8 @@ The project simulates an ecosystem of autonomous agents ("Creatures") interactin
 
 | Document | Description |
 |----------|-------------|
-| **[User Manual](docs/user-manual.md)** | Complete guide to understanding the simulation, neural networks, genetics, and ecosystem dynamics |
-| **[Configuration Guide](docs/configuration.md)** | Detailed configuration parameters and examples |
+| **[User Manual](docs/user-manual.html)** | Complete guide to understanding the simulation, neural networks, genetics, and ecosystem dynamics |
+| **[Configuration Guide](docs/configuration.html)** | Detailed configuration parameters and examples |
 | **[API Documentation](docs/api/)** | Code reference generated from XML comments |
 
 
