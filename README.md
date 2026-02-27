@@ -31,14 +31,14 @@ The project simulates an ecosystem of autonomous agents ("Creatures") interactin
 ### Standard Mode (Visual)
 Run the project normally through your IDE or terminal:
 ```bash
-dotnet run --project Vivarium/Vivarium.csproj -c Release
+dotnet run --project src/Simulation/Vivarium.csproj -c Release
 ```
 *Note: Using `Release` configuration significantly improves performance.*
 
 ### Headless Mode (Fast Simulation)
 For rapid evolution or data gathering, run in headless mode. This disables rendering and runs the simulation as fast as the CPU allows.
 ```bash
-dotnet run --project Vivarium/Vivarium.csproj -c Release -- --headless --duration 36000
+dotnet run --project src/Simulation/Vivarium.csproj -c Release -- --headless --duration 36000
 ```
 *   `--headless`: Enables headless mode.
 *   `--duration <ticks>`: Sets the simulation duration (60 ticks = 1 second). Default is 3600 (1 minute).
@@ -52,7 +52,7 @@ The simulation uses a modular configuration system that allows balancing paramet
 ### Configuration Files
 Configuration can be loaded from JSON files using the `--config` argument:
 ```bash
-dotnet run --project Vivarium/Vivarium.csproj -c Release -- --config myconfig.json
+dotnet run --project src/Simulation/Vivarium.csproj -c Release -- --config myconfig.json
 ```
 
 ### Configuration Categories

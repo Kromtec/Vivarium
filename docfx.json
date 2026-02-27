@@ -1,0 +1,47 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "src/Simulation/Vivarium.csproj"
+          ],
+          "xml": "src/Simulation/bin/Release/net10.0/Vivarium.xml"
+        }
+      ],
+      "dest": "docs/api",
+      "includePrivateMembers": false,
+      "allowGeneration": true
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "docs/api/**.yml",
+          "docs/api/**.json",
+          "docs/toc.yml",
+          "docs/**/*.md",
+          "README.md"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "docs/images/**"
+        ]
+      }
+    ],
+    "dest": "docs/_site",
+    "template": [
+      "default"
+    ],
+    "globalMetadata": {
+      "_appTitle": "Vivarium",
+      "_appName": "Vivarium",
+      "_appFooter": "Copyright © 2026",
+      "_enableSearch": true
+    }
+  }
+}

@@ -1,0 +1,9 @@
+- name: Home
+  href: index.md
+- name: User Manual
+  href: user-manual.md
+- name: Configuration
+  href: configuration.md
+- name: API
+  href: api/
+  homepage: index.md

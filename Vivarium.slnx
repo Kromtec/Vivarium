@@ -3,6 +3,7 @@
     <File Path=".gitignore" />
     <File Path="README.md" />
   </Folder>
-  <Project Path="Vivarium.Benchmarks/Vivarium.Benchmarks.csproj" Id="c76dc674-bca0-42f1-88cb-da1db950997e" />
-  <Project Path="Vivarium/Vivarium.csproj" />
+  <Project Path="src/Benchmarks/Vivarium.Benchmarks.csproj" Id="c76dc674-bca0-42f1-88cb-da1db950997e" />
+  <Project Path="src/Tests/Vivarium.Tests.csproj" Id="e8a1c5f3-9d2b-4a7e-8c6f-1d3e5b9a0c4f" />
+  <Project Path="src/Simulation/Vivarium.csproj" />
 </Solution>
