@@ -21,6 +21,7 @@
           "api/**.yml",
           "api/**.json",
           "docs/toc.yml",
+          "docs/index.md",
           "docs/**/*.md",
           "README.md"
         ]
@@ -42,7 +43,8 @@
       "_appTitle": "Vivarium",
       "_appName": "Vivarium",
       "_appFooter": "Copyright © 2026",
-      "_enableSearch": true
+      "_enableSearch": true,
+      "_defaultHomepage": "docs/index.html"
     }
   }
 }
