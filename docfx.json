@@ -1,0 +1,39 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": ["**/Vivarium.csproj"],
+          "exclude": ["**/obj/**", "**/bin/**"]
+        }
+      ],
+      "dest": "api", 
+      "includePrivateMembers": false
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": ["docs/**/*.md", "docs/**/*.yml", "docs/toc.yml"],
+        "exclude": ["docs/_site/**"]
+      },
+      {
+        "files": ["api/**/*.yml", "api/toc.yml"],
+        "src": "obj" 
+      }
+    ],
+    "resource": [
+      {
+        "files": ["docs/images/**"]
+      }
+    ],
+    "dest": "docs/_site",
+    "template": ["modern"],
+    "globalMetadata": {
+      "_appTitle": "Vivarium",
+      "_appName": "Vivarium",
+      "_appFooter": "Copyright © 2026",
+      "_enableSearch": true
+    }
+  }
+}
