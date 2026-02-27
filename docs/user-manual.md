@@ -486,9 +486,9 @@ When running in headless mode:
 
 ## Further Reading
 
-- [API Documentation](api/) - Detailed code reference
+- [API Documentation](api/Vivarium.html) - Detailed code reference
 - [Configuration Reference](configuration.html) - All config options
-- [Source Code](https://github.com/) - GitHub repository
+- [Source Code](https://github.com/Kromtec/Vivarium) - GitHub repository
 
 ---
 

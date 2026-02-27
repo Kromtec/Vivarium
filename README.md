@@ -8,9 +8,10 @@ The project simulates an ecosystem of autonomous agents ("Creatures") interactin
 
 | Document | Description |
 |----------|-------------|
-| **[User Manual](docs/user-manual.html)** | Complete guide to understanding the simulation, neural networks, genetics, and ecosystem dynamics |
-| **[Configuration Guide](docs/configuration.html)** | Detailed configuration parameters and examples |
-| **[API Documentation](docs/api/)** | Code reference generated from XML comments |
+| **[Home](https://kromtec.github.io/Vivarium/docs/)** | Introduction into the documentation
+| **[User Manual](https://kromtec.github.io/Vivarium/docs/user-manual.html)** | Complete guide to understanding the simulation, neural networks, genetics, and ecosystem dynamics |
+| **[Configuration Guide](https://kromtec.github.io/Vivarium/docs/configuration.html)** | Detailed configuration parameters and examples |
+| **[API Documentation](https://kromtec.github.io/Vivarium/docs/api/Vivarium.html)** | Code reference generated from XML comments |
 
 
 ## 🧬 Key Features

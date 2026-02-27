@@ -15,7 +15,8 @@
   "build": {
     "content": [
       {
-        "files": ["docs/**/*.md", "docs/**/*.yml"]
+        "files": ["docs/**/*.md", "docs/**/*.yml"],
+        "exclude": [ "docs/**/obj/**", "docs/**/_site/**" ]
       }
     ],
     "resource": [
@@ -24,7 +25,7 @@
       }
     ],
     "dest": "docs/_site",
-    "template": ["default"],
+    "template": ["default", "modern"],
     "globalMetadata": {
       "_appTitle": "Vivarium",
       "_appName": "Vivarium",

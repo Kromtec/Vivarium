@@ -22,13 +22,12 @@ The project simulates an ecosystem of autonomous agents ("Creatures") interactin
 - **[Configuration Guide](configuration.html)** - How to customize simulation parameters
 
 ### For Developers
-- [API Documentation](api/) - Code reference generated from XML comments
-- [Running the Simulation](README.html)
+- [API Documentation](api/Vivarium.html) - Code reference generated from XML comments
 
 ## Quick Links
 
 - [User Manual](user-manual.html)
-- [API Documentation](api/)
+- [API Documentation](api/Vivarium.html)
 - [Configuration Guide](configuration.html)
 
 ---
