@@ -4,12 +4,12 @@
       "src": [
         {
           "files": [
-            "**/Vivarium.csproj"
+            "../**/Vivarium.csproj"
           ],
-          "xml": "**/Vivarium.xml"
+          "xml": "../**/Vivarium.xml"
         }
       ],
-      "dest": "docs/api",
+      "dest": "api",
       "includePrivateMembers": false,
       "allowGeneration": true
     }
@@ -17,10 +17,9 @@
   "build": {
     "content": ["**/*.{md|yml}"],
     "resource": ["**/images/**"],
-    "dest": "docs/_site",
+    "dest": "_site",
     "siteBaseUrl": "https://kromtec.github.io/Vivarium",
     "template": [
-      "default",
       "modern"
     ],
     "globalMetadata": {
