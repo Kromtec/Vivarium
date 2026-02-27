@@ -1,0 +1,96 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.GameState
+  commentId: T:Vivarium.GameState
+  id: GameState
+  parent: Vivarium
+  children:
+  - Vivarium.GameState.Simulation
+  - Vivarium.GameState.TitleScreen
+  langs:
+  - csharp
+  - vb
+  name: GameState
+  nameWithType: GameState
+  fullName: Vivarium.GameState
+  type: Enum
+  source:
+    remote:
+      path: src/Game/VivariumGame.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: GameState
+    path: src/Game/VivariumGame.cs
+    startLine: 14
+  assemblies:
+  - Vivarium
+  namespace: Vivarium
+  syntax:
+    content: public enum GameState
+    content.vb: Public Enum GameState
+- uid: Vivarium.GameState.TitleScreen
+  commentId: F:Vivarium.GameState.TitleScreen
+  id: TitleScreen
+  parent: Vivarium.GameState
+  langs:
+  - csharp
+  - vb
+  name: TitleScreen
+  nameWithType: GameState.TitleScreen
+  fullName: Vivarium.GameState.TitleScreen
+  type: Field
+  source:
+    remote:
+      path: src/Game/VivariumGame.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: TitleScreen
+    path: src/Game/VivariumGame.cs
+    startLine: 16
+  assemblies:
+  - Vivarium
+  namespace: Vivarium
+  syntax:
+    content: TitleScreen = 0
+    return:
+      type: Vivarium.GameState
+- uid: Vivarium.GameState.Simulation
+  commentId: F:Vivarium.GameState.Simulation
+  id: Simulation
+  parent: Vivarium.GameState
+  langs:
+  - csharp
+  - vb
+  name: Simulation
+  nameWithType: GameState.Simulation
+  fullName: Vivarium.GameState.Simulation
+  type: Field
+  source:
+    remote:
+      path: src/Game/VivariumGame.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Simulation
+    path: src/Game/VivariumGame.cs
+    startLine: 17
+  assemblies:
+  - Vivarium
+  namespace: Vivarium
+  syntax:
+    content: Simulation = 1
+    return:
+      type: Vivarium.GameState
+references:
+- uid: Vivarium
+  commentId: N:Vivarium
+  href: Vivarium.html
+  name: Vivarium
+  nameWithType: Vivarium
+  fullName: Vivarium
+- uid: Vivarium.GameState
+  commentId: T:Vivarium.GameState
+  parent: Vivarium
+  href: Vivarium.GameState.html
+  name: GameState
+  nameWithType: GameState
+  fullName: Vivarium.GameState

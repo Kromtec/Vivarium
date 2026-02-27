@@ -1,0 +1,3246 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.Entities.Agent
+  commentId: T:Vivarium.Entities.Agent
+  id: Agent
+  parent: Vivarium.Entities
+  children:
+  - Vivarium.Entities.Agent.Age
+  - Vivarium.Entities.Agent.AttackCooldown
+  - Vivarium.Entities.Agent.AttackThreshold
+  - Vivarium.Entities.Agent.AttackVisualTimer
+  - Vivarium.Entities.Agent.BaseAttackThreshold
+  - Vivarium.Entities.Agent.BaseMetabolismRate
+  - Vivarium.Entities.Agent.BaseMovementCooldown
+  - Vivarium.Entities.Agent.BaseMovementThreshold
+  - Vivarium.Entities.Agent.Bravery
+  - Vivarium.Entities.Agent.ChangeEnergy(System.Single,Vivarium.World.GridCell[0:,0:])
+  - Vivarium.Entities.Agent.Color
+  - Vivarium.Entities.Agent.Constitution
+  - Vivarium.Entities.Agent.Create(System.Int32,System.Int32,System.Int32,System.Random)
+  - Vivarium.Entities.Agent.CreateChild(System.Int32,System.Int32,System.Int32,System.Random,Vivarium.Biology.Gene[],Vivarium.Entities.Agent@,System.Single)
+  - Vivarium.Entities.Agent.DecodedGenome
+  - Vivarium.Entities.Agent.DetermineDiet(System.Single)
+  - Vivarium.Entities.Agent.DiagonalMovementCost
+  - Vivarium.Entities.Agent.Diet
+  - Vivarium.Entities.Agent.Energy
+  - Vivarium.Entities.Agent.FleeCost
+  - Vivarium.Entities.Agent.FleeVisualTimer
+  - Vivarium.Entities.Agent.Generation
+  - Vivarium.Entities.Agent.Genome
+  - Vivarium.Entities.Agent.GetColorBasedOnDietType(Vivarium.Biology.DietType)
+  - Vivarium.Entities.Agent.Id
+  - Vivarium.Entities.Agent.Index
+  - Vivarium.Entities.Agent.IsAlive
+  - Vivarium.Entities.Agent.IsDirectlyRelatedTo(Vivarium.Entities.Agent@)
+  - Vivarium.Entities.Agent.IsPreyingOn(Vivarium.Entities.Agent@)
+  - Vivarium.Entities.Agent.IsThreatenedBy(Vivarium.Entities.Agent@)
+  - Vivarium.Entities.Agent.LastAttackDirX
+  - Vivarium.Entities.Agent.LastAttackDirY
+  - Vivarium.Entities.Agent.LastFleeDirX
+  - Vivarium.Entities.Agent.LastFleeDirY
+  - Vivarium.Entities.Agent.LastX
+  - Vivarium.Entities.Agent.LastY
+  - Vivarium.Entities.Agent.MaturityAge
+  - Vivarium.Entities.Agent.MaxEnergy
+  - Vivarium.Entities.Agent.MetabolicEfficiency
+  - Vivarium.Entities.Agent.MetabolismRate
+  - Vivarium.Entities.Agent.MinEnergyBuffer
+  - Vivarium.Entities.Agent.MovementCooldown
+  - Vivarium.Entities.Agent.MovementCost
+  - Vivarium.Entities.Agent.MovementThreshold
+  - Vivarium.Entities.Agent.NeuronActivations
+  - Vivarium.Entities.Agent.OriginalColor
+  - Vivarium.Entities.Agent.OrthogonalMovementCost
+  - Vivarium.Entities.Agent.ParentId
+  - Vivarium.Entities.Agent.Perception
+  - Vivarium.Entities.Agent.Power
+  - Vivarium.Entities.Agent.RefreshDecodedGenome
+  - Vivarium.Entities.Agent.ReproductionCooldown
+  - Vivarium.Entities.Agent.ReproductionOverheadPct
+  - Vivarium.Entities.Agent.ReproductionVisualTimer
+  - Vivarium.Entities.Agent.Resilience
+  - Vivarium.Entities.Agent.Speed
+  - Vivarium.Entities.Agent.Strength
+  - Vivarium.Entities.Agent.TotalMovementCooldown
+  - Vivarium.Entities.Agent.TrophicBias
+  - Vivarium.Entities.Agent.TryAreaAttack(Vivarium.World.GridCell[0:,0:],System.Span{Vivarium.Entities.Agent},System.Span{Vivarium.Entities.Plant},System.Random)
+  - Vivarium.Entities.Agent.TryAttackAgent(Vivarium.Entities.Agent@,Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Single@,System.Single@)
+  - Vivarium.Entities.Agent.TryAttackPlant(Vivarium.Entities.Plant@,Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Single@)
+  - Vivarium.Entities.Agent.TryMoveToLocation(Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Int32,System.Int32,System.Nullable{System.Single})
+  - Vivarium.Entities.Agent.TryReproduce(System.Span{Vivarium.Entities.Agent},Vivarium.World.GridCell[0:,0:],System.Random)
+  - Vivarium.Entities.Agent.TryToFlee(Vivarium.World.GridCell[0:,0:],System.Span{Vivarium.Entities.Agent},System.Random,System.Int32@,System.Int32@)
+  - Vivarium.Entities.Agent.Update
+  - Vivarium.Entities.Agent.X
+  - Vivarium.Entities.Agent.Y
+  langs:
+  - csharp
+  - vb
+  name: Agent
+  nameWithType: Agent
+  fullName: Vivarium.Entities.Agent
+  type: Struct
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Agent
+    path: src/Game/Entities/Agent.cs
+    startLine: 9
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: 'public struct Agent : IGridEntity'
+    content.vb: Public Structure Agent Implements IGridEntity
+  implements:
+  - Vivarium.Entities.IGridEntity
+  inheritedMembers:
+  - System.ValueType.Equals(System.Object)
+  - System.ValueType.GetHashCode
+  - System.ValueType.ToString
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetType
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+- uid: Vivarium.Entities.Agent.ReproductionOverheadPct
+  commentId: P:Vivarium.Entities.Agent.ReproductionOverheadPct
+  id: ReproductionOverheadPct
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: ReproductionOverheadPct
+  nameWithType: Agent.ReproductionOverheadPct
+  fullName: Vivarium.Entities.Agent.ReproductionOverheadPct
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ReproductionOverheadPct
+    path: src/Game/Entities/Agent.cs
+    startLine: 12
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static float ReproductionOverheadPct { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Shared ReadOnly Property ReproductionOverheadPct As Single
+  overload: Vivarium.Entities.Agent.ReproductionOverheadPct*
+- uid: Vivarium.Entities.Agent.MinEnergyBuffer
+  commentId: P:Vivarium.Entities.Agent.MinEnergyBuffer
+  id: MinEnergyBuffer
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: MinEnergyBuffer
+  nameWithType: Agent.MinEnergyBuffer
+  fullName: Vivarium.Entities.Agent.MinEnergyBuffer
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MinEnergyBuffer
+    path: src/Game/Entities/Agent.cs
+    startLine: 13
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static float MinEnergyBuffer { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Shared ReadOnly Property MinEnergyBuffer As Single
+  overload: Vivarium.Entities.Agent.MinEnergyBuffer*
+- uid: Vivarium.Entities.Agent.BaseAttackThreshold
+  commentId: P:Vivarium.Entities.Agent.BaseAttackThreshold
+  id: BaseAttackThreshold
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: BaseAttackThreshold
+  nameWithType: Agent.BaseAttackThreshold
+  fullName: Vivarium.Entities.Agent.BaseAttackThreshold
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: BaseAttackThreshold
+    path: src/Game/Entities/Agent.cs
+    startLine: 14
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static float BaseAttackThreshold { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Shared ReadOnly Property BaseAttackThreshold As Single
+  overload: Vivarium.Entities.Agent.BaseAttackThreshold*
+- uid: Vivarium.Entities.Agent.BaseMovementThreshold
+  commentId: P:Vivarium.Entities.Agent.BaseMovementThreshold
+  id: BaseMovementThreshold
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: BaseMovementThreshold
+  nameWithType: Agent.BaseMovementThreshold
+  fullName: Vivarium.Entities.Agent.BaseMovementThreshold
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: BaseMovementThreshold
+    path: src/Game/Entities/Agent.cs
+    startLine: 15
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static float BaseMovementThreshold { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Shared ReadOnly Property BaseMovementThreshold As Single
+  overload: Vivarium.Entities.Agent.BaseMovementThreshold*
+- uid: Vivarium.Entities.Agent.BaseMetabolismRate
+  commentId: P:Vivarium.Entities.Agent.BaseMetabolismRate
+  id: BaseMetabolismRate
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: BaseMetabolismRate
+  nameWithType: Agent.BaseMetabolismRate
+  fullName: Vivarium.Entities.Agent.BaseMetabolismRate
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: BaseMetabolismRate
+    path: src/Game/Entities/Agent.cs
+    startLine: 16
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static float BaseMetabolismRate { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Shared ReadOnly Property BaseMetabolismRate As Single
+  overload: Vivarium.Entities.Agent.BaseMetabolismRate*
+- uid: Vivarium.Entities.Agent.BaseMovementCooldown
+  commentId: P:Vivarium.Entities.Agent.BaseMovementCooldown
+  id: BaseMovementCooldown
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: BaseMovementCooldown
+  nameWithType: Agent.BaseMovementCooldown
+  fullName: Vivarium.Entities.Agent.BaseMovementCooldown
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: BaseMovementCooldown
+    path: src/Game/Entities/Agent.cs
+    startLine: 17
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static int BaseMovementCooldown { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Shared ReadOnly Property BaseMovementCooldown As Integer
+  overload: Vivarium.Entities.Agent.BaseMovementCooldown*
+- uid: Vivarium.Entities.Agent.MovementCost
+  commentId: P:Vivarium.Entities.Agent.MovementCost
+  id: MovementCost
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: MovementCost
+  nameWithType: Agent.MovementCost
+  fullName: Vivarium.Entities.Agent.MovementCost
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MovementCost
+    path: src/Game/Entities/Agent.cs
+    startLine: 18
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static float MovementCost { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Shared ReadOnly Property MovementCost As Single
+  overload: Vivarium.Entities.Agent.MovementCost*
+- uid: Vivarium.Entities.Agent.OrthogonalMovementCost
+  commentId: P:Vivarium.Entities.Agent.OrthogonalMovementCost
+  id: OrthogonalMovementCost
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: OrthogonalMovementCost
+  nameWithType: Agent.OrthogonalMovementCost
+  fullName: Vivarium.Entities.Agent.OrthogonalMovementCost
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: OrthogonalMovementCost
+    path: src/Game/Entities/Agent.cs
+    startLine: 19
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static float OrthogonalMovementCost { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Shared ReadOnly Property OrthogonalMovementCost As Single
+  overload: Vivarium.Entities.Agent.OrthogonalMovementCost*
+- uid: Vivarium.Entities.Agent.DiagonalMovementCost
+  commentId: P:Vivarium.Entities.Agent.DiagonalMovementCost
+  id: DiagonalMovementCost
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: DiagonalMovementCost
+  nameWithType: Agent.DiagonalMovementCost
+  fullName: Vivarium.Entities.Agent.DiagonalMovementCost
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: DiagonalMovementCost
+    path: src/Game/Entities/Agent.cs
+    startLine: 20
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static float DiagonalMovementCost { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Shared ReadOnly Property DiagonalMovementCost As Single
+  overload: Vivarium.Entities.Agent.DiagonalMovementCost*
+- uid: Vivarium.Entities.Agent.FleeCost
+  commentId: P:Vivarium.Entities.Agent.FleeCost
+  id: FleeCost
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: FleeCost
+  nameWithType: Agent.FleeCost
+  fullName: Vivarium.Entities.Agent.FleeCost
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: FleeCost
+    path: src/Game/Entities/Agent.cs
+    startLine: 21
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static float FleeCost { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Shared ReadOnly Property FleeCost As Single
+  overload: Vivarium.Entities.Agent.FleeCost*
+- uid: Vivarium.Entities.Agent.MaturityAge
+  commentId: P:Vivarium.Entities.Agent.MaturityAge
+  id: MaturityAge
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: MaturityAge
+  nameWithType: Agent.MaturityAge
+  fullName: Vivarium.Entities.Agent.MaturityAge
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MaturityAge
+    path: src/Game/Entities/Agent.cs
+    startLine: 22
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static int MaturityAge { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Shared ReadOnly Property MaturityAge As Integer
+  overload: Vivarium.Entities.Agent.MaturityAge*
+- uid: Vivarium.Entities.Agent.ReproductionCooldown
+  commentId: F:Vivarium.Entities.Agent.ReproductionCooldown
+  id: ReproductionCooldown
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: ReproductionCooldown
+  nameWithType: Agent.ReproductionCooldown
+  fullName: Vivarium.Entities.Agent.ReproductionCooldown
+  type: Field
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ReproductionCooldown
+    path: src/Game/Entities/Agent.cs
+    startLine: 24
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public int ReproductionCooldown
+    return:
+      type: System.Int32
+    content.vb: Public ReproductionCooldown As Integer
+- uid: Vivarium.Entities.Agent.MovementCooldown
+  commentId: F:Vivarium.Entities.Agent.MovementCooldown
+  id: MovementCooldown
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: MovementCooldown
+  nameWithType: Agent.MovementCooldown
+  fullName: Vivarium.Entities.Agent.MovementCooldown
+  type: Field
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MovementCooldown
+    path: src/Game/Entities/Agent.cs
+    startLine: 25
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public int MovementCooldown
+    return:
+      type: System.Int32
+    content.vb: Public MovementCooldown As Integer
+- uid: Vivarium.Entities.Agent.TotalMovementCooldown
+  commentId: F:Vivarium.Entities.Agent.TotalMovementCooldown
+  id: TotalMovementCooldown
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: TotalMovementCooldown
+  nameWithType: Agent.TotalMovementCooldown
+  fullName: Vivarium.Entities.Agent.TotalMovementCooldown
+  type: Field
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: TotalMovementCooldown
+    path: src/Game/Entities/Agent.cs
+    startLine: 26
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public int TotalMovementCooldown
+    return:
+      type: System.Int32
+    content.vb: Public TotalMovementCooldown As Integer
+- uid: Vivarium.Entities.Agent.AttackCooldown
+  commentId: P:Vivarium.Entities.Agent.AttackCooldown
+  id: AttackCooldown
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: AttackCooldown
+  nameWithType: Agent.AttackCooldown
+  fullName: Vivarium.Entities.Agent.AttackCooldown
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AttackCooldown
+    path: src/Game/Entities/Agent.cs
+    startLine: 27
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public int AttackCooldown { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property AttackCooldown As Integer
+  overload: Vivarium.Entities.Agent.AttackCooldown*
+- uid: Vivarium.Entities.Agent.Id
+  commentId: P:Vivarium.Entities.Agent.Id
+  id: Id
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Id
+  nameWithType: Agent.Id
+  fullName: Vivarium.Entities.Agent.Id
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Id
+    path: src/Game/Entities/Agent.cs
+    startLine: 30
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  example: []
+  syntax:
+    content: public long Id { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Int64
+    content.vb: Public Property Id As Long
+  overload: Vivarium.Entities.Agent.Id*
+  implements:
+  - Vivarium.Entities.IGridEntity.Id
+- uid: Vivarium.Entities.Agent.Index
+  commentId: P:Vivarium.Entities.Agent.Index
+  id: Index
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Index
+  nameWithType: Agent.Index
+  fullName: Vivarium.Entities.Agent.Index
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Index
+    path: src/Game/Entities/Agent.cs
+    startLine: 31
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  example: []
+  syntax:
+    content: public int Index { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property Index As Integer
+  overload: Vivarium.Entities.Agent.Index*
+  implements:
+  - Vivarium.Entities.IGridEntity.Index
+- uid: Vivarium.Entities.Agent.X
+  commentId: P:Vivarium.Entities.Agent.X
+  id: X
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: X
+  nameWithType: Agent.X
+  fullName: Vivarium.Entities.Agent.X
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: X
+    path: src/Game/Entities/Agent.cs
+    startLine: 32
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  example: []
+  syntax:
+    content: public int X { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property X As Integer
+  overload: Vivarium.Entities.Agent.X*
+  implements:
+  - Vivarium.Entities.IGridEntity.X
+- uid: Vivarium.Entities.Agent.Y
+  commentId: P:Vivarium.Entities.Agent.Y
+  id: Y
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Y
+  nameWithType: Agent.Y
+  fullName: Vivarium.Entities.Agent.Y
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Y
+    path: src/Game/Entities/Agent.cs
+    startLine: 33
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  example: []
+  syntax:
+    content: public int Y { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property Y As Integer
+  overload: Vivarium.Entities.Agent.Y*
+  implements:
+  - Vivarium.Entities.IGridEntity.Y
+- uid: Vivarium.Entities.Agent.LastX
+  commentId: P:Vivarium.Entities.Agent.LastX
+  id: LastX
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: LastX
+  nameWithType: Agent.LastX
+  fullName: Vivarium.Entities.Agent.LastX
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: LastX
+    path: src/Game/Entities/Agent.cs
+    startLine: 34
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public int LastX { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property LastX As Integer
+  overload: Vivarium.Entities.Agent.LastX*
+- uid: Vivarium.Entities.Agent.LastY
+  commentId: P:Vivarium.Entities.Agent.LastY
+  id: LastY
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: LastY
+  nameWithType: Agent.LastY
+  fullName: Vivarium.Entities.Agent.LastY
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: LastY
+    path: src/Game/Entities/Agent.cs
+    startLine: 35
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public int LastY { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property LastY As Integer
+  overload: Vivarium.Entities.Agent.LastY*
+- uid: Vivarium.Entities.Agent.ParentId
+  commentId: P:Vivarium.Entities.Agent.ParentId
+  id: ParentId
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: ParentId
+  nameWithType: Agent.ParentId
+  fullName: Vivarium.Entities.Agent.ParentId
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ParentId
+    path: src/Game/Entities/Agent.cs
+    startLine: 37
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public long ParentId { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Int64
+    content.vb: Public Property ParentId As Long
+  overload: Vivarium.Entities.Agent.ParentId*
+- uid: Vivarium.Entities.Agent.Diet
+  commentId: P:Vivarium.Entities.Agent.Diet
+  id: Diet
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Diet
+  nameWithType: Agent.Diet
+  fullName: Vivarium.Entities.Agent.Diet
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Diet
+    path: src/Game/Entities/Agent.cs
+    startLine: 39
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly DietType Diet { get; }
+    parameters: []
+    return:
+      type: Vivarium.Biology.DietType
+    content.vb: Public Property Diet As DietType
+  overload: Vivarium.Entities.Agent.Diet*
+- uid: Vivarium.Entities.Agent.OriginalColor
+  commentId: P:Vivarium.Entities.Agent.OriginalColor
+  id: OriginalColor
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: OriginalColor
+  nameWithType: Agent.OriginalColor
+  fullName: Vivarium.Entities.Agent.OriginalColor
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: OriginalColor
+    path: src/Game/Entities/Agent.cs
+    startLine: 41
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public Color OriginalColor { readonly get; set; }
+    parameters: []
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Property OriginalColor As Color
+  overload: Vivarium.Entities.Agent.OriginalColor*
+- uid: Vivarium.Entities.Agent.Color
+  commentId: P:Vivarium.Entities.Agent.Color
+  id: Color
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Color
+  nameWithType: Agent.Color
+  fullName: Vivarium.Entities.Agent.Color
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Color
+    path: src/Game/Entities/Agent.cs
+    startLine: 50
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly Color Color { get; }
+    parameters: []
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Property Color As Color
+  overload: Vivarium.Entities.Agent.Color*
+- uid: Vivarium.Entities.Agent.Age
+  commentId: P:Vivarium.Entities.Agent.Age
+  id: Age
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Age
+  nameWithType: Agent.Age
+  fullName: Vivarium.Entities.Agent.Age
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Age
+    path: src/Game/Entities/Agent.cs
+    startLine: 53
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public long Age { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Int64
+    content.vb: Public Property Age As Long
+  overload: Vivarium.Entities.Agent.Age*
+- uid: Vivarium.Entities.Agent.Generation
+  commentId: P:Vivarium.Entities.Agent.Generation
+  id: Generation
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Generation
+  nameWithType: Agent.Generation
+  fullName: Vivarium.Entities.Agent.Generation
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Generation
+    path: src/Game/Entities/Agent.cs
+    startLine: 55
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public long Generation { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Int64
+    content.vb: Public Property Generation As Long
+  overload: Vivarium.Entities.Agent.Generation*
+- uid: Vivarium.Entities.Agent.IsAlive
+  commentId: P:Vivarium.Entities.Agent.IsAlive
+  id: IsAlive
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: IsAlive
+  nameWithType: Agent.IsAlive
+  fullName: Vivarium.Entities.Agent.IsAlive
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: IsAlive
+    path: src/Game/Entities/Agent.cs
+    startLine: 58
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public bool IsAlive { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public Property IsAlive As Boolean
+  overload: Vivarium.Entities.Agent.IsAlive*
+- uid: Vivarium.Entities.Agent.Energy
+  commentId: P:Vivarium.Entities.Agent.Energy
+  id: Energy
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Energy
+  nameWithType: Agent.Energy
+  fullName: Vivarium.Entities.Agent.Energy
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Energy
+    path: src/Game/Entities/Agent.cs
+    startLine: 60
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly float Energy { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property Energy As Single
+  overload: Vivarium.Entities.Agent.Energy*
+- uid: Vivarium.Entities.Agent.ChangeEnergy(System.Single,Vivarium.World.GridCell[0:,0:])
+  commentId: M:Vivarium.Entities.Agent.ChangeEnergy(System.Single,Vivarium.World.GridCell[0:,0:])
+  id: ChangeEnergy(System.Single,Vivarium.World.GridCell[0:,0:])
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: ChangeEnergy(float, GridCell[,])
+  nameWithType: Agent.ChangeEnergy(float, GridCell[,])
+  fullName: Vivarium.Entities.Agent.ChangeEnergy(float, Vivarium.World.GridCell[,])
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ChangeEnergy
+    path: src/Game/Entities/Agent.cs
+    startLine: 76
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public void ChangeEnergy(float amount, GridCell[,] gridMap)
+    parameters:
+    - id: amount
+      type: System.Single
+    - id: gridMap
+      type: Vivarium.World.GridCell[,]
+    content.vb: Public Sub ChangeEnergy(amount As Single, gridMap As GridCell(,))
+  overload: Vivarium.Entities.Agent.ChangeEnergy*
+  nameWithType.vb: Agent.ChangeEnergy(Single, GridCell(,))
+  fullName.vb: Vivarium.Entities.Agent.ChangeEnergy(Single, Vivarium.World.GridCell(,))
+  name.vb: ChangeEnergy(Single, GridCell(,))
+- uid: Vivarium.Entities.Agent.Genome
+  commentId: P:Vivarium.Entities.Agent.Genome
+  id: Genome
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Genome
+  nameWithType: Agent.Genome
+  fullName: Vivarium.Entities.Agent.Genome
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Genome
+    path: src/Game/Entities/Agent.cs
+    startLine: 92
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public Gene[] Genome { readonly get; set; }
+    parameters: []
+    return:
+      type: Vivarium.Biology.Gene[]
+    content.vb: Public Property Genome As Gene()
+  overload: Vivarium.Entities.Agent.Genome*
+- uid: Vivarium.Entities.Agent.DecodedGenome
+  commentId: P:Vivarium.Entities.Agent.DecodedGenome
+  id: DecodedGenome
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: DecodedGenome
+  nameWithType: Agent.DecodedGenome
+  fullName: Vivarium.Entities.Agent.DecodedGenome
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: DecodedGenome
+    path: src/Game/Entities/Agent.cs
+    startLine: 93
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public DecodedGene[] DecodedGenome { readonly get; set; }
+    parameters: []
+    return:
+      type: Vivarium.Biology.DecodedGene[]
+    content.vb: Public Property DecodedGenome As DecodedGene()
+  overload: Vivarium.Entities.Agent.DecodedGenome*
+- uid: Vivarium.Entities.Agent.NeuronActivations
+  commentId: P:Vivarium.Entities.Agent.NeuronActivations
+  id: NeuronActivations
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: NeuronActivations
+  nameWithType: Agent.NeuronActivations
+  fullName: Vivarium.Entities.Agent.NeuronActivations
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: NeuronActivations
+    path: src/Game/Entities/Agent.cs
+    startLine: 94
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public float[] NeuronActivations { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Single[]
+    content.vb: Public Property NeuronActivations As Single()
+  overload: Vivarium.Entities.Agent.NeuronActivations*
+- uid: Vivarium.Entities.Agent.RefreshDecodedGenome
+  commentId: M:Vivarium.Entities.Agent.RefreshDecodedGenome
+  id: RefreshDecodedGenome
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: RefreshDecodedGenome()
+  nameWithType: Agent.RefreshDecodedGenome()
+  fullName: Vivarium.Entities.Agent.RefreshDecodedGenome()
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: RefreshDecodedGenome
+    path: src/Game/Entities/Agent.cs
+    startLine: 96
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public void RefreshDecodedGenome()
+    content.vb: Public Sub RefreshDecodedGenome()
+  overload: Vivarium.Entities.Agent.RefreshDecodedGenome*
+- uid: Vivarium.Entities.Agent.Strength
+  commentId: P:Vivarium.Entities.Agent.Strength
+  id: Strength
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Strength
+  nameWithType: Agent.Strength
+  fullName: Vivarium.Entities.Agent.Strength
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Strength
+    path: src/Game/Entities/Agent.cs
+    startLine: 124
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly float Strength { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property Strength As Single
+  overload: Vivarium.Entities.Agent.Strength*
+- uid: Vivarium.Entities.Agent.Power
+  commentId: P:Vivarium.Entities.Agent.Power
+  id: Power
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Power
+  nameWithType: Agent.Power
+  fullName: Vivarium.Entities.Agent.Power
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Power
+    path: src/Game/Entities/Agent.cs
+    startLine: 126
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly float Power { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property Power As Single
+  overload: Vivarium.Entities.Agent.Power*
+- uid: Vivarium.Entities.Agent.Resilience
+  commentId: P:Vivarium.Entities.Agent.Resilience
+  id: Resilience
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Resilience
+  nameWithType: Agent.Resilience
+  fullName: Vivarium.Entities.Agent.Resilience
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Resilience
+    path: src/Game/Entities/Agent.cs
+    startLine: 127
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly float Resilience { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property Resilience As Single
+  overload: Vivarium.Entities.Agent.Resilience*
+- uid: Vivarium.Entities.Agent.Bravery
+  commentId: P:Vivarium.Entities.Agent.Bravery
+  id: Bravery
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Bravery
+  nameWithType: Agent.Bravery
+  fullName: Vivarium.Entities.Agent.Bravery
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Bravery
+    path: src/Game/Entities/Agent.cs
+    startLine: 129
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly float Bravery { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property Bravery As Single
+  overload: Vivarium.Entities.Agent.Bravery*
+- uid: Vivarium.Entities.Agent.AttackThreshold
+  commentId: P:Vivarium.Entities.Agent.AttackThreshold
+  id: AttackThreshold
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: AttackThreshold
+  nameWithType: Agent.AttackThreshold
+  fullName: Vivarium.Entities.Agent.AttackThreshold
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AttackThreshold
+    path: src/Game/Entities/Agent.cs
+    startLine: 130
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly float AttackThreshold { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property AttackThreshold As Single
+  overload: Vivarium.Entities.Agent.AttackThreshold*
+- uid: Vivarium.Entities.Agent.MetabolicEfficiency
+  commentId: P:Vivarium.Entities.Agent.MetabolicEfficiency
+  id: MetabolicEfficiency
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: MetabolicEfficiency
+  nameWithType: Agent.MetabolicEfficiency
+  fullName: Vivarium.Entities.Agent.MetabolicEfficiency
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MetabolicEfficiency
+    path: src/Game/Entities/Agent.cs
+    startLine: 131
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly float MetabolicEfficiency { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property MetabolicEfficiency As Single
+  overload: Vivarium.Entities.Agent.MetabolicEfficiency*
+- uid: Vivarium.Entities.Agent.MetabolismRate
+  commentId: P:Vivarium.Entities.Agent.MetabolismRate
+  id: MetabolismRate
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: MetabolismRate
+  nameWithType: Agent.MetabolismRate
+  fullName: Vivarium.Entities.Agent.MetabolismRate
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MetabolismRate
+    path: src/Game/Entities/Agent.cs
+    startLine: 132
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly float MetabolismRate { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property MetabolismRate As Single
+  overload: Vivarium.Entities.Agent.MetabolismRate*
+- uid: Vivarium.Entities.Agent.Perception
+  commentId: P:Vivarium.Entities.Agent.Perception
+  id: Perception
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Perception
+  nameWithType: Agent.Perception
+  fullName: Vivarium.Entities.Agent.Perception
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Perception
+    path: src/Game/Entities/Agent.cs
+    startLine: 134
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly float Perception { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property Perception As Single
+  overload: Vivarium.Entities.Agent.Perception*
+- uid: Vivarium.Entities.Agent.Speed
+  commentId: P:Vivarium.Entities.Agent.Speed
+  id: Speed
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Speed
+  nameWithType: Agent.Speed
+  fullName: Vivarium.Entities.Agent.Speed
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Speed
+    path: src/Game/Entities/Agent.cs
+    startLine: 135
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly float Speed { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property Speed As Single
+  overload: Vivarium.Entities.Agent.Speed*
+- uid: Vivarium.Entities.Agent.MovementThreshold
+  commentId: P:Vivarium.Entities.Agent.MovementThreshold
+  id: MovementThreshold
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: MovementThreshold
+  nameWithType: Agent.MovementThreshold
+  fullName: Vivarium.Entities.Agent.MovementThreshold
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MovementThreshold
+    path: src/Game/Entities/Agent.cs
+    startLine: 136
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly float MovementThreshold { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property MovementThreshold As Single
+  overload: Vivarium.Entities.Agent.MovementThreshold*
+- uid: Vivarium.Entities.Agent.TrophicBias
+  commentId: P:Vivarium.Entities.Agent.TrophicBias
+  id: TrophicBias
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: TrophicBias
+  nameWithType: Agent.TrophicBias
+  fullName: Vivarium.Entities.Agent.TrophicBias
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: TrophicBias
+    path: src/Game/Entities/Agent.cs
+    startLine: 137
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly float TrophicBias { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property TrophicBias As Single
+  overload: Vivarium.Entities.Agent.TrophicBias*
+- uid: Vivarium.Entities.Agent.Constitution
+  commentId: P:Vivarium.Entities.Agent.Constitution
+  id: Constitution
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Constitution
+  nameWithType: Agent.Constitution
+  fullName: Vivarium.Entities.Agent.Constitution
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Constitution
+    path: src/Game/Entities/Agent.cs
+    startLine: 138
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly float Constitution { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property Constitution As Single
+  overload: Vivarium.Entities.Agent.Constitution*
+- uid: Vivarium.Entities.Agent.MaxEnergy
+  commentId: P:Vivarium.Entities.Agent.MaxEnergy
+  id: MaxEnergy
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: MaxEnergy
+  nameWithType: Agent.MaxEnergy
+  fullName: Vivarium.Entities.Agent.MaxEnergy
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MaxEnergy
+    path: src/Game/Entities/Agent.cs
+    startLine: 139
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly float MaxEnergy { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property MaxEnergy As Single
+  overload: Vivarium.Entities.Agent.MaxEnergy*
+- uid: Vivarium.Entities.Agent.LastAttackDirX
+  commentId: F:Vivarium.Entities.Agent.LastAttackDirX
+  id: LastAttackDirX
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: LastAttackDirX
+  nameWithType: Agent.LastAttackDirX
+  fullName: Vivarium.Entities.Agent.LastAttackDirX
+  type: Field
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: LastAttackDirX
+    path: src/Game/Entities/Agent.cs
+    startLine: 142
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public sbyte LastAttackDirX
+    return:
+      type: System.SByte
+    content.vb: Public LastAttackDirX As SByte
+- uid: Vivarium.Entities.Agent.LastAttackDirY
+  commentId: F:Vivarium.Entities.Agent.LastAttackDirY
+  id: LastAttackDirY
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: LastAttackDirY
+  nameWithType: Agent.LastAttackDirY
+  fullName: Vivarium.Entities.Agent.LastAttackDirY
+  type: Field
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: LastAttackDirY
+    path: src/Game/Entities/Agent.cs
+    startLine: 143
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public sbyte LastAttackDirY
+    return:
+      type: System.SByte
+    content.vb: Public LastAttackDirY As SByte
+- uid: Vivarium.Entities.Agent.AttackVisualTimer
+  commentId: F:Vivarium.Entities.Agent.AttackVisualTimer
+  id: AttackVisualTimer
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: AttackVisualTimer
+  nameWithType: Agent.AttackVisualTimer
+  fullName: Vivarium.Entities.Agent.AttackVisualTimer
+  type: Field
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AttackVisualTimer
+    path: src/Game/Entities/Agent.cs
+    startLine: 144
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public byte AttackVisualTimer
+    return:
+      type: System.Byte
+    content.vb: Public AttackVisualTimer As Byte
+- uid: Vivarium.Entities.Agent.LastFleeDirX
+  commentId: F:Vivarium.Entities.Agent.LastFleeDirX
+  id: LastFleeDirX
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: LastFleeDirX
+  nameWithType: Agent.LastFleeDirX
+  fullName: Vivarium.Entities.Agent.LastFleeDirX
+  type: Field
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: LastFleeDirX
+    path: src/Game/Entities/Agent.cs
+    startLine: 146
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public sbyte LastFleeDirX
+    return:
+      type: System.SByte
+    content.vb: Public LastFleeDirX As SByte
+- uid: Vivarium.Entities.Agent.LastFleeDirY
+  commentId: F:Vivarium.Entities.Agent.LastFleeDirY
+  id: LastFleeDirY
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: LastFleeDirY
+  nameWithType: Agent.LastFleeDirY
+  fullName: Vivarium.Entities.Agent.LastFleeDirY
+  type: Field
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: LastFleeDirY
+    path: src/Game/Entities/Agent.cs
+    startLine: 147
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public sbyte LastFleeDirY
+    return:
+      type: System.SByte
+    content.vb: Public LastFleeDirY As SByte
+- uid: Vivarium.Entities.Agent.FleeVisualTimer
+  commentId: F:Vivarium.Entities.Agent.FleeVisualTimer
+  id: FleeVisualTimer
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: FleeVisualTimer
+  nameWithType: Agent.FleeVisualTimer
+  fullName: Vivarium.Entities.Agent.FleeVisualTimer
+  type: Field
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: FleeVisualTimer
+    path: src/Game/Entities/Agent.cs
+    startLine: 148
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public byte FleeVisualTimer
+    return:
+      type: System.Byte
+    content.vb: Public FleeVisualTimer As Byte
+- uid: Vivarium.Entities.Agent.ReproductionVisualTimer
+  commentId: F:Vivarium.Entities.Agent.ReproductionVisualTimer
+  id: ReproductionVisualTimer
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: ReproductionVisualTimer
+  nameWithType: Agent.ReproductionVisualTimer
+  fullName: Vivarium.Entities.Agent.ReproductionVisualTimer
+  type: Field
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ReproductionVisualTimer
+    path: src/Game/Entities/Agent.cs
+    startLine: 150
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public byte ReproductionVisualTimer
+    return:
+      type: System.Byte
+    content.vb: Public ReproductionVisualTimer As Byte
+- uid: Vivarium.Entities.Agent.Update
+  commentId: M:Vivarium.Entities.Agent.Update
+  id: Update
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Update()
+  nameWithType: Agent.Update()
+  fullName: Vivarium.Entities.Agent.Update()
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Update
+    path: src/Game/Entities/Agent.cs
+    startLine: 152
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public void Update()
+    content.vb: Public Sub Update()
+  overload: Vivarium.Entities.Agent.Update*
+- uid: Vivarium.Entities.Agent.IsDirectlyRelatedTo(Vivarium.Entities.Agent@)
+  commentId: M:Vivarium.Entities.Agent.IsDirectlyRelatedTo(Vivarium.Entities.Agent@)
+  id: IsDirectlyRelatedTo(Vivarium.Entities.Agent@)
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: IsDirectlyRelatedTo(ref Agent)
+  nameWithType: Agent.IsDirectlyRelatedTo(ref Agent)
+  fullName: Vivarium.Entities.Agent.IsDirectlyRelatedTo(ref Vivarium.Entities.Agent)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: IsDirectlyRelatedTo
+    path: src/Game/Entities/Agent.cs
+    startLine: 179
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  summary: Determines whether this agent is a direct parent or child of the specified agent.
+  example: []
+  syntax:
+    content: public readonly bool IsDirectlyRelatedTo(ref Agent other)
+    parameters:
+    - id: other
+      type: Vivarium.Entities.Agent
+      description: A reference to the agent to compare with the current agent.
+    return:
+      type: System.Boolean
+      description: true if this agent is the parent or child of the specified agent; otherwise, false.
+    content.vb: Public Function IsDirectlyRelatedTo(other As Agent) As Boolean
+  overload: Vivarium.Entities.Agent.IsDirectlyRelatedTo*
+  nameWithType.vb: Agent.IsDirectlyRelatedTo(Agent)
+  fullName.vb: Vivarium.Entities.Agent.IsDirectlyRelatedTo(Vivarium.Entities.Agent)
+  name.vb: IsDirectlyRelatedTo(Agent)
+- uid: Vivarium.Entities.Agent.IsThreatenedBy(Vivarium.Entities.Agent@)
+  commentId: M:Vivarium.Entities.Agent.IsThreatenedBy(Vivarium.Entities.Agent@)
+  id: IsThreatenedBy(Vivarium.Entities.Agent@)
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: IsThreatenedBy(ref Agent)
+  nameWithType: Agent.IsThreatenedBy(ref Agent)
+  fullName: Vivarium.Entities.Agent.IsThreatenedBy(ref Vivarium.Entities.Agent)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: IsThreatenedBy
+    path: src/Game/Entities/Agent.cs
+    startLine: 192
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  summary: Determines whether the current agent is threatened by the specified agent based on kinship, diet, and bravery.
+  remarks: >-
+    An agent is not considered threatened by another agent if they are directly related, if both
+        are herbivores, if the current agent is a carnivore or omnivore and the other is a herbivore, or if the current
+        agent's bravery exceeds that of the other agent.
+  example: []
+  syntax:
+    content: public readonly bool IsThreatenedBy(ref Agent other)
+    parameters:
+    - id: other
+      type: Vivarium.Entities.Agent
+      description: A reference to the agent to evaluate as a potential threat.
+    return:
+      type: System.Boolean
+      description: true if the current agent is considered threatened by the specified agent; otherwise, false.
+    content.vb: Public Function IsThreatenedBy(other As Agent) As Boolean
+  overload: Vivarium.Entities.Agent.IsThreatenedBy*
+  nameWithType.vb: Agent.IsThreatenedBy(Agent)
+  fullName.vb: Vivarium.Entities.Agent.IsThreatenedBy(Vivarium.Entities.Agent)
+  name.vb: IsThreatenedBy(Agent)
+- uid: Vivarium.Entities.Agent.IsPreyingOn(Vivarium.Entities.Agent@)
+  commentId: M:Vivarium.Entities.Agent.IsPreyingOn(Vivarium.Entities.Agent@)
+  id: IsPreyingOn(Vivarium.Entities.Agent@)
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: IsPreyingOn(ref Agent)
+  nameWithType: Agent.IsPreyingOn(ref Agent)
+  fullName: Vivarium.Entities.Agent.IsPreyingOn(ref Vivarium.Entities.Agent)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: IsPreyingOn
+    path: src/Game/Entities/Agent.cs
+    startLine: 216
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  summary: Determines whether this agent is considered to be preying on the specified agent.
+  remarks: >-
+    An agent is not considered to be preying on another agent if they are directly related or if
+        this agent is a herbivore.
+  example: []
+  syntax:
+    content: public readonly bool IsPreyingOn(ref Agent other)
+    parameters:
+    - id: other
+      type: Vivarium.Entities.Agent
+      description: The agent to evaluate as a potential prey. Passed by reference.
+    return:
+      type: System.Boolean
+      description: true if this agent is preying on the specified agent; otherwise, false.
+    content.vb: Public Function IsPreyingOn(other As Agent) As Boolean
+  overload: Vivarium.Entities.Agent.IsPreyingOn*
+  nameWithType.vb: Agent.IsPreyingOn(Agent)
+  fullName.vb: Vivarium.Entities.Agent.IsPreyingOn(Vivarium.Entities.Agent)
+  name.vb: IsPreyingOn(Agent)
+- uid: Vivarium.Entities.Agent.DetermineDiet(System.Single)
+  commentId: M:Vivarium.Entities.Agent.DetermineDiet(System.Single)
+  id: DetermineDiet(System.Single)
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: DetermineDiet(float)
+  nameWithType: Agent.DetermineDiet(float)
+  fullName: Vivarium.Entities.Agent.DetermineDiet(float)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: DetermineDiet
+    path: src/Game/Entities/Agent.cs
+    startLine: 230
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static DietType DetermineDiet(float trophicBias)
+    parameters:
+    - id: trophicBias
+      type: System.Single
+    return:
+      type: Vivarium.Biology.DietType
+    content.vb: Public Shared Function DetermineDiet(trophicBias As Single) As DietType
+  overload: Vivarium.Entities.Agent.DetermineDiet*
+  nameWithType.vb: Agent.DetermineDiet(Single)
+  fullName.vb: Vivarium.Entities.Agent.DetermineDiet(Single)
+  name.vb: DetermineDiet(Single)
+- uid: Vivarium.Entities.Agent.GetColorBasedOnDietType(Vivarium.Biology.DietType)
+  commentId: M:Vivarium.Entities.Agent.GetColorBasedOnDietType(Vivarium.Biology.DietType)
+  id: GetColorBasedOnDietType(Vivarium.Biology.DietType)
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: GetColorBasedOnDietType(DietType)
+  nameWithType: Agent.GetColorBasedOnDietType(DietType)
+  fullName: Vivarium.Entities.Agent.GetColorBasedOnDietType(Vivarium.Biology.DietType)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: GetColorBasedOnDietType
+    path: src/Game/Entities/Agent.cs
+    startLine: 241
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static Color GetColorBasedOnDietType(DietType dietType)
+    parameters:
+    - id: dietType
+      type: Vivarium.Biology.DietType
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared Function GetColorBasedOnDietType(dietType As DietType) As Color
+  overload: Vivarium.Entities.Agent.GetColorBasedOnDietType*
+- uid: Vivarium.Entities.Agent.Create(System.Int32,System.Int32,System.Int32,System.Random)
+  commentId: M:Vivarium.Entities.Agent.Create(System.Int32,System.Int32,System.Int32,System.Random)
+  id: Create(System.Int32,System.Int32,System.Int32,System.Random)
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: Create(int, int, int, Random)
+  nameWithType: Agent.Create(int, int, int, Random)
+  fullName: Vivarium.Entities.Agent.Create(int, int, int, System.Random)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Create
+    path: src/Game/Entities/Agent.cs
+    startLine: 252
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static Agent Create(int index, int x, int y, Random rng)
+    parameters:
+    - id: index
+      type: System.Int32
+    - id: x
+      type: System.Int32
+    - id: y
+      type: System.Int32
+    - id: rng
+      type: System.Random
+    return:
+      type: Vivarium.Entities.Agent
+    content.vb: Public Shared Function Create(index As Integer, x As Integer, y As Integer, rng As Random) As Agent
+  overload: Vivarium.Entities.Agent.Create*
+  nameWithType.vb: Agent.Create(Integer, Integer, Integer, Random)
+  fullName.vb: Vivarium.Entities.Agent.Create(Integer, Integer, Integer, System.Random)
+  name.vb: Create(Integer, Integer, Integer, Random)
+- uid: Vivarium.Entities.Agent.CreateChild(System.Int32,System.Int32,System.Int32,System.Random,Vivarium.Biology.Gene[],Vivarium.Entities.Agent@,System.Single)
+  commentId: M:Vivarium.Entities.Agent.CreateChild(System.Int32,System.Int32,System.Int32,System.Random,Vivarium.Biology.Gene[],Vivarium.Entities.Agent@,System.Single)
+  id: CreateChild(System.Int32,System.Int32,System.Int32,System.Random,Vivarium.Biology.Gene[],Vivarium.Entities.Agent@,System.Single)
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: CreateChild(int, int, int, Random, Gene[], ref Agent, float)
+  nameWithType: Agent.CreateChild(int, int, int, Random, Gene[], ref Agent, float)
+  fullName: Vivarium.Entities.Agent.CreateChild(int, int, int, System.Random, Vivarium.Biology.Gene[], ref Vivarium.Entities.Agent, float)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: CreateChild
+    path: src/Game/Entities/Agent.cs
+    startLine: 259
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static Agent CreateChild(int index, int x, int y, Random rng, Gene[] genome, ref Agent parent, float initialEnergy)
+    parameters:
+    - id: index
+      type: System.Int32
+    - id: x
+      type: System.Int32
+    - id: y
+      type: System.Int32
+    - id: rng
+      type: System.Random
+    - id: genome
+      type: Vivarium.Biology.Gene[]
+    - id: parent
+      type: Vivarium.Entities.Agent
+    - id: initialEnergy
+      type: System.Single
+    return:
+      type: Vivarium.Entities.Agent
+    content.vb: Public Shared Function CreateChild(index As Integer, x As Integer, y As Integer, rng As Random, genome As Gene(), parent As Agent, initialEnergy As Single) As Agent
+  overload: Vivarium.Entities.Agent.CreateChild*
+  nameWithType.vb: Agent.CreateChild(Integer, Integer, Integer, Random, Gene(), Agent, Single)
+  fullName.vb: Vivarium.Entities.Agent.CreateChild(Integer, Integer, Integer, System.Random, Vivarium.Biology.Gene(), Vivarium.Entities.Agent, Single)
+  name.vb: CreateChild(Integer, Integer, Integer, Random, Gene(), Agent, Single)
+- uid: Vivarium.Entities.Agent.TryMoveToLocation(Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Int32,System.Int32,System.Nullable{System.Single})
+  commentId: M:Vivarium.Entities.Agent.TryMoveToLocation(Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Int32,System.Int32,System.Nullable{System.Single})
+  id: TryMoveToLocation(Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Int32,System.Int32,System.Nullable{System.Single})
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: TryMoveToLocation(GridCell[,], int, int, int, int, float?)
+  nameWithType: Agent.TryMoveToLocation(GridCell[,], int, int, int, int, float?)
+  fullName: Vivarium.Entities.Agent.TryMoveToLocation(Vivarium.World.GridCell[,], int, int, int, int, float?)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: TryMoveToLocation
+    path: src/Game/Entities/Agent.cs
+    startLine: 330
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public bool TryMoveToLocation(GridCell[,] gridMap, int pendingX, int pendingY, int dx, int dy, float? overrideCost = null)
+    parameters:
+    - id: gridMap
+      type: Vivarium.World.GridCell[,]
+    - id: pendingX
+      type: System.Int32
+    - id: pendingY
+      type: System.Int32
+    - id: dx
+      type: System.Int32
+    - id: dy
+      type: System.Int32
+    - id: overrideCost
+      type: System.Nullable{System.Single}
+    return:
+      type: System.Boolean
+    content.vb: Public Function TryMoveToLocation(gridMap As GridCell(,), pendingX As Integer, pendingY As Integer, dx As Integer, dy As Integer, overrideCost As Single? = Nothing) As Boolean
+  overload: Vivarium.Entities.Agent.TryMoveToLocation*
+  nameWithType.vb: Agent.TryMoveToLocation(GridCell(,), Integer, Integer, Integer, Integer, Single?)
+  fullName.vb: Vivarium.Entities.Agent.TryMoveToLocation(Vivarium.World.GridCell(,), Integer, Integer, Integer, Integer, Single?)
+  name.vb: TryMoveToLocation(GridCell(,), Integer, Integer, Integer, Integer, Single?)
+- uid: Vivarium.Entities.Agent.TryReproduce(System.Span{Vivarium.Entities.Agent},Vivarium.World.GridCell[0:,0:],System.Random)
+  commentId: M:Vivarium.Entities.Agent.TryReproduce(System.Span{Vivarium.Entities.Agent},Vivarium.World.GridCell[0:,0:],System.Random)
+  id: TryReproduce(System.Span{Vivarium.Entities.Agent},Vivarium.World.GridCell[0:,0:],System.Random)
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: TryReproduce(Span<Agent>, GridCell[,], Random)
+  nameWithType: Agent.TryReproduce(Span<Agent>, GridCell[,], Random)
+  fullName: Vivarium.Entities.Agent.TryReproduce(System.Span<Vivarium.Entities.Agent>, Vivarium.World.GridCell[,], System.Random)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: TryReproduce
+    path: src/Game/Entities/Agent.cs
+    startLine: 397
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public bool TryReproduce(Span<Agent> population, GridCell[,] gridMap, Random rng)
+    parameters:
+    - id: population
+      type: System.Span{Vivarium.Entities.Agent}
+    - id: gridMap
+      type: Vivarium.World.GridCell[,]
+    - id: rng
+      type: System.Random
+    return:
+      type: System.Boolean
+    content.vb: Public Function TryReproduce(population As Span(Of Agent), gridMap As GridCell(,), rng As Random) As Boolean
+  overload: Vivarium.Entities.Agent.TryReproduce*
+  nameWithType.vb: Agent.TryReproduce(Span(Of Agent), GridCell(,), Random)
+  fullName.vb: Vivarium.Entities.Agent.TryReproduce(System.Span(Of Vivarium.Entities.Agent), Vivarium.World.GridCell(,), System.Random)
+  name.vb: TryReproduce(Span(Of Agent), GridCell(,), Random)
+- uid: Vivarium.Entities.Agent.TryAreaAttack(Vivarium.World.GridCell[0:,0:],System.Span{Vivarium.Entities.Agent},System.Span{Vivarium.Entities.Plant},System.Random)
+  commentId: M:Vivarium.Entities.Agent.TryAreaAttack(Vivarium.World.GridCell[0:,0:],System.Span{Vivarium.Entities.Agent},System.Span{Vivarium.Entities.Plant},System.Random)
+  id: TryAreaAttack(Vivarium.World.GridCell[0:,0:],System.Span{Vivarium.Entities.Agent},System.Span{Vivarium.Entities.Plant},System.Random)
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: TryAreaAttack(GridCell[,], Span<Agent>, Span<Plant>, Random)
+  nameWithType: Agent.TryAreaAttack(GridCell[,], Span<Agent>, Span<Plant>, Random)
+  fullName: Vivarium.Entities.Agent.TryAreaAttack(Vivarium.World.GridCell[,], System.Span<Vivarium.Entities.Agent>, System.Span<Vivarium.Entities.Plant>, System.Random)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: TryAreaAttack
+    path: src/Game/Entities/Agent.cs
+    startLine: 506
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public Agent.AttackResult TryAreaAttack(GridCell[,] gridMap, Span<Agent> agentPopulation, Span<Plant> plantPopulation, Random rng)
+    parameters:
+    - id: gridMap
+      type: Vivarium.World.GridCell[,]
+    - id: agentPopulation
+      type: System.Span{Vivarium.Entities.Agent}
+    - id: plantPopulation
+      type: System.Span{Vivarium.Entities.Plant}
+    - id: rng
+      type: System.Random
+    return:
+      type: Vivarium.Entities.Agent.AttackResult
+    content.vb: Public Function TryAreaAttack(gridMap As GridCell(,), agentPopulation As Span(Of Agent), plantPopulation As Span(Of Plant), rng As Random) As Agent.AttackResult
+  overload: Vivarium.Entities.Agent.TryAreaAttack*
+  nameWithType.vb: Agent.TryAreaAttack(GridCell(,), Span(Of Agent), Span(Of Plant), Random)
+  fullName.vb: Vivarium.Entities.Agent.TryAreaAttack(Vivarium.World.GridCell(,), System.Span(Of Vivarium.Entities.Agent), System.Span(Of Vivarium.Entities.Plant), System.Random)
+  name.vb: TryAreaAttack(GridCell(,), Span(Of Agent), Span(Of Plant), Random)
+- uid: Vivarium.Entities.Agent.TryToFlee(Vivarium.World.GridCell[0:,0:],System.Span{Vivarium.Entities.Agent},System.Random,System.Int32@,System.Int32@)
+  commentId: M:Vivarium.Entities.Agent.TryToFlee(Vivarium.World.GridCell[0:,0:],System.Span{Vivarium.Entities.Agent},System.Random,System.Int32@,System.Int32@)
+  id: TryToFlee(Vivarium.World.GridCell[0:,0:],System.Span{Vivarium.Entities.Agent},System.Random,System.Int32@,System.Int32@)
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: TryToFlee(GridCell[,], Span<Agent>, Random, out int, out int)
+  nameWithType: Agent.TryToFlee(GridCell[,], Span<Agent>, Random, out int, out int)
+  fullName: Vivarium.Entities.Agent.TryToFlee(Vivarium.World.GridCell[,], System.Span<Vivarium.Entities.Agent>, System.Random, out int, out int)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: TryToFlee
+    path: src/Game/Entities/Agent.cs
+    startLine: 587
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public bool TryToFlee(GridCell[,] gridMap, Span<Agent> agentPopulationSpan, Random rng, out int fleeX, out int fleeY)
+    parameters:
+    - id: gridMap
+      type: Vivarium.World.GridCell[,]
+    - id: agentPopulationSpan
+      type: System.Span{Vivarium.Entities.Agent}
+    - id: rng
+      type: System.Random
+    - id: fleeX
+      type: System.Int32
+    - id: fleeY
+      type: System.Int32
+    return:
+      type: System.Boolean
+    content.vb: Public Function TryToFlee(gridMap As GridCell(,), agentPopulationSpan As Span(Of Agent), rng As Random, fleeX As Integer, fleeY As Integer) As Boolean
+  overload: Vivarium.Entities.Agent.TryToFlee*
+  nameWithType.vb: Agent.TryToFlee(GridCell(,), Span(Of Agent), Random, Integer, Integer)
+  fullName.vb: Vivarium.Entities.Agent.TryToFlee(Vivarium.World.GridCell(,), System.Span(Of Vivarium.Entities.Agent), System.Random, Integer, Integer)
+  name.vb: TryToFlee(GridCell(,), Span(Of Agent), Random, Integer, Integer)
+- uid: Vivarium.Entities.Agent.TryAttackPlant(Vivarium.Entities.Plant@,Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Single@)
+  commentId: M:Vivarium.Entities.Agent.TryAttackPlant(Vivarium.Entities.Plant@,Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Single@)
+  id: TryAttackPlant(Vivarium.Entities.Plant@,Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Single@)
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: TryAttackPlant(ref Plant, GridCell[,], int, int, out float)
+  nameWithType: Agent.TryAttackPlant(ref Plant, GridCell[,], int, int, out float)
+  fullName: Vivarium.Entities.Agent.TryAttackPlant(ref Vivarium.Entities.Plant, Vivarium.World.GridCell[,], int, int, out float)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: TryAttackPlant
+    path: src/Game/Entities/Agent.cs
+    startLine: 662
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public bool TryAttackPlant(ref Plant plant, GridCell[,] gridMap, int dx, int dy, out float damageDealt)
+    parameters:
+    - id: plant
+      type: Vivarium.Entities.Plant
+    - id: gridMap
+      type: Vivarium.World.GridCell[,]
+    - id: dx
+      type: System.Int32
+    - id: dy
+      type: System.Int32
+    - id: damageDealt
+      type: System.Single
+    return:
+      type: System.Boolean
+    content.vb: Public Function TryAttackPlant(plant As Plant, gridMap As GridCell(,), dx As Integer, dy As Integer, damageDealt As Single) As Boolean
+  overload: Vivarium.Entities.Agent.TryAttackPlant*
+  nameWithType.vb: Agent.TryAttackPlant(Plant, GridCell(,), Integer, Integer, Single)
+  fullName.vb: Vivarium.Entities.Agent.TryAttackPlant(Vivarium.Entities.Plant, Vivarium.World.GridCell(,), Integer, Integer, Single)
+  name.vb: TryAttackPlant(Plant, GridCell(,), Integer, Integer, Single)
+- uid: Vivarium.Entities.Agent.TryAttackAgent(Vivarium.Entities.Agent@,Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Single@,System.Single@)
+  commentId: M:Vivarium.Entities.Agent.TryAttackAgent(Vivarium.Entities.Agent@,Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Single@,System.Single@)
+  id: TryAttackAgent(Vivarium.Entities.Agent@,Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Single@,System.Single@)
+  parent: Vivarium.Entities.Agent
+  langs:
+  - csharp
+  - vb
+  name: TryAttackAgent(ref Agent, GridCell[,], int, int, out float, out float)
+  nameWithType: Agent.TryAttackAgent(ref Agent, GridCell[,], int, int, out float, out float)
+  fullName: Vivarium.Entities.Agent.TryAttackAgent(ref Vivarium.Entities.Agent, Vivarium.World.GridCell[,], int, int, out float, out float)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Agent.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: TryAttackAgent
+    path: src/Game/Entities/Agent.cs
+    startLine: 713
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public bool TryAttackAgent(ref Agent victim, GridCell[,] gridMap, int dx, int dy, out float damageDealt, out float selfDamage)
+    parameters:
+    - id: victim
+      type: Vivarium.Entities.Agent
+    - id: gridMap
+      type: Vivarium.World.GridCell[,]
+    - id: dx
+      type: System.Int32
+    - id: dy
+      type: System.Int32
+    - id: damageDealt
+      type: System.Single
+    - id: selfDamage
+      type: System.Single
+    return:
+      type: System.Boolean
+    content.vb: Public Function TryAttackAgent(victim As Agent, gridMap As GridCell(,), dx As Integer, dy As Integer, damageDealt As Single, selfDamage As Single) As Boolean
+  overload: Vivarium.Entities.Agent.TryAttackAgent*
+  nameWithType.vb: Agent.TryAttackAgent(Agent, GridCell(,), Integer, Integer, Single, Single)
+  fullName.vb: Vivarium.Entities.Agent.TryAttackAgent(Vivarium.Entities.Agent, Vivarium.World.GridCell(,), Integer, Integer, Single, Single)
+  name.vb: TryAttackAgent(Agent, GridCell(,), Integer, Integer, Single, Single)
+references:
+- uid: Vivarium.Entities
+  commentId: N:Vivarium.Entities
+  href: Vivarium.html
+  name: Vivarium.Entities
+  nameWithType: Vivarium.Entities
+  fullName: Vivarium.Entities
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Entities
+    name: Entities
+    href: Vivarium.Entities.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Entities
+    name: Entities
+    href: Vivarium.Entities.html
+- uid: Vivarium.Entities.IGridEntity
+  commentId: T:Vivarium.Entities.IGridEntity
+  parent: Vivarium.Entities
+  href: Vivarium.Entities.IGridEntity.html
+  name: IGridEntity
+  nameWithType: IGridEntity
+  fullName: Vivarium.Entities.IGridEntity
+- uid: System.ValueType.Equals(System.Object)
+  commentId: M:System.ValueType.Equals(System.Object)
+  parent: System.ValueType
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.valuetype.equals
+  name: Equals(object)
+  nameWithType: ValueType.Equals(object)
+  fullName: System.ValueType.Equals(object)
+  nameWithType.vb: ValueType.Equals(Object)
+  fullName.vb: System.ValueType.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.ValueType.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.equals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.ValueType.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.equals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.ValueType.GetHashCode
+  commentId: M:System.ValueType.GetHashCode
+  parent: System.ValueType
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode
+  name: GetHashCode()
+  nameWithType: ValueType.GetHashCode()
+  fullName: System.ValueType.GetHashCode()
+  spec.csharp:
+  - uid: System.ValueType.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.ValueType.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode
+  - name: (
+  - name: )
+- uid: System.ValueType.ToString
+  commentId: M:System.ValueType.ToString
+  parent: System.ValueType
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.valuetype.tostring
+  name: ToString()
+  nameWithType: ValueType.ToString()
+  fullName: System.ValueType.ToString()
+  spec.csharp:
+  - uid: System.ValueType.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.ValueType.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.tostring
+  - name: (
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.ValueType
+  commentId: T:System.ValueType
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.valuetype
+  name: ValueType
+  nameWithType: ValueType
+  fullName: System.ValueType
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Vivarium.Entities.Agent.ReproductionOverheadPct*
+  commentId: Overload:Vivarium.Entities.Agent.ReproductionOverheadPct
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_ReproductionOverheadPct
+  name: ReproductionOverheadPct
+  nameWithType: Agent.ReproductionOverheadPct
+  fullName: Vivarium.Entities.Agent.ReproductionOverheadPct
+- uid: System.Single
+  commentId: T:System.Single
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.single
+  name: float
+  nameWithType: float
+  fullName: float
+  nameWithType.vb: Single
+  fullName.vb: Single
+  name.vb: Single
+- uid: Vivarium.Entities.Agent.MinEnergyBuffer*
+  commentId: Overload:Vivarium.Entities.Agent.MinEnergyBuffer
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_MinEnergyBuffer
+  name: MinEnergyBuffer
+  nameWithType: Agent.MinEnergyBuffer
+  fullName: Vivarium.Entities.Agent.MinEnergyBuffer
+- uid: Vivarium.Entities.Agent.BaseAttackThreshold*
+  commentId: Overload:Vivarium.Entities.Agent.BaseAttackThreshold
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_BaseAttackThreshold
+  name: BaseAttackThreshold
+  nameWithType: Agent.BaseAttackThreshold
+  fullName: Vivarium.Entities.Agent.BaseAttackThreshold
+- uid: Vivarium.Entities.Agent.BaseMovementThreshold*
+  commentId: Overload:Vivarium.Entities.Agent.BaseMovementThreshold
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_BaseMovementThreshold
+  name: BaseMovementThreshold
+  nameWithType: Agent.BaseMovementThreshold
+  fullName: Vivarium.Entities.Agent.BaseMovementThreshold
+- uid: Vivarium.Entities.Agent.BaseMetabolismRate*
+  commentId: Overload:Vivarium.Entities.Agent.BaseMetabolismRate
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_BaseMetabolismRate
+  name: BaseMetabolismRate
+  nameWithType: Agent.BaseMetabolismRate
+  fullName: Vivarium.Entities.Agent.BaseMetabolismRate
+- uid: Vivarium.Entities.Agent.BaseMovementCooldown*
+  commentId: Overload:Vivarium.Entities.Agent.BaseMovementCooldown
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_BaseMovementCooldown
+  name: BaseMovementCooldown
+  nameWithType: Agent.BaseMovementCooldown
+  fullName: Vivarium.Entities.Agent.BaseMovementCooldown
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int32
+  name: int
+  nameWithType: int
+  fullName: int
+  nameWithType.vb: Integer
+  fullName.vb: Integer
+  name.vb: Integer
+- uid: Vivarium.Entities.Agent.MovementCost*
+  commentId: Overload:Vivarium.Entities.Agent.MovementCost
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_MovementCost
+  name: MovementCost
+  nameWithType: Agent.MovementCost
+  fullName: Vivarium.Entities.Agent.MovementCost
+- uid: Vivarium.Entities.Agent.OrthogonalMovementCost*
+  commentId: Overload:Vivarium.Entities.Agent.OrthogonalMovementCost
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_OrthogonalMovementCost
+  name: OrthogonalMovementCost
+  nameWithType: Agent.OrthogonalMovementCost
+  fullName: Vivarium.Entities.Agent.OrthogonalMovementCost
+- uid: Vivarium.Entities.Agent.DiagonalMovementCost*
+  commentId: Overload:Vivarium.Entities.Agent.DiagonalMovementCost
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_DiagonalMovementCost
+  name: DiagonalMovementCost
+  nameWithType: Agent.DiagonalMovementCost
+  fullName: Vivarium.Entities.Agent.DiagonalMovementCost
+- uid: Vivarium.Entities.Agent.FleeCost*
+  commentId: Overload:Vivarium.Entities.Agent.FleeCost
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_FleeCost
+  name: FleeCost
+  nameWithType: Agent.FleeCost
+  fullName: Vivarium.Entities.Agent.FleeCost
+- uid: Vivarium.Entities.Agent.MaturityAge*
+  commentId: Overload:Vivarium.Entities.Agent.MaturityAge
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_MaturityAge
+  name: MaturityAge
+  nameWithType: Agent.MaturityAge
+  fullName: Vivarium.Entities.Agent.MaturityAge
+- uid: Vivarium.Entities.Agent.AttackCooldown*
+  commentId: Overload:Vivarium.Entities.Agent.AttackCooldown
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_AttackCooldown
+  name: AttackCooldown
+  nameWithType: Agent.AttackCooldown
+  fullName: Vivarium.Entities.Agent.AttackCooldown
+- uid: Vivarium.Entities.Agent.Id*
+  commentId: Overload:Vivarium.Entities.Agent.Id
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Id
+  name: Id
+  nameWithType: Agent.Id
+  fullName: Vivarium.Entities.Agent.Id
+- uid: Vivarium.Entities.IGridEntity.Id
+  commentId: P:Vivarium.Entities.IGridEntity.Id
+  parent: Vivarium.Entities.IGridEntity
+  href: Vivarium.Entities.IGridEntity.html#Vivarium_Entities_IGridEntity_Id
+  name: Id
+  nameWithType: IGridEntity.Id
+  fullName: Vivarium.Entities.IGridEntity.Id
+- uid: System.Int64
+  commentId: T:System.Int64
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int64
+  name: long
+  nameWithType: long
+  fullName: long
+  nameWithType.vb: Long
+  fullName.vb: Long
+  name.vb: Long
+- uid: Vivarium.Entities.Agent.Index*
+  commentId: Overload:Vivarium.Entities.Agent.Index
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Index
+  name: Index
+  nameWithType: Agent.Index
+  fullName: Vivarium.Entities.Agent.Index
+- uid: Vivarium.Entities.IGridEntity.Index
+  commentId: P:Vivarium.Entities.IGridEntity.Index
+  parent: Vivarium.Entities.IGridEntity
+  href: Vivarium.Entities.IGridEntity.html#Vivarium_Entities_IGridEntity_Index
+  name: Index
+  nameWithType: IGridEntity.Index
+  fullName: Vivarium.Entities.IGridEntity.Index
+- uid: Vivarium.Entities.Agent.X*
+  commentId: Overload:Vivarium.Entities.Agent.X
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_X
+  name: X
+  nameWithType: Agent.X
+  fullName: Vivarium.Entities.Agent.X
+- uid: Vivarium.Entities.IGridEntity.X
+  commentId: P:Vivarium.Entities.IGridEntity.X
+  parent: Vivarium.Entities.IGridEntity
+  href: Vivarium.Entities.IGridEntity.html#Vivarium_Entities_IGridEntity_X
+  name: X
+  nameWithType: IGridEntity.X
+  fullName: Vivarium.Entities.IGridEntity.X
+- uid: Vivarium.Entities.Agent.Y*
+  commentId: Overload:Vivarium.Entities.Agent.Y
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Y
+  name: Y
+  nameWithType: Agent.Y
+  fullName: Vivarium.Entities.Agent.Y
+- uid: Vivarium.Entities.IGridEntity.Y
+  commentId: P:Vivarium.Entities.IGridEntity.Y
+  parent: Vivarium.Entities.IGridEntity
+  href: Vivarium.Entities.IGridEntity.html#Vivarium_Entities_IGridEntity_Y
+  name: Y
+  nameWithType: IGridEntity.Y
+  fullName: Vivarium.Entities.IGridEntity.Y
+- uid: Vivarium.Entities.Agent.LastX*
+  commentId: Overload:Vivarium.Entities.Agent.LastX
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_LastX
+  name: LastX
+  nameWithType: Agent.LastX
+  fullName: Vivarium.Entities.Agent.LastX
+- uid: Vivarium.Entities.Agent.LastY*
+  commentId: Overload:Vivarium.Entities.Agent.LastY
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_LastY
+  name: LastY
+  nameWithType: Agent.LastY
+  fullName: Vivarium.Entities.Agent.LastY
+- uid: Vivarium.Entities.Agent.ParentId*
+  commentId: Overload:Vivarium.Entities.Agent.ParentId
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_ParentId
+  name: ParentId
+  nameWithType: Agent.ParentId
+  fullName: Vivarium.Entities.Agent.ParentId
+- uid: Vivarium.Entities.Agent.Diet*
+  commentId: Overload:Vivarium.Entities.Agent.Diet
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Diet
+  name: Diet
+  nameWithType: Agent.Diet
+  fullName: Vivarium.Entities.Agent.Diet
+- uid: Vivarium.Biology.DietType
+  commentId: T:Vivarium.Biology.DietType
+  parent: Vivarium.Biology
+  href: Vivarium.Biology.DietType.html
+  name: DietType
+  nameWithType: DietType
+  fullName: Vivarium.Biology.DietType
+- uid: Vivarium.Biology
+  commentId: N:Vivarium.Biology
+  href: Vivarium.html
+  name: Vivarium.Biology
+  nameWithType: Vivarium.Biology
+  fullName: Vivarium.Biology
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Biology
+    name: Biology
+    href: Vivarium.Biology.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Biology
+    name: Biology
+    href: Vivarium.Biology.html
+- uid: Vivarium.Entities.Agent.OriginalColor*
+  commentId: Overload:Vivarium.Entities.Agent.OriginalColor
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_OriginalColor
+  name: OriginalColor
+  nameWithType: Agent.OriginalColor
+  fullName: Vivarium.Entities.Agent.OriginalColor
+- uid: Microsoft.Xna.Framework.Color
+  commentId: T:Microsoft.Xna.Framework.Color
+  parent: Microsoft.Xna.Framework
+  isExternal: true
+  name: Color
+  nameWithType: Color
+  fullName: Microsoft.Xna.Framework.Color
+- uid: Microsoft.Xna.Framework
+  commentId: N:Microsoft.Xna.Framework
+  isExternal: true
+  name: Microsoft.Xna.Framework
+  nameWithType: Microsoft.Xna.Framework
+  fullName: Microsoft.Xna.Framework
+  spec.csharp:
+  - uid: Microsoft
+    name: Microsoft
+    isExternal: true
+  - name: .
+  - uid: Microsoft.Xna
+    name: Xna
+    isExternal: true
+  - name: .
+  - uid: Microsoft.Xna.Framework
+    name: Framework
+    isExternal: true
+  spec.vb:
+  - uid: Microsoft
+    name: Microsoft
+    isExternal: true
+  - name: .
+  - uid: Microsoft.Xna
+    name: Xna
+    isExternal: true
+  - name: .
+  - uid: Microsoft.Xna.Framework
+    name: Framework
+    isExternal: true
+- uid: Vivarium.Entities.Agent.Color*
+  commentId: Overload:Vivarium.Entities.Agent.Color
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Color
+  name: Color
+  nameWithType: Agent.Color
+  fullName: Vivarium.Entities.Agent.Color
+- uid: Vivarium.Entities.Agent.Age*
+  commentId: Overload:Vivarium.Entities.Agent.Age
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Age
+  name: Age
+  nameWithType: Agent.Age
+  fullName: Vivarium.Entities.Agent.Age
+- uid: Vivarium.Entities.Agent.Generation*
+  commentId: Overload:Vivarium.Entities.Agent.Generation
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Generation
+  name: Generation
+  nameWithType: Agent.Generation
+  fullName: Vivarium.Entities.Agent.Generation
+- uid: Vivarium.Entities.Agent.IsAlive*
+  commentId: Overload:Vivarium.Entities.Agent.IsAlive
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_IsAlive
+  name: IsAlive
+  nameWithType: Agent.IsAlive
+  fullName: Vivarium.Entities.Agent.IsAlive
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.boolean
+  name: bool
+  nameWithType: bool
+  fullName: bool
+  nameWithType.vb: Boolean
+  fullName.vb: Boolean
+  name.vb: Boolean
+- uid: Vivarium.Entities.Agent.Energy*
+  commentId: Overload:Vivarium.Entities.Agent.Energy
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Energy
+  name: Energy
+  nameWithType: Agent.Energy
+  fullName: Vivarium.Entities.Agent.Energy
+- uid: Vivarium.Entities.Agent.ChangeEnergy*
+  commentId: Overload:Vivarium.Entities.Agent.ChangeEnergy
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_ChangeEnergy_System_Single_Vivarium_World_GridCell_0
+  name: ChangeEnergy
+  nameWithType: Agent.ChangeEnergy
+  fullName: Vivarium.Entities.Agent.ChangeEnergy
+- uid: Vivarium.World.GridCell[,]
+  isExternal: true
+  href: Vivarium.World.GridCell.html
+  name: GridCell[,]
+  nameWithType: GridCell[,]
+  fullName: Vivarium.World.GridCell[,]
+  nameWithType.vb: GridCell(,)
+  fullName.vb: Vivarium.World.GridCell(,)
+  name.vb: GridCell(,)
+  spec.csharp:
+  - uid: Vivarium.World.GridCell
+    name: GridCell
+    href: Vivarium.World.GridCell.html
+  - name: '['
+  - name: ','
+  - name: ']'
+  spec.vb:
+  - uid: Vivarium.World.GridCell
+    name: GridCell
+    href: Vivarium.World.GridCell.html
+  - name: (
+  - name: ','
+  - name: )
+- uid: Vivarium.Entities.Agent.Genome*
+  commentId: Overload:Vivarium.Entities.Agent.Genome
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Genome
+  name: Genome
+  nameWithType: Agent.Genome
+  fullName: Vivarium.Entities.Agent.Genome
+- uid: Vivarium.Biology.Gene[]
+  isExternal: true
+  href: Vivarium.Biology.Gene.html
+  name: Gene[]
+  nameWithType: Gene[]
+  fullName: Vivarium.Biology.Gene[]
+  nameWithType.vb: Gene()
+  fullName.vb: Vivarium.Biology.Gene()
+  name.vb: Gene()
+  spec.csharp:
+  - uid: Vivarium.Biology.Gene
+    name: Gene
+    href: Vivarium.Biology.Gene.html
+  - name: '['
+  - name: ']'
+  spec.vb:
+  - uid: Vivarium.Biology.Gene
+    name: Gene
+    href: Vivarium.Biology.Gene.html
+  - name: (
+  - name: )
+- uid: Vivarium.Entities.Agent.DecodedGenome*
+  commentId: Overload:Vivarium.Entities.Agent.DecodedGenome
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_DecodedGenome
+  name: DecodedGenome
+  nameWithType: Agent.DecodedGenome
+  fullName: Vivarium.Entities.Agent.DecodedGenome
+- uid: Vivarium.Biology.DecodedGene[]
+  isExternal: true
+  href: Vivarium.Biology.DecodedGene.html
+  name: DecodedGene[]
+  nameWithType: DecodedGene[]
+  fullName: Vivarium.Biology.DecodedGene[]
+  nameWithType.vb: DecodedGene()
+  fullName.vb: Vivarium.Biology.DecodedGene()
+  name.vb: DecodedGene()
+  spec.csharp:
+  - uid: Vivarium.Biology.DecodedGene
+    name: DecodedGene
+    href: Vivarium.Biology.DecodedGene.html
+  - name: '['
+  - name: ']'
+  spec.vb:
+  - uid: Vivarium.Biology.DecodedGene
+    name: DecodedGene
+    href: Vivarium.Biology.DecodedGene.html
+  - name: (
+  - name: )
+- uid: Vivarium.Entities.Agent.NeuronActivations*
+  commentId: Overload:Vivarium.Entities.Agent.NeuronActivations
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_NeuronActivations
+  name: NeuronActivations
+  nameWithType: Agent.NeuronActivations
+  fullName: Vivarium.Entities.Agent.NeuronActivations
+- uid: System.Single[]
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.single
+  name: float[]
+  nameWithType: float[]
+  fullName: float[]
+  nameWithType.vb: Single()
+  fullName.vb: Single()
+  name.vb: Single()
+  spec.csharp:
+  - uid: System.Single
+    name: float
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.single
+  - name: '['
+  - name: ']'
+  spec.vb:
+  - uid: System.Single
+    name: Single
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.single
+  - name: (
+  - name: )
+- uid: Vivarium.Entities.Agent.RefreshDecodedGenome*
+  commentId: Overload:Vivarium.Entities.Agent.RefreshDecodedGenome
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_RefreshDecodedGenome
+  name: RefreshDecodedGenome
+  nameWithType: Agent.RefreshDecodedGenome
+  fullName: Vivarium.Entities.Agent.RefreshDecodedGenome
+- uid: Vivarium.Entities.Agent.Strength*
+  commentId: Overload:Vivarium.Entities.Agent.Strength
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Strength
+  name: Strength
+  nameWithType: Agent.Strength
+  fullName: Vivarium.Entities.Agent.Strength
+- uid: Vivarium.Entities.Agent.Power*
+  commentId: Overload:Vivarium.Entities.Agent.Power
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Power
+  name: Power
+  nameWithType: Agent.Power
+  fullName: Vivarium.Entities.Agent.Power
+- uid: Vivarium.Entities.Agent.Resilience*
+  commentId: Overload:Vivarium.Entities.Agent.Resilience
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Resilience
+  name: Resilience
+  nameWithType: Agent.Resilience
+  fullName: Vivarium.Entities.Agent.Resilience
+- uid: Vivarium.Entities.Agent.Bravery*
+  commentId: Overload:Vivarium.Entities.Agent.Bravery
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Bravery
+  name: Bravery
+  nameWithType: Agent.Bravery
+  fullName: Vivarium.Entities.Agent.Bravery
+- uid: Vivarium.Entities.Agent.AttackThreshold*
+  commentId: Overload:Vivarium.Entities.Agent.AttackThreshold
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_AttackThreshold
+  name: AttackThreshold
+  nameWithType: Agent.AttackThreshold
+  fullName: Vivarium.Entities.Agent.AttackThreshold
+- uid: Vivarium.Entities.Agent.MetabolicEfficiency*
+  commentId: Overload:Vivarium.Entities.Agent.MetabolicEfficiency
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_MetabolicEfficiency
+  name: MetabolicEfficiency
+  nameWithType: Agent.MetabolicEfficiency
+  fullName: Vivarium.Entities.Agent.MetabolicEfficiency
+- uid: Vivarium.Entities.Agent.MetabolismRate*
+  commentId: Overload:Vivarium.Entities.Agent.MetabolismRate
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_MetabolismRate
+  name: MetabolismRate
+  nameWithType: Agent.MetabolismRate
+  fullName: Vivarium.Entities.Agent.MetabolismRate
+- uid: Vivarium.Entities.Agent.Perception*
+  commentId: Overload:Vivarium.Entities.Agent.Perception
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Perception
+  name: Perception
+  nameWithType: Agent.Perception
+  fullName: Vivarium.Entities.Agent.Perception
+- uid: Vivarium.Entities.Agent.Speed*
+  commentId: Overload:Vivarium.Entities.Agent.Speed
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Speed
+  name: Speed
+  nameWithType: Agent.Speed
+  fullName: Vivarium.Entities.Agent.Speed
+- uid: Vivarium.Entities.Agent.MovementThreshold*
+  commentId: Overload:Vivarium.Entities.Agent.MovementThreshold
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_MovementThreshold
+  name: MovementThreshold
+  nameWithType: Agent.MovementThreshold
+  fullName: Vivarium.Entities.Agent.MovementThreshold
+- uid: Vivarium.Entities.Agent.TrophicBias*
+  commentId: Overload:Vivarium.Entities.Agent.TrophicBias
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_TrophicBias
+  name: TrophicBias
+  nameWithType: Agent.TrophicBias
+  fullName: Vivarium.Entities.Agent.TrophicBias
+- uid: Vivarium.Entities.Agent.Constitution*
+  commentId: Overload:Vivarium.Entities.Agent.Constitution
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Constitution
+  name: Constitution
+  nameWithType: Agent.Constitution
+  fullName: Vivarium.Entities.Agent.Constitution
+- uid: Vivarium.Entities.Agent.MaxEnergy*
+  commentId: Overload:Vivarium.Entities.Agent.MaxEnergy
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_MaxEnergy
+  name: MaxEnergy
+  nameWithType: Agent.MaxEnergy
+  fullName: Vivarium.Entities.Agent.MaxEnergy
+- uid: System.SByte
+  commentId: T:System.SByte
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.sbyte
+  name: sbyte
+  nameWithType: sbyte
+  fullName: sbyte
+  nameWithType.vb: SByte
+  fullName.vb: SByte
+  name.vb: SByte
+- uid: System.Byte
+  commentId: T:System.Byte
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.byte
+  name: byte
+  nameWithType: byte
+  fullName: byte
+  nameWithType.vb: Byte
+  fullName.vb: Byte
+  name.vb: Byte
+- uid: Vivarium.Entities.Agent.Update*
+  commentId: Overload:Vivarium.Entities.Agent.Update
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Update
+  name: Update
+  nameWithType: Agent.Update
+  fullName: Vivarium.Entities.Agent.Update
+- uid: Vivarium.Entities.Agent.IsDirectlyRelatedTo*
+  commentId: Overload:Vivarium.Entities.Agent.IsDirectlyRelatedTo
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_IsDirectlyRelatedTo_Vivarium_Entities_Agent__
+  name: IsDirectlyRelatedTo
+  nameWithType: Agent.IsDirectlyRelatedTo
+  fullName: Vivarium.Entities.Agent.IsDirectlyRelatedTo
+- uid: Vivarium.Entities.Agent
+  commentId: T:Vivarium.Entities.Agent
+  parent: Vivarium.Entities
+  href: Vivarium.Entities.Agent.html
+  name: Agent
+  nameWithType: Agent
+  fullName: Vivarium.Entities.Agent
+- uid: Vivarium.Entities.Agent.IsThreatenedBy*
+  commentId: Overload:Vivarium.Entities.Agent.IsThreatenedBy
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_IsThreatenedBy_Vivarium_Entities_Agent__
+  name: IsThreatenedBy
+  nameWithType: Agent.IsThreatenedBy
+  fullName: Vivarium.Entities.Agent.IsThreatenedBy
+- uid: Vivarium.Entities.Agent.IsPreyingOn*
+  commentId: Overload:Vivarium.Entities.Agent.IsPreyingOn
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_IsPreyingOn_Vivarium_Entities_Agent__
+  name: IsPreyingOn
+  nameWithType: Agent.IsPreyingOn
+  fullName: Vivarium.Entities.Agent.IsPreyingOn
+- uid: Vivarium.Entities.Agent.DetermineDiet*
+  commentId: Overload:Vivarium.Entities.Agent.DetermineDiet
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_DetermineDiet_System_Single_
+  name: DetermineDiet
+  nameWithType: Agent.DetermineDiet
+  fullName: Vivarium.Entities.Agent.DetermineDiet
+- uid: Vivarium.Entities.Agent.GetColorBasedOnDietType*
+  commentId: Overload:Vivarium.Entities.Agent.GetColorBasedOnDietType
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_GetColorBasedOnDietType_Vivarium_Biology_DietType_
+  name: GetColorBasedOnDietType
+  nameWithType: Agent.GetColorBasedOnDietType
+  fullName: Vivarium.Entities.Agent.GetColorBasedOnDietType
+- uid: Vivarium.Entities.Agent.Create*
+  commentId: Overload:Vivarium.Entities.Agent.Create
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_Create_System_Int32_System_Int32_System_Int32_System_Random_
+  name: Create
+  nameWithType: Agent.Create
+  fullName: Vivarium.Entities.Agent.Create
+- uid: System.Random
+  commentId: T:System.Random
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.random
+  name: Random
+  nameWithType: Random
+  fullName: System.Random
+- uid: Vivarium.Entities.Agent.CreateChild*
+  commentId: Overload:Vivarium.Entities.Agent.CreateChild
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_CreateChild_System_Int32_System_Int32_System_Int32_System_Random_Vivarium_Biology_Gene___Vivarium_Entities_Agent__System_Single_
+  name: CreateChild
+  nameWithType: Agent.CreateChild
+  fullName: Vivarium.Entities.Agent.CreateChild
+- uid: Vivarium.Entities.Agent.TryMoveToLocation*
+  commentId: Overload:Vivarium.Entities.Agent.TryMoveToLocation
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_TryMoveToLocation_Vivarium_World_GridCell_0
+  name: TryMoveToLocation
+  nameWithType: Agent.TryMoveToLocation
+  fullName: Vivarium.Entities.Agent.TryMoveToLocation
+- uid: System.Nullable{System.Single}
+  commentId: T:System.Nullable{System.Single}
+  parent: System
+  definition: System.Nullable`1
+  href: https://learn.microsoft.com/dotnet/api/system.single
+  name: float?
+  nameWithType: float?
+  fullName: float?
+  nameWithType.vb: Single?
+  fullName.vb: Single?
+  name.vb: Single?
+  spec.csharp:
+  - uid: System.Single
+    name: float
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.single
+  - name: '?'
+  spec.vb:
+  - uid: System.Single
+    name: Single
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.single
+  - name: '?'
+- uid: System.Nullable`1
+  commentId: T:System.Nullable`1
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.nullable-1
+  name: Nullable<T>
+  nameWithType: Nullable<T>
+  fullName: System.Nullable<T>
+  nameWithType.vb: Nullable(Of T)
+  fullName.vb: System.Nullable(Of T)
+  name.vb: Nullable(Of T)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.nullable-1
+  - name: <
+  - name: T
+  - name: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.nullable-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+- uid: Vivarium.Entities.Agent.TryReproduce*
+  commentId: Overload:Vivarium.Entities.Agent.TryReproduce
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_TryReproduce_System_Span_Vivarium_Entities_Agent__Vivarium_World_GridCell_0
+  name: TryReproduce
+  nameWithType: Agent.TryReproduce
+  fullName: Vivarium.Entities.Agent.TryReproduce
+- uid: System.Span{Vivarium.Entities.Agent}
+  commentId: T:System.Span{Vivarium.Entities.Agent}
+  parent: System
+  definition: System.Span`1
+  href: https://learn.microsoft.com/dotnet/api/system.span-1
+  name: Span<Agent>
+  nameWithType: Span<Agent>
+  fullName: System.Span<Vivarium.Entities.Agent>
+  nameWithType.vb: Span(Of Agent)
+  fullName.vb: System.Span(Of Vivarium.Entities.Agent)
+  name.vb: Span(Of Agent)
+  spec.csharp:
+  - uid: System.Span`1
+    name: Span
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.span-1
+  - name: <
+  - uid: Vivarium.Entities.Agent
+    name: Agent
+    href: Vivarium.Entities.Agent.html
+  - name: '>'
+  spec.vb:
+  - uid: System.Span`1
+    name: Span
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.span-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Vivarium.Entities.Agent
+    name: Agent
+    href: Vivarium.Entities.Agent.html
+  - name: )
+- uid: System.Span`1
+  commentId: T:System.Span`1
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.span-1
+  name: Span<T>
+  nameWithType: Span<T>
+  fullName: System.Span<T>
+  nameWithType.vb: Span(Of T)
+  fullName.vb: System.Span(Of T)
+  name.vb: Span(Of T)
+  spec.csharp:
+  - uid: System.Span`1
+    name: Span
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.span-1
+  - name: <
+  - name: T
+  - name: '>'
+  spec.vb:
+  - uid: System.Span`1
+    name: Span
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.span-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+- uid: Vivarium.Entities.Agent.TryAreaAttack*
+  commentId: Overload:Vivarium.Entities.Agent.TryAreaAttack
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_TryAreaAttack_Vivarium_World_GridCell_0
+  name: TryAreaAttack
+  nameWithType: Agent.TryAreaAttack
+  fullName: Vivarium.Entities.Agent.TryAreaAttack
+- uid: System.Span{Vivarium.Entities.Plant}
+  commentId: T:System.Span{Vivarium.Entities.Plant}
+  parent: System
+  definition: System.Span`1
+  href: https://learn.microsoft.com/dotnet/api/system.span-1
+  name: Span<Plant>
+  nameWithType: Span<Plant>
+  fullName: System.Span<Vivarium.Entities.Plant>
+  nameWithType.vb: Span(Of Plant)
+  fullName.vb: System.Span(Of Vivarium.Entities.Plant)
+  name.vb: Span(Of Plant)
+  spec.csharp:
+  - uid: System.Span`1
+    name: Span
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.span-1
+  - name: <
+  - uid: Vivarium.Entities.Plant
+    name: Plant
+    href: Vivarium.Entities.Plant.html
+  - name: '>'
+  spec.vb:
+  - uid: System.Span`1
+    name: Span
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.span-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Vivarium.Entities.Plant
+    name: Plant
+    href: Vivarium.Entities.Plant.html
+  - name: )
+- uid: Vivarium.Entities.Agent.AttackResult
+  commentId: T:Vivarium.Entities.Agent.AttackResult
+  parent: Vivarium.Entities
+  href: Vivarium.Entities.Agent.html
+  name: Agent.AttackResult
+  nameWithType: Agent.AttackResult
+  fullName: Vivarium.Entities.Agent.AttackResult
+  spec.csharp:
+  - uid: Vivarium.Entities.Agent
+    name: Agent
+    href: Vivarium.Entities.Agent.html
+  - name: .
+  - uid: Vivarium.Entities.Agent.AttackResult
+    name: AttackResult
+    href: Vivarium.Entities.Agent.AttackResult.html
+  spec.vb:
+  - uid: Vivarium.Entities.Agent
+    name: Agent
+    href: Vivarium.Entities.Agent.html
+  - name: .
+  - uid: Vivarium.Entities.Agent.AttackResult
+    name: AttackResult
+    href: Vivarium.Entities.Agent.AttackResult.html
+- uid: Vivarium.Entities.Agent.TryToFlee*
+  commentId: Overload:Vivarium.Entities.Agent.TryToFlee
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_TryToFlee_Vivarium_World_GridCell_0
+  name: TryToFlee
+  nameWithType: Agent.TryToFlee
+  fullName: Vivarium.Entities.Agent.TryToFlee
+- uid: Vivarium.Entities.Agent.TryAttackPlant*
+  commentId: Overload:Vivarium.Entities.Agent.TryAttackPlant
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_TryAttackPlant_Vivarium_Entities_Plant__Vivarium_World_GridCell_0
+  name: TryAttackPlant
+  nameWithType: Agent.TryAttackPlant
+  fullName: Vivarium.Entities.Agent.TryAttackPlant
+- uid: Vivarium.Entities.Plant
+  commentId: T:Vivarium.Entities.Plant
+  parent: Vivarium.Entities
+  href: Vivarium.Entities.Plant.html
+  name: Plant
+  nameWithType: Plant
+  fullName: Vivarium.Entities.Plant
+- uid: Vivarium.Entities.Agent.TryAttackAgent*
+  commentId: Overload:Vivarium.Entities.Agent.TryAttackAgent
+  href: Vivarium.Entities.Agent.html#Vivarium_Entities_Agent_TryAttackAgent_Vivarium_Entities_Agent__Vivarium_World_GridCell_0
+  name: TryAttackAgent
+  nameWithType: Agent.TryAttackAgent
+  fullName: Vivarium.Entities.Agent.TryAttackAgent

@@ -1,0 +1,1592 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.Config.AgentConfig
+  commentId: T:Vivarium.Config.AgentConfig
+  id: AgentConfig
+  parent: Vivarium.Config
+  children:
+  - Vivarium.Config.AgentConfig.AttackCooldownFrames
+  - Vivarium.Config.AgentConfig.BaseAttackThreshold
+  - Vivarium.Config.AgentConfig.BaseMaxEnergy
+  - Vivarium.Config.AgentConfig.BaseMetabolismRate
+  - Vivarium.Config.AgentConfig.BaseMovementCooldown
+  - Vivarium.Config.AgentConfig.BaseMovementThreshold
+  - Vivarium.Config.AgentConfig.CarnivoreMetabolismMultiplier
+  - Vivarium.Config.AgentConfig.CarnivoreReproductionMultiplier
+  - Vivarium.Config.AgentConfig.CarnivoreTrophicThreshold
+  - Vivarium.Config.AgentConfig.ConstitutionEnergyScale
+  - Vivarium.Config.AgentConfig.CreateDefault
+  - Vivarium.Config.AgentConfig.DiagonalMovementMultiplier
+  - Vivarium.Config.AgentConfig.FleeMovementMultiplier
+  - Vivarium.Config.AgentConfig.HerbivoreMetabolismMultiplier
+  - Vivarium.Config.AgentConfig.HerbivoreReproductionMultiplier
+  - Vivarium.Config.AgentConfig.HerbivoreResilienceMultiplier
+  - Vivarium.Config.AgentConfig.HerbivoreTrophicThreshold
+  - Vivarium.Config.AgentConfig.MaturityAge
+  - Vivarium.Config.AgentConfig.MinEnergyBuffer
+  - Vivarium.Config.AgentConfig.MovementCost
+  - Vivarium.Config.AgentConfig.OmnivoreMetabolismMultiplier
+  - Vivarium.Config.AgentConfig.OmnivoreReproductionMultiplier
+  - Vivarium.Config.AgentConfig.ReproductionCooldownFrames
+  - Vivarium.Config.AgentConfig.ReproductionOverheadPct
+  - Vivarium.Config.AgentConfig.StrengthPowerScale
+  langs:
+  - csharp
+  - vb
+  name: AgentConfig
+  nameWithType: AgentConfig
+  fullName: Vivarium.Config.AgentConfig
+  type: Class
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AgentConfig
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 8
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: >-
+    Mutable agent configuration. These values can be tweaked at runtime
+
+    to balance agent behavior without restarting the simulation.
+  example: []
+  syntax:
+    content: public sealed class AgentConfig
+    content.vb: Public NotInheritable Class AgentConfig
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+- uid: Vivarium.Config.AgentConfig.ReproductionOverheadPct
+  commentId: P:Vivarium.Config.AgentConfig.ReproductionOverheadPct
+  id: ReproductionOverheadPct
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: ReproductionOverheadPct
+  nameWithType: AgentConfig.ReproductionOverheadPct
+  fullName: Vivarium.Config.AgentConfig.ReproductionOverheadPct
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ReproductionOverheadPct
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 13
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Percentage of MaxEnergy lost as overhead when reproducing (0.30 = 30%).
+  example: []
+  syntax:
+    content: >-
+      [Range(0, 1)]
+
+      public float ReproductionOverheadPct { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0, 1)>
+
+      Public Property ReproductionOverheadPct As Single
+  overload: Vivarium.Config.AgentConfig.ReproductionOverheadPct*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0
+    - type: System.Double
+      value: 1
+- uid: Vivarium.Config.AgentConfig.MinEnergyBuffer
+  commentId: P:Vivarium.Config.AgentConfig.MinEnergyBuffer
+  id: MinEnergyBuffer
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: MinEnergyBuffer
+  nameWithType: AgentConfig.MinEnergyBuffer
+  fullName: Vivarium.Config.AgentConfig.MinEnergyBuffer
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MinEnergyBuffer
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 17
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Minimum energy buffer required to survive reproduction.
+  example: []
+  syntax:
+    content: >-
+      [Range(0, 50)]
+
+      public float MinEnergyBuffer { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0, 50)>
+
+      Public Property MinEnergyBuffer As Single
+  overload: Vivarium.Config.AgentConfig.MinEnergyBuffer*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0
+    - type: System.Double
+      value: 50
+- uid: Vivarium.Config.AgentConfig.MaturityAge
+  commentId: P:Vivarium.Config.AgentConfig.MaturityAge
+  id: MaturityAge
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: MaturityAge
+  nameWithType: AgentConfig.MaturityAge
+  fullName: Vivarium.Config.AgentConfig.MaturityAge
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MaturityAge
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 21
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Frames until agent can reproduce after birth (maturity).
+  example: []
+  syntax:
+    content: >-
+      [Range(60, 3600)]
+
+      public int MaturityAge { get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: >-
+      <Range(60, 3600)>
+
+      Public Property MaturityAge As Integer
+  overload: Vivarium.Config.AgentConfig.MaturityAge*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Int32,System.Int32)
+    arguments:
+    - type: System.Int32
+      value: 60
+    - type: System.Int32
+      value: 3600
+- uid: Vivarium.Config.AgentConfig.ReproductionCooldownFrames
+  commentId: P:Vivarium.Config.AgentConfig.ReproductionCooldownFrames
+  id: ReproductionCooldownFrames
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: ReproductionCooldownFrames
+  nameWithType: AgentConfig.ReproductionCooldownFrames
+  fullName: Vivarium.Config.AgentConfig.ReproductionCooldownFrames
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ReproductionCooldownFrames
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 25
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Frames until next possible reproduction after breeding.
+  example: []
+  syntax:
+    content: >-
+      [Range(60, 3600)]
+
+      public int ReproductionCooldownFrames { get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: >-
+      <Range(60, 3600)>
+
+      Public Property ReproductionCooldownFrames As Integer
+  overload: Vivarium.Config.AgentConfig.ReproductionCooldownFrames*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Int32,System.Int32)
+    arguments:
+    - type: System.Int32
+      value: 60
+    - type: System.Int32
+      value: 3600
+- uid: Vivarium.Config.AgentConfig.HerbivoreReproductionMultiplier
+  commentId: P:Vivarium.Config.AgentConfig.HerbivoreReproductionMultiplier
+  id: HerbivoreReproductionMultiplier
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: HerbivoreReproductionMultiplier
+  nameWithType: AgentConfig.HerbivoreReproductionMultiplier
+  fullName: Vivarium.Config.AgentConfig.HerbivoreReproductionMultiplier
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: HerbivoreReproductionMultiplier
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 29
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Reproduction overhead multiplier for Herbivores.
+  example: []
+  syntax:
+    content: >-
+      [Range(0.10000000149011612, 2)]
+
+      public float HerbivoreReproductionMultiplier { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0.10000000149011612, 2)>
+
+      Public Property HerbivoreReproductionMultiplier As Single
+  overload: Vivarium.Config.AgentConfig.HerbivoreReproductionMultiplier*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0.10000000149011612
+    - type: System.Double
+      value: 2
+- uid: Vivarium.Config.AgentConfig.CarnivoreReproductionMultiplier
+  commentId: P:Vivarium.Config.AgentConfig.CarnivoreReproductionMultiplier
+  id: CarnivoreReproductionMultiplier
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: CarnivoreReproductionMultiplier
+  nameWithType: AgentConfig.CarnivoreReproductionMultiplier
+  fullName: Vivarium.Config.AgentConfig.CarnivoreReproductionMultiplier
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: CarnivoreReproductionMultiplier
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 33
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Reproduction overhead multiplier for Carnivores.
+  example: []
+  syntax:
+    content: >-
+      [Range(0.10000000149011612, 2)]
+
+      public float CarnivoreReproductionMultiplier { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0.10000000149011612, 2)>
+
+      Public Property CarnivoreReproductionMultiplier As Single
+  overload: Vivarium.Config.AgentConfig.CarnivoreReproductionMultiplier*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0.10000000149011612
+    - type: System.Double
+      value: 2
+- uid: Vivarium.Config.AgentConfig.OmnivoreReproductionMultiplier
+  commentId: P:Vivarium.Config.AgentConfig.OmnivoreReproductionMultiplier
+  id: OmnivoreReproductionMultiplier
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: OmnivoreReproductionMultiplier
+  nameWithType: AgentConfig.OmnivoreReproductionMultiplier
+  fullName: Vivarium.Config.AgentConfig.OmnivoreReproductionMultiplier
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: OmnivoreReproductionMultiplier
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 37
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Reproduction overhead multiplier for Omnivores.
+  example: []
+  syntax:
+    content: >-
+      [Range(0.10000000149011612, 2)]
+
+      public float OmnivoreReproductionMultiplier { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0.10000000149011612, 2)>
+
+      Public Property OmnivoreReproductionMultiplier As Single
+  overload: Vivarium.Config.AgentConfig.OmnivoreReproductionMultiplier*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0.10000000149011612
+    - type: System.Double
+      value: 2
+- uid: Vivarium.Config.AgentConfig.BaseMovementThreshold
+  commentId: P:Vivarium.Config.AgentConfig.BaseMovementThreshold
+  id: BaseMovementThreshold
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: BaseMovementThreshold
+  nameWithType: AgentConfig.BaseMovementThreshold
+  fullName: Vivarium.Config.AgentConfig.BaseMovementThreshold
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: BaseMovementThreshold
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 43
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Base threshold for movement action activation.
+  example: []
+  syntax:
+    content: >-
+      [Range(0, 1)]
+
+      public float BaseMovementThreshold { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0, 1)>
+
+      Public Property BaseMovementThreshold As Single
+  overload: Vivarium.Config.AgentConfig.BaseMovementThreshold*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0
+    - type: System.Double
+      value: 1
+- uid: Vivarium.Config.AgentConfig.BaseMovementCooldown
+  commentId: P:Vivarium.Config.AgentConfig.BaseMovementCooldown
+  id: BaseMovementCooldown
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: BaseMovementCooldown
+  nameWithType: AgentConfig.BaseMovementCooldown
+  fullName: Vivarium.Config.AgentConfig.BaseMovementCooldown
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: BaseMovementCooldown
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 47
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Base cooldown frames between movements.
+  example: []
+  syntax:
+    content: >-
+      [Range(1, 60)]
+
+      public int BaseMovementCooldown { get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: >-
+      <Range(1, 60)>
+
+      Public Property BaseMovementCooldown As Integer
+  overload: Vivarium.Config.AgentConfig.BaseMovementCooldown*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Int32,System.Int32)
+    arguments:
+    - type: System.Int32
+      value: 1
+    - type: System.Int32
+      value: 60
+- uid: Vivarium.Config.AgentConfig.MovementCost
+  commentId: P:Vivarium.Config.AgentConfig.MovementCost
+  id: MovementCost
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: MovementCost
+  nameWithType: AgentConfig.MovementCost
+  fullName: Vivarium.Config.AgentConfig.MovementCost
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MovementCost
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 51
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Base energy cost for orthogonal movement.
+  example: []
+  syntax:
+    content: >-
+      [Range(0, 5)]
+
+      public float MovementCost { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0, 5)>
+
+      Public Property MovementCost As Single
+  overload: Vivarium.Config.AgentConfig.MovementCost*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0
+    - type: System.Double
+      value: 5
+- uid: Vivarium.Config.AgentConfig.DiagonalMovementMultiplier
+  commentId: P:Vivarium.Config.AgentConfig.DiagonalMovementMultiplier
+  id: DiagonalMovementMultiplier
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: DiagonalMovementMultiplier
+  nameWithType: AgentConfig.DiagonalMovementMultiplier
+  fullName: Vivarium.Config.AgentConfig.DiagonalMovementMultiplier
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: DiagonalMovementMultiplier
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 55
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Multiplier for diagonal movement cost (sqrt(2) ? 1.414).
+  example: []
+  syntax:
+    content: >-
+      [Range(1, 2)]
+
+      public float DiagonalMovementMultiplier { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(1, 2)>
+
+      Public Property DiagonalMovementMultiplier As Single
+  overload: Vivarium.Config.AgentConfig.DiagonalMovementMultiplier*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 1
+    - type: System.Double
+      value: 2
+- uid: Vivarium.Config.AgentConfig.FleeMovementMultiplier
+  commentId: P:Vivarium.Config.AgentConfig.FleeMovementMultiplier
+  id: FleeMovementMultiplier
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: FleeMovementMultiplier
+  nameWithType: AgentConfig.FleeMovementMultiplier
+  fullName: Vivarium.Config.AgentConfig.FleeMovementMultiplier
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: FleeMovementMultiplier
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 59
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Multiplier for flee action energy cost.
+  example: []
+  syntax:
+    content: >-
+      [Range(1, 5)]
+
+      public float FleeMovementMultiplier { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(1, 5)>
+
+      Public Property FleeMovementMultiplier As Single
+  overload: Vivarium.Config.AgentConfig.FleeMovementMultiplier*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 1
+    - type: System.Double
+      value: 5
+- uid: Vivarium.Config.AgentConfig.BaseAttackThreshold
+  commentId: P:Vivarium.Config.AgentConfig.BaseAttackThreshold
+  id: BaseAttackThreshold
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: BaseAttackThreshold
+  nameWithType: AgentConfig.BaseAttackThreshold
+  fullName: Vivarium.Config.AgentConfig.BaseAttackThreshold
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: BaseAttackThreshold
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 65
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Base threshold for attack action activation.
+  example: []
+  syntax:
+    content: >-
+      [Range(0, 1)]
+
+      public float BaseAttackThreshold { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0, 1)>
+
+      Public Property BaseAttackThreshold As Single
+  overload: Vivarium.Config.AgentConfig.BaseAttackThreshold*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0
+    - type: System.Double
+      value: 1
+- uid: Vivarium.Config.AgentConfig.AttackCooldownFrames
+  commentId: P:Vivarium.Config.AgentConfig.AttackCooldownFrames
+  id: AttackCooldownFrames
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: AttackCooldownFrames
+  nameWithType: AgentConfig.AttackCooldownFrames
+  fullName: Vivarium.Config.AgentConfig.AttackCooldownFrames
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AttackCooldownFrames
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 69
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Cooldown frames after attacking.
+  example: []
+  syntax:
+    content: >-
+      [Range(1, 120)]
+
+      public int AttackCooldownFrames { get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: >-
+      <Range(1, 120)>
+
+      Public Property AttackCooldownFrames As Integer
+  overload: Vivarium.Config.AgentConfig.AttackCooldownFrames*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Int32,System.Int32)
+    arguments:
+    - type: System.Int32
+      value: 1
+    - type: System.Int32
+      value: 120
+- uid: Vivarium.Config.AgentConfig.BaseMetabolismRate
+  commentId: P:Vivarium.Config.AgentConfig.BaseMetabolismRate
+  id: BaseMetabolismRate
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: BaseMetabolismRate
+  nameWithType: AgentConfig.BaseMetabolismRate
+  fullName: Vivarium.Config.AgentConfig.BaseMetabolismRate
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: BaseMetabolismRate
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 75
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Base energy lost per frame from metabolism.
+  example: []
+  syntax:
+    content: >-
+      [Range(0, 0.10000000149011612)]
+
+      public float BaseMetabolismRate { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0, 0.10000000149011612)>
+
+      Public Property BaseMetabolismRate As Single
+  overload: Vivarium.Config.AgentConfig.BaseMetabolismRate*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0
+    - type: System.Double
+      value: 0.10000000149011612
+- uid: Vivarium.Config.AgentConfig.HerbivoreMetabolismMultiplier
+  commentId: P:Vivarium.Config.AgentConfig.HerbivoreMetabolismMultiplier
+  id: HerbivoreMetabolismMultiplier
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: HerbivoreMetabolismMultiplier
+  nameWithType: AgentConfig.HerbivoreMetabolismMultiplier
+  fullName: Vivarium.Config.AgentConfig.HerbivoreMetabolismMultiplier
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: HerbivoreMetabolismMultiplier
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 79
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Metabolism multiplier for Herbivores.
+  example: []
+  syntax:
+    content: >-
+      [Range(0.10000000149011612, 2)]
+
+      public float HerbivoreMetabolismMultiplier { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0.10000000149011612, 2)>
+
+      Public Property HerbivoreMetabolismMultiplier As Single
+  overload: Vivarium.Config.AgentConfig.HerbivoreMetabolismMultiplier*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0.10000000149011612
+    - type: System.Double
+      value: 2
+- uid: Vivarium.Config.AgentConfig.CarnivoreMetabolismMultiplier
+  commentId: P:Vivarium.Config.AgentConfig.CarnivoreMetabolismMultiplier
+  id: CarnivoreMetabolismMultiplier
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: CarnivoreMetabolismMultiplier
+  nameWithType: AgentConfig.CarnivoreMetabolismMultiplier
+  fullName: Vivarium.Config.AgentConfig.CarnivoreMetabolismMultiplier
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: CarnivoreMetabolismMultiplier
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 83
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Metabolism multiplier for Carnivores.
+  example: []
+  syntax:
+    content: >-
+      [Range(0.10000000149011612, 2)]
+
+      public float CarnivoreMetabolismMultiplier { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0.10000000149011612, 2)>
+
+      Public Property CarnivoreMetabolismMultiplier As Single
+  overload: Vivarium.Config.AgentConfig.CarnivoreMetabolismMultiplier*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0.10000000149011612
+    - type: System.Double
+      value: 2
+- uid: Vivarium.Config.AgentConfig.OmnivoreMetabolismMultiplier
+  commentId: P:Vivarium.Config.AgentConfig.OmnivoreMetabolismMultiplier
+  id: OmnivoreMetabolismMultiplier
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: OmnivoreMetabolismMultiplier
+  nameWithType: AgentConfig.OmnivoreMetabolismMultiplier
+  fullName: Vivarium.Config.AgentConfig.OmnivoreMetabolismMultiplier
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: OmnivoreMetabolismMultiplier
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 87
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Metabolism multiplier for Omnivores.
+  example: []
+  syntax:
+    content: >-
+      [Range(0.10000000149011612, 2)]
+
+      public float OmnivoreMetabolismMultiplier { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0.10000000149011612, 2)>
+
+      Public Property OmnivoreMetabolismMultiplier As Single
+  overload: Vivarium.Config.AgentConfig.OmnivoreMetabolismMultiplier*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0.10000000149011612
+    - type: System.Double
+      value: 2
+- uid: Vivarium.Config.AgentConfig.CarnivoreTrophicThreshold
+  commentId: P:Vivarium.Config.AgentConfig.CarnivoreTrophicThreshold
+  id: CarnivoreTrophicThreshold
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: CarnivoreTrophicThreshold
+  nameWithType: AgentConfig.CarnivoreTrophicThreshold
+  fullName: Vivarium.Config.AgentConfig.CarnivoreTrophicThreshold
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: CarnivoreTrophicThreshold
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 93
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: TrophicBias threshold below which agent is classified as Carnivore.
+  example: []
+  syntax:
+    content: >-
+      [Range(-1, 0)]
+
+      public float CarnivoreTrophicThreshold { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(-1, 0)>
+
+      Public Property CarnivoreTrophicThreshold As Single
+  overload: Vivarium.Config.AgentConfig.CarnivoreTrophicThreshold*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: -1
+    - type: System.Double
+      value: 0
+- uid: Vivarium.Config.AgentConfig.HerbivoreTrophicThreshold
+  commentId: P:Vivarium.Config.AgentConfig.HerbivoreTrophicThreshold
+  id: HerbivoreTrophicThreshold
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: HerbivoreTrophicThreshold
+  nameWithType: AgentConfig.HerbivoreTrophicThreshold
+  fullName: Vivarium.Config.AgentConfig.HerbivoreTrophicThreshold
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: HerbivoreTrophicThreshold
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 97
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: TrophicBias threshold above which agent is classified as Herbivore.
+  example: []
+  syntax:
+    content: >-
+      [Range(0, 1)]
+
+      public float HerbivoreTrophicThreshold { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0, 1)>
+
+      Public Property HerbivoreTrophicThreshold As Single
+  overload: Vivarium.Config.AgentConfig.HerbivoreTrophicThreshold*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0
+    - type: System.Double
+      value: 1
+- uid: Vivarium.Config.AgentConfig.BaseMaxEnergy
+  commentId: P:Vivarium.Config.AgentConfig.BaseMaxEnergy
+  id: BaseMaxEnergy
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: BaseMaxEnergy
+  nameWithType: AgentConfig.BaseMaxEnergy
+  fullName: Vivarium.Config.AgentConfig.BaseMaxEnergy
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: BaseMaxEnergy
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 103
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Base max energy for agents (scaled by Constitution).
+  example: []
+  syntax:
+    content: >-
+      [Range(10, 500)]
+
+      public float BaseMaxEnergy { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(10, 500)>
+
+      Public Property BaseMaxEnergy As Single
+  overload: Vivarium.Config.AgentConfig.BaseMaxEnergy*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 10
+    - type: System.Double
+      value: 500
+- uid: Vivarium.Config.AgentConfig.ConstitutionEnergyScale
+  commentId: P:Vivarium.Config.AgentConfig.ConstitutionEnergyScale
+  id: ConstitutionEnergyScale
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: ConstitutionEnergyScale
+  nameWithType: AgentConfig.ConstitutionEnergyScale
+  fullName: Vivarium.Config.AgentConfig.ConstitutionEnergyScale
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ConstitutionEnergyScale
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 107
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Constitution influence on max energy (0.5 = 50% at extremes).
+  example: []
+  syntax:
+    content: >-
+      [Range(0, 1)]
+
+      public float ConstitutionEnergyScale { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0, 1)>
+
+      Public Property ConstitutionEnergyScale As Single
+  overload: Vivarium.Config.AgentConfig.ConstitutionEnergyScale*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0
+    - type: System.Double
+      value: 1
+- uid: Vivarium.Config.AgentConfig.StrengthPowerScale
+  commentId: P:Vivarium.Config.AgentConfig.StrengthPowerScale
+  id: StrengthPowerScale
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: StrengthPowerScale
+  nameWithType: AgentConfig.StrengthPowerScale
+  fullName: Vivarium.Config.AgentConfig.StrengthPowerScale
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: StrengthPowerScale
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 111
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Strength influence on power (0.5 = 50% at extremes).
+  example: []
+  syntax:
+    content: >-
+      [Range(0, 1)]
+
+      public float StrengthPowerScale { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0, 1)>
+
+      Public Property StrengthPowerScale As Single
+  overload: Vivarium.Config.AgentConfig.StrengthPowerScale*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0
+    - type: System.Double
+      value: 1
+- uid: Vivarium.Config.AgentConfig.HerbivoreResilienceMultiplier
+  commentId: P:Vivarium.Config.AgentConfig.HerbivoreResilienceMultiplier
+  id: HerbivoreResilienceMultiplier
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: HerbivoreResilienceMultiplier
+  nameWithType: AgentConfig.HerbivoreResilienceMultiplier
+  fullName: Vivarium.Config.AgentConfig.HerbivoreResilienceMultiplier
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: HerbivoreResilienceMultiplier
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 115
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Resilience multiplier for Herbivores.
+  example: []
+  syntax:
+    content: >-
+      [Range(0.10000000149011612, 3)]
+
+      public float HerbivoreResilienceMultiplier { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0.10000000149011612, 3)>
+
+      Public Property HerbivoreResilienceMultiplier As Single
+  overload: Vivarium.Config.AgentConfig.HerbivoreResilienceMultiplier*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0.10000000149011612
+    - type: System.Double
+      value: 3
+- uid: Vivarium.Config.AgentConfig.CreateDefault
+  commentId: M:Vivarium.Config.AgentConfig.CreateDefault
+  id: CreateDefault
+  parent: Vivarium.Config.AgentConfig
+  langs:
+  - csharp
+  - vb
+  name: CreateDefault()
+  nameWithType: AgentConfig.CreateDefault()
+  fullName: Vivarium.Config.AgentConfig.CreateDefault()
+  type: Method
+  source:
+    remote:
+      path: src/Game/Config/AgentConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: CreateDefault
+    path: src/Game/Config/AgentConfig.cs
+    startLine: 121
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Creates the default agent configuration with current hardcoded values.
+  example: []
+  syntax:
+    content: public static AgentConfig CreateDefault()
+    return:
+      type: Vivarium.Config.AgentConfig
+    content.vb: Public Shared Function CreateDefault() As AgentConfig
+  overload: Vivarium.Config.AgentConfig.CreateDefault*
+references:
+- uid: Vivarium.Config
+  commentId: N:Vivarium.Config
+  href: Vivarium.html
+  name: Vivarium.Config
+  nameWithType: Vivarium.Config
+  fullName: Vivarium.Config
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Config
+    name: Config
+    href: Vivarium.Config.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Config
+    name: Config
+    href: Vivarium.Config.html
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  name: Equals(object)
+  nameWithType: object.Equals(object)
+  fullName: object.Equals(object)
+  nameWithType.vb: Object.Equals(Object)
+  fullName.vb: Object.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  name: GetHashCode()
+  nameWithType: object.GetHashCode()
+  fullName: object.GetHashCode()
+  nameWithType.vb: Object.GetHashCode()
+  fullName.vb: Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  name: ToString()
+  nameWithType: object.ToString()
+  fullName: object.ToString()
+  nameWithType.vb: Object.ToString()
+  fullName.vb: Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Vivarium.Config.AgentConfig.ReproductionOverheadPct*
+  commentId: Overload:Vivarium.Config.AgentConfig.ReproductionOverheadPct
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_ReproductionOverheadPct
+  name: ReproductionOverheadPct
+  nameWithType: AgentConfig.ReproductionOverheadPct
+  fullName: Vivarium.Config.AgentConfig.ReproductionOverheadPct
+- uid: System.Single
+  commentId: T:System.Single
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.single
+  name: float
+  nameWithType: float
+  fullName: float
+  nameWithType.vb: Single
+  fullName.vb: Single
+  name.vb: Single
+- uid: Vivarium.Config.AgentConfig.MinEnergyBuffer*
+  commentId: Overload:Vivarium.Config.AgentConfig.MinEnergyBuffer
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_MinEnergyBuffer
+  name: MinEnergyBuffer
+  nameWithType: AgentConfig.MinEnergyBuffer
+  fullName: Vivarium.Config.AgentConfig.MinEnergyBuffer
+- uid: Vivarium.Config.AgentConfig.MaturityAge*
+  commentId: Overload:Vivarium.Config.AgentConfig.MaturityAge
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_MaturityAge
+  name: MaturityAge
+  nameWithType: AgentConfig.MaturityAge
+  fullName: Vivarium.Config.AgentConfig.MaturityAge
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int32
+  name: int
+  nameWithType: int
+  fullName: int
+  nameWithType.vb: Integer
+  fullName.vb: Integer
+  name.vb: Integer
+- uid: Vivarium.Config.AgentConfig.ReproductionCooldownFrames*
+  commentId: Overload:Vivarium.Config.AgentConfig.ReproductionCooldownFrames
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_ReproductionCooldownFrames
+  name: ReproductionCooldownFrames
+  nameWithType: AgentConfig.ReproductionCooldownFrames
+  fullName: Vivarium.Config.AgentConfig.ReproductionCooldownFrames
+- uid: Vivarium.Config.AgentConfig.HerbivoreReproductionMultiplier*
+  commentId: Overload:Vivarium.Config.AgentConfig.HerbivoreReproductionMultiplier
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_HerbivoreReproductionMultiplier
+  name: HerbivoreReproductionMultiplier
+  nameWithType: AgentConfig.HerbivoreReproductionMultiplier
+  fullName: Vivarium.Config.AgentConfig.HerbivoreReproductionMultiplier
+- uid: Vivarium.Config.AgentConfig.CarnivoreReproductionMultiplier*
+  commentId: Overload:Vivarium.Config.AgentConfig.CarnivoreReproductionMultiplier
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_CarnivoreReproductionMultiplier
+  name: CarnivoreReproductionMultiplier
+  nameWithType: AgentConfig.CarnivoreReproductionMultiplier
+  fullName: Vivarium.Config.AgentConfig.CarnivoreReproductionMultiplier
+- uid: Vivarium.Config.AgentConfig.OmnivoreReproductionMultiplier*
+  commentId: Overload:Vivarium.Config.AgentConfig.OmnivoreReproductionMultiplier
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_OmnivoreReproductionMultiplier
+  name: OmnivoreReproductionMultiplier
+  nameWithType: AgentConfig.OmnivoreReproductionMultiplier
+  fullName: Vivarium.Config.AgentConfig.OmnivoreReproductionMultiplier
+- uid: Vivarium.Config.AgentConfig.BaseMovementThreshold*
+  commentId: Overload:Vivarium.Config.AgentConfig.BaseMovementThreshold
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_BaseMovementThreshold
+  name: BaseMovementThreshold
+  nameWithType: AgentConfig.BaseMovementThreshold
+  fullName: Vivarium.Config.AgentConfig.BaseMovementThreshold
+- uid: Vivarium.Config.AgentConfig.BaseMovementCooldown*
+  commentId: Overload:Vivarium.Config.AgentConfig.BaseMovementCooldown
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_BaseMovementCooldown
+  name: BaseMovementCooldown
+  nameWithType: AgentConfig.BaseMovementCooldown
+  fullName: Vivarium.Config.AgentConfig.BaseMovementCooldown
+- uid: Vivarium.Config.AgentConfig.MovementCost*
+  commentId: Overload:Vivarium.Config.AgentConfig.MovementCost
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_MovementCost
+  name: MovementCost
+  nameWithType: AgentConfig.MovementCost
+  fullName: Vivarium.Config.AgentConfig.MovementCost
+- uid: Vivarium.Config.AgentConfig.DiagonalMovementMultiplier*
+  commentId: Overload:Vivarium.Config.AgentConfig.DiagonalMovementMultiplier
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_DiagonalMovementMultiplier
+  name: DiagonalMovementMultiplier
+  nameWithType: AgentConfig.DiagonalMovementMultiplier
+  fullName: Vivarium.Config.AgentConfig.DiagonalMovementMultiplier
+- uid: Vivarium.Config.AgentConfig.FleeMovementMultiplier*
+  commentId: Overload:Vivarium.Config.AgentConfig.FleeMovementMultiplier
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_FleeMovementMultiplier
+  name: FleeMovementMultiplier
+  nameWithType: AgentConfig.FleeMovementMultiplier
+  fullName: Vivarium.Config.AgentConfig.FleeMovementMultiplier
+- uid: Vivarium.Config.AgentConfig.BaseAttackThreshold*
+  commentId: Overload:Vivarium.Config.AgentConfig.BaseAttackThreshold
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_BaseAttackThreshold
+  name: BaseAttackThreshold
+  nameWithType: AgentConfig.BaseAttackThreshold
+  fullName: Vivarium.Config.AgentConfig.BaseAttackThreshold
+- uid: Vivarium.Config.AgentConfig.AttackCooldownFrames*
+  commentId: Overload:Vivarium.Config.AgentConfig.AttackCooldownFrames
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_AttackCooldownFrames
+  name: AttackCooldownFrames
+  nameWithType: AgentConfig.AttackCooldownFrames
+  fullName: Vivarium.Config.AgentConfig.AttackCooldownFrames
+- uid: Vivarium.Config.AgentConfig.BaseMetabolismRate*
+  commentId: Overload:Vivarium.Config.AgentConfig.BaseMetabolismRate
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_BaseMetabolismRate
+  name: BaseMetabolismRate
+  nameWithType: AgentConfig.BaseMetabolismRate
+  fullName: Vivarium.Config.AgentConfig.BaseMetabolismRate
+- uid: Vivarium.Config.AgentConfig.HerbivoreMetabolismMultiplier*
+  commentId: Overload:Vivarium.Config.AgentConfig.HerbivoreMetabolismMultiplier
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_HerbivoreMetabolismMultiplier
+  name: HerbivoreMetabolismMultiplier
+  nameWithType: AgentConfig.HerbivoreMetabolismMultiplier
+  fullName: Vivarium.Config.AgentConfig.HerbivoreMetabolismMultiplier
+- uid: Vivarium.Config.AgentConfig.CarnivoreMetabolismMultiplier*
+  commentId: Overload:Vivarium.Config.AgentConfig.CarnivoreMetabolismMultiplier
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_CarnivoreMetabolismMultiplier
+  name: CarnivoreMetabolismMultiplier
+  nameWithType: AgentConfig.CarnivoreMetabolismMultiplier
+  fullName: Vivarium.Config.AgentConfig.CarnivoreMetabolismMultiplier
+- uid: Vivarium.Config.AgentConfig.OmnivoreMetabolismMultiplier*
+  commentId: Overload:Vivarium.Config.AgentConfig.OmnivoreMetabolismMultiplier
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_OmnivoreMetabolismMultiplier
+  name: OmnivoreMetabolismMultiplier
+  nameWithType: AgentConfig.OmnivoreMetabolismMultiplier
+  fullName: Vivarium.Config.AgentConfig.OmnivoreMetabolismMultiplier
+- uid: Vivarium.Config.AgentConfig.CarnivoreTrophicThreshold*
+  commentId: Overload:Vivarium.Config.AgentConfig.CarnivoreTrophicThreshold
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_CarnivoreTrophicThreshold
+  name: CarnivoreTrophicThreshold
+  nameWithType: AgentConfig.CarnivoreTrophicThreshold
+  fullName: Vivarium.Config.AgentConfig.CarnivoreTrophicThreshold
+- uid: Vivarium.Config.AgentConfig.HerbivoreTrophicThreshold*
+  commentId: Overload:Vivarium.Config.AgentConfig.HerbivoreTrophicThreshold
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_HerbivoreTrophicThreshold
+  name: HerbivoreTrophicThreshold
+  nameWithType: AgentConfig.HerbivoreTrophicThreshold
+  fullName: Vivarium.Config.AgentConfig.HerbivoreTrophicThreshold
+- uid: Vivarium.Config.AgentConfig.BaseMaxEnergy*
+  commentId: Overload:Vivarium.Config.AgentConfig.BaseMaxEnergy
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_BaseMaxEnergy
+  name: BaseMaxEnergy
+  nameWithType: AgentConfig.BaseMaxEnergy
+  fullName: Vivarium.Config.AgentConfig.BaseMaxEnergy
+- uid: Vivarium.Config.AgentConfig.ConstitutionEnergyScale*
+  commentId: Overload:Vivarium.Config.AgentConfig.ConstitutionEnergyScale
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_ConstitutionEnergyScale
+  name: ConstitutionEnergyScale
+  nameWithType: AgentConfig.ConstitutionEnergyScale
+  fullName: Vivarium.Config.AgentConfig.ConstitutionEnergyScale
+- uid: Vivarium.Config.AgentConfig.StrengthPowerScale*
+  commentId: Overload:Vivarium.Config.AgentConfig.StrengthPowerScale
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_StrengthPowerScale
+  name: StrengthPowerScale
+  nameWithType: AgentConfig.StrengthPowerScale
+  fullName: Vivarium.Config.AgentConfig.StrengthPowerScale
+- uid: Vivarium.Config.AgentConfig.HerbivoreResilienceMultiplier*
+  commentId: Overload:Vivarium.Config.AgentConfig.HerbivoreResilienceMultiplier
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_HerbivoreResilienceMultiplier
+  name: HerbivoreResilienceMultiplier
+  nameWithType: AgentConfig.HerbivoreResilienceMultiplier
+  fullName: Vivarium.Config.AgentConfig.HerbivoreResilienceMultiplier
+- uid: Vivarium.Config.AgentConfig.CreateDefault*
+  commentId: Overload:Vivarium.Config.AgentConfig.CreateDefault
+  href: Vivarium.Config.AgentConfig.html#Vivarium_Config_AgentConfig_CreateDefault
+  name: CreateDefault
+  nameWithType: AgentConfig.CreateDefault
+  fullName: Vivarium.Config.AgentConfig.CreateDefault
+- uid: Vivarium.Config.AgentConfig
+  commentId: T:Vivarium.Config.AgentConfig
+  parent: Vivarium.Config
+  href: Vivarium.Config.AgentConfig.html
+  name: AgentConfig
+  nameWithType: AgentConfig
+  fullName: Vivarium.Config.AgentConfig

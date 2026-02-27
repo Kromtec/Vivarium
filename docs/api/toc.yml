@@ -1,0 +1,191 @@
+### YamlMime:TableOfContent
+items:
+- uid: Vivarium
+  name: Vivarium
+  type: Namespace
+  items:
+  - uid: Vivarium.GameState
+    name: GameState
+    type: Enum
+  - uid: Vivarium.Program
+    name: Program
+    type: Class
+  - uid: Vivarium.VivariumGame
+    name: VivariumGame
+    type: Class
+- uid: Vivarium.Biology
+  name: Vivarium.Biology
+  type: Namespace
+  items:
+  - uid: Vivarium.Biology.ActionType
+    name: ActionType
+    type: Enum
+  - uid: Vivarium.Biology.Brain
+    name: Brain
+    type: Class
+  - uid: Vivarium.Biology.BrainConfig
+    name: BrainConfig
+    type: Class
+  - uid: Vivarium.Biology.DecodedGene
+    name: DecodedGene
+    type: Struct
+  - uid: Vivarium.Biology.DietType
+    name: DietType
+    type: Enum
+  - uid: Vivarium.Biology.Gene
+    name: Gene
+    type: Struct
+  - uid: Vivarium.Biology.Genetics
+    name: Genetics
+    type: Class
+  - uid: Vivarium.Biology.Genetics.TraitType
+    name: Genetics.TraitType
+    type: Enum
+  - uid: Vivarium.Biology.GenomeCensus
+    name: GenomeCensus
+    type: Class
+  - uid: Vivarium.Biology.GenomeFamily
+    name: GenomeFamily
+    type: Class
+  - uid: Vivarium.Biology.GenomeVariant
+    name: GenomeVariant
+    type: Class
+  - uid: Vivarium.Biology.ScientificNameGenerator
+    name: ScientificNameGenerator
+    type: Class
+  - uid: Vivarium.Biology.SensorType
+    name: SensorType
+    type: Enum
+- uid: Vivarium.Config
+  name: Vivarium.Config
+  type: Namespace
+  items:
+  - uid: Vivarium.Config.AgentConfig
+    name: AgentConfig
+    type: Class
+  - uid: Vivarium.Config.BrainAIConfig
+    name: BrainAIConfig
+    type: Class
+  - uid: Vivarium.Config.ConfigProvider
+    name: ConfigProvider
+    type: Class
+  - uid: Vivarium.Config.GeneticsConfig
+    name: GeneticsConfig
+    type: Class
+  - uid: Vivarium.Config.PlantConfig
+    name: PlantConfig
+    type: Class
+  - uid: Vivarium.Config.SimulationConfig
+    name: SimulationConfig
+    type: Class
+  - uid: Vivarium.Config.WorldConfig
+    name: WorldConfig
+    type: Class
+- uid: Vivarium.Engine
+  name: Vivarium.Engine
+  type: Namespace
+  items:
+  - uid: Vivarium.Engine.Camera2D
+    name: Camera2D
+    type: Class
+  - uid: Vivarium.Engine.Simulation
+    name: Simulation
+    type: Class
+  - uid: Vivarium.Engine.StatsLogger
+    name: StatsLogger
+    type: Class
+  - uid: Vivarium.Engine.StatsLogger.DietCounts
+    name: StatsLogger.DietCounts
+    type: Struct
+- uid: Vivarium.Entities
+  name: Vivarium.Entities
+  type: Namespace
+  items:
+  - uid: Vivarium.Entities.Agent
+    name: Agent
+    type: Struct
+  - uid: Vivarium.Entities.Agent.AttackResult
+    name: Agent.AttackResult
+    type: Struct
+  - uid: Vivarium.Entities.IGridEntity
+    name: IGridEntity
+    type: Interface
+  - uid: Vivarium.Entities.Plant
+    name: Plant
+    type: Struct
+  - uid: Vivarium.Entities.Structure
+    name: Structure
+    type: Struct
+- uid: Vivarium.UI
+  name: Vivarium.UI
+  type: Namespace
+  items:
+  - uid: Vivarium.UI.ActivityLog
+    name: ActivityLog
+    type: Class
+  - uid: Vivarium.UI.ActivityLog.LogHandler
+    name: ActivityLog.LogHandler
+    type: Struct
+  - uid: Vivarium.UI.BrainInspectorWindow
+    name: BrainInspectorWindow
+    type: Class
+  - uid: Vivarium.UI.GenePoolWindow
+    name: GenePoolWindow
+    type: Class
+  - uid: Vivarium.UI.GenomeHelper
+    name: GenomeHelper
+    type: Class
+  - uid: Vivarium.UI.HUD
+    name: HUD
+    type: Class
+  - uid: Vivarium.UI.Inspector
+    name: Inspector
+    type: Class
+  - uid: Vivarium.UI.SettingsWindow
+    name: SettingsWindow
+    type: Class
+  - uid: Vivarium.UI.SimulationGraph
+    name: SimulationGraph
+    type: Class
+  - uid: Vivarium.UI.TitleScreen
+    name: TitleScreen
+    type: Class
+  - uid: Vivarium.UI.UIComponents
+    name: UIComponents
+    type: Class
+  - uid: Vivarium.UI.UITheme
+    name: UITheme
+    type: Class
+- uid: Vivarium.Visuals
+  name: Vivarium.Visuals
+  type: Namespace
+  items:
+  - uid: Vivarium.Visuals.RenderStats
+    name: RenderStats
+    type: Struct
+  - uid: Vivarium.Visuals.TextureGenerator
+    name: TextureGenerator
+    type: Class
+  - uid: Vivarium.Visuals.VivariumColors
+    name: VivariumColors
+    type: Class
+  - uid: Vivarium.Visuals.WorldRenderer
+    name: WorldRenderer
+    type: Class
+- uid: Vivarium.World
+  name: Vivarium.World
+  type: Namespace
+  items:
+  - uid: Vivarium.World.DensityResult
+    name: DensityResult
+    type: Struct
+  - uid: Vivarium.World.EntityType
+    name: EntityType
+    type: Enum
+  - uid: Vivarium.World.GridCell
+    name: GridCell
+    type: Struct
+  - uid: Vivarium.World.WorldSensor
+    name: WorldSensor
+    type: Class
+memberLayout: SamePage

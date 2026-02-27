@@ -1,0 +1,454 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.Visuals.RenderStats
+  commentId: T:Vivarium.Visuals.RenderStats
+  id: RenderStats
+  parent: Vivarium.Visuals
+  children:
+  - Vivarium.Visuals.RenderStats.LivingAgents
+  - Vivarium.Visuals.RenderStats.LivingCarnivores
+  - Vivarium.Visuals.RenderStats.LivingHerbivores
+  - Vivarium.Visuals.RenderStats.LivingOmnivores
+  - Vivarium.Visuals.RenderStats.LivingPlants
+  - Vivarium.Visuals.RenderStats.LivingStructures
+  langs:
+  - csharp
+  - vb
+  name: RenderStats
+  nameWithType: RenderStats
+  fullName: Vivarium.Visuals.RenderStats
+  type: Struct
+  source:
+    remote:
+      path: src/Game/Visuals/RenderStats.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: RenderStats
+    path: src/Game/Visuals/RenderStats.cs
+    startLine: 2
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Visuals
+  syntax:
+    content: public struct RenderStats
+    content.vb: Public Structure RenderStats
+  inheritedMembers:
+  - System.ValueType.Equals(System.Object)
+  - System.ValueType.GetHashCode
+  - System.ValueType.ToString
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetType
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+- uid: Vivarium.Visuals.RenderStats.LivingAgents
+  commentId: F:Vivarium.Visuals.RenderStats.LivingAgents
+  id: LivingAgents
+  parent: Vivarium.Visuals.RenderStats
+  langs:
+  - csharp
+  - vb
+  name: LivingAgents
+  nameWithType: RenderStats.LivingAgents
+  fullName: Vivarium.Visuals.RenderStats.LivingAgents
+  type: Field
+  source:
+    remote:
+      path: src/Game/Visuals/RenderStats.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: LivingAgents
+    path: src/Game/Visuals/RenderStats.cs
+    startLine: 4
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Visuals
+  syntax:
+    content: public int LivingAgents
+    return:
+      type: System.Int32
+    content.vb: Public LivingAgents As Integer
+- uid: Vivarium.Visuals.RenderStats.LivingHerbivores
+  commentId: F:Vivarium.Visuals.RenderStats.LivingHerbivores
+  id: LivingHerbivores
+  parent: Vivarium.Visuals.RenderStats
+  langs:
+  - csharp
+  - vb
+  name: LivingHerbivores
+  nameWithType: RenderStats.LivingHerbivores
+  fullName: Vivarium.Visuals.RenderStats.LivingHerbivores
+  type: Field
+  source:
+    remote:
+      path: src/Game/Visuals/RenderStats.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: LivingHerbivores
+    path: src/Game/Visuals/RenderStats.cs
+    startLine: 5
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Visuals
+  syntax:
+    content: public int LivingHerbivores
+    return:
+      type: System.Int32
+    content.vb: Public LivingHerbivores As Integer
+- uid: Vivarium.Visuals.RenderStats.LivingOmnivores
+  commentId: F:Vivarium.Visuals.RenderStats.LivingOmnivores
+  id: LivingOmnivores
+  parent: Vivarium.Visuals.RenderStats
+  langs:
+  - csharp
+  - vb
+  name: LivingOmnivores
+  nameWithType: RenderStats.LivingOmnivores
+  fullName: Vivarium.Visuals.RenderStats.LivingOmnivores
+  type: Field
+  source:
+    remote:
+      path: src/Game/Visuals/RenderStats.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: LivingOmnivores
+    path: src/Game/Visuals/RenderStats.cs
+    startLine: 6
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Visuals
+  syntax:
+    content: public int LivingOmnivores
+    return:
+      type: System.Int32
+    content.vb: Public LivingOmnivores As Integer
+- uid: Vivarium.Visuals.RenderStats.LivingCarnivores
+  commentId: F:Vivarium.Visuals.RenderStats.LivingCarnivores
+  id: LivingCarnivores
+  parent: Vivarium.Visuals.RenderStats
+  langs:
+  - csharp
+  - vb
+  name: LivingCarnivores
+  nameWithType: RenderStats.LivingCarnivores
+  fullName: Vivarium.Visuals.RenderStats.LivingCarnivores
+  type: Field
+  source:
+    remote:
+      path: src/Game/Visuals/RenderStats.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: LivingCarnivores
+    path: src/Game/Visuals/RenderStats.cs
+    startLine: 7
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Visuals
+  syntax:
+    content: public int LivingCarnivores
+    return:
+      type: System.Int32
+    content.vb: Public LivingCarnivores As Integer
+- uid: Vivarium.Visuals.RenderStats.LivingPlants
+  commentId: F:Vivarium.Visuals.RenderStats.LivingPlants
+  id: LivingPlants
+  parent: Vivarium.Visuals.RenderStats
+  langs:
+  - csharp
+  - vb
+  name: LivingPlants
+  nameWithType: RenderStats.LivingPlants
+  fullName: Vivarium.Visuals.RenderStats.LivingPlants
+  type: Field
+  source:
+    remote:
+      path: src/Game/Visuals/RenderStats.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: LivingPlants
+    path: src/Game/Visuals/RenderStats.cs
+    startLine: 8
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Visuals
+  syntax:
+    content: public int LivingPlants
+    return:
+      type: System.Int32
+    content.vb: Public LivingPlants As Integer
+- uid: Vivarium.Visuals.RenderStats.LivingStructures
+  commentId: F:Vivarium.Visuals.RenderStats.LivingStructures
+  id: LivingStructures
+  parent: Vivarium.Visuals.RenderStats
+  langs:
+  - csharp
+  - vb
+  name: LivingStructures
+  nameWithType: RenderStats.LivingStructures
+  fullName: Vivarium.Visuals.RenderStats.LivingStructures
+  type: Field
+  source:
+    remote:
+      path: src/Game/Visuals/RenderStats.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: LivingStructures
+    path: src/Game/Visuals/RenderStats.cs
+    startLine: 9
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Visuals
+  syntax:
+    content: public int LivingStructures
+    return:
+      type: System.Int32
+    content.vb: Public LivingStructures As Integer
+references:
+- uid: Vivarium.Visuals
+  commentId: N:Vivarium.Visuals
+  href: Vivarium.html
+  name: Vivarium.Visuals
+  nameWithType: Vivarium.Visuals
+  fullName: Vivarium.Visuals
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Visuals
+    name: Visuals
+    href: Vivarium.Visuals.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Visuals
+    name: Visuals
+    href: Vivarium.Visuals.html
+- uid: System.ValueType.Equals(System.Object)
+  commentId: M:System.ValueType.Equals(System.Object)
+  parent: System.ValueType
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.valuetype.equals
+  name: Equals(object)
+  nameWithType: ValueType.Equals(object)
+  fullName: System.ValueType.Equals(object)
+  nameWithType.vb: ValueType.Equals(Object)
+  fullName.vb: System.ValueType.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.ValueType.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.equals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.ValueType.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.equals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.ValueType.GetHashCode
+  commentId: M:System.ValueType.GetHashCode
+  parent: System.ValueType
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode
+  name: GetHashCode()
+  nameWithType: ValueType.GetHashCode()
+  fullName: System.ValueType.GetHashCode()
+  spec.csharp:
+  - uid: System.ValueType.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.ValueType.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode
+  - name: (
+  - name: )
+- uid: System.ValueType.ToString
+  commentId: M:System.ValueType.ToString
+  parent: System.ValueType
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.valuetype.tostring
+  name: ToString()
+  nameWithType: ValueType.ToString()
+  fullName: System.ValueType.ToString()
+  spec.csharp:
+  - uid: System.ValueType.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.ValueType.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.tostring
+  - name: (
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.ValueType
+  commentId: T:System.ValueType
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.valuetype
+  name: ValueType
+  nameWithType: ValueType
+  fullName: System.ValueType
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int32
+  name: int
+  nameWithType: int
+  fullName: int
+  nameWithType.vb: Integer
+  fullName.vb: Integer
+  name.vb: Integer

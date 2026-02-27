@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Vivarium | Vivarium </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Vivarium | Vivarium ">
+    
+    
+      <link rel="shortcut icon" href="favicon.ico">
+      <link rel="stylesheet" href="styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="styles/docfx.css">
+      <link rel="stylesheet" href="styles/main.css">
+      <meta property="docfx:navrel" content="">
+      <meta property="docfx:tocrel" content="">
+    
+    <meta property="docfx:rel" content="">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="index.html">
+                <img id="logo" class="svg" src="logo.svg" alt="Vivarium">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="vivarium">Vivarium</h1>
+
+<p><strong>Vivarium</strong> is a high-performance artificial life simulation written in <strong>C# (.NET 10)</strong> using the <strong>MonoGame</strong> framework.</p>
+<p>The project simulates an ecosystem of autonomous agents (&quot;Creatures&quot;) interacting within a dynamic grid-based world containing plants and structures.</p>
+<h2 id="-key-features">🧬 Key Features</h2>
+<ul>
+<li><strong>Evolutionary Neural Networks:</strong> Agents possess a genome encoding a Recurrent Neural Network (RNN), allowing for memory and complex decision-making.</li>
+<li><strong>Complex Phenotypes:</strong> Genes determine physical traits (Strength, Speed, Perception, etc.) and neural wiring.</li>
+<li><strong>Dynamic Ecosystem:</strong>
+<ul>
+<li><strong>Herbivores:</strong> Graze on plants, efficient metabolism, high resilience.</li>
+<li><strong>Carnivores:</strong> Hunt other agents, high energy cost, aggressive.</li>
+<li><strong>Omnivores:</strong> Adaptable diet, balanced traits.</li>
+</ul>
+</li>
+<li><strong>Emergent Behavior:</strong> Watch as agents evolve strategies for hunting, grazing, swarming, and combat without hard-coded rules.</li>
+<li><strong>High Performance:</strong> Optimized using <code>Span&lt;T&gt;</code> and Struct-based architecture to support thousands of agents at 60 FPS.</li>
+<li><strong>Interactive Camera:</strong> Full 2D camera support with zoom and panning to observe the simulation at macro and micro levels.</li>
+<li><strong>Headless Mode:</strong> Run simulations without graphics for rapid training and data collection.</li>
+</ul>
+<h2 id="-controls">🎮 Controls</h2>
+<ul>
+<li><strong>WASD / Arrow Keys:</strong> Pan Camera</li>
+<li><strong>Scroll Wheel:</strong> Zoom In/Out</li>
+<li><strong>Left Click:</strong> Select Agent/Entity (View details in Inspector)</li>
+<li><strong>Right Click:</strong> Deselect</li>
+<li><strong>Space:</strong> Pause/Resume Simulation</li>
+<li><strong>.(Dot):</strong> Step Forward One Tick (when paused)</li>
+</ul>
+<h2 id="-running-the-simulation">🚀 Running the Simulation</h2>
+<h3 id="standard-mode-visual">Standard Mode (Visual)</h3>
+<p>Run the project normally through your IDE or terminal:</p>
+<pre><code class="lang-bash">dotnet run --project Vivarium/Vivarium.csproj -c Release
+</code></pre>
+<p><em>Note: Using <code>Release</code> configuration significantly improves performance.</em></p>
+<h3 id="headless-mode-fast-simulation">Headless Mode (Fast Simulation)</h3>
+<p>For rapid evolution or data gathering, run in headless mode. This disables rendering and runs the simulation as fast as the CPU allows.</p>
+<pre><code class="lang-bash">dotnet run --project Vivarium/Vivarium.csproj -c Release -- --headless --duration 36000
+</code></pre>
+<ul>
+<li><code>--headless</code>: Enables headless mode.</li>
+<li><code>--duration &lt;ticks&gt;</code>: Sets the simulation duration (60 ticks = 1 second). Default is 3600 (1 minute).</li>
+<li><code>--seed &lt;int&gt;</code>: (Optional) Set a specific random seed for reproducibility.</li>
+<li><code>--config &lt;path&gt;</code>: (Optional) Load simulation configuration from a JSON file.</li>
+</ul>
+<h2 id="-configuration-system">⚙️ Configuration System</h2>
+<p>The simulation uses a modular configuration system that allows balancing parameters to be tweaked without code changes.</p>
+<h3 id="configuration-files">Configuration Files</h3>
+<p>Configuration can be loaded from JSON files using the <code>--config</code> argument:</p>
+<pre><code class="lang-bash">dotnet run --project Vivarium/Vivarium.csproj -c Release -- --config myconfig.json
+</code></pre>
+<h3 id="configuration-categories">Configuration Categories</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Mutability</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WorldConfig</code></td>
+<td>Immutable</td>
+<td>Grid size, entity pool sizes, seed</td>
+</tr>
+<tr>
+<td><code>AgentConfig</code></td>
+<td>Runtime</td>
+<td>Agent balance (metabolism, reproduction, movement, combat)</td>
+</tr>
+<tr>
+<td><code>PlantConfig</code></td>
+<td>Runtime</td>
+<td>Plant balance (photosynthesis, reproduction, aging)</td>
+</tr>
+<tr>
+<td><code>BrainAIConfig</code></td>
+<td>Runtime</td>
+<td>Neural network and instinct parameters</td>
+</tr>
+<tr>
+<td><code>GeneticsConfig</code></td>
+<td>Partial</td>
+<td>Mutation rate (mutable), genome structure (immutable)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="example-configuration">Example Configuration</h3>
+<pre><code class="lang-json">{
+  &quot;world&quot;: {
+    &quot;gridHeight&quot;: 96,
+    &quot;gridWidth&quot;: 170,
+    &quot;cellSize&quot;: 13,
+    &quot;agentPoolSize&quot;: 906,
+    &quot;plantPoolSize&quot;: 2040,
+    &quot;structurePoolSize&quot;: 510,
+    &quot;seed&quot;: 64
+  },
+  &quot;agent&quot;: {
+    &quot;reproductionOverheadPct&quot;: 0.30,
+    &quot;baseMetabolismRate&quot;: 0.01,
+    &quot;maturityAge&quot;: 600,
+    &quot;reproductionCooldownFrames&quot;: 600
+  },
+  &quot;plant&quot;: {
+    &quot;photosynthesisRate&quot;: 0.50,
+    &quot;shrivelRate&quot;: 0.40,
+    &quot;maturityAge&quot;: 600
+  },
+  &quot;brain&quot;: {
+    &quot;hiddenNeuronDecayFactor&quot;: 0.5,
+    &quot;feedingInstinctThreshold&quot;: 0.6,
+    &quot;reproductionInstinctThreshold&quot;: 0.9
+  },
+  &quot;genetics&quot;: {
+    &quot;genomeLength&quot;: 512,
+    &quot;traitGeneCount&quot;: 14,
+    &quot;mutationRate&quot;: 0.001
+  },
+  &quot;framesPerSecond&quot;: 60.0
+}
+</code></pre>
+<h2 id="-tech-stack">🛠️ Tech Stack</h2>
+<ul>
+<li><strong>Language:</strong> C# 14 / .NET 10</li>
+<li><strong>Engine:</strong> MonoGame (DesktopGL)</li>
+<li><strong>Architecture:</strong> Entity Component System (ECS) inspired, struct-based arrays for memory efficiency.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Kromtec/Vivarium/blob/main/README.md/#L1" class="contribution-link">Edit this page</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Copyright © 2026
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="styles/docfx.js"></script>
+    <script type="text/javascript" src="styles/main.js"></script>
+  </body>
+</html>

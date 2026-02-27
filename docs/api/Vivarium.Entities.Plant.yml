@@ -1,0 +1,1251 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.Entities.Plant
+  commentId: T:Vivarium.Entities.Plant
+  id: Plant
+  parent: Vivarium.Entities
+  children:
+  - Vivarium.Entities.Plant.Age
+  - Vivarium.Entities.Plant.CanReproduce
+  - Vivarium.Entities.Plant.ChangeEnergy(System.Single,Vivarium.World.GridCell[0:,0:])
+  - Vivarium.Entities.Plant.Color
+  - Vivarium.Entities.Plant.Create(System.Int32,System.Int32,System.Int32,System.Random)
+  - Vivarium.Entities.Plant.Energy
+  - Vivarium.Entities.Plant.Id
+  - Vivarium.Entities.Plant.Index
+  - Vivarium.Entities.Plant.IsAlive
+  - Vivarium.Entities.Plant.MaturityAge
+  - Vivarium.Entities.Plant.MaxEnergy
+  - Vivarium.Entities.Plant.MinEnergyToReproduce
+  - Vivarium.Entities.Plant.OriginalColor
+  - Vivarium.Entities.Plant.PhotosynthesisRate
+  - Vivarium.Entities.Plant.ReproductionCost
+  - Vivarium.Entities.Plant.ShrivelRate
+  - Vivarium.Entities.Plant.TryReproduce(System.Span{Vivarium.Entities.Plant},Vivarium.World.GridCell[0:,0:],System.Random)
+  - Vivarium.Entities.Plant.Update(Vivarium.World.GridCell[0:,0:],System.Random)
+  - Vivarium.Entities.Plant.X
+  - Vivarium.Entities.Plant.Y
+  langs:
+  - csharp
+  - vb
+  name: Plant
+  nameWithType: Plant
+  fullName: Vivarium.Entities.Plant
+  type: Struct
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Plant
+    path: src/Game/Entities/Plant.cs
+    startLine: 7
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: 'public struct Plant : IGridEntity'
+    content.vb: Public Structure Plant Implements IGridEntity
+  implements:
+  - Vivarium.Entities.IGridEntity
+  inheritedMembers:
+  - System.ValueType.Equals(System.Object)
+  - System.ValueType.GetHashCode
+  - System.ValueType.ToString
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetType
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+- uid: Vivarium.Entities.Plant.ShrivelRate
+  commentId: P:Vivarium.Entities.Plant.ShrivelRate
+  id: ShrivelRate
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: ShrivelRate
+  nameWithType: Plant.ShrivelRate
+  fullName: Vivarium.Entities.Plant.ShrivelRate
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ShrivelRate
+    path: src/Game/Entities/Plant.cs
+    startLine: 10
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static float ShrivelRate { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Shared ReadOnly Property ShrivelRate As Single
+  overload: Vivarium.Entities.Plant.ShrivelRate*
+- uid: Vivarium.Entities.Plant.PhotosynthesisRate
+  commentId: P:Vivarium.Entities.Plant.PhotosynthesisRate
+  id: PhotosynthesisRate
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: PhotosynthesisRate
+  nameWithType: Plant.PhotosynthesisRate
+  fullName: Vivarium.Entities.Plant.PhotosynthesisRate
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: PhotosynthesisRate
+    path: src/Game/Entities/Plant.cs
+    startLine: 11
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static float PhotosynthesisRate { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Shared ReadOnly Property PhotosynthesisRate As Single
+  overload: Vivarium.Entities.Plant.PhotosynthesisRate*
+- uid: Vivarium.Entities.Plant.MaturityAge
+  commentId: P:Vivarium.Entities.Plant.MaturityAge
+  id: MaturityAge
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: MaturityAge
+  nameWithType: Plant.MaturityAge
+  fullName: Vivarium.Entities.Plant.MaturityAge
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MaturityAge
+    path: src/Game/Entities/Plant.cs
+    startLine: 12
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static int MaturityAge { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Shared ReadOnly Property MaturityAge As Integer
+  overload: Vivarium.Entities.Plant.MaturityAge*
+- uid: Vivarium.Entities.Plant.ReproductionCost
+  commentId: P:Vivarium.Entities.Plant.ReproductionCost
+  id: ReproductionCost
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: ReproductionCost
+  nameWithType: Plant.ReproductionCost
+  fullName: Vivarium.Entities.Plant.ReproductionCost
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ReproductionCost
+    path: src/Game/Entities/Plant.cs
+    startLine: 13
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static float ReproductionCost { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Shared ReadOnly Property ReproductionCost As Single
+  overload: Vivarium.Entities.Plant.ReproductionCost*
+- uid: Vivarium.Entities.Plant.MinEnergyToReproduce
+  commentId: P:Vivarium.Entities.Plant.MinEnergyToReproduce
+  id: MinEnergyToReproduce
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: MinEnergyToReproduce
+  nameWithType: Plant.MinEnergyToReproduce
+  fullName: Vivarium.Entities.Plant.MinEnergyToReproduce
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MinEnergyToReproduce
+    path: src/Game/Entities/Plant.cs
+    startLine: 14
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static float MinEnergyToReproduce { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Shared ReadOnly Property MinEnergyToReproduce As Single
+  overload: Vivarium.Entities.Plant.MinEnergyToReproduce*
+- uid: Vivarium.Entities.Plant.MaxEnergy
+  commentId: P:Vivarium.Entities.Plant.MaxEnergy
+  id: MaxEnergy
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: MaxEnergy
+  nameWithType: Plant.MaxEnergy
+  fullName: Vivarium.Entities.Plant.MaxEnergy
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MaxEnergy
+    path: src/Game/Entities/Plant.cs
+    startLine: 15
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static float MaxEnergy { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Shared ReadOnly Property MaxEnergy As Single
+  overload: Vivarium.Entities.Plant.MaxEnergy*
+- uid: Vivarium.Entities.Plant.Id
+  commentId: P:Vivarium.Entities.Plant.Id
+  id: Id
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: Id
+  nameWithType: Plant.Id
+  fullName: Vivarium.Entities.Plant.Id
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Id
+    path: src/Game/Entities/Plant.cs
+    startLine: 17
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  example: []
+  syntax:
+    content: public long Id { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Int64
+    content.vb: Public Property Id As Long
+  overload: Vivarium.Entities.Plant.Id*
+  implements:
+  - Vivarium.Entities.IGridEntity.Id
+- uid: Vivarium.Entities.Plant.Index
+  commentId: P:Vivarium.Entities.Plant.Index
+  id: Index
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: Index
+  nameWithType: Plant.Index
+  fullName: Vivarium.Entities.Plant.Index
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Index
+    path: src/Game/Entities/Plant.cs
+    startLine: 18
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  example: []
+  syntax:
+    content: public int Index { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property Index As Integer
+  overload: Vivarium.Entities.Plant.Index*
+  implements:
+  - Vivarium.Entities.IGridEntity.Index
+- uid: Vivarium.Entities.Plant.X
+  commentId: P:Vivarium.Entities.Plant.X
+  id: X
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: X
+  nameWithType: Plant.X
+  fullName: Vivarium.Entities.Plant.X
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: X
+    path: src/Game/Entities/Plant.cs
+    startLine: 19
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  example: []
+  syntax:
+    content: public int X { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property X As Integer
+  overload: Vivarium.Entities.Plant.X*
+  implements:
+  - Vivarium.Entities.IGridEntity.X
+- uid: Vivarium.Entities.Plant.Y
+  commentId: P:Vivarium.Entities.Plant.Y
+  id: Y
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: Y
+  nameWithType: Plant.Y
+  fullName: Vivarium.Entities.Plant.Y
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Y
+    path: src/Game/Entities/Plant.cs
+    startLine: 20
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  example: []
+  syntax:
+    content: public int Y { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property Y As Integer
+  overload: Vivarium.Entities.Plant.Y*
+  implements:
+  - Vivarium.Entities.IGridEntity.Y
+- uid: Vivarium.Entities.Plant.Age
+  commentId: P:Vivarium.Entities.Plant.Age
+  id: Age
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: Age
+  nameWithType: Plant.Age
+  fullName: Vivarium.Entities.Plant.Age
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Age
+    path: src/Game/Entities/Plant.cs
+    startLine: 21
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public long Age { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Int64
+    content.vb: Public Property Age As Long
+  overload: Vivarium.Entities.Plant.Age*
+- uid: Vivarium.Entities.Plant.IsAlive
+  commentId: P:Vivarium.Entities.Plant.IsAlive
+  id: IsAlive
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: IsAlive
+  nameWithType: Plant.IsAlive
+  fullName: Vivarium.Entities.Plant.IsAlive
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: IsAlive
+    path: src/Game/Entities/Plant.cs
+    startLine: 22
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public bool IsAlive { readonly get; set; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public Property IsAlive As Boolean
+  overload: Vivarium.Entities.Plant.IsAlive*
+- uid: Vivarium.Entities.Plant.OriginalColor
+  commentId: P:Vivarium.Entities.Plant.OriginalColor
+  id: OriginalColor
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: OriginalColor
+  nameWithType: Plant.OriginalColor
+  fullName: Vivarium.Entities.Plant.OriginalColor
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: OriginalColor
+    path: src/Game/Entities/Plant.cs
+    startLine: 25
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public Color OriginalColor { readonly get; set; }
+    parameters: []
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Property OriginalColor As Color
+  overload: Vivarium.Entities.Plant.OriginalColor*
+- uid: Vivarium.Entities.Plant.Color
+  commentId: P:Vivarium.Entities.Plant.Color
+  id: Color
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: Color
+  nameWithType: Plant.Color
+  fullName: Vivarium.Entities.Plant.Color
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Color
+    path: src/Game/Entities/Plant.cs
+    startLine: 34
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly Color Color { get; }
+    parameters: []
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Property Color As Color
+  overload: Vivarium.Entities.Plant.Color*
+- uid: Vivarium.Entities.Plant.Energy
+  commentId: P:Vivarium.Entities.Plant.Energy
+  id: Energy
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: Energy
+  nameWithType: Plant.Energy
+  fullName: Vivarium.Entities.Plant.Energy
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Energy
+    path: src/Game/Entities/Plant.cs
+    startLine: 36
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly float Energy { get; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: Public Property Energy As Single
+  overload: Vivarium.Entities.Plant.Energy*
+- uid: Vivarium.Entities.Plant.ChangeEnergy(System.Single,Vivarium.World.GridCell[0:,0:])
+  commentId: M:Vivarium.Entities.Plant.ChangeEnergy(System.Single,Vivarium.World.GridCell[0:,0:])
+  id: ChangeEnergy(System.Single,Vivarium.World.GridCell[0:,0:])
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: ChangeEnergy(float, GridCell[,])
+  nameWithType: Plant.ChangeEnergy(float, GridCell[,])
+  fullName: Vivarium.Entities.Plant.ChangeEnergy(float, Vivarium.World.GridCell[,])
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ChangeEnergy
+    path: src/Game/Entities/Plant.cs
+    startLine: 52
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public void ChangeEnergy(float amount, GridCell[,] gridMap)
+    parameters:
+    - id: amount
+      type: System.Single
+    - id: gridMap
+      type: Vivarium.World.GridCell[,]
+    content.vb: Public Sub ChangeEnergy(amount As Single, gridMap As GridCell(,))
+  overload: Vivarium.Entities.Plant.ChangeEnergy*
+  nameWithType.vb: Plant.ChangeEnergy(Single, GridCell(,))
+  fullName.vb: Vivarium.Entities.Plant.ChangeEnergy(Single, Vivarium.World.GridCell(,))
+  name.vb: ChangeEnergy(Single, GridCell(,))
+- uid: Vivarium.Entities.Plant.Update(Vivarium.World.GridCell[0:,0:],System.Random)
+  commentId: M:Vivarium.Entities.Plant.Update(Vivarium.World.GridCell[0:,0:],System.Random)
+  id: Update(Vivarium.World.GridCell[0:,0:],System.Random)
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: Update(GridCell[,], Random)
+  nameWithType: Plant.Update(GridCell[,], Random)
+  fullName: Vivarium.Entities.Plant.Update(Vivarium.World.GridCell[,], System.Random)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Update
+    path: src/Game/Entities/Plant.cs
+    startLine: 67
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public void Update(GridCell[,] gridMap, Random rng)
+    parameters:
+    - id: gridMap
+      type: Vivarium.World.GridCell[,]
+    - id: rng
+      type: System.Random
+    content.vb: Public Sub Update(gridMap As GridCell(,), rng As Random)
+  overload: Vivarium.Entities.Plant.Update*
+  nameWithType.vb: Plant.Update(GridCell(,), Random)
+  fullName.vb: Vivarium.Entities.Plant.Update(Vivarium.World.GridCell(,), System.Random)
+  name.vb: Update(GridCell(,), Random)
+- uid: Vivarium.Entities.Plant.Create(System.Int32,System.Int32,System.Int32,System.Random)
+  commentId: M:Vivarium.Entities.Plant.Create(System.Int32,System.Int32,System.Int32,System.Random)
+  id: Create(System.Int32,System.Int32,System.Int32,System.Random)
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: Create(int, int, int, Random)
+  nameWithType: Plant.Create(int, int, int, Random)
+  fullName: Vivarium.Entities.Plant.Create(int, int, int, System.Random)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Create
+    path: src/Game/Entities/Plant.cs
+    startLine: 92
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public static Plant Create(int index, int x, int y, Random rng)
+    parameters:
+    - id: index
+      type: System.Int32
+    - id: x
+      type: System.Int32
+    - id: y
+      type: System.Int32
+    - id: rng
+      type: System.Random
+    return:
+      type: Vivarium.Entities.Plant
+    content.vb: Public Shared Function Create(index As Integer, x As Integer, y As Integer, rng As Random) As Plant
+  overload: Vivarium.Entities.Plant.Create*
+  nameWithType.vb: Plant.Create(Integer, Integer, Integer, Random)
+  fullName.vb: Vivarium.Entities.Plant.Create(Integer, Integer, Integer, System.Random)
+  name.vb: Create(Integer, Integer, Integer, Random)
+- uid: Vivarium.Entities.Plant.TryReproduce(System.Span{Vivarium.Entities.Plant},Vivarium.World.GridCell[0:,0:],System.Random)
+  commentId: M:Vivarium.Entities.Plant.TryReproduce(System.Span{Vivarium.Entities.Plant},Vivarium.World.GridCell[0:,0:],System.Random)
+  id: TryReproduce(System.Span{Vivarium.Entities.Plant},Vivarium.World.GridCell[0:,0:],System.Random)
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: TryReproduce(Span<Plant>, GridCell[,], Random)
+  nameWithType: Plant.TryReproduce(Span<Plant>, GridCell[,], Random)
+  fullName: Vivarium.Entities.Plant.TryReproduce(System.Span<Vivarium.Entities.Plant>, Vivarium.World.GridCell[,], System.Random)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: TryReproduce
+    path: src/Game/Entities/Plant.cs
+    startLine: 101
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly void TryReproduce(Span<Plant> population, GridCell[,] gridMap, Random rng)
+    parameters:
+    - id: population
+      type: System.Span{Vivarium.Entities.Plant}
+    - id: gridMap
+      type: Vivarium.World.GridCell[,]
+    - id: rng
+      type: System.Random
+    content.vb: Public Sub TryReproduce(population As Span(Of Plant), gridMap As GridCell(,), rng As Random)
+  overload: Vivarium.Entities.Plant.TryReproduce*
+  nameWithType.vb: Plant.TryReproduce(Span(Of Plant), GridCell(,), Random)
+  fullName.vb: Vivarium.Entities.Plant.TryReproduce(System.Span(Of Vivarium.Entities.Plant), Vivarium.World.GridCell(,), System.Random)
+  name.vb: TryReproduce(Span(Of Plant), GridCell(,), Random)
+- uid: Vivarium.Entities.Plant.CanReproduce
+  commentId: M:Vivarium.Entities.Plant.CanReproduce
+  id: CanReproduce
+  parent: Vivarium.Entities.Plant
+  langs:
+  - csharp
+  - vb
+  name: CanReproduce()
+  nameWithType: Plant.CanReproduce()
+  fullName: Vivarium.Entities.Plant.CanReproduce()
+  type: Method
+  source:
+    remote:
+      path: src/Game/Entities/Plant.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: CanReproduce
+    path: src/Game/Entities/Plant.cs
+    startLine: 186
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public readonly bool CanReproduce()
+    return:
+      type: System.Boolean
+    content.vb: Public Function CanReproduce() As Boolean
+  overload: Vivarium.Entities.Plant.CanReproduce*
+references:
+- uid: Vivarium.Entities
+  commentId: N:Vivarium.Entities
+  href: Vivarium.html
+  name: Vivarium.Entities
+  nameWithType: Vivarium.Entities
+  fullName: Vivarium.Entities
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Entities
+    name: Entities
+    href: Vivarium.Entities.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Entities
+    name: Entities
+    href: Vivarium.Entities.html
+- uid: Vivarium.Entities.IGridEntity
+  commentId: T:Vivarium.Entities.IGridEntity
+  parent: Vivarium.Entities
+  href: Vivarium.Entities.IGridEntity.html
+  name: IGridEntity
+  nameWithType: IGridEntity
+  fullName: Vivarium.Entities.IGridEntity
+- uid: System.ValueType.Equals(System.Object)
+  commentId: M:System.ValueType.Equals(System.Object)
+  parent: System.ValueType
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.valuetype.equals
+  name: Equals(object)
+  nameWithType: ValueType.Equals(object)
+  fullName: System.ValueType.Equals(object)
+  nameWithType.vb: ValueType.Equals(Object)
+  fullName.vb: System.ValueType.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.ValueType.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.equals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.ValueType.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.equals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.ValueType.GetHashCode
+  commentId: M:System.ValueType.GetHashCode
+  parent: System.ValueType
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode
+  name: GetHashCode()
+  nameWithType: ValueType.GetHashCode()
+  fullName: System.ValueType.GetHashCode()
+  spec.csharp:
+  - uid: System.ValueType.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.ValueType.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode
+  - name: (
+  - name: )
+- uid: System.ValueType.ToString
+  commentId: M:System.ValueType.ToString
+  parent: System.ValueType
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.valuetype.tostring
+  name: ToString()
+  nameWithType: ValueType.ToString()
+  fullName: System.ValueType.ToString()
+  spec.csharp:
+  - uid: System.ValueType.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.ValueType.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.tostring
+  - name: (
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.ValueType
+  commentId: T:System.ValueType
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.valuetype
+  name: ValueType
+  nameWithType: ValueType
+  fullName: System.ValueType
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Vivarium.Entities.Plant.ShrivelRate*
+  commentId: Overload:Vivarium.Entities.Plant.ShrivelRate
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_ShrivelRate
+  name: ShrivelRate
+  nameWithType: Plant.ShrivelRate
+  fullName: Vivarium.Entities.Plant.ShrivelRate
+- uid: System.Single
+  commentId: T:System.Single
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.single
+  name: float
+  nameWithType: float
+  fullName: float
+  nameWithType.vb: Single
+  fullName.vb: Single
+  name.vb: Single
+- uid: Vivarium.Entities.Plant.PhotosynthesisRate*
+  commentId: Overload:Vivarium.Entities.Plant.PhotosynthesisRate
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_PhotosynthesisRate
+  name: PhotosynthesisRate
+  nameWithType: Plant.PhotosynthesisRate
+  fullName: Vivarium.Entities.Plant.PhotosynthesisRate
+- uid: Vivarium.Entities.Plant.MaturityAge*
+  commentId: Overload:Vivarium.Entities.Plant.MaturityAge
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_MaturityAge
+  name: MaturityAge
+  nameWithType: Plant.MaturityAge
+  fullName: Vivarium.Entities.Plant.MaturityAge
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int32
+  name: int
+  nameWithType: int
+  fullName: int
+  nameWithType.vb: Integer
+  fullName.vb: Integer
+  name.vb: Integer
+- uid: Vivarium.Entities.Plant.ReproductionCost*
+  commentId: Overload:Vivarium.Entities.Plant.ReproductionCost
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_ReproductionCost
+  name: ReproductionCost
+  nameWithType: Plant.ReproductionCost
+  fullName: Vivarium.Entities.Plant.ReproductionCost
+- uid: Vivarium.Entities.Plant.MinEnergyToReproduce*
+  commentId: Overload:Vivarium.Entities.Plant.MinEnergyToReproduce
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_MinEnergyToReproduce
+  name: MinEnergyToReproduce
+  nameWithType: Plant.MinEnergyToReproduce
+  fullName: Vivarium.Entities.Plant.MinEnergyToReproduce
+- uid: Vivarium.Entities.Plant.MaxEnergy*
+  commentId: Overload:Vivarium.Entities.Plant.MaxEnergy
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_MaxEnergy
+  name: MaxEnergy
+  nameWithType: Plant.MaxEnergy
+  fullName: Vivarium.Entities.Plant.MaxEnergy
+- uid: Vivarium.Entities.Plant.Id*
+  commentId: Overload:Vivarium.Entities.Plant.Id
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_Id
+  name: Id
+  nameWithType: Plant.Id
+  fullName: Vivarium.Entities.Plant.Id
+- uid: Vivarium.Entities.IGridEntity.Id
+  commentId: P:Vivarium.Entities.IGridEntity.Id
+  parent: Vivarium.Entities.IGridEntity
+  href: Vivarium.Entities.IGridEntity.html#Vivarium_Entities_IGridEntity_Id
+  name: Id
+  nameWithType: IGridEntity.Id
+  fullName: Vivarium.Entities.IGridEntity.Id
+- uid: System.Int64
+  commentId: T:System.Int64
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int64
+  name: long
+  nameWithType: long
+  fullName: long
+  nameWithType.vb: Long
+  fullName.vb: Long
+  name.vb: Long
+- uid: Vivarium.Entities.Plant.Index*
+  commentId: Overload:Vivarium.Entities.Plant.Index
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_Index
+  name: Index
+  nameWithType: Plant.Index
+  fullName: Vivarium.Entities.Plant.Index
+- uid: Vivarium.Entities.IGridEntity.Index
+  commentId: P:Vivarium.Entities.IGridEntity.Index
+  parent: Vivarium.Entities.IGridEntity
+  href: Vivarium.Entities.IGridEntity.html#Vivarium_Entities_IGridEntity_Index
+  name: Index
+  nameWithType: IGridEntity.Index
+  fullName: Vivarium.Entities.IGridEntity.Index
+- uid: Vivarium.Entities.Plant.X*
+  commentId: Overload:Vivarium.Entities.Plant.X
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_X
+  name: X
+  nameWithType: Plant.X
+  fullName: Vivarium.Entities.Plant.X
+- uid: Vivarium.Entities.IGridEntity.X
+  commentId: P:Vivarium.Entities.IGridEntity.X
+  parent: Vivarium.Entities.IGridEntity
+  href: Vivarium.Entities.IGridEntity.html#Vivarium_Entities_IGridEntity_X
+  name: X
+  nameWithType: IGridEntity.X
+  fullName: Vivarium.Entities.IGridEntity.X
+- uid: Vivarium.Entities.Plant.Y*
+  commentId: Overload:Vivarium.Entities.Plant.Y
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_Y
+  name: Y
+  nameWithType: Plant.Y
+  fullName: Vivarium.Entities.Plant.Y
+- uid: Vivarium.Entities.IGridEntity.Y
+  commentId: P:Vivarium.Entities.IGridEntity.Y
+  parent: Vivarium.Entities.IGridEntity
+  href: Vivarium.Entities.IGridEntity.html#Vivarium_Entities_IGridEntity_Y
+  name: Y
+  nameWithType: IGridEntity.Y
+  fullName: Vivarium.Entities.IGridEntity.Y
+- uid: Vivarium.Entities.Plant.Age*
+  commentId: Overload:Vivarium.Entities.Plant.Age
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_Age
+  name: Age
+  nameWithType: Plant.Age
+  fullName: Vivarium.Entities.Plant.Age
+- uid: Vivarium.Entities.Plant.IsAlive*
+  commentId: Overload:Vivarium.Entities.Plant.IsAlive
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_IsAlive
+  name: IsAlive
+  nameWithType: Plant.IsAlive
+  fullName: Vivarium.Entities.Plant.IsAlive
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.boolean
+  name: bool
+  nameWithType: bool
+  fullName: bool
+  nameWithType.vb: Boolean
+  fullName.vb: Boolean
+  name.vb: Boolean
+- uid: Vivarium.Entities.Plant.OriginalColor*
+  commentId: Overload:Vivarium.Entities.Plant.OriginalColor
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_OriginalColor
+  name: OriginalColor
+  nameWithType: Plant.OriginalColor
+  fullName: Vivarium.Entities.Plant.OriginalColor
+- uid: Microsoft.Xna.Framework.Color
+  commentId: T:Microsoft.Xna.Framework.Color
+  parent: Microsoft.Xna.Framework
+  isExternal: true
+  name: Color
+  nameWithType: Color
+  fullName: Microsoft.Xna.Framework.Color
+- uid: Microsoft.Xna.Framework
+  commentId: N:Microsoft.Xna.Framework
+  isExternal: true
+  name: Microsoft.Xna.Framework
+  nameWithType: Microsoft.Xna.Framework
+  fullName: Microsoft.Xna.Framework
+  spec.csharp:
+  - uid: Microsoft
+    name: Microsoft
+    isExternal: true
+  - name: .
+  - uid: Microsoft.Xna
+    name: Xna
+    isExternal: true
+  - name: .
+  - uid: Microsoft.Xna.Framework
+    name: Framework
+    isExternal: true
+  spec.vb:
+  - uid: Microsoft
+    name: Microsoft
+    isExternal: true
+  - name: .
+  - uid: Microsoft.Xna
+    name: Xna
+    isExternal: true
+  - name: .
+  - uid: Microsoft.Xna.Framework
+    name: Framework
+    isExternal: true
+- uid: Vivarium.Entities.Plant.Color*
+  commentId: Overload:Vivarium.Entities.Plant.Color
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_Color
+  name: Color
+  nameWithType: Plant.Color
+  fullName: Vivarium.Entities.Plant.Color
+- uid: Vivarium.Entities.Plant.Energy*
+  commentId: Overload:Vivarium.Entities.Plant.Energy
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_Energy
+  name: Energy
+  nameWithType: Plant.Energy
+  fullName: Vivarium.Entities.Plant.Energy
+- uid: Vivarium.Entities.Plant.ChangeEnergy*
+  commentId: Overload:Vivarium.Entities.Plant.ChangeEnergy
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_ChangeEnergy_System_Single_Vivarium_World_GridCell_0
+  name: ChangeEnergy
+  nameWithType: Plant.ChangeEnergy
+  fullName: Vivarium.Entities.Plant.ChangeEnergy
+- uid: Vivarium.World.GridCell[,]
+  isExternal: true
+  href: Vivarium.World.GridCell.html
+  name: GridCell[,]
+  nameWithType: GridCell[,]
+  fullName: Vivarium.World.GridCell[,]
+  nameWithType.vb: GridCell(,)
+  fullName.vb: Vivarium.World.GridCell(,)
+  name.vb: GridCell(,)
+  spec.csharp:
+  - uid: Vivarium.World.GridCell
+    name: GridCell
+    href: Vivarium.World.GridCell.html
+  - name: '['
+  - name: ','
+  - name: ']'
+  spec.vb:
+  - uid: Vivarium.World.GridCell
+    name: GridCell
+    href: Vivarium.World.GridCell.html
+  - name: (
+  - name: ','
+  - name: )
+- uid: Vivarium.Entities.Plant.Update*
+  commentId: Overload:Vivarium.Entities.Plant.Update
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_Update_Vivarium_World_GridCell_0
+  name: Update
+  nameWithType: Plant.Update
+  fullName: Vivarium.Entities.Plant.Update
+- uid: System.Random
+  commentId: T:System.Random
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.random
+  name: Random
+  nameWithType: Random
+  fullName: System.Random
+- uid: Vivarium.Entities.Plant.Create*
+  commentId: Overload:Vivarium.Entities.Plant.Create
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_Create_System_Int32_System_Int32_System_Int32_System_Random_
+  name: Create
+  nameWithType: Plant.Create
+  fullName: Vivarium.Entities.Plant.Create
+- uid: Vivarium.Entities.Plant
+  commentId: T:Vivarium.Entities.Plant
+  parent: Vivarium.Entities
+  href: Vivarium.Entities.Plant.html
+  name: Plant
+  nameWithType: Plant
+  fullName: Vivarium.Entities.Plant
+- uid: Vivarium.Entities.Plant.TryReproduce*
+  commentId: Overload:Vivarium.Entities.Plant.TryReproduce
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_TryReproduce_System_Span_Vivarium_Entities_Plant__Vivarium_World_GridCell_0
+  name: TryReproduce
+  nameWithType: Plant.TryReproduce
+  fullName: Vivarium.Entities.Plant.TryReproduce
+- uid: System.Span{Vivarium.Entities.Plant}
+  commentId: T:System.Span{Vivarium.Entities.Plant}
+  parent: System
+  definition: System.Span`1
+  href: https://learn.microsoft.com/dotnet/api/system.span-1
+  name: Span<Plant>
+  nameWithType: Span<Plant>
+  fullName: System.Span<Vivarium.Entities.Plant>
+  nameWithType.vb: Span(Of Plant)
+  fullName.vb: System.Span(Of Vivarium.Entities.Plant)
+  name.vb: Span(Of Plant)
+  spec.csharp:
+  - uid: System.Span`1
+    name: Span
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.span-1
+  - name: <
+  - uid: Vivarium.Entities.Plant
+    name: Plant
+    href: Vivarium.Entities.Plant.html
+  - name: '>'
+  spec.vb:
+  - uid: System.Span`1
+    name: Span
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.span-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Vivarium.Entities.Plant
+    name: Plant
+    href: Vivarium.Entities.Plant.html
+  - name: )
+- uid: System.Span`1
+  commentId: T:System.Span`1
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.span-1
+  name: Span<T>
+  nameWithType: Span<T>
+  fullName: System.Span<T>
+  nameWithType.vb: Span(Of T)
+  fullName.vb: System.Span(Of T)
+  name.vb: Span(Of T)
+  spec.csharp:
+  - uid: System.Span`1
+    name: Span
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.span-1
+  - name: <
+  - name: T
+  - name: '>'
+  spec.vb:
+  - uid: System.Span`1
+    name: Span
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.span-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+- uid: Vivarium.Entities.Plant.CanReproduce*
+  commentId: Overload:Vivarium.Entities.Plant.CanReproduce
+  href: Vivarium.Entities.Plant.html#Vivarium_Entities_Plant_CanReproduce
+  name: CanReproduce
+  nameWithType: Plant.CanReproduce
+  fullName: Vivarium.Entities.Plant.CanReproduce

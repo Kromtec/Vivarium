@@ -1,0 +1,915 @@
+{
+  "source_base_path": "/home/pi/.openclaw/projects/Vivarium",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "README.md",
+      "output": {
+        ".html": {
+          "relative_path": "README.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Biology.ActionType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Biology.ActionType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Biology.ActionType",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Biology.Brain.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Biology.Brain.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Biology.Brain",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Biology.BrainConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Biology.BrainConfig.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Biology.BrainConfig",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Biology.DecodedGene.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Biology.DecodedGene.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Biology.DecodedGene",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Biology.DietType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Biology.DietType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Biology.DietType",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Biology.Gene.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Biology.Gene.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Biology.Gene",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Biology.Genetics.TraitType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Biology.Genetics.TraitType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Biology.Genetics.TraitType",
+      "Summary": "<p sourcefile=\"docs/api/Vivarium.Biology.Genetics.TraitType.yml\" sourcestartlinenumber=\"1\">Enum describing trait indices. Order determines mapping into the trait gene region.\nIndex 0 maps to the last 2 genes, index 1 to the second-to-last pair, etc.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Biology.Genetics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Biology.Genetics.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Biology.Genetics",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Biology.GenomeCensus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Biology.GenomeCensus.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Biology.GenomeCensus",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Biology.GenomeFamily.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Biology.GenomeFamily.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Biology.GenomeFamily",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Biology.GenomeVariant.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Biology.GenomeVariant.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Biology.GenomeVariant",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Biology.ScientificNameGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Biology.ScientificNameGenerator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Biology.ScientificNameGenerator",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Biology.SensorType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Biology.SensorType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Biology.SensorType",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Biology.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Biology.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Biology",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Config.AgentConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Config.AgentConfig.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Config.AgentConfig",
+      "Summary": "<p sourcefile=\"docs/api/Vivarium.Config.AgentConfig.yml\" sourcestartlinenumber=\"1\">Mutable agent configuration. These values can be tweaked at runtime\nto balance agent behavior without restarting the simulation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Config.BrainAIConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Config.BrainAIConfig.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Config.BrainAIConfig",
+      "Summary": "<p sourcefile=\"docs/api/Vivarium.Config.BrainAIConfig.yml\" sourcestartlinenumber=\"1\">Mutable brain/AI configuration. These values can be tweaked at runtime\nto balance neural network behavior and instincts.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Config.ConfigProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Config.ConfigProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Config.ConfigProvider",
+      "Summary": "<p sourcefile=\"docs/api/Vivarium.Config.ConfigProvider.yml\" sourcestartlinenumber=\"1\">Provides global access to the current simulation configuration.\nThe configuration is set once at startup and the mutable sections\ncan be modified at runtime for live balancing.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Config.GeneticsConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Config.GeneticsConfig.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Config.GeneticsConfig",
+      "Summary": "<p sourcefile=\"docs/api/Vivarium.Config.GeneticsConfig.yml\" sourcestartlinenumber=\"1\">Genetics configuration. GenomeLength and TraitGeneCount are immutable\nas they affect array sizes. MutationRate can be tweaked at runtime.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Config.PlantConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Config.PlantConfig.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Config.PlantConfig",
+      "Summary": "<p sourcefile=\"docs/api/Vivarium.Config.PlantConfig.yml\" sourcestartlinenumber=\"1\">Mutable plant configuration. These values can be tweaked at runtime\nto balance plant behavior without restarting the simulation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Config.SimulationConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Config.SimulationConfig.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Config.SimulationConfig",
+      "Summary": "<p sourcefile=\"docs/api/Vivarium.Config.SimulationConfig.yml\" sourcestartlinenumber=\"1\">Root configuration container for the entire simulation.\nCombines immutable world settings with mutable balance parameters.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Config.WorldConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Config.WorldConfig.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Config.WorldConfig",
+      "Summary": "<p sourcefile=\"docs/api/Vivarium.Config.WorldConfig.yml\" sourcestartlinenumber=\"1\">Immutable world configuration. These values affect array sizes and data structures,\nso they cannot be changed after simulation initialization.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Config.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Config.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Config",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Engine.Camera2D.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Engine.Camera2D.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Engine.Camera2D",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Engine.Simulation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Engine.Simulation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Engine.Simulation",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Engine.StatsLogger.DietCounts.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Engine.StatsLogger.DietCounts.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Engine.StatsLogger.DietCounts",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Engine.StatsLogger.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Engine.StatsLogger.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Engine.StatsLogger",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Engine.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Engine.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Engine",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Entities.Agent.AttackResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Entities.Agent.AttackResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Entities.Agent.AttackResult",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Entities.Agent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Entities.Agent.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Entities.Agent",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Entities.IGridEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Entities.IGridEntity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Entities.IGridEntity",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Entities.Plant.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Entities.Plant.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Entities.Plant",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Entities.Structure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Entities.Structure.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Entities.Structure",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Entities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Entities.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Entities",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.GameState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.GameState.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.GameState",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Program.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Program.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Program",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.UI.ActivityLog.LogHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.UI.ActivityLog.LogHandler.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.UI.ActivityLog.LogHandler",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.UI.ActivityLog.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.UI.ActivityLog.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.UI.ActivityLog",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.UI.BrainInspectorWindow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.UI.BrainInspectorWindow.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.UI.BrainInspectorWindow",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.UI.GenePoolWindow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.UI.GenePoolWindow.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.UI.GenePoolWindow",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.UI.GenomeHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.UI.GenomeHelper.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.UI.GenomeHelper",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.UI.HUD.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.UI.HUD.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.UI.HUD",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.UI.Inspector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.UI.Inspector.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.UI.Inspector",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.UI.SettingsWindow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.UI.SettingsWindow.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.UI.SettingsWindow",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.UI.SimulationGraph.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.UI.SimulationGraph.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.UI.SimulationGraph",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.UI.TitleScreen.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.UI.TitleScreen.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.UI.TitleScreen",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.UI.UIComponents.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.UI.UIComponents.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.UI.UIComponents",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.UI.UITheme.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.UI.UITheme.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.UI.UITheme",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.UI.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.UI.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.UI",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Visuals.RenderStats.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Visuals.RenderStats.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Visuals.RenderStats",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Visuals.TextureGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Visuals.TextureGenerator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Visuals.TextureGenerator",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Visuals.VivariumColors.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Visuals.VivariumColors.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Visuals.VivariumColors",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Visuals.WorldRenderer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Visuals.WorldRenderer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Visuals.WorldRenderer",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.Visuals.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.Visuals.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.Visuals",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.VivariumGame.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.VivariumGame.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.VivariumGame",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.World.DensityResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.World.DensityResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.World.DensityResult",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.World.EntityType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.World.EntityType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.World.EntityType",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.World.GridCell.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.World.GridCell.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.World.GridCell",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.World.WorldSensor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.World.WorldSensor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.World.WorldSensor",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.World.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.World.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium.World",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "docs/api/Vivarium.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api/Vivarium.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Vivarium",
+      "Summary": null
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "docs/api/toc.yml",
+      "output": {
+        ".json": {
+          "relative_path": "docs/api/toc.json"
+        },
+        ".html": {
+          "relative_path": "docs/api/toc.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/configuration.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/configuration.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "docs/toc.yml",
+      "output": {
+        ".json": {
+          "relative_path": "docs/toc.json"
+        },
+        ".html": {
+          "relative_path": "docs/toc.html"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

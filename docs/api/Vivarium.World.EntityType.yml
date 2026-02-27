@@ -1,0 +1,166 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.World.EntityType
+  commentId: T:Vivarium.World.EntityType
+  id: EntityType
+  parent: Vivarium.World
+  children:
+  - Vivarium.World.EntityType.Agent
+  - Vivarium.World.EntityType.Empty
+  - Vivarium.World.EntityType.Plant
+  - Vivarium.World.EntityType.Structure
+  langs:
+  - csharp
+  - vb
+  name: EntityType
+  nameWithType: EntityType
+  fullName: Vivarium.World.EntityType
+  type: Enum
+  source:
+    remote:
+      path: src/Game/World/EntityType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: EntityType
+    path: src/Game/World/EntityType.cs
+    startLine: 2
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.World
+  syntax:
+    content: 'public enum EntityType : byte'
+    content.vb: Public Enum EntityType As Byte
+- uid: Vivarium.World.EntityType.Empty
+  commentId: F:Vivarium.World.EntityType.Empty
+  id: Empty
+  parent: Vivarium.World.EntityType
+  langs:
+  - csharp
+  - vb
+  name: Empty
+  nameWithType: EntityType.Empty
+  fullName: Vivarium.World.EntityType.Empty
+  type: Field
+  source:
+    remote:
+      path: src/Game/World/EntityType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Empty
+    path: src/Game/World/EntityType.cs
+    startLine: 4
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.World
+  syntax:
+    content: Empty = 0
+    return:
+      type: Vivarium.World.EntityType
+- uid: Vivarium.World.EntityType.Agent
+  commentId: F:Vivarium.World.EntityType.Agent
+  id: Agent
+  parent: Vivarium.World.EntityType
+  langs:
+  - csharp
+  - vb
+  name: Agent
+  nameWithType: EntityType.Agent
+  fullName: Vivarium.World.EntityType.Agent
+  type: Field
+  source:
+    remote:
+      path: src/Game/World/EntityType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Agent
+    path: src/Game/World/EntityType.cs
+    startLine: 5
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.World
+  syntax:
+    content: Agent = 1
+    return:
+      type: Vivarium.World.EntityType
+- uid: Vivarium.World.EntityType.Plant
+  commentId: F:Vivarium.World.EntityType.Plant
+  id: Plant
+  parent: Vivarium.World.EntityType
+  langs:
+  - csharp
+  - vb
+  name: Plant
+  nameWithType: EntityType.Plant
+  fullName: Vivarium.World.EntityType.Plant
+  type: Field
+  source:
+    remote:
+      path: src/Game/World/EntityType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Plant
+    path: src/Game/World/EntityType.cs
+    startLine: 6
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.World
+  syntax:
+    content: Plant = 2
+    return:
+      type: Vivarium.World.EntityType
+- uid: Vivarium.World.EntityType.Structure
+  commentId: F:Vivarium.World.EntityType.Structure
+  id: Structure
+  parent: Vivarium.World.EntityType
+  langs:
+  - csharp
+  - vb
+  name: Structure
+  nameWithType: EntityType.Structure
+  fullName: Vivarium.World.EntityType.Structure
+  type: Field
+  source:
+    remote:
+      path: src/Game/World/EntityType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Structure
+    path: src/Game/World/EntityType.cs
+    startLine: 7
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.World
+  syntax:
+    content: Structure = 3
+    return:
+      type: Vivarium.World.EntityType
+references:
+- uid: Vivarium.World
+  commentId: N:Vivarium.World
+  href: Vivarium.html
+  name: Vivarium.World
+  nameWithType: Vivarium.World
+  fullName: Vivarium.World
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.World
+    name: World
+    href: Vivarium.World.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.World
+    name: World
+    href: Vivarium.World.html
+- uid: Vivarium.World.EntityType
+  commentId: T:Vivarium.World.EntityType
+  parent: Vivarium.World
+  href: Vivarium.World.EntityType.html
+  name: EntityType
+  nameWithType: EntityType
+  fullName: Vivarium.World.EntityType

@@ -1,0 +1,44 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium
+  commentId: N:Vivarium
+  id: Vivarium
+  children:
+  - Vivarium.GameState
+  - Vivarium.Program
+  - Vivarium.VivariumGame
+  langs:
+  - csharp
+  - vb
+  name: Vivarium
+  nameWithType: Vivarium
+  fullName: Vivarium
+  type: Namespace
+  assemblies:
+  - Vivarium
+references:
+- uid: Vivarium.Program
+  commentId: T:Vivarium.Program
+  href: Vivarium.Program.html
+  name: Program
+  nameWithType: Program
+  fullName: Vivarium.Program
+- uid: Vivarium.GameState
+  commentId: T:Vivarium.GameState
+  parent: Vivarium
+  href: Vivarium.GameState.html
+  name: GameState
+  nameWithType: GameState
+  fullName: Vivarium.GameState
+- uid: Vivarium.VivariumGame
+  commentId: T:Vivarium.VivariumGame
+  href: Vivarium.VivariumGame.html
+  name: VivariumGame
+  nameWithType: VivariumGame
+  fullName: Vivarium.VivariumGame
+- uid: Vivarium
+  commentId: N:Vivarium
+  href: Vivarium.html
+  name: Vivarium
+  nameWithType: Vivarium
+  fullName: Vivarium

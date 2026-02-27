@@ -1,0 +1,504 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.Biology.ScientificNameGenerator
+  commentId: T:Vivarium.Biology.ScientificNameGenerator
+  id: ScientificNameGenerator
+  parent: Vivarium.Biology
+  children:
+  - Vivarium.Biology.ScientificNameGenerator.GenerateFamilyName(Vivarium.Entities.Agent)
+  - Vivarium.Biology.ScientificNameGenerator.GenerateVariantName(System.Int32)
+  langs:
+  - csharp
+  - vb
+  name: ScientificNameGenerator
+  nameWithType: ScientificNameGenerator
+  fullName: Vivarium.Biology.ScientificNameGenerator
+  type: Class
+  source:
+    remote:
+      path: src/Game/Biology/ScientificNameGenerator.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ScientificNameGenerator
+    path: src/Game/Biology/ScientificNameGenerator.cs
+    startLine: 8
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: public static class ScientificNameGenerator
+    content.vb: Public Module ScientificNameGenerator
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+- uid: Vivarium.Biology.ScientificNameGenerator.GenerateFamilyName(Vivarium.Entities.Agent)
+  commentId: M:Vivarium.Biology.ScientificNameGenerator.GenerateFamilyName(Vivarium.Entities.Agent)
+  id: GenerateFamilyName(Vivarium.Entities.Agent)
+  parent: Vivarium.Biology.ScientificNameGenerator
+  langs:
+  - csharp
+  - vb
+  name: GenerateFamilyName(Agent)
+  nameWithType: ScientificNameGenerator.GenerateFamilyName(Agent)
+  fullName: Vivarium.Biology.ScientificNameGenerator.GenerateFamilyName(Vivarium.Entities.Agent)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Biology/ScientificNameGenerator.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: GenerateFamilyName
+    path: src/Game/Biology/ScientificNameGenerator.cs
+    startLine: 32
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: public static (string ScientificName, string Translation) GenerateFamilyName(Agent agent)
+    parameters:
+    - id: agent
+      type: Vivarium.Entities.Agent
+    return:
+      type: System.ValueTuple{System.String,System.String}
+    content.vb: Public Shared Function GenerateFamilyName(agent As Agent) As (ScientificName As String, Translation As String)
+  overload: Vivarium.Biology.ScientificNameGenerator.GenerateFamilyName*
+- uid: Vivarium.Biology.ScientificNameGenerator.GenerateVariantName(System.Int32)
+  commentId: M:Vivarium.Biology.ScientificNameGenerator.GenerateVariantName(System.Int32)
+  id: GenerateVariantName(System.Int32)
+  parent: Vivarium.Biology.ScientificNameGenerator
+  langs:
+  - csharp
+  - vb
+  name: GenerateVariantName(int)
+  nameWithType: ScientificNameGenerator.GenerateVariantName(int)
+  fullName: Vivarium.Biology.ScientificNameGenerator.GenerateVariantName(int)
+  type: Method
+  source:
+    remote:
+      path: src/Game/Biology/ScientificNameGenerator.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: GenerateVariantName
+    path: src/Game/Biology/ScientificNameGenerator.cs
+    startLine: 81
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: public static string GenerateVariantName(int variantIndex)
+    parameters:
+    - id: variantIndex
+      type: System.Int32
+    return:
+      type: System.String
+    content.vb: Public Shared Function GenerateVariantName(variantIndex As Integer) As String
+  overload: Vivarium.Biology.ScientificNameGenerator.GenerateVariantName*
+  nameWithType.vb: ScientificNameGenerator.GenerateVariantName(Integer)
+  fullName.vb: Vivarium.Biology.ScientificNameGenerator.GenerateVariantName(Integer)
+  name.vb: GenerateVariantName(Integer)
+references:
+- uid: Vivarium.Biology
+  commentId: N:Vivarium.Biology
+  href: Vivarium.html
+  name: Vivarium.Biology
+  nameWithType: Vivarium.Biology
+  fullName: Vivarium.Biology
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Biology
+    name: Biology
+    href: Vivarium.Biology.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Biology
+    name: Biology
+    href: Vivarium.Biology.html
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  name: Equals(object)
+  nameWithType: object.Equals(object)
+  fullName: object.Equals(object)
+  nameWithType.vb: Object.Equals(Object)
+  fullName.vb: Object.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  name: GetHashCode()
+  nameWithType: object.GetHashCode()
+  fullName: object.GetHashCode()
+  nameWithType.vb: Object.GetHashCode()
+  fullName.vb: Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  name: MemberwiseClone()
+  nameWithType: object.MemberwiseClone()
+  fullName: object.MemberwiseClone()
+  nameWithType.vb: Object.MemberwiseClone()
+  fullName.vb: Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  name: ToString()
+  nameWithType: object.ToString()
+  fullName: object.ToString()
+  nameWithType.vb: Object.ToString()
+  fullName.vb: Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Vivarium.Biology.ScientificNameGenerator.GenerateFamilyName*
+  commentId: Overload:Vivarium.Biology.ScientificNameGenerator.GenerateFamilyName
+  href: Vivarium.Biology.ScientificNameGenerator.html#Vivarium_Biology_ScientificNameGenerator_GenerateFamilyName_Vivarium_Entities_Agent_
+  name: GenerateFamilyName
+  nameWithType: ScientificNameGenerator.GenerateFamilyName
+  fullName: Vivarium.Biology.ScientificNameGenerator.GenerateFamilyName
+- uid: Vivarium.Entities.Agent
+  commentId: T:Vivarium.Entities.Agent
+  parent: Vivarium.Entities
+  href: Vivarium.Entities.Agent.html
+  name: Agent
+  nameWithType: Agent
+  fullName: Vivarium.Entities.Agent
+- uid: System.ValueTuple{System.String,System.String}
+  commentId: T:System.ValueTuple{System.String,System.String}
+  parent: System
+  definition: System.ValueTuple`2
+  href: https://learn.microsoft.com/dotnet/api/system.string
+  name: (string ScientificName, string Translation)
+  nameWithType: (string ScientificName, string Translation)
+  fullName: (string ScientificName, string Translation)
+  nameWithType.vb: (ScientificName As String, Translation As String)
+  fullName.vb: (ScientificName As String, Translation As String)
+  name.vb: (ScientificName As String, Translation As String)
+  spec.csharp:
+  - name: (
+  - uid: System.String
+    name: string
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.string
+  - name: " "
+  - uid: System.ValueTuple{System.String,System.String}.ScientificName
+    name: ScientificName
+    href: https://learn.microsoft.com/dotnet/api/system.valuetuple-system.string,system.string-.scientificname
+  - name: ','
+  - name: " "
+  - uid: System.String
+    name: string
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.string
+  - name: " "
+  - uid: System.ValueTuple{System.String,System.String}.Translation
+    name: Translation
+    href: https://learn.microsoft.com/dotnet/api/system.valuetuple-system.string,system.string-.translation
+  - name: )
+  spec.vb:
+  - name: (
+  - uid: System.ValueTuple{System.String,System.String}.ScientificName
+    name: ScientificName
+    href: https://learn.microsoft.com/dotnet/api/system.valuetuple-system.string,system.string-.scientificname
+  - name: " "
+  - name: As
+  - name: " "
+  - uid: System.String
+    name: String
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.string
+  - name: ','
+  - name: " "
+  - uid: System.ValueTuple{System.String,System.String}.Translation
+    name: Translation
+    href: https://learn.microsoft.com/dotnet/api/system.valuetuple-system.string,system.string-.translation
+  - name: " "
+  - name: As
+  - name: " "
+  - uid: System.String
+    name: String
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.string
+  - name: )
+- uid: Vivarium.Entities
+  commentId: N:Vivarium.Entities
+  href: Vivarium.html
+  name: Vivarium.Entities
+  nameWithType: Vivarium.Entities
+  fullName: Vivarium.Entities
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Entities
+    name: Entities
+    href: Vivarium.Entities.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Entities
+    name: Entities
+    href: Vivarium.Entities.html
+- uid: System.ValueTuple`2
+  commentId: T:System.ValueTuple`2
+  name: (T1, T2)
+  nameWithType: (T1, T2)
+  fullName: (T1, T2)
+  spec.csharp:
+  - name: (
+  - name: T1
+  - name: ','
+  - name: " "
+  - name: T2
+  - name: )
+  spec.vb:
+  - name: (
+  - name: T1
+  - name: ','
+  - name: " "
+  - name: T2
+  - name: )
+- uid: Vivarium.Biology.ScientificNameGenerator.GenerateVariantName*
+  commentId: Overload:Vivarium.Biology.ScientificNameGenerator.GenerateVariantName
+  href: Vivarium.Biology.ScientificNameGenerator.html#Vivarium_Biology_ScientificNameGenerator_GenerateVariantName_System_Int32_
+  name: GenerateVariantName
+  nameWithType: ScientificNameGenerator.GenerateVariantName
+  fullName: Vivarium.Biology.ScientificNameGenerator.GenerateVariantName
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int32
+  name: int
+  nameWithType: int
+  fullName: int
+  nameWithType.vb: Integer
+  fullName.vb: Integer
+  name.vb: Integer
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.string
+  name: string
+  nameWithType: string
+  fullName: string
+  nameWithType.vb: String
+  fullName.vb: String
+  name.vb: String

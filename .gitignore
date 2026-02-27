@@ -36,8 +36,3 @@ Logs/
 
 ## Local Development
 .rasputin/
-
-## DocFX Generated Documentation
-docs/_site/
-docs/api/
-api/

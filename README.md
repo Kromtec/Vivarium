@@ -4,6 +4,15 @@
 
 The project simulates an ecosystem of autonomous agents ("Creatures") interacting within a dynamic grid-based world containing plants and structures.
 
+## 📖 Documentation
+
+| Document | Description |
+|----------|-------------|
+| **[User Manual](docs/user-manual.md)** | Complete guide to understanding the simulation, neural networks, genetics, and ecosystem dynamics |
+| **[Configuration Guide](docs/configuration.md)** | Detailed configuration parameters and examples |
+| **[API Documentation](docs/api/)** | Code reference generated from XML comments |
+
+
 ## 🧬 Key Features
 
 * **Evolutionary Neural Networks:** Agents possess a genome encoding a Recurrent Neural Network (RNN), allowing for memory and complex decision-making.

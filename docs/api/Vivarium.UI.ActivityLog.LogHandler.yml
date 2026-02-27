@@ -1,0 +1,565 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.UI.ActivityLog.LogHandler
+  commentId: T:Vivarium.UI.ActivityLog.LogHandler
+  id: ActivityLog.LogHandler
+  parent: Vivarium.UI
+  children:
+  - Vivarium.UI.ActivityLog.LogHandler.#ctor(System.Int32,System.Int32,System.Int64,System.Boolean@)
+  - Vivarium.UI.ActivityLog.LogHandler.AppendFormatted``1(``0)
+  - Vivarium.UI.ActivityLog.LogHandler.AppendFormatted``1(``0,System.String)
+  - Vivarium.UI.ActivityLog.LogHandler.AppendLiteral(System.String)
+  - Vivarium.UI.ActivityLog.LogHandler.Enabled
+  - Vivarium.UI.ActivityLog.LogHandler.GetFormattedText
+  langs:
+  - csharp
+  - vb
+  name: ActivityLog.LogHandler
+  nameWithType: ActivityLog.LogHandler
+  fullName: Vivarium.UI.ActivityLog.LogHandler
+  type: Struct
+  source:
+    remote:
+      path: src/Game/UI/ActivityLog.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: LogHandler
+    path: src/Game/UI/ActivityLog.cs
+    startLine: 25
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public readonly ref struct ActivityLog.LogHandler
+    content.vb: Public Structure ActivityLog.LogHandler
+  inheritedMembers:
+  - System.ValueType.Equals(System.Object)
+  - System.ValueType.GetHashCode
+  - System.ValueType.ToString
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetType
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+- uid: Vivarium.UI.ActivityLog.LogHandler.Enabled
+  commentId: P:Vivarium.UI.ActivityLog.LogHandler.Enabled
+  id: Enabled
+  parent: Vivarium.UI.ActivityLog.LogHandler
+  langs:
+  - csharp
+  - vb
+  name: Enabled
+  nameWithType: ActivityLog.LogHandler.Enabled
+  fullName: Vivarium.UI.ActivityLog.LogHandler.Enabled
+  type: Property
+  source:
+    remote:
+      path: src/Game/UI/ActivityLog.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Enabled
+    path: src/Game/UI/ActivityLog.cs
+    startLine: 29
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public bool Enabled { get; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public ReadOnly Property Enabled As Boolean
+  overload: Vivarium.UI.ActivityLog.LogHandler.Enabled*
+- uid: Vivarium.UI.ActivityLog.LogHandler.#ctor(System.Int32,System.Int32,System.Int64,System.Boolean@)
+  commentId: M:Vivarium.UI.ActivityLog.LogHandler.#ctor(System.Int32,System.Int32,System.Int64,System.Boolean@)
+  id: '#ctor(System.Int32,System.Int32,System.Int64,System.Boolean@)'
+  parent: Vivarium.UI.ActivityLog.LogHandler
+  langs:
+  - csharp
+  - vb
+  name: LogHandler(int, int, long, out bool)
+  nameWithType: ActivityLog.LogHandler.LogHandler(int, int, long, out bool)
+  fullName: Vivarium.UI.ActivityLog.LogHandler.LogHandler(int, int, long, out bool)
+  type: Constructor
+  source:
+    remote:
+      path: src/Game/UI/ActivityLog.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: .ctor
+    path: src/Game/UI/ActivityLog.cs
+    startLine: 31
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public LogHandler(int literalLength, int formattedCount, long agentId, out bool handlerIsValid)
+    parameters:
+    - id: literalLength
+      type: System.Int32
+    - id: formattedCount
+      type: System.Int32
+    - id: agentId
+      type: System.Int64
+    - id: handlerIsValid
+      type: System.Boolean
+    content.vb: Public Sub New(literalLength As Integer, formattedCount As Integer, agentId As Long, handlerIsValid As Boolean)
+  overload: Vivarium.UI.ActivityLog.LogHandler.#ctor*
+  nameWithType.vb: ActivityLog.LogHandler.New(Integer, Integer, Long, Boolean)
+  fullName.vb: Vivarium.UI.ActivityLog.LogHandler.New(Integer, Integer, Long, Boolean)
+  name.vb: New(Integer, Integer, Long, Boolean)
+- uid: Vivarium.UI.ActivityLog.LogHandler.AppendLiteral(System.String)
+  commentId: M:Vivarium.UI.ActivityLog.LogHandler.AppendLiteral(System.String)
+  id: AppendLiteral(System.String)
+  parent: Vivarium.UI.ActivityLog.LogHandler
+  langs:
+  - csharp
+  - vb
+  name: AppendLiteral(string)
+  nameWithType: ActivityLog.LogHandler.AppendLiteral(string)
+  fullName: Vivarium.UI.ActivityLog.LogHandler.AppendLiteral(string)
+  type: Method
+  source:
+    remote:
+      path: src/Game/UI/ActivityLog.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AppendLiteral
+    path: src/Game/UI/ActivityLog.cs
+    startLine: 45
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public void AppendLiteral(string s)
+    parameters:
+    - id: s
+      type: System.String
+    content.vb: Public Sub AppendLiteral(s As String)
+  overload: Vivarium.UI.ActivityLog.LogHandler.AppendLiteral*
+  nameWithType.vb: ActivityLog.LogHandler.AppendLiteral(String)
+  fullName.vb: Vivarium.UI.ActivityLog.LogHandler.AppendLiteral(String)
+  name.vb: AppendLiteral(String)
+- uid: Vivarium.UI.ActivityLog.LogHandler.AppendFormatted``1(``0)
+  commentId: M:Vivarium.UI.ActivityLog.LogHandler.AppendFormatted``1(``0)
+  id: AppendFormatted``1(``0)
+  parent: Vivarium.UI.ActivityLog.LogHandler
+  langs:
+  - csharp
+  - vb
+  name: AppendFormatted<T>(T)
+  nameWithType: ActivityLog.LogHandler.AppendFormatted<T>(T)
+  fullName: Vivarium.UI.ActivityLog.LogHandler.AppendFormatted<T>(T)
+  type: Method
+  source:
+    remote:
+      path: src/Game/UI/ActivityLog.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AppendFormatted
+    path: src/Game/UI/ActivityLog.cs
+    startLine: 46
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public void AppendFormatted<T>(T t)
+    parameters:
+    - id: t
+      type: '{T}'
+    typeParameters:
+    - id: T
+    content.vb: Public Sub AppendFormatted(Of T)(t As T)
+  overload: Vivarium.UI.ActivityLog.LogHandler.AppendFormatted*
+  nameWithType.vb: ActivityLog.LogHandler.AppendFormatted(Of T)(T)
+  fullName.vb: Vivarium.UI.ActivityLog.LogHandler.AppendFormatted(Of T)(T)
+  name.vb: AppendFormatted(Of T)(T)
+- uid: Vivarium.UI.ActivityLog.LogHandler.AppendFormatted``1(``0,System.String)
+  commentId: M:Vivarium.UI.ActivityLog.LogHandler.AppendFormatted``1(``0,System.String)
+  id: AppendFormatted``1(``0,System.String)
+  parent: Vivarium.UI.ActivityLog.LogHandler
+  langs:
+  - csharp
+  - vb
+  name: AppendFormatted<T>(T, string)
+  nameWithType: ActivityLog.LogHandler.AppendFormatted<T>(T, string)
+  fullName: Vivarium.UI.ActivityLog.LogHandler.AppendFormatted<T>(T, string)
+  type: Method
+  source:
+    remote:
+      path: src/Game/UI/ActivityLog.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AppendFormatted
+    path: src/Game/UI/ActivityLog.cs
+    startLine: 47
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public void AppendFormatted<T>(T t, string format)
+    parameters:
+    - id: t
+      type: '{T}'
+    - id: format
+      type: System.String
+    typeParameters:
+    - id: T
+    content.vb: Public Sub AppendFormatted(Of T)(t As T, format As String)
+  overload: Vivarium.UI.ActivityLog.LogHandler.AppendFormatted*
+  nameWithType.vb: ActivityLog.LogHandler.AppendFormatted(Of T)(T, String)
+  fullName.vb: Vivarium.UI.ActivityLog.LogHandler.AppendFormatted(Of T)(T, String)
+  name.vb: AppendFormatted(Of T)(T, String)
+- uid: Vivarium.UI.ActivityLog.LogHandler.GetFormattedText
+  commentId: M:Vivarium.UI.ActivityLog.LogHandler.GetFormattedText
+  id: GetFormattedText
+  parent: Vivarium.UI.ActivityLog.LogHandler
+  langs:
+  - csharp
+  - vb
+  name: GetFormattedText()
+  nameWithType: ActivityLog.LogHandler.GetFormattedText()
+  fullName: Vivarium.UI.ActivityLog.LogHandler.GetFormattedText()
+  type: Method
+  source:
+    remote:
+      path: src/Game/UI/ActivityLog.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: GetFormattedText
+    path: src/Game/UI/ActivityLog.cs
+    startLine: 49
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public string GetFormattedText()
+    return:
+      type: System.String
+    content.vb: Public Function GetFormattedText() As String
+  overload: Vivarium.UI.ActivityLog.LogHandler.GetFormattedText*
+references:
+- uid: Vivarium.UI
+  commentId: N:Vivarium.UI
+  href: Vivarium.html
+  name: Vivarium.UI
+  nameWithType: Vivarium.UI
+  fullName: Vivarium.UI
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.UI
+    name: UI
+    href: Vivarium.UI.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.UI
+    name: UI
+    href: Vivarium.UI.html
+- uid: System.ValueType.Equals(System.Object)
+  commentId: M:System.ValueType.Equals(System.Object)
+  parent: System.ValueType
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.valuetype.equals
+  name: Equals(object)
+  nameWithType: ValueType.Equals(object)
+  fullName: System.ValueType.Equals(object)
+  nameWithType.vb: ValueType.Equals(Object)
+  fullName.vb: System.ValueType.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.ValueType.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.equals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.ValueType.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.equals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.ValueType.GetHashCode
+  commentId: M:System.ValueType.GetHashCode
+  parent: System.ValueType
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode
+  name: GetHashCode()
+  nameWithType: ValueType.GetHashCode()
+  fullName: System.ValueType.GetHashCode()
+  spec.csharp:
+  - uid: System.ValueType.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.ValueType.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode
+  - name: (
+  - name: )
+- uid: System.ValueType.ToString
+  commentId: M:System.ValueType.ToString
+  parent: System.ValueType
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.valuetype.tostring
+  name: ToString()
+  nameWithType: ValueType.ToString()
+  fullName: System.ValueType.ToString()
+  spec.csharp:
+  - uid: System.ValueType.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.ValueType.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.valuetype.tostring
+  - name: (
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.ValueType
+  commentId: T:System.ValueType
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.valuetype
+  name: ValueType
+  nameWithType: ValueType
+  fullName: System.ValueType
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Vivarium.UI.ActivityLog.LogHandler.Enabled*
+  commentId: Overload:Vivarium.UI.ActivityLog.LogHandler.Enabled
+  href: Vivarium.UI.ActivityLog.LogHandler.html#Vivarium_UI_ActivityLog_LogHandler_Enabled
+  name: Enabled
+  nameWithType: ActivityLog.LogHandler.Enabled
+  fullName: Vivarium.UI.ActivityLog.LogHandler.Enabled
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.boolean
+  name: bool
+  nameWithType: bool
+  fullName: bool
+  nameWithType.vb: Boolean
+  fullName.vb: Boolean
+  name.vb: Boolean
+- uid: Vivarium.UI.ActivityLog.LogHandler.#ctor*
+  commentId: Overload:Vivarium.UI.ActivityLog.LogHandler.#ctor
+  href: Vivarium.UI.ActivityLog.LogHandler.html#Vivarium_UI_ActivityLog_LogHandler__ctor_System_Int32_System_Int32_System_Int64_System_Boolean__
+  name: LogHandler
+  nameWithType: ActivityLog.LogHandler.LogHandler
+  fullName: Vivarium.UI.ActivityLog.LogHandler.LogHandler
+  nameWithType.vb: ActivityLog.LogHandler.New
+  fullName.vb: Vivarium.UI.ActivityLog.LogHandler.New
+  name.vb: New
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int32
+  name: int
+  nameWithType: int
+  fullName: int
+  nameWithType.vb: Integer
+  fullName.vb: Integer
+  name.vb: Integer
+- uid: System.Int64
+  commentId: T:System.Int64
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int64
+  name: long
+  nameWithType: long
+  fullName: long
+  nameWithType.vb: Long
+  fullName.vb: Long
+  name.vb: Long
+- uid: Vivarium.UI.ActivityLog.LogHandler.AppendLiteral*
+  commentId: Overload:Vivarium.UI.ActivityLog.LogHandler.AppendLiteral
+  href: Vivarium.UI.ActivityLog.LogHandler.html#Vivarium_UI_ActivityLog_LogHandler_AppendLiteral_System_String_
+  name: AppendLiteral
+  nameWithType: ActivityLog.LogHandler.AppendLiteral
+  fullName: Vivarium.UI.ActivityLog.LogHandler.AppendLiteral
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.string
+  name: string
+  nameWithType: string
+  fullName: string
+  nameWithType.vb: String
+  fullName.vb: String
+  name.vb: String
+- uid: Vivarium.UI.ActivityLog.LogHandler.AppendFormatted*
+  commentId: Overload:Vivarium.UI.ActivityLog.LogHandler.AppendFormatted
+  href: Vivarium.UI.ActivityLog.LogHandler.html#Vivarium_UI_ActivityLog_LogHandler_AppendFormatted__1___0_
+  name: AppendFormatted
+  nameWithType: ActivityLog.LogHandler.AppendFormatted
+  fullName: Vivarium.UI.ActivityLog.LogHandler.AppendFormatted
+- uid: '{T}'
+  commentId: '!:T'
+  definition: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: Vivarium.UI.ActivityLog.LogHandler.GetFormattedText*
+  commentId: Overload:Vivarium.UI.ActivityLog.LogHandler.GetFormattedText
+  href: Vivarium.UI.ActivityLog.LogHandler.html#Vivarium_UI_ActivityLog_LogHandler_GetFormattedText
+  name: GetFormattedText
+  nameWithType: ActivityLog.LogHandler.GetFormattedText
+  fullName: Vivarium.UI.ActivityLog.LogHandler.GetFormattedText

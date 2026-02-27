@@ -1,0 +1,152 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.Biology
+  commentId: N:Vivarium.Biology
+  id: Vivarium.Biology
+  children:
+  - Vivarium.Biology.ActionType
+  - Vivarium.Biology.Brain
+  - Vivarium.Biology.BrainConfig
+  - Vivarium.Biology.DecodedGene
+  - Vivarium.Biology.DietType
+  - Vivarium.Biology.Gene
+  - Vivarium.Biology.Genetics
+  - Vivarium.Biology.Genetics.TraitType
+  - Vivarium.Biology.GenomeCensus
+  - Vivarium.Biology.GenomeFamily
+  - Vivarium.Biology.GenomeVariant
+  - Vivarium.Biology.ScientificNameGenerator
+  - Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: Vivarium.Biology
+  nameWithType: Vivarium.Biology
+  fullName: Vivarium.Biology
+  type: Namespace
+  assemblies:
+  - Vivarium
+references:
+- uid: Vivarium.Biology.ActionType
+  commentId: T:Vivarium.Biology.ActionType
+  parent: Vivarium.Biology
+  href: Vivarium.Biology.ActionType.html
+  name: ActionType
+  nameWithType: ActionType
+  fullName: Vivarium.Biology.ActionType
+- uid: Vivarium.Biology.Brain
+  commentId: T:Vivarium.Biology.Brain
+  href: Vivarium.Biology.Brain.html
+  name: Brain
+  nameWithType: Brain
+  fullName: Vivarium.Biology.Brain
+- uid: Vivarium.Biology.BrainConfig
+  commentId: T:Vivarium.Biology.BrainConfig
+  href: Vivarium.Biology.BrainConfig.html
+  name: BrainConfig
+  nameWithType: BrainConfig
+  fullName: Vivarium.Biology.BrainConfig
+- uid: Vivarium.Biology.DietType
+  commentId: T:Vivarium.Biology.DietType
+  parent: Vivarium.Biology
+  href: Vivarium.Biology.DietType.html
+  name: DietType
+  nameWithType: DietType
+  fullName: Vivarium.Biology.DietType
+- uid: Vivarium.Biology.Gene
+  commentId: T:Vivarium.Biology.Gene
+  parent: Vivarium.Biology
+  href: Vivarium.Biology.Gene.html
+  name: Gene
+  nameWithType: Gene
+  fullName: Vivarium.Biology.Gene
+- uid: Vivarium.Biology.DecodedGene
+  commentId: T:Vivarium.Biology.DecodedGene
+  href: Vivarium.Biology.DecodedGene.html
+  name: DecodedGene
+  nameWithType: DecodedGene
+  fullName: Vivarium.Biology.DecodedGene
+- uid: Vivarium.Biology.Genetics
+  commentId: T:Vivarium.Biology.Genetics
+  href: Vivarium.Biology.Genetics.html
+  name: Genetics
+  nameWithType: Genetics
+  fullName: Vivarium.Biology.Genetics
+- uid: Vivarium.Biology.Genetics.TraitType
+  commentId: T:Vivarium.Biology.Genetics.TraitType
+  parent: Vivarium.Biology
+  href: Vivarium.Biology.Genetics.html
+  name: Genetics.TraitType
+  nameWithType: Genetics.TraitType
+  fullName: Vivarium.Biology.Genetics.TraitType
+  spec.csharp:
+  - uid: Vivarium.Biology.Genetics
+    name: Genetics
+    href: Vivarium.Biology.Genetics.html
+  - name: .
+  - uid: Vivarium.Biology.Genetics.TraitType
+    name: TraitType
+    href: Vivarium.Biology.Genetics.TraitType.html
+  spec.vb:
+  - uid: Vivarium.Biology.Genetics
+    name: Genetics
+    href: Vivarium.Biology.Genetics.html
+  - name: .
+  - uid: Vivarium.Biology.Genetics.TraitType
+    name: TraitType
+    href: Vivarium.Biology.Genetics.TraitType.html
+- uid: Vivarium.Biology.GenomeFamily
+  commentId: T:Vivarium.Biology.GenomeFamily
+  href: Vivarium.Biology.GenomeFamily.html
+  name: GenomeFamily
+  nameWithType: GenomeFamily
+  fullName: Vivarium.Biology.GenomeFamily
+- uid: Vivarium.Biology.GenomeVariant
+  commentId: T:Vivarium.Biology.GenomeVariant
+  parent: Vivarium.Biology
+  href: Vivarium.Biology.GenomeVariant.html
+  name: GenomeVariant
+  nameWithType: GenomeVariant
+  fullName: Vivarium.Biology.GenomeVariant
+- uid: Vivarium.Biology.GenomeCensus
+  commentId: T:Vivarium.Biology.GenomeCensus
+  parent: Vivarium.Biology
+  href: Vivarium.Biology.GenomeCensus.html
+  name: GenomeCensus
+  nameWithType: GenomeCensus
+  fullName: Vivarium.Biology.GenomeCensus
+- uid: Vivarium.Biology.ScientificNameGenerator
+  commentId: T:Vivarium.Biology.ScientificNameGenerator
+  href: Vivarium.Biology.ScientificNameGenerator.html
+  name: ScientificNameGenerator
+  nameWithType: ScientificNameGenerator
+  fullName: Vivarium.Biology.ScientificNameGenerator
+- uid: Vivarium.Biology.SensorType
+  commentId: T:Vivarium.Biology.SensorType
+  parent: Vivarium.Biology
+  href: Vivarium.Biology.SensorType.html
+  name: SensorType
+  nameWithType: SensorType
+  fullName: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology
+  commentId: N:Vivarium.Biology
+  href: Vivarium.html
+  name: Vivarium.Biology
+  nameWithType: Vivarium.Biology
+  fullName: Vivarium.Biology
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Biology
+    name: Biology
+    href: Vivarium.Biology.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Biology
+    name: Biology
+    href: Vivarium.Biology.html

@@ -1,0 +1,700 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.World.WorldSensor
+  commentId: T:Vivarium.World.WorldSensor
+  id: WorldSensor
+  parent: Vivarium.World
+  children:
+  - Vivarium.World.WorldSensor.PopulateDirectionalSensors(Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Int32,System.Span{System.Single},System.Int32,System.Int32,System.Int32)
+  - Vivarium.World.WorldSensor.ScanLocalArea(Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Int32)
+  - Vivarium.World.WorldSensor.ScanSensors(Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Int32,System.Int32,System.Span{System.Single},System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,Vivarium.Entities.Agent@,Vivarium.Entities.Agent[],System.Boolean@)
+  - Vivarium.World.WorldSensor.TryGetRandomEmptySpot(Vivarium.World.GridCell[0:,0:],System.Int32@,System.Int32@,System.Random)
+  langs:
+  - csharp
+  - vb
+  name: WorldSensor
+  nameWithType: WorldSensor
+  fullName: Vivarium.World.WorldSensor
+  type: Class
+  source:
+    remote:
+      path: src/Game/World/WorldSensor.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: WorldSensor
+    path: src/Game/World/WorldSensor.cs
+    startLine: 6
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.World
+  syntax:
+    content: public static class WorldSensor
+    content.vb: Public Module WorldSensor
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+- uid: Vivarium.World.WorldSensor.ScanLocalArea(Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Int32)
+  commentId: M:Vivarium.World.WorldSensor.ScanLocalArea(Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Int32)
+  id: ScanLocalArea(Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Int32)
+  parent: Vivarium.World.WorldSensor
+  langs:
+  - csharp
+  - vb
+  name: ScanLocalArea(GridCell[,], int, int, int)
+  nameWithType: WorldSensor.ScanLocalArea(GridCell[,], int, int, int)
+  fullName: Vivarium.World.WorldSensor.ScanLocalArea(Vivarium.World.GridCell[,], int, int, int)
+  type: Method
+  source:
+    remote:
+      path: src/Game/World/WorldSensor.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ScanLocalArea
+    path: src/Game/World/WorldSensor.cs
+    startLine: 29
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.World
+  summary: >-
+    Scans a square area around the center point and calculates the density of entities.
+
+    Returns values between 0.0 (empty) and 1.0 (completely full).
+  example: []
+  syntax:
+    content: public static DensityResult ScanLocalArea(GridCell[,] gridMap, int centerX, int centerY, int radius)
+    parameters:
+    - id: gridMap
+      type: Vivarium.World.GridCell[,]
+    - id: centerX
+      type: System.Int32
+    - id: centerY
+      type: System.Int32
+    - id: radius
+      type: System.Int32
+    return:
+      type: Vivarium.World.DensityResult
+    content.vb: Public Shared Function ScanLocalArea(gridMap As GridCell(,), centerX As Integer, centerY As Integer, radius As Integer) As DensityResult
+  overload: Vivarium.World.WorldSensor.ScanLocalArea*
+  nameWithType.vb: WorldSensor.ScanLocalArea(GridCell(,), Integer, Integer, Integer)
+  fullName.vb: Vivarium.World.WorldSensor.ScanLocalArea(Vivarium.World.GridCell(,), Integer, Integer, Integer)
+  name.vb: ScanLocalArea(GridCell(,), Integer, Integer, Integer)
+- uid: Vivarium.World.WorldSensor.TryGetRandomEmptySpot(Vivarium.World.GridCell[0:,0:],System.Int32@,System.Int32@,System.Random)
+  commentId: M:Vivarium.World.WorldSensor.TryGetRandomEmptySpot(Vivarium.World.GridCell[0:,0:],System.Int32@,System.Int32@,System.Random)
+  id: TryGetRandomEmptySpot(Vivarium.World.GridCell[0:,0:],System.Int32@,System.Int32@,System.Random)
+  parent: Vivarium.World.WorldSensor
+  langs:
+  - csharp
+  - vb
+  name: TryGetRandomEmptySpot(GridCell[,], out int, out int, Random)
+  nameWithType: WorldSensor.TryGetRandomEmptySpot(GridCell[,], out int, out int, Random)
+  fullName: Vivarium.World.WorldSensor.TryGetRandomEmptySpot(Vivarium.World.GridCell[,], out int, out int, System.Random)
+  type: Method
+  source:
+    remote:
+      path: src/Game/World/WorldSensor.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: TryGetRandomEmptySpot
+    path: src/Game/World/WorldSensor.cs
+    startLine: 74
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.World
+  syntax:
+    content: public static bool TryGetRandomEmptySpot(GridCell[,] gridMap, out int x, out int y, Random rng)
+    parameters:
+    - id: gridMap
+      type: Vivarium.World.GridCell[,]
+    - id: x
+      type: System.Int32
+    - id: y
+      type: System.Int32
+    - id: rng
+      type: System.Random
+    return:
+      type: System.Boolean
+    content.vb: Public Shared Function TryGetRandomEmptySpot(gridMap As GridCell(,), x As Integer, y As Integer, rng As Random) As Boolean
+  overload: Vivarium.World.WorldSensor.TryGetRandomEmptySpot*
+  nameWithType.vb: WorldSensor.TryGetRandomEmptySpot(GridCell(,), Integer, Integer, Random)
+  fullName.vb: Vivarium.World.WorldSensor.TryGetRandomEmptySpot(Vivarium.World.GridCell(,), Integer, Integer, System.Random)
+  name.vb: TryGetRandomEmptySpot(GridCell(,), Integer, Integer, Random)
+- uid: Vivarium.World.WorldSensor.PopulateDirectionalSensors(Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Int32,System.Span{System.Single},System.Int32,System.Int32,System.Int32)
+  commentId: M:Vivarium.World.WorldSensor.PopulateDirectionalSensors(Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Int32,System.Span{System.Single},System.Int32,System.Int32,System.Int32)
+  id: PopulateDirectionalSensors(Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Int32,System.Span{System.Single},System.Int32,System.Int32,System.Int32)
+  parent: Vivarium.World.WorldSensor
+  langs:
+  - csharp
+  - vb
+  name: PopulateDirectionalSensors(GridCell[,], int, int, int, Span<float>, int, int, int)
+  nameWithType: WorldSensor.PopulateDirectionalSensors(GridCell[,], int, int, int, Span<float>, int, int, int)
+  fullName: Vivarium.World.WorldSensor.PopulateDirectionalSensors(Vivarium.World.GridCell[,], int, int, int, System.Span<float>, int, int, int)
+  type: Method
+  source:
+    remote:
+      path: src/Game/World/WorldSensor.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: PopulateDirectionalSensors
+    path: src/Game/World/WorldSensor.cs
+    startLine: 120
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.World
+  summary: >-
+    Scans a square area and populates the neuron input outputs directly.
+
+    Uses stackalloc to avoid heap allocations.
+  example: []
+  syntax:
+    content: public static void PopulateDirectionalSensors(GridCell[,] gridMap, int centerX, int centerY, int radius, Span<float> neuronOutput, int agentOffset, int plantOffset, int structOffset)
+    parameters:
+    - id: gridMap
+      type: Vivarium.World.GridCell[,]
+    - id: centerX
+      type: System.Int32
+    - id: centerY
+      type: System.Int32
+    - id: radius
+      type: System.Int32
+    - id: neuronOutput
+      type: System.Span{System.Single}
+    - id: agentOffset
+      type: System.Int32
+    - id: plantOffset
+      type: System.Int32
+    - id: structOffset
+      type: System.Int32
+    content.vb: Public Shared Sub PopulateDirectionalSensors(gridMap As GridCell(,), centerX As Integer, centerY As Integer, radius As Integer, neuronOutput As Span(Of Single), agentOffset As Integer, plantOffset As Integer, structOffset As Integer)
+  overload: Vivarium.World.WorldSensor.PopulateDirectionalSensors*
+  nameWithType.vb: WorldSensor.PopulateDirectionalSensors(GridCell(,), Integer, Integer, Integer, Span(Of Single), Integer, Integer, Integer)
+  fullName.vb: Vivarium.World.WorldSensor.PopulateDirectionalSensors(Vivarium.World.GridCell(,), Integer, Integer, Integer, System.Span(Of Single), Integer, Integer, Integer)
+  name.vb: PopulateDirectionalSensors(GridCell(,), Integer, Integer, Integer, Span(Of Single), Integer, Integer, Integer)
+- uid: Vivarium.World.WorldSensor.ScanSensors(Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Int32,System.Int32,System.Span{System.Single},System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,Vivarium.Entities.Agent@,Vivarium.Entities.Agent[],System.Boolean@)
+  commentId: M:Vivarium.World.WorldSensor.ScanSensors(Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Int32,System.Int32,System.Span{System.Single},System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,Vivarium.Entities.Agent@,Vivarium.Entities.Agent[],System.Boolean@)
+  id: ScanSensors(Vivarium.World.GridCell[0:,0:],System.Int32,System.Int32,System.Int32,System.Int32,System.Span{System.Single},System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,Vivarium.Entities.Agent@,Vivarium.Entities.Agent[],System.Boolean@)
+  parent: Vivarium.World.WorldSensor
+  langs:
+  - csharp
+  - vb
+  name: ScanSensors(GridCell[,], int, int, int, int, Span<float>, int, int, int, int, int, int, ref Agent, Agent[], out bool)
+  nameWithType: WorldSensor.ScanSensors(GridCell[,], int, int, int, int, Span<float>, int, int, int, int, int, int, ref Agent, Agent[], out bool)
+  fullName: Vivarium.World.WorldSensor.ScanSensors(Vivarium.World.GridCell[,], int, int, int, int, System.Span<float>, int, int, int, int, int, int, ref Vivarium.Entities.Agent, Vivarium.Entities.Agent[], out bool)
+  type: Method
+  source:
+    remote:
+      path: src/Game/World/WorldSensor.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ScanSensors
+    path: src/Game/World/WorldSensor.cs
+    startLine: 198
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.World
+  summary: >-
+    Combined scan for both local area density (fixed radius) and directional sensors (variable radius).
+
+    Optimizes performance by iterating the grid only once.
+  example: []
+  syntax:
+    content: public static void ScanSensors(GridCell[,] gridMap, int centerX, int centerY, int localRadius, int dirRadius, Span<float> neuronOutput, int agentOffset, int plantOffset, int structOffset, int localAgentIdx, int localPlantIdx, int localStructIdx, ref Agent self, Agent[] agentPopulation, out bool threatDetected)
+    parameters:
+    - id: gridMap
+      type: Vivarium.World.GridCell[,]
+    - id: centerX
+      type: System.Int32
+    - id: centerY
+      type: System.Int32
+    - id: localRadius
+      type: System.Int32
+    - id: dirRadius
+      type: System.Int32
+    - id: neuronOutput
+      type: System.Span{System.Single}
+    - id: agentOffset
+      type: System.Int32
+    - id: plantOffset
+      type: System.Int32
+    - id: structOffset
+      type: System.Int32
+    - id: localAgentIdx
+      type: System.Int32
+    - id: localPlantIdx
+      type: System.Int32
+    - id: localStructIdx
+      type: System.Int32
+    - id: self
+      type: Vivarium.Entities.Agent
+    - id: agentPopulation
+      type: Vivarium.Entities.Agent[]
+    - id: threatDetected
+      type: System.Boolean
+    content.vb: Public Shared Sub ScanSensors(gridMap As GridCell(,), centerX As Integer, centerY As Integer, localRadius As Integer, dirRadius As Integer, neuronOutput As Span(Of Single), agentOffset As Integer, plantOffset As Integer, structOffset As Integer, localAgentIdx As Integer, localPlantIdx As Integer, localStructIdx As Integer, self As Agent, agentPopulation As Agent(), threatDetected As Boolean)
+  overload: Vivarium.World.WorldSensor.ScanSensors*
+  nameWithType.vb: WorldSensor.ScanSensors(GridCell(,), Integer, Integer, Integer, Integer, Span(Of Single), Integer, Integer, Integer, Integer, Integer, Integer, Agent, Agent(), Boolean)
+  fullName.vb: Vivarium.World.WorldSensor.ScanSensors(Vivarium.World.GridCell(,), Integer, Integer, Integer, Integer, System.Span(Of Single), Integer, Integer, Integer, Integer, Integer, Integer, Vivarium.Entities.Agent, Vivarium.Entities.Agent(), Boolean)
+  name.vb: ScanSensors(GridCell(,), Integer, Integer, Integer, Integer, Span(Of Single), Integer, Integer, Integer, Integer, Integer, Integer, Agent, Agent(), Boolean)
+references:
+- uid: Vivarium.World
+  commentId: N:Vivarium.World
+  href: Vivarium.html
+  name: Vivarium.World
+  nameWithType: Vivarium.World
+  fullName: Vivarium.World
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.World
+    name: World
+    href: Vivarium.World.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.World
+    name: World
+    href: Vivarium.World.html
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  name: Equals(object)
+  nameWithType: object.Equals(object)
+  fullName: object.Equals(object)
+  nameWithType.vb: Object.Equals(Object)
+  fullName.vb: Object.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  name: GetHashCode()
+  nameWithType: object.GetHashCode()
+  fullName: object.GetHashCode()
+  nameWithType.vb: Object.GetHashCode()
+  fullName.vb: Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  name: MemberwiseClone()
+  nameWithType: object.MemberwiseClone()
+  fullName: object.MemberwiseClone()
+  nameWithType.vb: Object.MemberwiseClone()
+  fullName.vb: Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  name: ToString()
+  nameWithType: object.ToString()
+  fullName: object.ToString()
+  nameWithType.vb: Object.ToString()
+  fullName.vb: Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Vivarium.World.WorldSensor.ScanLocalArea*
+  commentId: Overload:Vivarium.World.WorldSensor.ScanLocalArea
+  href: Vivarium.World.WorldSensor.html#Vivarium_World_WorldSensor_ScanLocalArea_Vivarium_World_GridCell_0
+  name: ScanLocalArea
+  nameWithType: WorldSensor.ScanLocalArea
+  fullName: Vivarium.World.WorldSensor.ScanLocalArea
+- uid: Vivarium.World.GridCell[,]
+  isExternal: true
+  href: Vivarium.World.GridCell.html
+  name: GridCell[,]
+  nameWithType: GridCell[,]
+  fullName: Vivarium.World.GridCell[,]
+  nameWithType.vb: GridCell(,)
+  fullName.vb: Vivarium.World.GridCell(,)
+  name.vb: GridCell(,)
+  spec.csharp:
+  - uid: Vivarium.World.GridCell
+    name: GridCell
+    href: Vivarium.World.GridCell.html
+  - name: '['
+  - name: ','
+  - name: ']'
+  spec.vb:
+  - uid: Vivarium.World.GridCell
+    name: GridCell
+    href: Vivarium.World.GridCell.html
+  - name: (
+  - name: ','
+  - name: )
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int32
+  name: int
+  nameWithType: int
+  fullName: int
+  nameWithType.vb: Integer
+  fullName.vb: Integer
+  name.vb: Integer
+- uid: Vivarium.World.DensityResult
+  commentId: T:Vivarium.World.DensityResult
+  parent: Vivarium.World
+  href: Vivarium.World.DensityResult.html
+  name: DensityResult
+  nameWithType: DensityResult
+  fullName: Vivarium.World.DensityResult
+- uid: Vivarium.World.WorldSensor.TryGetRandomEmptySpot*
+  commentId: Overload:Vivarium.World.WorldSensor.TryGetRandomEmptySpot
+  href: Vivarium.World.WorldSensor.html#Vivarium_World_WorldSensor_TryGetRandomEmptySpot_Vivarium_World_GridCell_0
+  name: TryGetRandomEmptySpot
+  nameWithType: WorldSensor.TryGetRandomEmptySpot
+  fullName: Vivarium.World.WorldSensor.TryGetRandomEmptySpot
+- uid: System.Random
+  commentId: T:System.Random
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.random
+  name: Random
+  nameWithType: Random
+  fullName: System.Random
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.boolean
+  name: bool
+  nameWithType: bool
+  fullName: bool
+  nameWithType.vb: Boolean
+  fullName.vb: Boolean
+  name.vb: Boolean
+- uid: Vivarium.World.WorldSensor.PopulateDirectionalSensors*
+  commentId: Overload:Vivarium.World.WorldSensor.PopulateDirectionalSensors
+  href: Vivarium.World.WorldSensor.html#Vivarium_World_WorldSensor_PopulateDirectionalSensors_Vivarium_World_GridCell_0
+  name: PopulateDirectionalSensors
+  nameWithType: WorldSensor.PopulateDirectionalSensors
+  fullName: Vivarium.World.WorldSensor.PopulateDirectionalSensors
+- uid: System.Span{System.Single}
+  commentId: T:System.Span{System.Single}
+  parent: System
+  definition: System.Span`1
+  href: https://learn.microsoft.com/dotnet/api/system.span-1
+  name: Span<float>
+  nameWithType: Span<float>
+  fullName: System.Span<float>
+  nameWithType.vb: Span(Of Single)
+  fullName.vb: System.Span(Of Single)
+  name.vb: Span(Of Single)
+  spec.csharp:
+  - uid: System.Span`1
+    name: Span
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.span-1
+  - name: <
+  - uid: System.Single
+    name: float
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.single
+  - name: '>'
+  spec.vb:
+  - uid: System.Span`1
+    name: Span
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.span-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: System.Single
+    name: Single
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.single
+  - name: )
+- uid: System.Span`1
+  commentId: T:System.Span`1
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.span-1
+  name: Span<T>
+  nameWithType: Span<T>
+  fullName: System.Span<T>
+  nameWithType.vb: Span(Of T)
+  fullName.vb: System.Span(Of T)
+  name.vb: Span(Of T)
+  spec.csharp:
+  - uid: System.Span`1
+    name: Span
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.span-1
+  - name: <
+  - name: T
+  - name: '>'
+  spec.vb:
+  - uid: System.Span`1
+    name: Span
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.span-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+- uid: Vivarium.World.WorldSensor.ScanSensors*
+  commentId: Overload:Vivarium.World.WorldSensor.ScanSensors
+  href: Vivarium.World.WorldSensor.html#Vivarium_World_WorldSensor_ScanSensors_Vivarium_World_GridCell_0
+  name: ScanSensors
+  nameWithType: WorldSensor.ScanSensors
+  fullName: Vivarium.World.WorldSensor.ScanSensors
+- uid: Vivarium.Entities.Agent
+  commentId: T:Vivarium.Entities.Agent
+  parent: Vivarium.Entities
+  href: Vivarium.Entities.Agent.html
+  name: Agent
+  nameWithType: Agent
+  fullName: Vivarium.Entities.Agent
+- uid: Vivarium.Entities.Agent[]
+  isExternal: true
+  href: Vivarium.Entities.Agent.html
+  name: Agent[]
+  nameWithType: Agent[]
+  fullName: Vivarium.Entities.Agent[]
+  nameWithType.vb: Agent()
+  fullName.vb: Vivarium.Entities.Agent()
+  name.vb: Agent()
+  spec.csharp:
+  - uid: Vivarium.Entities.Agent
+    name: Agent
+    href: Vivarium.Entities.Agent.html
+  - name: '['
+  - name: ']'
+  spec.vb:
+  - uid: Vivarium.Entities.Agent
+    name: Agent
+    href: Vivarium.Entities.Agent.html
+  - name: (
+  - name: )
+- uid: Vivarium.Entities
+  commentId: N:Vivarium.Entities
+  href: Vivarium.html
+  name: Vivarium.Entities
+  nameWithType: Vivarium.Entities
+  fullName: Vivarium.Entities
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Entities
+    name: Entities
+    href: Vivarium.Entities.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Entities
+    name: Entities
+    href: Vivarium.Entities.html

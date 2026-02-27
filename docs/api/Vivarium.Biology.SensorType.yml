@@ -1,0 +1,814 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.Biology.SensorType
+  commentId: T:Vivarium.Biology.SensorType
+  id: SensorType
+  parent: Vivarium.Biology
+  children:
+  - Vivarium.Biology.SensorType.Age
+  - Vivarium.Biology.SensorType.AgentDensity
+  - Vivarium.Biology.SensorType.AgentDensity_E
+  - Vivarium.Biology.SensorType.AgentDensity_N
+  - Vivarium.Biology.SensorType.AgentDensity_S
+  - Vivarium.Biology.SensorType.AgentDensity_W
+  - Vivarium.Biology.SensorType.Bravery
+  - Vivarium.Biology.SensorType.Constitution
+  - Vivarium.Biology.SensorType.Energy
+  - Vivarium.Biology.SensorType.LocationX
+  - Vivarium.Biology.SensorType.LocationY
+  - Vivarium.Biology.SensorType.MetabolicEfficiency
+  - Vivarium.Biology.SensorType.Oscillator
+  - Vivarium.Biology.SensorType.Perception
+  - Vivarium.Biology.SensorType.PlantDensity
+  - Vivarium.Biology.SensorType.PlantDensity_E
+  - Vivarium.Biology.SensorType.PlantDensity_N
+  - Vivarium.Biology.SensorType.PlantDensity_S
+  - Vivarium.Biology.SensorType.PlantDensity_W
+  - Vivarium.Biology.SensorType.Random
+  - Vivarium.Biology.SensorType.Speed
+  - Vivarium.Biology.SensorType.Strength
+  - Vivarium.Biology.SensorType.StructureDensity
+  - Vivarium.Biology.SensorType.StructureDensity_E
+  - Vivarium.Biology.SensorType.StructureDensity_N
+  - Vivarium.Biology.SensorType.StructureDensity_S
+  - Vivarium.Biology.SensorType.StructureDensity_W
+  - Vivarium.Biology.SensorType.TrophicBias
+  langs:
+  - csharp
+  - vb
+  name: SensorType
+  nameWithType: SensorType
+  fullName: Vivarium.Biology.SensorType
+  type: Enum
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: SensorType
+    path: src/Game/Biology/SensorType.cs
+    startLine: 5
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: public enum SensorType
+    content.vb: Public Enum SensorType
+- uid: Vivarium.Biology.SensorType.LocationX
+  commentId: F:Vivarium.Biology.SensorType.LocationX
+  id: LocationX
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: LocationX
+  nameWithType: SensorType.LocationX
+  fullName: Vivarium.Biology.SensorType.LocationX
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: LocationX
+    path: src/Game/Biology/SensorType.cs
+    startLine: 7
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: LocationX = 0
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.LocationY
+  commentId: F:Vivarium.Biology.SensorType.LocationY
+  id: LocationY
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: LocationY
+  nameWithType: SensorType.LocationY
+  fullName: Vivarium.Biology.SensorType.LocationY
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: LocationY
+    path: src/Game/Biology/SensorType.cs
+    startLine: 8
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: LocationY = 1
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.Random
+  commentId: F:Vivarium.Biology.SensorType.Random
+  id: Random
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: Random
+  nameWithType: SensorType.Random
+  fullName: Vivarium.Biology.SensorType.Random
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Random
+    path: src/Game/Biology/SensorType.cs
+    startLine: 9
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: Random = 2
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.Energy
+  commentId: F:Vivarium.Biology.SensorType.Energy
+  id: Energy
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: Energy
+  nameWithType: SensorType.Energy
+  fullName: Vivarium.Biology.SensorType.Energy
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Energy
+    path: src/Game/Biology/SensorType.cs
+    startLine: 10
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: Energy = 3
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.Age
+  commentId: F:Vivarium.Biology.SensorType.Age
+  id: Age
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: Age
+  nameWithType: SensorType.Age
+  fullName: Vivarium.Biology.SensorType.Age
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Age
+    path: src/Game/Biology/SensorType.cs
+    startLine: 11
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: Age = 4
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.Oscillator
+  commentId: F:Vivarium.Biology.SensorType.Oscillator
+  id: Oscillator
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: Oscillator
+  nameWithType: SensorType.Oscillator
+  fullName: Vivarium.Biology.SensorType.Oscillator
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Oscillator
+    path: src/Game/Biology/SensorType.cs
+    startLine: 12
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: Oscillator = 5
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.AgentDensity
+  commentId: F:Vivarium.Biology.SensorType.AgentDensity
+  id: AgentDensity
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: AgentDensity
+  nameWithType: SensorType.AgentDensity
+  fullName: Vivarium.Biology.SensorType.AgentDensity
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AgentDensity
+    path: src/Game/Biology/SensorType.cs
+    startLine: 13
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: AgentDensity = 6
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.PlantDensity
+  commentId: F:Vivarium.Biology.SensorType.PlantDensity
+  id: PlantDensity
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: PlantDensity
+  nameWithType: SensorType.PlantDensity
+  fullName: Vivarium.Biology.SensorType.PlantDensity
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: PlantDensity
+    path: src/Game/Biology/SensorType.cs
+    startLine: 14
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: PlantDensity = 7
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.StructureDensity
+  commentId: F:Vivarium.Biology.SensorType.StructureDensity
+  id: StructureDensity
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: StructureDensity
+  nameWithType: SensorType.StructureDensity
+  fullName: Vivarium.Biology.SensorType.StructureDensity
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: StructureDensity
+    path: src/Game/Biology/SensorType.cs
+    startLine: 15
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: StructureDensity = 8
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.AgentDensity_N
+  commentId: F:Vivarium.Biology.SensorType.AgentDensity_N
+  id: AgentDensity_N
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: AgentDensity_N
+  nameWithType: SensorType.AgentDensity_N
+  fullName: Vivarium.Biology.SensorType.AgentDensity_N
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AgentDensity_N
+    path: src/Game/Biology/SensorType.cs
+    startLine: 18
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: AgentDensity_N = 9
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.AgentDensity_E
+  commentId: F:Vivarium.Biology.SensorType.AgentDensity_E
+  id: AgentDensity_E
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: AgentDensity_E
+  nameWithType: SensorType.AgentDensity_E
+  fullName: Vivarium.Biology.SensorType.AgentDensity_E
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AgentDensity_E
+    path: src/Game/Biology/SensorType.cs
+    startLine: 18
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: AgentDensity_E = 10
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.AgentDensity_S
+  commentId: F:Vivarium.Biology.SensorType.AgentDensity_S
+  id: AgentDensity_S
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: AgentDensity_S
+  nameWithType: SensorType.AgentDensity_S
+  fullName: Vivarium.Biology.SensorType.AgentDensity_S
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AgentDensity_S
+    path: src/Game/Biology/SensorType.cs
+    startLine: 18
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: AgentDensity_S = 11
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.AgentDensity_W
+  commentId: F:Vivarium.Biology.SensorType.AgentDensity_W
+  id: AgentDensity_W
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: AgentDensity_W
+  nameWithType: SensorType.AgentDensity_W
+  fullName: Vivarium.Biology.SensorType.AgentDensity_W
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AgentDensity_W
+    path: src/Game/Biology/SensorType.cs
+    startLine: 18
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: AgentDensity_W = 12
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.PlantDensity_N
+  commentId: F:Vivarium.Biology.SensorType.PlantDensity_N
+  id: PlantDensity_N
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: PlantDensity_N
+  nameWithType: SensorType.PlantDensity_N
+  fullName: Vivarium.Biology.SensorType.PlantDensity_N
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: PlantDensity_N
+    path: src/Game/Biology/SensorType.cs
+    startLine: 19
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: PlantDensity_N = 13
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.PlantDensity_E
+  commentId: F:Vivarium.Biology.SensorType.PlantDensity_E
+  id: PlantDensity_E
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: PlantDensity_E
+  nameWithType: SensorType.PlantDensity_E
+  fullName: Vivarium.Biology.SensorType.PlantDensity_E
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: PlantDensity_E
+    path: src/Game/Biology/SensorType.cs
+    startLine: 19
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: PlantDensity_E = 14
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.PlantDensity_S
+  commentId: F:Vivarium.Biology.SensorType.PlantDensity_S
+  id: PlantDensity_S
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: PlantDensity_S
+  nameWithType: SensorType.PlantDensity_S
+  fullName: Vivarium.Biology.SensorType.PlantDensity_S
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: PlantDensity_S
+    path: src/Game/Biology/SensorType.cs
+    startLine: 19
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: PlantDensity_S = 15
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.PlantDensity_W
+  commentId: F:Vivarium.Biology.SensorType.PlantDensity_W
+  id: PlantDensity_W
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: PlantDensity_W
+  nameWithType: SensorType.PlantDensity_W
+  fullName: Vivarium.Biology.SensorType.PlantDensity_W
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: PlantDensity_W
+    path: src/Game/Biology/SensorType.cs
+    startLine: 19
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: PlantDensity_W = 16
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.StructureDensity_N
+  commentId: F:Vivarium.Biology.SensorType.StructureDensity_N
+  id: StructureDensity_N
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: StructureDensity_N
+  nameWithType: SensorType.StructureDensity_N
+  fullName: Vivarium.Biology.SensorType.StructureDensity_N
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: StructureDensity_N
+    path: src/Game/Biology/SensorType.cs
+    startLine: 20
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: StructureDensity_N = 17
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.StructureDensity_E
+  commentId: F:Vivarium.Biology.SensorType.StructureDensity_E
+  id: StructureDensity_E
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: StructureDensity_E
+  nameWithType: SensorType.StructureDensity_E
+  fullName: Vivarium.Biology.SensorType.StructureDensity_E
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: StructureDensity_E
+    path: src/Game/Biology/SensorType.cs
+    startLine: 20
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: StructureDensity_E = 18
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.StructureDensity_S
+  commentId: F:Vivarium.Biology.SensorType.StructureDensity_S
+  id: StructureDensity_S
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: StructureDensity_S
+  nameWithType: SensorType.StructureDensity_S
+  fullName: Vivarium.Biology.SensorType.StructureDensity_S
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: StructureDensity_S
+    path: src/Game/Biology/SensorType.cs
+    startLine: 20
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: StructureDensity_S = 19
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.StructureDensity_W
+  commentId: F:Vivarium.Biology.SensorType.StructureDensity_W
+  id: StructureDensity_W
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: StructureDensity_W
+  nameWithType: SensorType.StructureDensity_W
+  fullName: Vivarium.Biology.SensorType.StructureDensity_W
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: StructureDensity_W
+    path: src/Game/Biology/SensorType.cs
+    startLine: 20
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: StructureDensity_W = 20
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.Strength
+  commentId: F:Vivarium.Biology.SensorType.Strength
+  id: Strength
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: Strength
+  nameWithType: SensorType.Strength
+  fullName: Vivarium.Biology.SensorType.Strength
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Strength
+    path: src/Game/Biology/SensorType.cs
+    startLine: 23
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: Strength = 21
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.Bravery
+  commentId: F:Vivarium.Biology.SensorType.Bravery
+  id: Bravery
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: Bravery
+  nameWithType: SensorType.Bravery
+  fullName: Vivarium.Biology.SensorType.Bravery
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Bravery
+    path: src/Game/Biology/SensorType.cs
+    startLine: 24
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: Bravery = 22
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.MetabolicEfficiency
+  commentId: F:Vivarium.Biology.SensorType.MetabolicEfficiency
+  id: MetabolicEfficiency
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: MetabolicEfficiency
+  nameWithType: SensorType.MetabolicEfficiency
+  fullName: Vivarium.Biology.SensorType.MetabolicEfficiency
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MetabolicEfficiency
+    path: src/Game/Biology/SensorType.cs
+    startLine: 25
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: MetabolicEfficiency = 23
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.Perception
+  commentId: F:Vivarium.Biology.SensorType.Perception
+  id: Perception
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: Perception
+  nameWithType: SensorType.Perception
+  fullName: Vivarium.Biology.SensorType.Perception
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Perception
+    path: src/Game/Biology/SensorType.cs
+    startLine: 26
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: Perception = 24
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.Speed
+  commentId: F:Vivarium.Biology.SensorType.Speed
+  id: Speed
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: Speed
+  nameWithType: SensorType.Speed
+  fullName: Vivarium.Biology.SensorType.Speed
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Speed
+    path: src/Game/Biology/SensorType.cs
+    startLine: 27
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: Speed = 25
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.TrophicBias
+  commentId: F:Vivarium.Biology.SensorType.TrophicBias
+  id: TrophicBias
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: TrophicBias
+  nameWithType: SensorType.TrophicBias
+  fullName: Vivarium.Biology.SensorType.TrophicBias
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: TrophicBias
+    path: src/Game/Biology/SensorType.cs
+    startLine: 28
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: TrophicBias = 26
+    return:
+      type: Vivarium.Biology.SensorType
+- uid: Vivarium.Biology.SensorType.Constitution
+  commentId: F:Vivarium.Biology.SensorType.Constitution
+  id: Constitution
+  parent: Vivarium.Biology.SensorType
+  langs:
+  - csharp
+  - vb
+  name: Constitution
+  nameWithType: SensorType.Constitution
+  fullName: Vivarium.Biology.SensorType.Constitution
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/SensorType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Constitution
+    path: src/Game/Biology/SensorType.cs
+    startLine: 29
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: Constitution = 27
+    return:
+      type: Vivarium.Biology.SensorType
+references:
+- uid: Vivarium.Biology
+  commentId: N:Vivarium.Biology
+  href: Vivarium.html
+  name: Vivarium.Biology
+  nameWithType: Vivarium.Biology
+  fullName: Vivarium.Biology
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Biology
+    name: Biology
+    href: Vivarium.Biology.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Biology
+    name: Biology
+    href: Vivarium.Biology.html
+- uid: Vivarium.Biology.SensorType
+  commentId: T:Vivarium.Biology.SensorType
+  parent: Vivarium.Biology
+  href: Vivarium.Biology.SensorType.html
+  name: SensorType
+  nameWithType: SensorType
+  fullName: Vivarium.Biology.SensorType

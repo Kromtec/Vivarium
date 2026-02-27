@@ -1,0 +1,656 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.Config.PlantConfig
+  commentId: T:Vivarium.Config.PlantConfig
+  id: PlantConfig
+  parent: Vivarium.Config
+  children:
+  - Vivarium.Config.PlantConfig.CreateDefault
+  - Vivarium.Config.PlantConfig.MaturityAge
+  - Vivarium.Config.PlantConfig.MaxEnergy
+  - Vivarium.Config.PlantConfig.MinEnergyToReproduce
+  - Vivarium.Config.PlantConfig.PhotosynthesisRate
+  - Vivarium.Config.PlantConfig.ReproductionCost
+  - Vivarium.Config.PlantConfig.ShrivelRate
+  langs:
+  - csharp
+  - vb
+  name: PlantConfig
+  nameWithType: PlantConfig
+  fullName: Vivarium.Config.PlantConfig
+  type: Class
+  source:
+    remote:
+      path: src/Game/Config/PlantConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: PlantConfig
+    path: src/Game/Config/PlantConfig.cs
+    startLine: 8
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: >-
+    Mutable plant configuration. These values can be tweaked at runtime
+
+    to balance plant behavior without restarting the simulation.
+  example: []
+  syntax:
+    content: public sealed class PlantConfig
+    content.vb: Public NotInheritable Class PlantConfig
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+- uid: Vivarium.Config.PlantConfig.ShrivelRate
+  commentId: P:Vivarium.Config.PlantConfig.ShrivelRate
+  id: ShrivelRate
+  parent: Vivarium.Config.PlantConfig
+  langs:
+  - csharp
+  - vb
+  name: ShrivelRate
+  nameWithType: PlantConfig.ShrivelRate
+  fullName: Vivarium.Config.PlantConfig.ShrivelRate
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/PlantConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ShrivelRate
+    path: src/Game/Config/PlantConfig.cs
+    startLine: 11
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Energy lost per frame when plant is mature (aging).
+  example: []
+  syntax:
+    content: >-
+      [Range(0, 2)]
+
+      public float ShrivelRate { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0, 2)>
+
+      Public Property ShrivelRate As Single
+  overload: Vivarium.Config.PlantConfig.ShrivelRate*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0
+    - type: System.Double
+      value: 2
+- uid: Vivarium.Config.PlantConfig.PhotosynthesisRate
+  commentId: P:Vivarium.Config.PlantConfig.PhotosynthesisRate
+  id: PhotosynthesisRate
+  parent: Vivarium.Config.PlantConfig
+  langs:
+  - csharp
+  - vb
+  name: PhotosynthesisRate
+  nameWithType: PlantConfig.PhotosynthesisRate
+  fullName: Vivarium.Config.PlantConfig.PhotosynthesisRate
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/PlantConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: PhotosynthesisRate
+    path: src/Game/Config/PlantConfig.cs
+    startLine: 15
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Energy gained per frame from photosynthesis.
+  example: []
+  syntax:
+    content: >-
+      [Range(0, 2)]
+
+      public float PhotosynthesisRate { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0, 2)>
+
+      Public Property PhotosynthesisRate As Single
+  overload: Vivarium.Config.PlantConfig.PhotosynthesisRate*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0
+    - type: System.Double
+      value: 2
+- uid: Vivarium.Config.PlantConfig.MaturityAge
+  commentId: P:Vivarium.Config.PlantConfig.MaturityAge
+  id: MaturityAge
+  parent: Vivarium.Config.PlantConfig
+  langs:
+  - csharp
+  - vb
+  name: MaturityAge
+  nameWithType: PlantConfig.MaturityAge
+  fullName: Vivarium.Config.PlantConfig.MaturityAge
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/PlantConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MaturityAge
+    path: src/Game/Config/PlantConfig.cs
+    startLine: 19
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Frames until plant can reproduce (maturity age).
+  example: []
+  syntax:
+    content: >-
+      [Range(60, 3600)]
+
+      public int MaturityAge { get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: >-
+      <Range(60, 3600)>
+
+      Public Property MaturityAge As Integer
+  overload: Vivarium.Config.PlantConfig.MaturityAge*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Int32,System.Int32)
+    arguments:
+    - type: System.Int32
+      value: 60
+    - type: System.Int32
+      value: 3600
+- uid: Vivarium.Config.PlantConfig.ReproductionCost
+  commentId: P:Vivarium.Config.PlantConfig.ReproductionCost
+  id: ReproductionCost
+  parent: Vivarium.Config.PlantConfig
+  langs:
+  - csharp
+  - vb
+  name: ReproductionCost
+  nameWithType: PlantConfig.ReproductionCost
+  fullName: Vivarium.Config.PlantConfig.ReproductionCost
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/PlantConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ReproductionCost
+    path: src/Game/Config/PlantConfig.cs
+    startLine: 23
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Energy cost to reproduce.
+  example: []
+  syntax:
+    content: >-
+      [Range(0, 100)]
+
+      public float ReproductionCost { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0, 100)>
+
+      Public Property ReproductionCost As Single
+  overload: Vivarium.Config.PlantConfig.ReproductionCost*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0
+    - type: System.Double
+      value: 100
+- uid: Vivarium.Config.PlantConfig.MinEnergyToReproduce
+  commentId: P:Vivarium.Config.PlantConfig.MinEnergyToReproduce
+  id: MinEnergyToReproduce
+  parent: Vivarium.Config.PlantConfig
+  langs:
+  - csharp
+  - vb
+  name: MinEnergyToReproduce
+  nameWithType: PlantConfig.MinEnergyToReproduce
+  fullName: Vivarium.Config.PlantConfig.MinEnergyToReproduce
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/PlantConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MinEnergyToReproduce
+    path: src/Game/Config/PlantConfig.cs
+    startLine: 27
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Minimum energy required to attempt reproduction.
+  example: []
+  syntax:
+    content: >-
+      [Range(0, 100)]
+
+      public float MinEnergyToReproduce { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(0, 100)>
+
+      Public Property MinEnergyToReproduce As Single
+  overload: Vivarium.Config.PlantConfig.MinEnergyToReproduce*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 0
+    - type: System.Double
+      value: 100
+- uid: Vivarium.Config.PlantConfig.MaxEnergy
+  commentId: P:Vivarium.Config.PlantConfig.MaxEnergy
+  id: MaxEnergy
+  parent: Vivarium.Config.PlantConfig
+  langs:
+  - csharp
+  - vb
+  name: MaxEnergy
+  nameWithType: PlantConfig.MaxEnergy
+  fullName: Vivarium.Config.PlantConfig.MaxEnergy
+  type: Property
+  source:
+    remote:
+      path: src/Game/Config/PlantConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MaxEnergy
+    path: src/Game/Config/PlantConfig.cs
+    startLine: 31
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Maximum energy a plant can store.
+  example: []
+  syntax:
+    content: >-
+      [Range(10, 500)]
+
+      public float MaxEnergy { get; set; }
+    parameters: []
+    return:
+      type: System.Single
+    content.vb: >-
+      <Range(10, 500)>
+
+      Public Property MaxEnergy As Single
+  overload: Vivarium.Config.PlantConfig.MaxEnergy*
+  attributes:
+  - type: System.ComponentModel.DataAnnotations.RangeAttribute
+    ctor: System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)
+    arguments:
+    - type: System.Double
+      value: 10
+    - type: System.Double
+      value: 500
+- uid: Vivarium.Config.PlantConfig.CreateDefault
+  commentId: M:Vivarium.Config.PlantConfig.CreateDefault
+  id: CreateDefault
+  parent: Vivarium.Config.PlantConfig
+  langs:
+  - csharp
+  - vb
+  name: CreateDefault()
+  nameWithType: PlantConfig.CreateDefault()
+  fullName: Vivarium.Config.PlantConfig.CreateDefault()
+  type: Method
+  source:
+    remote:
+      path: src/Game/Config/PlantConfig.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: CreateDefault
+    path: src/Game/Config/PlantConfig.cs
+    startLine: 37
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Config
+  summary: Creates the default plant configuration with current hardcoded values.
+  example: []
+  syntax:
+    content: public static PlantConfig CreateDefault()
+    return:
+      type: Vivarium.Config.PlantConfig
+    content.vb: Public Shared Function CreateDefault() As PlantConfig
+  overload: Vivarium.Config.PlantConfig.CreateDefault*
+references:
+- uid: Vivarium.Config
+  commentId: N:Vivarium.Config
+  href: Vivarium.html
+  name: Vivarium.Config
+  nameWithType: Vivarium.Config
+  fullName: Vivarium.Config
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Config
+    name: Config
+    href: Vivarium.Config.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Config
+    name: Config
+    href: Vivarium.Config.html
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  name: Equals(object)
+  nameWithType: object.Equals(object)
+  fullName: object.Equals(object)
+  nameWithType.vb: Object.Equals(Object)
+  fullName.vb: Object.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  name: GetHashCode()
+  nameWithType: object.GetHashCode()
+  fullName: object.GetHashCode()
+  nameWithType.vb: Object.GetHashCode()
+  fullName.vb: Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  name: ToString()
+  nameWithType: object.ToString()
+  fullName: object.ToString()
+  nameWithType.vb: Object.ToString()
+  fullName.vb: Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Vivarium.Config.PlantConfig.ShrivelRate*
+  commentId: Overload:Vivarium.Config.PlantConfig.ShrivelRate
+  href: Vivarium.Config.PlantConfig.html#Vivarium_Config_PlantConfig_ShrivelRate
+  name: ShrivelRate
+  nameWithType: PlantConfig.ShrivelRate
+  fullName: Vivarium.Config.PlantConfig.ShrivelRate
+- uid: System.Single
+  commentId: T:System.Single
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.single
+  name: float
+  nameWithType: float
+  fullName: float
+  nameWithType.vb: Single
+  fullName.vb: Single
+  name.vb: Single
+- uid: Vivarium.Config.PlantConfig.PhotosynthesisRate*
+  commentId: Overload:Vivarium.Config.PlantConfig.PhotosynthesisRate
+  href: Vivarium.Config.PlantConfig.html#Vivarium_Config_PlantConfig_PhotosynthesisRate
+  name: PhotosynthesisRate
+  nameWithType: PlantConfig.PhotosynthesisRate
+  fullName: Vivarium.Config.PlantConfig.PhotosynthesisRate
+- uid: Vivarium.Config.PlantConfig.MaturityAge*
+  commentId: Overload:Vivarium.Config.PlantConfig.MaturityAge
+  href: Vivarium.Config.PlantConfig.html#Vivarium_Config_PlantConfig_MaturityAge
+  name: MaturityAge
+  nameWithType: PlantConfig.MaturityAge
+  fullName: Vivarium.Config.PlantConfig.MaturityAge
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int32
+  name: int
+  nameWithType: int
+  fullName: int
+  nameWithType.vb: Integer
+  fullName.vb: Integer
+  name.vb: Integer
+- uid: Vivarium.Config.PlantConfig.ReproductionCost*
+  commentId: Overload:Vivarium.Config.PlantConfig.ReproductionCost
+  href: Vivarium.Config.PlantConfig.html#Vivarium_Config_PlantConfig_ReproductionCost
+  name: ReproductionCost
+  nameWithType: PlantConfig.ReproductionCost
+  fullName: Vivarium.Config.PlantConfig.ReproductionCost
+- uid: Vivarium.Config.PlantConfig.MinEnergyToReproduce*
+  commentId: Overload:Vivarium.Config.PlantConfig.MinEnergyToReproduce
+  href: Vivarium.Config.PlantConfig.html#Vivarium_Config_PlantConfig_MinEnergyToReproduce
+  name: MinEnergyToReproduce
+  nameWithType: PlantConfig.MinEnergyToReproduce
+  fullName: Vivarium.Config.PlantConfig.MinEnergyToReproduce
+- uid: Vivarium.Config.PlantConfig.MaxEnergy*
+  commentId: Overload:Vivarium.Config.PlantConfig.MaxEnergy
+  href: Vivarium.Config.PlantConfig.html#Vivarium_Config_PlantConfig_MaxEnergy
+  name: MaxEnergy
+  nameWithType: PlantConfig.MaxEnergy
+  fullName: Vivarium.Config.PlantConfig.MaxEnergy
+- uid: Vivarium.Config.PlantConfig.CreateDefault*
+  commentId: Overload:Vivarium.Config.PlantConfig.CreateDefault
+  href: Vivarium.Config.PlantConfig.html#Vivarium_Config_PlantConfig_CreateDefault
+  name: CreateDefault
+  nameWithType: PlantConfig.CreateDefault
+  fullName: Vivarium.Config.PlantConfig.CreateDefault
+- uid: Vivarium.Config.PlantConfig
+  commentId: T:Vivarium.Config.PlantConfig
+  parent: Vivarium.Config
+  href: Vivarium.Config.PlantConfig.html
+  name: PlantConfig
+  nameWithType: PlantConfig
+  fullName: Vivarium.Config.PlantConfig

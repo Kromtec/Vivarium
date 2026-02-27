@@ -1,0 +1,85 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.Engine
+  commentId: N:Vivarium.Engine
+  id: Vivarium.Engine
+  children:
+  - Vivarium.Engine.Camera2D
+  - Vivarium.Engine.Simulation
+  - Vivarium.Engine.StatsLogger
+  - Vivarium.Engine.StatsLogger.DietCounts
+  langs:
+  - csharp
+  - vb
+  name: Vivarium.Engine
+  nameWithType: Vivarium.Engine
+  fullName: Vivarium.Engine
+  type: Namespace
+  assemblies:
+  - Vivarium
+references:
+- uid: Vivarium.Engine.Camera2D
+  commentId: T:Vivarium.Engine.Camera2D
+  parent: Vivarium.Engine
+  href: Vivarium.Engine.Camera2D.html
+  name: Camera2D
+  nameWithType: Camera2D
+  fullName: Vivarium.Engine.Camera2D
+- uid: Vivarium.Engine.Simulation
+  commentId: T:Vivarium.Engine.Simulation
+  parent: Vivarium.Engine
+  href: Vivarium.Engine.Simulation.html
+  name: Simulation
+  nameWithType: Simulation
+  fullName: Vivarium.Engine.Simulation
+- uid: Vivarium.Engine.StatsLogger
+  commentId: T:Vivarium.Engine.StatsLogger
+  href: Vivarium.Engine.StatsLogger.html
+  name: StatsLogger
+  nameWithType: StatsLogger
+  fullName: Vivarium.Engine.StatsLogger
+- uid: Vivarium.Engine.StatsLogger.DietCounts
+  commentId: T:Vivarium.Engine.StatsLogger.DietCounts
+  parent: Vivarium.Engine
+  href: Vivarium.Engine.StatsLogger.html
+  name: StatsLogger.DietCounts
+  nameWithType: StatsLogger.DietCounts
+  fullName: Vivarium.Engine.StatsLogger.DietCounts
+  spec.csharp:
+  - uid: Vivarium.Engine.StatsLogger
+    name: StatsLogger
+    href: Vivarium.Engine.StatsLogger.html
+  - name: .
+  - uid: Vivarium.Engine.StatsLogger.DietCounts
+    name: DietCounts
+    href: Vivarium.Engine.StatsLogger.DietCounts.html
+  spec.vb:
+  - uid: Vivarium.Engine.StatsLogger
+    name: StatsLogger
+    href: Vivarium.Engine.StatsLogger.html
+  - name: .
+  - uid: Vivarium.Engine.StatsLogger.DietCounts
+    name: DietCounts
+    href: Vivarium.Engine.StatsLogger.DietCounts.html
+- uid: Vivarium.Engine
+  commentId: N:Vivarium.Engine
+  href: Vivarium.html
+  name: Vivarium.Engine
+  nameWithType: Vivarium.Engine
+  fullName: Vivarium.Engine
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Engine
+    name: Engine
+    href: Vivarium.Engine.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Engine
+    name: Engine
+    href: Vivarium.Engine.html

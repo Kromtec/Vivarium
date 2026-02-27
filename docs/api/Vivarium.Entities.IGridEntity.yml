@@ -1,0 +1,228 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.Entities.IGridEntity
+  commentId: T:Vivarium.Entities.IGridEntity
+  id: IGridEntity
+  parent: Vivarium.Entities
+  children:
+  - Vivarium.Entities.IGridEntity.Id
+  - Vivarium.Entities.IGridEntity.Index
+  - Vivarium.Entities.IGridEntity.X
+  - Vivarium.Entities.IGridEntity.Y
+  langs:
+  - csharp
+  - vb
+  name: IGridEntity
+  nameWithType: IGridEntity
+  fullName: Vivarium.Entities.IGridEntity
+  type: Interface
+  source:
+    remote:
+      path: src/Game/Entities/IGridEntity.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: IGridEntity
+    path: src/Game/Entities/IGridEntity.cs
+    startLine: 2
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: public interface IGridEntity
+    content.vb: Public Interface IGridEntity
+  derivedClasses:
+  - Vivarium.Entities.Agent
+  - Vivarium.Entities.Plant
+  - Vivarium.Entities.Structure
+- uid: Vivarium.Entities.IGridEntity.Id
+  commentId: P:Vivarium.Entities.IGridEntity.Id
+  id: Id
+  parent: Vivarium.Entities.IGridEntity
+  langs:
+  - csharp
+  - vb
+  name: Id
+  nameWithType: IGridEntity.Id
+  fullName: Vivarium.Entities.IGridEntity.Id
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/IGridEntity.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Id
+    path: src/Game/Entities/IGridEntity.cs
+    startLine: 4
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: long Id { get; set; }
+    parameters: []
+    return:
+      type: System.Int64
+    content.vb: Property Id As Long
+  overload: Vivarium.Entities.IGridEntity.Id*
+- uid: Vivarium.Entities.IGridEntity.Index
+  commentId: P:Vivarium.Entities.IGridEntity.Index
+  id: Index
+  parent: Vivarium.Entities.IGridEntity
+  langs:
+  - csharp
+  - vb
+  name: Index
+  nameWithType: IGridEntity.Index
+  fullName: Vivarium.Entities.IGridEntity.Index
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/IGridEntity.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Index
+    path: src/Game/Entities/IGridEntity.cs
+    startLine: 5
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: int Index { get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Property Index As Integer
+  overload: Vivarium.Entities.IGridEntity.Index*
+- uid: Vivarium.Entities.IGridEntity.X
+  commentId: P:Vivarium.Entities.IGridEntity.X
+  id: X
+  parent: Vivarium.Entities.IGridEntity
+  langs:
+  - csharp
+  - vb
+  name: X
+  nameWithType: IGridEntity.X
+  fullName: Vivarium.Entities.IGridEntity.X
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/IGridEntity.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: X
+    path: src/Game/Entities/IGridEntity.cs
+    startLine: 6
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: int X { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: ReadOnly Property X As Integer
+  overload: Vivarium.Entities.IGridEntity.X*
+- uid: Vivarium.Entities.IGridEntity.Y
+  commentId: P:Vivarium.Entities.IGridEntity.Y
+  id: Y
+  parent: Vivarium.Entities.IGridEntity
+  langs:
+  - csharp
+  - vb
+  name: Y
+  nameWithType: IGridEntity.Y
+  fullName: Vivarium.Entities.IGridEntity.Y
+  type: Property
+  source:
+    remote:
+      path: src/Game/Entities/IGridEntity.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Y
+    path: src/Game/Entities/IGridEntity.cs
+    startLine: 7
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Entities
+  syntax:
+    content: int Y { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: ReadOnly Property Y As Integer
+  overload: Vivarium.Entities.IGridEntity.Y*
+references:
+- uid: Vivarium.Entities
+  commentId: N:Vivarium.Entities
+  href: Vivarium.html
+  name: Vivarium.Entities
+  nameWithType: Vivarium.Entities
+  fullName: Vivarium.Entities
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Entities
+    name: Entities
+    href: Vivarium.Entities.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Entities
+    name: Entities
+    href: Vivarium.Entities.html
+- uid: Vivarium.Entities.IGridEntity.Id*
+  commentId: Overload:Vivarium.Entities.IGridEntity.Id
+  href: Vivarium.Entities.IGridEntity.html#Vivarium_Entities_IGridEntity_Id
+  name: Id
+  nameWithType: IGridEntity.Id
+  fullName: Vivarium.Entities.IGridEntity.Id
+- uid: System.Int64
+  commentId: T:System.Int64
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int64
+  name: long
+  nameWithType: long
+  fullName: long
+  nameWithType.vb: Long
+  fullName.vb: Long
+  name.vb: Long
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Vivarium.Entities.IGridEntity.Index*
+  commentId: Overload:Vivarium.Entities.IGridEntity.Index
+  href: Vivarium.Entities.IGridEntity.html#Vivarium_Entities_IGridEntity_Index
+  name: Index
+  nameWithType: IGridEntity.Index
+  fullName: Vivarium.Entities.IGridEntity.Index
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int32
+  name: int
+  nameWithType: int
+  fullName: int
+  nameWithType.vb: Integer
+  fullName.vb: Integer
+  name.vb: Integer
+- uid: Vivarium.Entities.IGridEntity.X*
+  commentId: Overload:Vivarium.Entities.IGridEntity.X
+  href: Vivarium.Entities.IGridEntity.html#Vivarium_Entities_IGridEntity_X
+  name: X
+  nameWithType: IGridEntity.X
+  fullName: Vivarium.Entities.IGridEntity.X
+- uid: Vivarium.Entities.IGridEntity.Y*
+  commentId: Overload:Vivarium.Entities.IGridEntity.Y
+  href: Vivarium.Entities.IGridEntity.html#Vivarium_Entities_IGridEntity_Y
+  name: Y
+  nameWithType: IGridEntity.Y
+  fullName: Vivarium.Entities.IGridEntity.Y

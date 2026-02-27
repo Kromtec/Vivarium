@@ -1,0 +1,93 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.Config
+  commentId: N:Vivarium.Config
+  id: Vivarium.Config
+  children:
+  - Vivarium.Config.AgentConfig
+  - Vivarium.Config.BrainAIConfig
+  - Vivarium.Config.ConfigProvider
+  - Vivarium.Config.GeneticsConfig
+  - Vivarium.Config.PlantConfig
+  - Vivarium.Config.SimulationConfig
+  - Vivarium.Config.WorldConfig
+  langs:
+  - csharp
+  - vb
+  name: Vivarium.Config
+  nameWithType: Vivarium.Config
+  fullName: Vivarium.Config
+  type: Namespace
+  assemblies:
+  - Vivarium
+references:
+- uid: Vivarium.Config.AgentConfig
+  commentId: T:Vivarium.Config.AgentConfig
+  parent: Vivarium.Config
+  href: Vivarium.Config.AgentConfig.html
+  name: AgentConfig
+  nameWithType: AgentConfig
+  fullName: Vivarium.Config.AgentConfig
+- uid: Vivarium.Config.BrainAIConfig
+  commentId: T:Vivarium.Config.BrainAIConfig
+  parent: Vivarium.Config
+  href: Vivarium.Config.BrainAIConfig.html
+  name: BrainAIConfig
+  nameWithType: BrainAIConfig
+  fullName: Vivarium.Config.BrainAIConfig
+- uid: Vivarium.Config.ConfigProvider
+  commentId: T:Vivarium.Config.ConfigProvider
+  href: Vivarium.Config.ConfigProvider.html
+  name: ConfigProvider
+  nameWithType: ConfigProvider
+  fullName: Vivarium.Config.ConfigProvider
+- uid: Vivarium.Config.GeneticsConfig
+  commentId: T:Vivarium.Config.GeneticsConfig
+  parent: Vivarium.Config
+  href: Vivarium.Config.GeneticsConfig.html
+  name: GeneticsConfig
+  nameWithType: GeneticsConfig
+  fullName: Vivarium.Config.GeneticsConfig
+- uid: Vivarium.Config.PlantConfig
+  commentId: T:Vivarium.Config.PlantConfig
+  parent: Vivarium.Config
+  href: Vivarium.Config.PlantConfig.html
+  name: PlantConfig
+  nameWithType: PlantConfig
+  fullName: Vivarium.Config.PlantConfig
+- uid: Vivarium.Config.SimulationConfig
+  commentId: T:Vivarium.Config.SimulationConfig
+  parent: Vivarium.Config
+  href: Vivarium.Config.SimulationConfig.html
+  name: SimulationConfig
+  nameWithType: SimulationConfig
+  fullName: Vivarium.Config.SimulationConfig
+- uid: Vivarium.Config.WorldConfig
+  commentId: T:Vivarium.Config.WorldConfig
+  parent: Vivarium.Config
+  href: Vivarium.Config.WorldConfig.html
+  name: WorldConfig
+  nameWithType: WorldConfig
+  fullName: Vivarium.Config.WorldConfig
+- uid: Vivarium.Config
+  commentId: N:Vivarium.Config
+  href: Vivarium.html
+  name: Vivarium.Config
+  nameWithType: Vivarium.Config
+  fullName: Vivarium.Config
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Config
+    name: Config
+    href: Vivarium.Config.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Config
+    name: Config
+    href: Vivarium.Config.html

@@ -1,0 +1,1034 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.UI.UITheme
+  commentId: T:Vivarium.UI.UITheme
+  id: UITheme
+  parent: Vivarium.UI
+  children:
+  - Vivarium.UI.UITheme.BadColor
+  - Vivarium.UI.UITheme.BarBackgroundColor
+  - Vivarium.UI.UITheme.BorderColor
+  - Vivarium.UI.UITheme.BorderThickness
+  - Vivarium.UI.UITheme.ButtonColor
+  - Vivarium.UI.UITheme.ButtonHoverColor
+  - Vivarium.UI.UITheme.CooldownBreedColor
+  - Vivarium.UI.UITheme.CooldownMoveColor
+  - Vivarium.UI.UITheme.GetColorForWeight(System.Single)
+  - Vivarium.UI.UITheme.GoodColor
+  - Vivarium.UI.UITheme.HeaderColor
+  - Vivarium.UI.UITheme.LineHeight
+  - Vivarium.UI.UITheme.Padding
+  - Vivarium.UI.UITheme.PanelBgColor
+  - Vivarium.UI.UITheme.ScrollThumbColor
+  - Vivarium.UI.UITheme.ShadowColor
+  - Vivarium.UI.UITheme.ShadowOffset
+  - Vivarium.UI.UITheme.TextColorPrimary
+  - Vivarium.UI.UITheme.TextColorSecondary
+  - Vivarium.UI.UITheme.WarningColor
+  - Vivarium.UI.UITheme.WeightNegative
+  - Vivarium.UI.UITheme.WeightNeutral
+  - Vivarium.UI.UITheme.WeightPositive
+  langs:
+  - csharp
+  - vb
+  name: UITheme
+  nameWithType: UITheme
+  fullName: Vivarium.UI.UITheme
+  type: Class
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: UITheme
+    path: src/Game/UI/UITheme.cs
+    startLine: 4
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static class UITheme
+    content.vb: Public Module UITheme
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+- uid: Vivarium.UI.UITheme.PanelBgColor
+  commentId: F:Vivarium.UI.UITheme.PanelBgColor
+  id: PanelBgColor
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: PanelBgColor
+  nameWithType: UITheme.PanelBgColor
+  fullName: Vivarium.UI.UITheme.PanelBgColor
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: PanelBgColor
+    path: src/Game/UI/UITheme.cs
+    startLine: 7
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color PanelBgColor
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared ReadOnly PanelBgColor As Color
+- uid: Vivarium.UI.UITheme.BorderColor
+  commentId: F:Vivarium.UI.UITheme.BorderColor
+  id: BorderColor
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: BorderColor
+  nameWithType: UITheme.BorderColor
+  fullName: Vivarium.UI.UITheme.BorderColor
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: BorderColor
+    path: src/Game/UI/UITheme.cs
+    startLine: 8
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color BorderColor
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared ReadOnly BorderColor As Color
+- uid: Vivarium.UI.UITheme.ShadowColor
+  commentId: F:Vivarium.UI.UITheme.ShadowColor
+  id: ShadowColor
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: ShadowColor
+  nameWithType: UITheme.ShadowColor
+  fullName: Vivarium.UI.UITheme.ShadowColor
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ShadowColor
+    path: src/Game/UI/UITheme.cs
+    startLine: 9
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color ShadowColor
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared ReadOnly ShadowColor As Color
+- uid: Vivarium.UI.UITheme.TextColorPrimary
+  commentId: F:Vivarium.UI.UITheme.TextColorPrimary
+  id: TextColorPrimary
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: TextColorPrimary
+  nameWithType: UITheme.TextColorPrimary
+  fullName: Vivarium.UI.UITheme.TextColorPrimary
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: TextColorPrimary
+    path: src/Game/UI/UITheme.cs
+    startLine: 11
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color TextColorPrimary
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared ReadOnly TextColorPrimary As Color
+- uid: Vivarium.UI.UITheme.TextColorSecondary
+  commentId: F:Vivarium.UI.UITheme.TextColorSecondary
+  id: TextColorSecondary
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: TextColorSecondary
+  nameWithType: UITheme.TextColorSecondary
+  fullName: Vivarium.UI.UITheme.TextColorSecondary
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: TextColorSecondary
+    path: src/Game/UI/UITheme.cs
+    startLine: 12
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color TextColorSecondary
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared ReadOnly TextColorSecondary As Color
+- uid: Vivarium.UI.UITheme.HeaderColor
+  commentId: F:Vivarium.UI.UITheme.HeaderColor
+  id: HeaderColor
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: HeaderColor
+  nameWithType: UITheme.HeaderColor
+  fullName: Vivarium.UI.UITheme.HeaderColor
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: HeaderColor
+    path: src/Game/UI/UITheme.cs
+    startLine: 13
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color HeaderColor
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared ReadOnly HeaderColor As Color
+- uid: Vivarium.UI.UITheme.GoodColor
+  commentId: F:Vivarium.UI.UITheme.GoodColor
+  id: GoodColor
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: GoodColor
+  nameWithType: UITheme.GoodColor
+  fullName: Vivarium.UI.UITheme.GoodColor
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: GoodColor
+    path: src/Game/UI/UITheme.cs
+    startLine: 15
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color GoodColor
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared ReadOnly GoodColor As Color
+- uid: Vivarium.UI.UITheme.WarningColor
+  commentId: F:Vivarium.UI.UITheme.WarningColor
+  id: WarningColor
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: WarningColor
+  nameWithType: UITheme.WarningColor
+  fullName: Vivarium.UI.UITheme.WarningColor
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: WarningColor
+    path: src/Game/UI/UITheme.cs
+    startLine: 16
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color WarningColor
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared ReadOnly WarningColor As Color
+- uid: Vivarium.UI.UITheme.BadColor
+  commentId: F:Vivarium.UI.UITheme.BadColor
+  id: BadColor
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: BadColor
+  nameWithType: UITheme.BadColor
+  fullName: Vivarium.UI.UITheme.BadColor
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: BadColor
+    path: src/Game/UI/UITheme.cs
+    startLine: 17
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color BadColor
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared ReadOnly BadColor As Color
+- uid: Vivarium.UI.UITheme.ButtonColor
+  commentId: F:Vivarium.UI.UITheme.ButtonColor
+  id: ButtonColor
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: ButtonColor
+  nameWithType: UITheme.ButtonColor
+  fullName: Vivarium.UI.UITheme.ButtonColor
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ButtonColor
+    path: src/Game/UI/UITheme.cs
+    startLine: 18
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color ButtonColor
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared ReadOnly ButtonColor As Color
+- uid: Vivarium.UI.UITheme.ButtonHoverColor
+  commentId: F:Vivarium.UI.UITheme.ButtonHoverColor
+  id: ButtonHoverColor
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: ButtonHoverColor
+  nameWithType: UITheme.ButtonHoverColor
+  fullName: Vivarium.UI.UITheme.ButtonHoverColor
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ButtonHoverColor
+    path: src/Game/UI/UITheme.cs
+    startLine: 19
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color ButtonHoverColor
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared ReadOnly ButtonHoverColor As Color
+- uid: Vivarium.UI.UITheme.ScrollThumbColor
+  commentId: F:Vivarium.UI.UITheme.ScrollThumbColor
+  id: ScrollThumbColor
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: ScrollThumbColor
+  nameWithType: UITheme.ScrollThumbColor
+  fullName: Vivarium.UI.UITheme.ScrollThumbColor
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ScrollThumbColor
+    path: src/Game/UI/UITheme.cs
+    startLine: 20
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color ScrollThumbColor
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared ReadOnly ScrollThumbColor As Color
+- uid: Vivarium.UI.UITheme.BarBackgroundColor
+  commentId: F:Vivarium.UI.UITheme.BarBackgroundColor
+  id: BarBackgroundColor
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: BarBackgroundColor
+  nameWithType: UITheme.BarBackgroundColor
+  fullName: Vivarium.UI.UITheme.BarBackgroundColor
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: BarBackgroundColor
+    path: src/Game/UI/UITheme.cs
+    startLine: 22
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color BarBackgroundColor
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared ReadOnly BarBackgroundColor As Color
+- uid: Vivarium.UI.UITheme.CooldownMoveColor
+  commentId: F:Vivarium.UI.UITheme.CooldownMoveColor
+  id: CooldownMoveColor
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: CooldownMoveColor
+  nameWithType: UITheme.CooldownMoveColor
+  fullName: Vivarium.UI.UITheme.CooldownMoveColor
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: CooldownMoveColor
+    path: src/Game/UI/UITheme.cs
+    startLine: 24
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color CooldownMoveColor
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared ReadOnly CooldownMoveColor As Color
+- uid: Vivarium.UI.UITheme.CooldownBreedColor
+  commentId: F:Vivarium.UI.UITheme.CooldownBreedColor
+  id: CooldownBreedColor
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: CooldownBreedColor
+  nameWithType: UITheme.CooldownBreedColor
+  fullName: Vivarium.UI.UITheme.CooldownBreedColor
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: CooldownBreedColor
+    path: src/Game/UI/UITheme.cs
+    startLine: 25
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color CooldownBreedColor
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared ReadOnly CooldownBreedColor As Color
+- uid: Vivarium.UI.UITheme.WeightNeutral
+  commentId: F:Vivarium.UI.UITheme.WeightNeutral
+  id: WeightNeutral
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: WeightNeutral
+  nameWithType: UITheme.WeightNeutral
+  fullName: Vivarium.UI.UITheme.WeightNeutral
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: WeightNeutral
+    path: src/Game/UI/UITheme.cs
+    startLine: 28
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color WeightNeutral
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared ReadOnly WeightNeutral As Color
+- uid: Vivarium.UI.UITheme.WeightPositive
+  commentId: F:Vivarium.UI.UITheme.WeightPositive
+  id: WeightPositive
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: WeightPositive
+  nameWithType: UITheme.WeightPositive
+  fullName: Vivarium.UI.UITheme.WeightPositive
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: WeightPositive
+    path: src/Game/UI/UITheme.cs
+    startLine: 30
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color[] WeightPositive
+    return:
+      type: Microsoft.Xna.Framework.Color[]
+    content.vb: Public Shared ReadOnly WeightPositive As Color()
+- uid: Vivarium.UI.UITheme.WeightNegative
+  commentId: F:Vivarium.UI.UITheme.WeightNegative
+  id: WeightNegative
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: WeightNegative
+  nameWithType: UITheme.WeightNegative
+  fullName: Vivarium.UI.UITheme.WeightNegative
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: WeightNegative
+    path: src/Game/UI/UITheme.cs
+    startLine: 37
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static readonly Color[] WeightNegative
+    return:
+      type: Microsoft.Xna.Framework.Color[]
+    content.vb: Public Shared ReadOnly WeightNegative As Color()
+- uid: Vivarium.UI.UITheme.GetColorForWeight(System.Single)
+  commentId: M:Vivarium.UI.UITheme.GetColorForWeight(System.Single)
+  id: GetColorForWeight(System.Single)
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: GetColorForWeight(float)
+  nameWithType: UITheme.GetColorForWeight(float)
+  fullName: Vivarium.UI.UITheme.GetColorForWeight(float)
+  type: Method
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: GetColorForWeight
+    path: src/Game/UI/UITheme.cs
+    startLine: 45
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public static Color GetColorForWeight(float weight)
+    parameters:
+    - id: weight
+      type: System.Single
+    return:
+      type: Microsoft.Xna.Framework.Color
+    content.vb: Public Shared Function GetColorForWeight(weight As Single) As Color
+  overload: Vivarium.UI.UITheme.GetColorForWeight*
+  nameWithType.vb: UITheme.GetColorForWeight(Single)
+  fullName.vb: Vivarium.UI.UITheme.GetColorForWeight(Single)
+  name.vb: GetColorForWeight(Single)
+- uid: Vivarium.UI.UITheme.Padding
+  commentId: F:Vivarium.UI.UITheme.Padding
+  id: Padding
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: Padding
+  nameWithType: UITheme.Padding
+  fullName: Vivarium.UI.UITheme.Padding
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Padding
+    path: src/Game/UI/UITheme.cs
+    startLine: 67
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public const int Padding = 15
+    return:
+      type: System.Int32
+    content.vb: Public Const Padding As Integer = 15
+- uid: Vivarium.UI.UITheme.LineHeight
+  commentId: F:Vivarium.UI.UITheme.LineHeight
+  id: LineHeight
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: LineHeight
+  nameWithType: UITheme.LineHeight
+  fullName: Vivarium.UI.UITheme.LineHeight
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: LineHeight
+    path: src/Game/UI/UITheme.cs
+    startLine: 68
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public const int LineHeight = 24
+    return:
+      type: System.Int32
+    content.vb: Public Const LineHeight As Integer = 24
+- uid: Vivarium.UI.UITheme.BorderThickness
+  commentId: F:Vivarium.UI.UITheme.BorderThickness
+  id: BorderThickness
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: BorderThickness
+  nameWithType: UITheme.BorderThickness
+  fullName: Vivarium.UI.UITheme.BorderThickness
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: BorderThickness
+    path: src/Game/UI/UITheme.cs
+    startLine: 69
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public const int BorderThickness = 1
+    return:
+      type: System.Int32
+    content.vb: Public Const BorderThickness As Integer = 1
+- uid: Vivarium.UI.UITheme.ShadowOffset
+  commentId: F:Vivarium.UI.UITheme.ShadowOffset
+  id: ShadowOffset
+  parent: Vivarium.UI.UITheme
+  langs:
+  - csharp
+  - vb
+  name: ShadowOffset
+  nameWithType: UITheme.ShadowOffset
+  fullName: Vivarium.UI.UITheme.ShadowOffset
+  type: Field
+  source:
+    remote:
+      path: src/Game/UI/UITheme.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ShadowOffset
+    path: src/Game/UI/UITheme.cs
+    startLine: 70
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.UI
+  syntax:
+    content: public const int ShadowOffset = 4
+    return:
+      type: System.Int32
+    content.vb: Public Const ShadowOffset As Integer = 4
+references:
+- uid: Vivarium.UI
+  commentId: N:Vivarium.UI
+  href: Vivarium.html
+  name: Vivarium.UI
+  nameWithType: Vivarium.UI
+  fullName: Vivarium.UI
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.UI
+    name: UI
+    href: Vivarium.UI.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.UI
+    name: UI
+    href: Vivarium.UI.html
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  name: Equals(object)
+  nameWithType: object.Equals(object)
+  fullName: object.Equals(object)
+  nameWithType.vb: Object.Equals(Object)
+  fullName.vb: Object.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  name: GetHashCode()
+  nameWithType: object.GetHashCode()
+  fullName: object.GetHashCode()
+  nameWithType.vb: Object.GetHashCode()
+  fullName.vb: Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  name: MemberwiseClone()
+  nameWithType: object.MemberwiseClone()
+  fullName: object.MemberwiseClone()
+  nameWithType.vb: Object.MemberwiseClone()
+  fullName.vb: Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  name: ToString()
+  nameWithType: object.ToString()
+  fullName: object.ToString()
+  nameWithType.vb: Object.ToString()
+  fullName.vb: Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Microsoft.Xna.Framework.Color
+  commentId: T:Microsoft.Xna.Framework.Color
+  parent: Microsoft.Xna.Framework
+  isExternal: true
+  name: Color
+  nameWithType: Color
+  fullName: Microsoft.Xna.Framework.Color
+- uid: Microsoft.Xna.Framework
+  commentId: N:Microsoft.Xna.Framework
+  isExternal: true
+  name: Microsoft.Xna.Framework
+  nameWithType: Microsoft.Xna.Framework
+  fullName: Microsoft.Xna.Framework
+  spec.csharp:
+  - uid: Microsoft
+    name: Microsoft
+    isExternal: true
+  - name: .
+  - uid: Microsoft.Xna
+    name: Xna
+    isExternal: true
+  - name: .
+  - uid: Microsoft.Xna.Framework
+    name: Framework
+    isExternal: true
+  spec.vb:
+  - uid: Microsoft
+    name: Microsoft
+    isExternal: true
+  - name: .
+  - uid: Microsoft.Xna
+    name: Xna
+    isExternal: true
+  - name: .
+  - uid: Microsoft.Xna.Framework
+    name: Framework
+    isExternal: true
+- uid: Microsoft.Xna.Framework.Color[]
+  isExternal: true
+  name: Color[]
+  nameWithType: Color[]
+  fullName: Microsoft.Xna.Framework.Color[]
+  nameWithType.vb: Color()
+  fullName.vb: Microsoft.Xna.Framework.Color()
+  name.vb: Color()
+  spec.csharp:
+  - uid: Microsoft.Xna.Framework.Color
+    name: Color
+    isExternal: true
+  - name: '['
+  - name: ']'
+  spec.vb:
+  - uid: Microsoft.Xna.Framework.Color
+    name: Color
+    isExternal: true
+  - name: (
+  - name: )
+- uid: Vivarium.UI.UITheme.GetColorForWeight*
+  commentId: Overload:Vivarium.UI.UITheme.GetColorForWeight
+  href: Vivarium.UI.UITheme.html#Vivarium_UI_UITheme_GetColorForWeight_System_Single_
+  name: GetColorForWeight
+  nameWithType: UITheme.GetColorForWeight
+  fullName: Vivarium.UI.UITheme.GetColorForWeight
+- uid: System.Single
+  commentId: T:System.Single
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.single
+  name: float
+  nameWithType: float
+  fullName: float
+  nameWithType.vb: Single
+  fullName.vb: Single
+  name.vb: Single
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int32
+  name: int
+  nameWithType: int
+  fullName: int
+  nameWithType.vb: Integer
+  fullName.vb: Integer
+  name.vb: Integer

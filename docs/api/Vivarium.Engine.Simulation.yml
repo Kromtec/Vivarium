@@ -1,0 +1,1059 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.Engine.Simulation
+  commentId: T:Vivarium.Engine.Simulation
+  id: Simulation
+  parent: Vivarium.Engine
+  children:
+  - Vivarium.Engine.Simulation.#ctor
+  - Vivarium.Engine.Simulation.AgentCount
+  - Vivarium.Engine.Simulation.AgentPopulation
+  - Vivarium.Engine.Simulation.AliveAgents
+  - Vivarium.Engine.Simulation.AlivePlants
+  - Vivarium.Engine.Simulation.AliveStructures
+  - Vivarium.Engine.Simulation.CellSize
+  - Vivarium.Engine.Simulation.GridHeight
+  - Vivarium.Engine.Simulation.GridMap
+  - Vivarium.Engine.Simulation.GridWidth
+  - Vivarium.Engine.Simulation.Initialize
+  - Vivarium.Engine.Simulation.PlantCount
+  - Vivarium.Engine.Simulation.PlantPopulation
+  - Vivarium.Engine.Simulation.Rng
+  - Vivarium.Engine.Simulation.StructureCount
+  - Vivarium.Engine.Simulation.StructurePopulation
+  - Vivarium.Engine.Simulation.TickCount
+  - Vivarium.Engine.Simulation.Update
+  langs:
+  - csharp
+  - vb
+  name: Simulation
+  nameWithType: Simulation
+  fullName: Vivarium.Engine.Simulation
+  type: Class
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Simulation
+    path: src/Game/Engine/Simulation.cs
+    startLine: 8
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public class Simulation
+    content.vb: Public Class Simulation
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+- uid: Vivarium.Engine.Simulation.GridHeight
+  commentId: P:Vivarium.Engine.Simulation.GridHeight
+  id: GridHeight
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: GridHeight
+  nameWithType: Simulation.GridHeight
+  fullName: Vivarium.Engine.Simulation.GridHeight
+  type: Property
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: GridHeight
+    path: src/Game/Engine/Simulation.cs
+    startLine: 11
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public int GridHeight { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property GridHeight As Integer
+  overload: Vivarium.Engine.Simulation.GridHeight*
+- uid: Vivarium.Engine.Simulation.GridWidth
+  commentId: P:Vivarium.Engine.Simulation.GridWidth
+  id: GridWidth
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: GridWidth
+  nameWithType: Simulation.GridWidth
+  fullName: Vivarium.Engine.Simulation.GridWidth
+  type: Property
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: GridWidth
+    path: src/Game/Engine/Simulation.cs
+    startLine: 12
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public int GridWidth { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property GridWidth As Integer
+  overload: Vivarium.Engine.Simulation.GridWidth*
+- uid: Vivarium.Engine.Simulation.CellSize
+  commentId: P:Vivarium.Engine.Simulation.CellSize
+  id: CellSize
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: CellSize
+  nameWithType: Simulation.CellSize
+  fullName: Vivarium.Engine.Simulation.CellSize
+  type: Property
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: CellSize
+    path: src/Game/Engine/Simulation.cs
+    startLine: 13
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public int CellSize { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property CellSize As Integer
+  overload: Vivarium.Engine.Simulation.CellSize*
+- uid: Vivarium.Engine.Simulation.AgentCount
+  commentId: P:Vivarium.Engine.Simulation.AgentCount
+  id: AgentCount
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: AgentCount
+  nameWithType: Simulation.AgentCount
+  fullName: Vivarium.Engine.Simulation.AgentCount
+  type: Property
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AgentCount
+    path: src/Game/Engine/Simulation.cs
+    startLine: 14
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public int AgentCount { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property AgentCount As Integer
+  overload: Vivarium.Engine.Simulation.AgentCount*
+- uid: Vivarium.Engine.Simulation.PlantCount
+  commentId: P:Vivarium.Engine.Simulation.PlantCount
+  id: PlantCount
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: PlantCount
+  nameWithType: Simulation.PlantCount
+  fullName: Vivarium.Engine.Simulation.PlantCount
+  type: Property
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: PlantCount
+    path: src/Game/Engine/Simulation.cs
+    startLine: 15
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public int PlantCount { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property PlantCount As Integer
+  overload: Vivarium.Engine.Simulation.PlantCount*
+- uid: Vivarium.Engine.Simulation.StructureCount
+  commentId: P:Vivarium.Engine.Simulation.StructureCount
+  id: StructureCount
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: StructureCount
+  nameWithType: Simulation.StructureCount
+  fullName: Vivarium.Engine.Simulation.StructureCount
+  type: Property
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: StructureCount
+    path: src/Game/Engine/Simulation.cs
+    startLine: 16
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public int StructureCount { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public ReadOnly Property StructureCount As Integer
+  overload: Vivarium.Engine.Simulation.StructureCount*
+- uid: Vivarium.Engine.Simulation.AgentPopulation
+  commentId: P:Vivarium.Engine.Simulation.AgentPopulation
+  id: AgentPopulation
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: AgentPopulation
+  nameWithType: Simulation.AgentPopulation
+  fullName: Vivarium.Engine.Simulation.AgentPopulation
+  type: Property
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AgentPopulation
+    path: src/Game/Engine/Simulation.cs
+    startLine: 18
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public Agent[] AgentPopulation { get; }
+    parameters: []
+    return:
+      type: Vivarium.Entities.Agent[]
+    content.vb: Public ReadOnly Property AgentPopulation As Agent()
+  overload: Vivarium.Engine.Simulation.AgentPopulation*
+- uid: Vivarium.Engine.Simulation.PlantPopulation
+  commentId: P:Vivarium.Engine.Simulation.PlantPopulation
+  id: PlantPopulation
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: PlantPopulation
+  nameWithType: Simulation.PlantPopulation
+  fullName: Vivarium.Engine.Simulation.PlantPopulation
+  type: Property
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: PlantPopulation
+    path: src/Game/Engine/Simulation.cs
+    startLine: 19
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public Plant[] PlantPopulation { get; }
+    parameters: []
+    return:
+      type: Vivarium.Entities.Plant[]
+    content.vb: Public ReadOnly Property PlantPopulation As Plant()
+  overload: Vivarium.Engine.Simulation.PlantPopulation*
+- uid: Vivarium.Engine.Simulation.StructurePopulation
+  commentId: P:Vivarium.Engine.Simulation.StructurePopulation
+  id: StructurePopulation
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: StructurePopulation
+  nameWithType: Simulation.StructurePopulation
+  fullName: Vivarium.Engine.Simulation.StructurePopulation
+  type: Property
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: StructurePopulation
+    path: src/Game/Engine/Simulation.cs
+    startLine: 20
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public Structure[] StructurePopulation { get; }
+    parameters: []
+    return:
+      type: Vivarium.Entities.Structure[]
+    content.vb: Public ReadOnly Property StructurePopulation As [Structure]()
+  overload: Vivarium.Engine.Simulation.StructurePopulation*
+- uid: Vivarium.Engine.Simulation.GridMap
+  commentId: P:Vivarium.Engine.Simulation.GridMap
+  id: GridMap
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: GridMap
+  nameWithType: Simulation.GridMap
+  fullName: Vivarium.Engine.Simulation.GridMap
+  type: Property
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: GridMap
+    path: src/Game/Engine/Simulation.cs
+    startLine: 21
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public GridCell[,] GridMap { get; }
+    parameters: []
+    return:
+      type: Vivarium.World.GridCell[,]
+    content.vb: Public ReadOnly Property GridMap As GridCell(,)
+  overload: Vivarium.Engine.Simulation.GridMap*
+- uid: Vivarium.Engine.Simulation.Rng
+  commentId: P:Vivarium.Engine.Simulation.Rng
+  id: Rng
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: Rng
+  nameWithType: Simulation.Rng
+  fullName: Vivarium.Engine.Simulation.Rng
+  type: Property
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Rng
+    path: src/Game/Engine/Simulation.cs
+    startLine: 22
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public Random Rng { get; }
+    parameters: []
+    return:
+      type: System.Random
+    content.vb: Public ReadOnly Property Rng As Random
+  overload: Vivarium.Engine.Simulation.Rng*
+- uid: Vivarium.Engine.Simulation.TickCount
+  commentId: P:Vivarium.Engine.Simulation.TickCount
+  id: TickCount
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: TickCount
+  nameWithType: Simulation.TickCount
+  fullName: Vivarium.Engine.Simulation.TickCount
+  type: Property
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: TickCount
+    path: src/Game/Engine/Simulation.cs
+    startLine: 23
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public long TickCount { get; }
+    parameters: []
+    return:
+      type: System.Int64
+    content.vb: Public Property TickCount As Long
+  overload: Vivarium.Engine.Simulation.TickCount*
+- uid: Vivarium.Engine.Simulation.AliveAgents
+  commentId: P:Vivarium.Engine.Simulation.AliveAgents
+  id: AliveAgents
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: AliveAgents
+  nameWithType: Simulation.AliveAgents
+  fullName: Vivarium.Engine.Simulation.AliveAgents
+  type: Property
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AliveAgents
+    path: src/Game/Engine/Simulation.cs
+    startLine: 25
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public int AliveAgents { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property AliveAgents As Integer
+  overload: Vivarium.Engine.Simulation.AliveAgents*
+- uid: Vivarium.Engine.Simulation.AlivePlants
+  commentId: P:Vivarium.Engine.Simulation.AlivePlants
+  id: AlivePlants
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: AlivePlants
+  nameWithType: Simulation.AlivePlants
+  fullName: Vivarium.Engine.Simulation.AlivePlants
+  type: Property
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AlivePlants
+    path: src/Game/Engine/Simulation.cs
+    startLine: 26
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public int AlivePlants { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property AlivePlants As Integer
+  overload: Vivarium.Engine.Simulation.AlivePlants*
+- uid: Vivarium.Engine.Simulation.AliveStructures
+  commentId: P:Vivarium.Engine.Simulation.AliveStructures
+  id: AliveStructures
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: AliveStructures
+  nameWithType: Simulation.AliveStructures
+  fullName: Vivarium.Engine.Simulation.AliveStructures
+  type: Property
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: AliveStructures
+    path: src/Game/Engine/Simulation.cs
+    startLine: 27
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public int AliveStructures { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property AliveStructures As Integer
+  overload: Vivarium.Engine.Simulation.AliveStructures*
+- uid: Vivarium.Engine.Simulation.#ctor
+  commentId: M:Vivarium.Engine.Simulation.#ctor
+  id: '#ctor'
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: Simulation()
+  nameWithType: Simulation.Simulation()
+  fullName: Vivarium.Engine.Simulation.Simulation()
+  type: Constructor
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: .ctor
+    path: src/Game/Engine/Simulation.cs
+    startLine: 29
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public Simulation()
+    content.vb: Public Sub New()
+  overload: Vivarium.Engine.Simulation.#ctor*
+  nameWithType.vb: Simulation.New()
+  fullName.vb: Vivarium.Engine.Simulation.New()
+  name.vb: New()
+- uid: Vivarium.Engine.Simulation.Initialize
+  commentId: M:Vivarium.Engine.Simulation.Initialize
+  id: Initialize
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: Initialize()
+  nameWithType: Simulation.Initialize()
+  fullName: Vivarium.Engine.Simulation.Initialize()
+  type: Method
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Initialize
+    path: src/Game/Engine/Simulation.cs
+    startLine: 39
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public void Initialize()
+    content.vb: Public Sub Initialize()
+  overload: Vivarium.Engine.Simulation.Initialize*
+- uid: Vivarium.Engine.Simulation.Update
+  commentId: M:Vivarium.Engine.Simulation.Update
+  id: Update
+  parent: Vivarium.Engine.Simulation
+  langs:
+  - csharp
+  - vb
+  name: Update()
+  nameWithType: Simulation.Update()
+  fullName: Vivarium.Engine.Simulation.Update()
+  type: Method
+  source:
+    remote:
+      path: src/Game/Engine/Simulation.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Update
+    path: src/Game/Engine/Simulation.cs
+    startLine: 148
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Engine
+  syntax:
+    content: public void Update()
+    content.vb: Public Sub Update()
+  overload: Vivarium.Engine.Simulation.Update*
+references:
+- uid: Vivarium.Engine
+  commentId: N:Vivarium.Engine
+  href: Vivarium.html
+  name: Vivarium.Engine
+  nameWithType: Vivarium.Engine
+  fullName: Vivarium.Engine
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Engine
+    name: Engine
+    href: Vivarium.Engine.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Engine
+    name: Engine
+    href: Vivarium.Engine.html
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  name: Equals(object)
+  nameWithType: object.Equals(object)
+  fullName: object.Equals(object)
+  nameWithType.vb: Object.Equals(Object)
+  fullName.vb: Object.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  name: GetHashCode()
+  nameWithType: object.GetHashCode()
+  fullName: object.GetHashCode()
+  nameWithType.vb: Object.GetHashCode()
+  fullName.vb: Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  name: MemberwiseClone()
+  nameWithType: object.MemberwiseClone()
+  fullName: object.MemberwiseClone()
+  nameWithType.vb: Object.MemberwiseClone()
+  fullName.vb: Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  name: ToString()
+  nameWithType: object.ToString()
+  fullName: object.ToString()
+  nameWithType.vb: Object.ToString()
+  fullName.vb: Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Vivarium.Engine.Simulation.GridHeight*
+  commentId: Overload:Vivarium.Engine.Simulation.GridHeight
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_GridHeight
+  name: GridHeight
+  nameWithType: Simulation.GridHeight
+  fullName: Vivarium.Engine.Simulation.GridHeight
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int32
+  name: int
+  nameWithType: int
+  fullName: int
+  nameWithType.vb: Integer
+  fullName.vb: Integer
+  name.vb: Integer
+- uid: Vivarium.Engine.Simulation.GridWidth*
+  commentId: Overload:Vivarium.Engine.Simulation.GridWidth
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_GridWidth
+  name: GridWidth
+  nameWithType: Simulation.GridWidth
+  fullName: Vivarium.Engine.Simulation.GridWidth
+- uid: Vivarium.Engine.Simulation.CellSize*
+  commentId: Overload:Vivarium.Engine.Simulation.CellSize
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_CellSize
+  name: CellSize
+  nameWithType: Simulation.CellSize
+  fullName: Vivarium.Engine.Simulation.CellSize
+- uid: Vivarium.Engine.Simulation.AgentCount*
+  commentId: Overload:Vivarium.Engine.Simulation.AgentCount
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_AgentCount
+  name: AgentCount
+  nameWithType: Simulation.AgentCount
+  fullName: Vivarium.Engine.Simulation.AgentCount
+- uid: Vivarium.Engine.Simulation.PlantCount*
+  commentId: Overload:Vivarium.Engine.Simulation.PlantCount
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_PlantCount
+  name: PlantCount
+  nameWithType: Simulation.PlantCount
+  fullName: Vivarium.Engine.Simulation.PlantCount
+- uid: Vivarium.Engine.Simulation.StructureCount*
+  commentId: Overload:Vivarium.Engine.Simulation.StructureCount
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_StructureCount
+  name: StructureCount
+  nameWithType: Simulation.StructureCount
+  fullName: Vivarium.Engine.Simulation.StructureCount
+- uid: Vivarium.Engine.Simulation.AgentPopulation*
+  commentId: Overload:Vivarium.Engine.Simulation.AgentPopulation
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_AgentPopulation
+  name: AgentPopulation
+  nameWithType: Simulation.AgentPopulation
+  fullName: Vivarium.Engine.Simulation.AgentPopulation
+- uid: Vivarium.Entities.Agent[]
+  isExternal: true
+  href: Vivarium.Entities.Agent.html
+  name: Agent[]
+  nameWithType: Agent[]
+  fullName: Vivarium.Entities.Agent[]
+  nameWithType.vb: Agent()
+  fullName.vb: Vivarium.Entities.Agent()
+  name.vb: Agent()
+  spec.csharp:
+  - uid: Vivarium.Entities.Agent
+    name: Agent
+    href: Vivarium.Entities.Agent.html
+  - name: '['
+  - name: ']'
+  spec.vb:
+  - uid: Vivarium.Entities.Agent
+    name: Agent
+    href: Vivarium.Entities.Agent.html
+  - name: (
+  - name: )
+- uid: Vivarium.Engine.Simulation.PlantPopulation*
+  commentId: Overload:Vivarium.Engine.Simulation.PlantPopulation
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_PlantPopulation
+  name: PlantPopulation
+  nameWithType: Simulation.PlantPopulation
+  fullName: Vivarium.Engine.Simulation.PlantPopulation
+- uid: Vivarium.Entities.Plant[]
+  isExternal: true
+  href: Vivarium.Entities.Plant.html
+  name: Plant[]
+  nameWithType: Plant[]
+  fullName: Vivarium.Entities.Plant[]
+  nameWithType.vb: Plant()
+  fullName.vb: Vivarium.Entities.Plant()
+  name.vb: Plant()
+  spec.csharp:
+  - uid: Vivarium.Entities.Plant
+    name: Plant
+    href: Vivarium.Entities.Plant.html
+  - name: '['
+  - name: ']'
+  spec.vb:
+  - uid: Vivarium.Entities.Plant
+    name: Plant
+    href: Vivarium.Entities.Plant.html
+  - name: (
+  - name: )
+- uid: Vivarium.Engine.Simulation.StructurePopulation*
+  commentId: Overload:Vivarium.Engine.Simulation.StructurePopulation
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_StructurePopulation
+  name: StructurePopulation
+  nameWithType: Simulation.StructurePopulation
+  fullName: Vivarium.Engine.Simulation.StructurePopulation
+- uid: Vivarium.Entities.Structure[]
+  isExternal: true
+  href: Vivarium.Entities.Structure.html
+  name: Structure[]
+  nameWithType: Structure[]
+  fullName: Vivarium.Entities.Structure[]
+  nameWithType.vb: Structure()
+  fullName.vb: Vivarium.Entities.Structure()
+  name.vb: Structure()
+  spec.csharp:
+  - uid: Vivarium.Entities.Structure
+    name: Structure
+    href: Vivarium.Entities.Structure.html
+  - name: '['
+  - name: ']'
+  spec.vb:
+  - uid: Vivarium.Entities.Structure
+    name: Structure
+    href: Vivarium.Entities.Structure.html
+  - name: (
+  - name: )
+- uid: Vivarium.Engine.Simulation.GridMap*
+  commentId: Overload:Vivarium.Engine.Simulation.GridMap
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_GridMap
+  name: GridMap
+  nameWithType: Simulation.GridMap
+  fullName: Vivarium.Engine.Simulation.GridMap
+- uid: Vivarium.World.GridCell[,]
+  isExternal: true
+  href: Vivarium.World.GridCell.html
+  name: GridCell[,]
+  nameWithType: GridCell[,]
+  fullName: Vivarium.World.GridCell[,]
+  nameWithType.vb: GridCell(,)
+  fullName.vb: Vivarium.World.GridCell(,)
+  name.vb: GridCell(,)
+  spec.csharp:
+  - uid: Vivarium.World.GridCell
+    name: GridCell
+    href: Vivarium.World.GridCell.html
+  - name: '['
+  - name: ','
+  - name: ']'
+  spec.vb:
+  - uid: Vivarium.World.GridCell
+    name: GridCell
+    href: Vivarium.World.GridCell.html
+  - name: (
+  - name: ','
+  - name: )
+- uid: Vivarium.Engine.Simulation.Rng*
+  commentId: Overload:Vivarium.Engine.Simulation.Rng
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_Rng
+  name: Rng
+  nameWithType: Simulation.Rng
+  fullName: Vivarium.Engine.Simulation.Rng
+- uid: System.Random
+  commentId: T:System.Random
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.random
+  name: Random
+  nameWithType: Random
+  fullName: System.Random
+- uid: Vivarium.Engine.Simulation.TickCount*
+  commentId: Overload:Vivarium.Engine.Simulation.TickCount
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_TickCount
+  name: TickCount
+  nameWithType: Simulation.TickCount
+  fullName: Vivarium.Engine.Simulation.TickCount
+- uid: System.Int64
+  commentId: T:System.Int64
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int64
+  name: long
+  nameWithType: long
+  fullName: long
+  nameWithType.vb: Long
+  fullName.vb: Long
+  name.vb: Long
+- uid: Vivarium.Engine.Simulation.AliveAgents*
+  commentId: Overload:Vivarium.Engine.Simulation.AliveAgents
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_AliveAgents
+  name: AliveAgents
+  nameWithType: Simulation.AliveAgents
+  fullName: Vivarium.Engine.Simulation.AliveAgents
+- uid: Vivarium.Engine.Simulation.AlivePlants*
+  commentId: Overload:Vivarium.Engine.Simulation.AlivePlants
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_AlivePlants
+  name: AlivePlants
+  nameWithType: Simulation.AlivePlants
+  fullName: Vivarium.Engine.Simulation.AlivePlants
+- uid: Vivarium.Engine.Simulation.AliveStructures*
+  commentId: Overload:Vivarium.Engine.Simulation.AliveStructures
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_AliveStructures
+  name: AliveStructures
+  nameWithType: Simulation.AliveStructures
+  fullName: Vivarium.Engine.Simulation.AliveStructures
+- uid: Vivarium.Engine.Simulation.#ctor*
+  commentId: Overload:Vivarium.Engine.Simulation.#ctor
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation__ctor
+  name: Simulation
+  nameWithType: Simulation.Simulation
+  fullName: Vivarium.Engine.Simulation.Simulation
+  nameWithType.vb: Simulation.New
+  fullName.vb: Vivarium.Engine.Simulation.New
+  name.vb: New
+- uid: Vivarium.Engine.Simulation.Initialize*
+  commentId: Overload:Vivarium.Engine.Simulation.Initialize
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_Initialize
+  name: Initialize
+  nameWithType: Simulation.Initialize
+  fullName: Vivarium.Engine.Simulation.Initialize
+- uid: Vivarium.Engine.Simulation.Update*
+  commentId: Overload:Vivarium.Engine.Simulation.Update
+  href: Vivarium.Engine.Simulation.html#Vivarium_Engine_Simulation_Update
+  name: Update
+  nameWithType: Simulation.Update
+  fullName: Vivarium.Engine.Simulation.Update

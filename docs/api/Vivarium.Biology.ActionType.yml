@@ -1,0 +1,274 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.Biology.ActionType
+  commentId: T:Vivarium.Biology.ActionType
+  id: ActionType
+  parent: Vivarium.Biology
+  children:
+  - Vivarium.Biology.ActionType.Attack
+  - Vivarium.Biology.ActionType.Flee
+  - Vivarium.Biology.ActionType.MoveE
+  - Vivarium.Biology.ActionType.MoveN
+  - Vivarium.Biology.ActionType.MoveS
+  - Vivarium.Biology.ActionType.MoveW
+  - Vivarium.Biology.ActionType.Reproduce
+  - Vivarium.Biology.ActionType.Suicide
+  langs:
+  - csharp
+  - vb
+  name: ActionType
+  nameWithType: ActionType
+  fullName: Vivarium.Biology.ActionType
+  type: Enum
+  source:
+    remote:
+      path: src/Game/Biology/ActionType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: ActionType
+    path: src/Game/Biology/ActionType.cs
+    startLine: 2
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: public enum ActionType
+    content.vb: Public Enum ActionType
+- uid: Vivarium.Biology.ActionType.MoveN
+  commentId: F:Vivarium.Biology.ActionType.MoveN
+  id: MoveN
+  parent: Vivarium.Biology.ActionType
+  langs:
+  - csharp
+  - vb
+  name: MoveN
+  nameWithType: ActionType.MoveN
+  fullName: Vivarium.Biology.ActionType.MoveN
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/ActionType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MoveN
+    path: src/Game/Biology/ActionType.cs
+    startLine: 4
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: MoveN = 0
+    return:
+      type: Vivarium.Biology.ActionType
+- uid: Vivarium.Biology.ActionType.MoveS
+  commentId: F:Vivarium.Biology.ActionType.MoveS
+  id: MoveS
+  parent: Vivarium.Biology.ActionType
+  langs:
+  - csharp
+  - vb
+  name: MoveS
+  nameWithType: ActionType.MoveS
+  fullName: Vivarium.Biology.ActionType.MoveS
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/ActionType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MoveS
+    path: src/Game/Biology/ActionType.cs
+    startLine: 5
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: MoveS = 1
+    return:
+      type: Vivarium.Biology.ActionType
+- uid: Vivarium.Biology.ActionType.MoveE
+  commentId: F:Vivarium.Biology.ActionType.MoveE
+  id: MoveE
+  parent: Vivarium.Biology.ActionType
+  langs:
+  - csharp
+  - vb
+  name: MoveE
+  nameWithType: ActionType.MoveE
+  fullName: Vivarium.Biology.ActionType.MoveE
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/ActionType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MoveE
+    path: src/Game/Biology/ActionType.cs
+    startLine: 6
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: MoveE = 2
+    return:
+      type: Vivarium.Biology.ActionType
+- uid: Vivarium.Biology.ActionType.MoveW
+  commentId: F:Vivarium.Biology.ActionType.MoveW
+  id: MoveW
+  parent: Vivarium.Biology.ActionType
+  langs:
+  - csharp
+  - vb
+  name: MoveW
+  nameWithType: ActionType.MoveW
+  fullName: Vivarium.Biology.ActionType.MoveW
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/ActionType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: MoveW
+    path: src/Game/Biology/ActionType.cs
+    startLine: 7
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: MoveW = 3
+    return:
+      type: Vivarium.Biology.ActionType
+- uid: Vivarium.Biology.ActionType.Attack
+  commentId: F:Vivarium.Biology.ActionType.Attack
+  id: Attack
+  parent: Vivarium.Biology.ActionType
+  langs:
+  - csharp
+  - vb
+  name: Attack
+  nameWithType: ActionType.Attack
+  fullName: Vivarium.Biology.ActionType.Attack
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/ActionType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Attack
+    path: src/Game/Biology/ActionType.cs
+    startLine: 8
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: Attack = 4
+    return:
+      type: Vivarium.Biology.ActionType
+- uid: Vivarium.Biology.ActionType.Reproduce
+  commentId: F:Vivarium.Biology.ActionType.Reproduce
+  id: Reproduce
+  parent: Vivarium.Biology.ActionType
+  langs:
+  - csharp
+  - vb
+  name: Reproduce
+  nameWithType: ActionType.Reproduce
+  fullName: Vivarium.Biology.ActionType.Reproduce
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/ActionType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Reproduce
+    path: src/Game/Biology/ActionType.cs
+    startLine: 9
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: Reproduce = 5
+    return:
+      type: Vivarium.Biology.ActionType
+- uid: Vivarium.Biology.ActionType.Suicide
+  commentId: F:Vivarium.Biology.ActionType.Suicide
+  id: Suicide
+  parent: Vivarium.Biology.ActionType
+  langs:
+  - csharp
+  - vb
+  name: Suicide
+  nameWithType: ActionType.Suicide
+  fullName: Vivarium.Biology.ActionType.Suicide
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/ActionType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Suicide
+    path: src/Game/Biology/ActionType.cs
+    startLine: 10
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: Suicide = 6
+    return:
+      type: Vivarium.Biology.ActionType
+- uid: Vivarium.Biology.ActionType.Flee
+  commentId: F:Vivarium.Biology.ActionType.Flee
+  id: Flee
+  parent: Vivarium.Biology.ActionType
+  langs:
+  - csharp
+  - vb
+  name: Flee
+  nameWithType: ActionType.Flee
+  fullName: Vivarium.Biology.ActionType.Flee
+  type: Field
+  source:
+    remote:
+      path: src/Game/Biology/ActionType.cs
+      branch: main
+      repo: https://github.com/Kromtec/Vivarium.git
+    id: Flee
+    path: src/Game/Biology/ActionType.cs
+    startLine: 11
+  assemblies:
+  - Vivarium
+  namespace: Vivarium.Biology
+  syntax:
+    content: Flee = 7
+    return:
+      type: Vivarium.Biology.ActionType
+references:
+- uid: Vivarium.Biology
+  commentId: N:Vivarium.Biology
+  href: Vivarium.html
+  name: Vivarium.Biology
+  nameWithType: Vivarium.Biology
+  fullName: Vivarium.Biology
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Biology
+    name: Biology
+    href: Vivarium.Biology.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Biology
+    name: Biology
+    href: Vivarium.Biology.html
+- uid: Vivarium.Biology.ActionType
+  commentId: T:Vivarium.Biology.ActionType
+  parent: Vivarium.Biology
+  href: Vivarium.Biology.ActionType.html
+  name: ActionType
+  nameWithType: ActionType
+  fullName: Vivarium.Biology.ActionType

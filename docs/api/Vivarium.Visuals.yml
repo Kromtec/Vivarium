@@ -1,0 +1,67 @@
+### YamlMime:ManagedReference
+items:
+- uid: Vivarium.Visuals
+  commentId: N:Vivarium.Visuals
+  id: Vivarium.Visuals
+  children:
+  - Vivarium.Visuals.RenderStats
+  - Vivarium.Visuals.TextureGenerator
+  - Vivarium.Visuals.VivariumColors
+  - Vivarium.Visuals.WorldRenderer
+  langs:
+  - csharp
+  - vb
+  name: Vivarium.Visuals
+  nameWithType: Vivarium.Visuals
+  fullName: Vivarium.Visuals
+  type: Namespace
+  assemblies:
+  - Vivarium
+references:
+- uid: Vivarium.Visuals.RenderStats
+  commentId: T:Vivarium.Visuals.RenderStats
+  parent: Vivarium.Visuals
+  href: Vivarium.Visuals.RenderStats.html
+  name: RenderStats
+  nameWithType: RenderStats
+  fullName: Vivarium.Visuals.RenderStats
+- uid: Vivarium.Visuals.TextureGenerator
+  commentId: T:Vivarium.Visuals.TextureGenerator
+  href: Vivarium.Visuals.TextureGenerator.html
+  name: TextureGenerator
+  nameWithType: TextureGenerator
+  fullName: Vivarium.Visuals.TextureGenerator
+- uid: Vivarium.Visuals.VivariumColors
+  commentId: T:Vivarium.Visuals.VivariumColors
+  href: Vivarium.Visuals.VivariumColors.html
+  name: VivariumColors
+  nameWithType: VivariumColors
+  fullName: Vivarium.Visuals.VivariumColors
+- uid: Vivarium.Visuals.WorldRenderer
+  commentId: T:Vivarium.Visuals.WorldRenderer
+  href: Vivarium.Visuals.WorldRenderer.html
+  name: WorldRenderer
+  nameWithType: WorldRenderer
+  fullName: Vivarium.Visuals.WorldRenderer
+- uid: Vivarium.Visuals
+  commentId: N:Vivarium.Visuals
+  href: Vivarium.html
+  name: Vivarium.Visuals
+  nameWithType: Vivarium.Visuals
+  fullName: Vivarium.Visuals
+  spec.csharp:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Visuals
+    name: Visuals
+    href: Vivarium.Visuals.html
+  spec.vb:
+  - uid: Vivarium
+    name: Vivarium
+    href: Vivarium.html
+  - name: .
+  - uid: Vivarium.Visuals
+    name: Visuals
+    href: Vivarium.Visuals.html
