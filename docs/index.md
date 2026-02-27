@@ -20,14 +20,14 @@ The project simulates an ecosystem of autonomous agents ("Creatures") interactin
 - **[Configuration Guide](configuration.md)** - How to customize simulation parameters
 
 ### For Developers
-- [API Documentation](_site/api/) - Code reference generated from XML comments
-- [Running the Simulation](_site/README.html)
+- [API Documentation](docs/api/) - Code reference generated from XML comments
+- [Running the Simulation](README.html)
 
 ## Quick Links
 
 - [User Manual](user-manual.md)
-- [API Documentation](_site/api/)
-- [Configuration Guide](_site/docs/configuration.html)
+- [API Documentation](docs/api/)
+- [Configuration Guide](docs/configuration.html)
 
 ---
 *Generated with DocFX*
