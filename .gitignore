@@ -36,3 +36,7 @@ Logs/
 
 ## Local Development
 .rasputin/
+
+## DocFX Generated (committed to repo for GitHub Pages)
+!docs/_site/
+!docs/api/
