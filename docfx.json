@@ -4,20 +4,37 @@
       "src": [
         {
           "files": [
-            "**/Vivarium.csproj"
+            "src/Simulation/Vivarium.csproj"
           ],
-          "xml": "**/Vivarium.xml"
+          "xml": "src/Simulation/bin/Release/net10.0/Vivarium.xml"
         }
       ],
-      "dest": "docs/api",
+      "dest": "api",
       "includePrivateMembers": false,
       "allowGeneration": true
     }
   ],
   "build": {
-    "content": ["**/*.{md|yml}"],
-    "resource": ["**/images/**"],
-    "dest": "docs/_site",
+    "content": [
+      {
+        "files": [
+          "api/*.yml",
+          "api/*.json",
+          "docs/toc.yml",
+          "docs/index.md",
+          "docs/*.md",
+          "README.md"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "docs/images/**"
+        ]
+      }
+    ],
+    "dest": "_site",
     "siteBaseUrl": "https://kromtec.github.io/Vivarium",
     "template": [
       "default"
