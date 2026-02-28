@@ -33,4 +33,13 @@
     <Compile Remove="Benchmarks/**" />
     <Compile Remove="Tests/**" />
   </ItemGroup>
+  <Target Name="GenerateSpriteFont" BeforeTargets="Build;PrepareForBuild">
+    <PropertyGroup>
+      <FontName Condition="'$(OS)' == 'Windows_NT'">Consolas</FontName>
+      <FontName Condition="'$(OS)' != 'Windows_NT'">DejaVu Sans Mono</FontName>
+      <TemplateContent>$([System.IO.File]::ReadAllText('$(ProjectDir)Content\SystemFont.spritefont.template'))</TemplateContent>
+      <FinalContent>$(TemplateContent.Replace('{FONT_NAME}', '$(FontName)'))</FinalContent>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(ProjectDir)Content\SystemFont.spritefont" Lines="$(FinalContent)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+  </Target>
 </Project>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <XnaContent xmlns:Graphics="Microsoft.Xna.Framework.Content.Pipeline.Graphics">
   <Asset Type="Graphics:FontDescription">
-    <FontName>Consolas</FontName>
+    <FontName>{FONT_NAME}</FontName>
     <Size>13</Size>
     <Spacing>1</Spacing>
     <UseKerning>true</UseKerning>
