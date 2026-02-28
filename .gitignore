@@ -31,6 +31,7 @@ TestResults/
 
 ## .NET 10 / Modern Build Output
 artifacts/
+publish/
 
 ## Simulation Logs
 Logs/

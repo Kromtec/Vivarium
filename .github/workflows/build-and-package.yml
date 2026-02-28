@@ -1,0 +1,57 @@
+name: Build and Package
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            runtime: win-x64
+            artifact_name: vivarium-windows
+          - os: ubuntu-latest
+            runtime: linux-x64
+            artifact_name: vivarium-linux
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install Linux Dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libfontconfig1
+
+      - name: Restore dependencies
+        run: dotnet restore src/Simulation/Vivarium.csproj
+
+      - name: Publish Application
+        run: |
+          dotnet publish src/Simulation/Vivarium.csproj -c Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -o ./publish/${{ matrix.runtime }}
+
+      - name: Zip Artifact (Windows)
+        if: matrix.os == 'windows-latest'
+        run: Compress-Archive -Path ./publish/${{ matrix.runtime }}/* -DestinationPath ./${{ matrix.artifact_name }}.zip
+
+      - name: Zip Artifact (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: zip -r ./${{ matrix.artifact_name }}.zip ./publish/${{ matrix.runtime }}/*
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ./${{ matrix.artifact_name }}.zip
