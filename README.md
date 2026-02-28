@@ -4,7 +4,7 @@
 
 The project simulates an ecosystem of autonomous agents ("Creatures") interacting within a dynamic grid-based world containing plants and structures.
 
-[![Imgur](https://i.imgur.com/V1H9RqRm.png)](https://imgur.com/V1H9RqR) [![Imgur](https://i.imgur.com/oB2BjnHm.png)](https://imgur.com/oB2BjnH) [![Imgur](https://i.imgur.com/VdaAf4Gm.png)](https://imgur.com/VdaAf4Ghttps://imgur.com/VdaAf4G)
+[![Imgur](https://i.imgur.com/V1H9RqRm.png)](https://imgur.com/V1H9RqR) [![Imgur](https://i.imgur.com/oB2BjnHm.png)](https://imgur.com/oB2BjnH)
 
 ## 📖 Documentation
 
@@ -28,6 +28,8 @@ The project simulates an ecosystem of autonomous agents ("Creatures") interactin
 * **High Performance:** Optimized using `Span<T>` and Struct-based architecture to support thousands of agents at 60 FPS.
 * **Interactive Camera:** Full 2D camera support with zoom and panning to observe the simulation at macro and micro levels.
 * **Headless Mode:** Run simulations without graphics for rapid training and data collection.
+
+ [![Imgur](https://i.imgur.com/VdaAf4G.png)](https://imgur.com/VdaAf4Ghttps://imgur.com/VdaAf4G)
 
 ## 🎮 Controls
 
