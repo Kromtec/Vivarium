@@ -14,10 +14,10 @@ jobs:
         include:
           - os: windows-latest
             runtime: win-x64
-            artifact_name: vivarium-windows
+            artifact_name: vivarium-1.0.0-win-x64
           - os: ubuntu-latest
             runtime: linux-x64
-            artifact_name: vivarium-linux
+            artifact_name: vivarium-1.0.0-linux-x64
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -42,16 +42,8 @@ jobs:
         run: |
           dotnet publish src/Simulation/Vivarium.csproj -c Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -o ./publish/${{ matrix.runtime }}
 
-      - name: Zip Artifact (Windows)
-        if: matrix.os == 'windows-latest'
-        run: Compress-Archive -Path ./publish/${{ matrix.runtime }}/* -DestinationPath ./${{ matrix.artifact_name }}.zip
-
-      - name: Zip Artifact (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        run: zip -r ./${{ matrix.artifact_name }}.zip ./publish/${{ matrix.runtime }}/*
-
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact_name }}
-          path: ./${{ matrix.artifact_name }}.zip
+          path: ./publish/${{ matrix.runtime }}/
