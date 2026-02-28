@@ -11,9 +11,9 @@
 
 ## MonoGame Specifics
 # Ignore the compiled content assets, but keep the raw source assets (png, wav, etc.)
-*/Content/bin/
-*/Content/obj/
-*/Content/SystemFont.spritefont
+src/Simulation/Content/bin/
+src/Simulation/Content/obj/
+src/Simulation/Content/SystemFont.spritefont
 
 ## JetBrains Rider (if you switch IDEs later)
 .idea/
