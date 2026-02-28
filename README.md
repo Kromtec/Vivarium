@@ -4,6 +4,8 @@
 
 The project simulates an ecosystem of autonomous agents ("Creatures") interacting within a dynamic grid-based world containing plants and structures.
 
+[![Imgur](https://i.imgur.com/V1H9RqRm.png)](https://imgur.com/V1H9RqR) [![Imgur](https://i.imgur.com/oB2BjnHm.png)](https://imgur.com/oB2BjnH) [![Imgur](https://i.imgur.com/VdaAf4Gm.png)](https://imgur.com/VdaAf4Ghttps://imgur.com/VdaAf4G)
+
 ## 📖 Documentation
 
 | Document | Description |
@@ -35,6 +37,8 @@ The project simulates an ecosystem of autonomous agents ("Creatures") interactin
 * **Right Click:** Deselect
 * **Space:** Pause/Resume Simulation
 * **.(Dot):** Step Forward One Tick (when paused)
+
+![Imgur](https://i.imgur.com/8EuuIDM.png)
 
 ## 🚀 Running the Simulation
 
