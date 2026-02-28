@@ -419,7 +419,7 @@ public class TitleScreen
         UIComponents.DrawButton(spriteBatch, _font, startBtnRect, "START", _pixelTexture, isHovered, isPressed);
 
         // Draw Version
-        const string versionText = "v1.0 - .NET 10 / C# 14";
+        const string versionText = "v1.0.0 - .NET 10 / C# 14";
         Vector2 verSize = _font.MeasureString(versionText);
         spriteBatch.DrawString(_font, versionText, new Vector2(screenWidth - verSize.X - 10, screenHeight - verSize.Y - 10), UITheme.TextColorSecondary);
 
